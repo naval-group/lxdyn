@@ -31,7 +31,7 @@ class HoltropMennenForceModel : public ForceModel
             double Cstern;
             boost::optional<double> hull_form_coeff;
             double app_form_coeff;
-            bool apply_on_ship_speed_direction;
+            bool apply_on_ship_speed_direction; // This parameter is used to apply the force on the ship's speed direction rather than the X-axis.
         };
         struct DerivedData
         {
@@ -82,7 +82,6 @@ class HoltropMennenForceModel : public ForceModel
         const double d;
         const Input input;
         const DerivedData derived;
-        bool apply_on_ship_speed_direction; // This parameter is used to apply the force on the ship's speed direction rather than the X-axis.
         const double gravity_force;
         double Rw_a(const double Fn, const double m4) const;
         double Rw_b(const double Fn, const double m4) const;

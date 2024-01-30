@@ -130,7 +130,7 @@ Wrench HoltropMennenForceModel::get_force(const BodyStates& states, const double
     if(states.u() > 0)
     {
         double R = Rf(states, env) + Rapp(states, env) + Rw(states, env) + Rb(states, env) + Rtr(states, env) + Ra(states, env);
-        if(!apply_on_ship_speed_direction)
+        if(!input.apply_on_ship_speed_direction)
         {
             tau.X() = -R;
         }
