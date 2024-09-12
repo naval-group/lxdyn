@@ -148,6 +148,9 @@ class RudderForceModel : public ForceModel
                 double nu;
                 Eigen::Vector3d translation_from_rudder_to_propeller;
         };
+    protected:
+        void extra_observations(Observer& observer) const override;
+
 
     private:
         WageningenControlledForceModel propulsion;
@@ -155,6 +158,10 @@ class RudderForceModel : public ForceModel
         ssc::kinematics::Point translation_from_rudder_to_propeller;
         RudderModel model;
         double w; //!< Wake fraction
+        // These variables are computed at each time step and stored for outputting
+        TR1(shared_ptr)<ssc::kinematics::Vector6d> m_propeller_force; //!< Propeller force at propeller location in internal frame
+        TR1(shared_ptr)<ssc::kinematics::Vector6d> m_rudder_force; //!< Rudder force at propeller location in internal frame
+
 };
 
 
