@@ -153,15 +153,17 @@ class RudderForceModel : public ForceModel
 
 
     private:
-        WageningenControlledForceModel propulsion;
+        WageningenControlledForceModel propulsionModel;
         ssc::kinematics::Point rudder_position;
-        ssc::kinematics::Point translation_from_rudder_to_propeller;
-        RudderModel model;
+        RudderModel rudderModel;
         double w; //!< Wake fraction
         // These variables are computed at each time step and stored for outputting
-        TR1(shared_ptr)<ssc::kinematics::Vector6d> m_propeller_force; //!< Propeller force at propeller location in internal frame
-        TR1(shared_ptr)<ssc::kinematics::Vector6d> m_rudder_force; //!< Rudder force at propeller location in internal frame
-
+        TR1(shared_ptr)<Wrench> m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame
+        TR1(shared_ptr)<Wrench> m_propeller_wrench_body_frame_at_Ob; //!< Propeller tensor in body frame
+        TR1(shared_ptr)<Wrench> m_propeller_wrench_NED_frame_at_G; //!< Propeller tensor in NED frame
+        TR1(shared_ptr)<Wrench> m_rudder_wrench_internal_frame_at_P; //!< Rudder tensor in internal frame
+        TR1(shared_ptr)<Wrench> m_rudder_wrench_body_frame_at_Ob;//!< Rudder tensor in internal frame
+        TR1(shared_ptr)<Wrench> m_rudder_wrench_NED_frame_at_G;//!< Rudder tensor in NED frame
 };
 
 
