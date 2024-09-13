@@ -9,6 +9,7 @@
 #define RUDDERFORCEMODEL_HPP_
 
 #include "WageningenControlledForceModel.hpp"
+#include <memory>
 
 class RudderForceModel : public ForceModel
 {
@@ -158,12 +159,12 @@ class RudderForceModel : public ForceModel
         RudderModel rudderModel;
         double w; //!< Wake fraction
         // These variables are computed at each time step and stored for outputting
-        TR1(shared_ptr)<Wrench> m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame
-        TR1(shared_ptr)<Wrench> m_propeller_wrench_body_frame_at_Ob; //!< Propeller tensor in body frame
-        TR1(shared_ptr)<Wrench> m_propeller_wrench_NED_frame_at_G; //!< Propeller tensor in NED frame
-        TR1(shared_ptr)<Wrench> m_rudder_wrench_internal_frame_at_P; //!< Rudder tensor in internal frame
-        TR1(shared_ptr)<Wrench> m_rudder_wrench_body_frame_at_Ob;//!< Rudder tensor in internal frame
-        TR1(shared_ptr)<Wrench> m_rudder_wrench_NED_frame_at_G;//!< Rudder tensor in NED frame
+        std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame
+        std::unique_ptr<Wrench> m_propeller_wrench_body_frame_at_Ob; //!< Propeller tensor in body frame
+        std::unique_ptr<Wrench> m_propeller_wrench_NED_frame_at_G; //!< Propeller tensor in NED frame
+        std::unique_ptr<Wrench> m_rudder_wrench_internal_frame_at_P; //!< Rudder tensor in internal frame
+        std::unique_ptr<Wrench> m_rudder_wrench_body_frame_at_Ob;//!< Rudder tensor in internal frame
+        std::unique_ptr<Wrench> m_rudder_wrench_NED_frame_at_G;//!< Rudder tensor in NED frame
 };
 
 

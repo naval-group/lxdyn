@@ -5,7 +5,7 @@
  *      Author: cady
  */
 #include "RudderForceModelTest.hpp"
-#include "RudderForceModel.hpp"
+#include "xdyn/force_models/RudderForceModel.hpp"
 #include "env_for_tests.hpp"
 #include "xdyn/core/BodyWithoutSurfaceForces.hpp"
 #include "xdyn/environment_models/Airy.hpp"
@@ -16,6 +16,7 @@
 #include "xdyn/environment_models/Stretching.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/BodyBuilder.hpp"
 
 #define _USE_MATH_DEFINE
 #include <cmath>
@@ -259,17 +260,32 @@ TEST_F(RudderForceModelTest, parser)
 TEST_F(RudderForceModelTest, force_and_torque)
 {
     EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
-    const RudderForceModel rudder(RudderForceModel::parse(test_data::rudder()), a.random<std::string>(), env);
+
+    // Create body
+    YamlRotation rot;
+    rot.convention.push_back("z");
+    rot.convention.push_back("y'");
+    rot.convention.push_back("x''");
+    rot.order_by = "angle";
+    std::string name="test_body";
+    VectorOfVectorOfPoints empty_mesh;
+    BodyPtr b(BodyBuilder(rot).build(name, empty_mesh, 0, 0, rot, true));
+    auto states = b->get_states();
+    // Create rudder force model
+    const RudderForceModel rudder(RudderForceModel::parse(test_data::rudder()), b->get_name(), env);
+
     ASSERT_EQ("propeller+rudder", rudder.model_name());
-    BodyStates states;
+
+    // Create body states
     std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
     const double t = 24;
     states.u.record(t, s[2]);
     states.v.record(t, s[3]);
     states.w.record(t, s[4]);
     states.name = "body";
-    BodyWithoutSurfaceForces b(states,0,BlockedDOF(""), YamlFilteredStates());
-    b.update_kinematics(s, env.k);
+    b->update_kinematics(s, env.k);
+
+    // Create commands
     std::map<std::string,double> commands;
     commands["rpm"] = 200;
     commands["P/D"] = 1.2;
