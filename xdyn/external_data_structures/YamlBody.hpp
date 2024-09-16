@@ -4,7 +4,9 @@
  *  Created on: 16 avr. 2014
  *      Author: cady
  */
-
+/** \addtogroup Body
+ *  \brief Input data for body initialization
+ @{ */
 #ifndef YAMLBODY_HPP_
 #define YAMLBODY_HPP_
 
@@ -17,7 +19,7 @@
 #include <string>
 
 enum class InterpolationType {PIECEWISE_CONSTANT, LINEAR, SPLINE};
-enum class BlockableState {U, V, W, P, Q, R};
+enum class BlockableState {X, Y, Z, U, V, W, P, Q, R, PHI, THETA, PSI};
 enum class FilterableState {X, Y, Z, U, V, W, P, Q, R, PHI, THETA, PSI};
 
 template <typename T> struct YamlDOF
@@ -80,3 +82,5 @@ struct YamlBody
 };
 
 #endif /* YAMLBODY_HPP_ */
+
+/** @} */

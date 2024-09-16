@@ -66,7 +66,7 @@ void run_simulation(const XdynCommandLineArguments& input_data, ErrorReporter& e
     std::string yaml_input;
     error_outputter.run_and_report_errors_without_yaml_dump([&yaml_input,&input_data](){yaml_input = ssc::text_file_reader::TextFileReader(input_data.yaml_filenames).get_contents();});
     const auto f = [input_data, yaml_input](){
-    {
+    { 
         const auto input = SimulatorYamlParser(yaml_input).parse();
         auto sys = get_system(input, input_data.tstart);
         ssc::solver::Scheduler scheduler(input_data.tstart, input_data.tend, input_data.initial_timestep);

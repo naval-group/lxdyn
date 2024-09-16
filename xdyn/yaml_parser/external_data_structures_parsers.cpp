@@ -329,9 +329,15 @@ void operator >> (const YAML::Node& node, BlockableState& g)
     else if (t == "p") g = BlockableState::P;
     else if (t == "q") g = BlockableState::Q;
     else if (t == "r") g = BlockableState::R;
+    else if (t == "x") g = BlockableState::X;
+    else if (t == "y") g = BlockableState::Y;
+    else if (t == "z") g = BlockableState::Z;
+    else if (t == "phi") g = BlockableState::PHI;
+    else if (t == "theta") g = BlockableState::THETA;
+    else if (t == "psi") g = BlockableState::PSI;
     else
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Unrecognized state: '" << t << "'. Has to be one of 'u', 'v', 'w', 'p', 'q' or 'r'.");
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Unrecognized state: '" << t << "'. Has to be one of 'u', 'v', 'w', 'p', 'q', 'r', 'x', 'y', 'z', 'phi', 'theta', 'psi'.");
     }
 }
 

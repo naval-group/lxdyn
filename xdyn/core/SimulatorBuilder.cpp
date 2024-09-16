@@ -60,7 +60,7 @@ void SimulatorBuilder::add_initial_transforms(const std::vector<BodyPtr>& bodies
 }
 
 EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
-{
+{ 
     EnvironmentAndFrames env;
     env.g = input.environmental_constants.g;
     env.rho = input.environmental_constants.rho;

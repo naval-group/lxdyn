@@ -293,13 +293,13 @@ TEST_F(SimulatorYamlParserTest, can_parse_forced_dof)
                              "       interpolation: spline\n"
                              "       filename: test.csv\n"
                              "   from YAML:\n"
-                             "     - state: p\n"
+                             "     - state: psi\n"
                              "       t: [4.2]\n"
                              "       value: [5]\n"
                              "       interpolation: piecewise constant\n";
     const YamlBlockedDOF input = parse(yaml);
     ASSERT_EQ(1, input.from_yaml.size());
-    ASSERT_EQ(BlockableState::P, input.from_yaml.front().state);
+    ASSERT_EQ(BlockableState::PSI, input.from_yaml.front().state);
     ASSERT_EQ(InterpolationType::PIECEWISE_CONSTANT, input.from_yaml.front().interpolation);
     ASSERT_THAT(input.from_yaml.front().t, ElementsAre(4.2));
     ASSERT_THAT(input.from_yaml.front().value, ElementsAre(5));
@@ -318,11 +318,11 @@ TEST_F(SimulatorYamlParserTest, can_parse_blocked_DOF_even_if_there_is_nothing_t
     ASSERT_TRUE(y.from_yaml.empty());
 }
 
-TEST_F(SimulatorYamlParserTest, should_throw_if_forcing_anything_other_than_uvwpqr)
+TEST_F(SimulatorYamlParserTest, should_throw_if_forcing_anything_other_than_xyzuvwpqrphithetapsi)
 {
     const std::string yaml = "blocked dof:\n"
                              "   from CSV:\n"
-                             "     - state: x\n"
+                             "     - state: m\n"
                              "       t: T\n"
                              "       value: PS\n"
                              "       interpolation: spline\n"
