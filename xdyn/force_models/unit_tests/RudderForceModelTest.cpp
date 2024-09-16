@@ -24,6 +24,8 @@
 
 #define DEG2RAD (PI/180.)
 
+#define EPS 1E-2
+
 namespace ssc
 {
     namespace random_data_generator
@@ -259,30 +261,27 @@ TEST_F(RudderForceModelTest, parser)
 
 TEST_F(RudderForceModelTest, force_and_torque)
 {
-    EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
+    /*
+    This test checks the non-regression of the propeller + rudder tensor.
+    */
 
+    // Create environnement
+    EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
     // Create body
-    YamlRotation rot;
-    rot.convention.push_back("z");
-    rot.convention.push_back("y'");
-    rot.convention.push_back("x''");
-    rot.order_by = "angle";
-    std::string name="test_body";
-    VectorOfVectorOfPoints empty_mesh;
-    BodyPtr b(BodyBuilder(rot).build(name, empty_mesh, 0, 0, rot, true));
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
     // Create rudder force model
     const RudderForceModel rudder(RudderForceModel::parse(test_data::rudder()), b->get_name(), env);
-
+    
+    // Check model name
     ASSERT_EQ("propeller+rudder", rudder.model_name());
-
+    
     // Create body states
     std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
     const double t = 24;
     states.u.record(t, s[2]);
     states.v.record(t, s[3]);
     states.w.record(t, s[4]);
-    states.name = "body";
     b->update_kinematics(s, env.k);
 
     // Create commands
@@ -292,10 +291,97 @@ TEST_F(RudderForceModelTest, force_and_torque)
     commands["beta"] = PI/6;
 
     const auto F = rudder.get_force(states, t, env, commands);
-    ASSERT_DOUBLE_EQ(2208573.9553180891, F.X());
-    ASSERT_DOUBLE_EQ(777997.67996840423, F.Y());
-    ASSERT_DOUBLE_EQ(0, F.Z());
-    ASSERT_DOUBLE_EQ(-2793416.1021430148, F.K());
-    ASSERT_DOUBLE_EQ(0, F.M());
-    ASSERT_DOUBLE_EQ(-855797.44796524453, F.N());
+
+    ASSERT_DOUBLE_EQ(2237484.5982326134, F.X());
+    ASSERT_DOUBLE_EQ(401946.85350950493, F.Y());
+    ASSERT_DOUBLE_EQ(414926.05130325153, F.Z());
+    ASSERT_DOUBLE_EQ(-2750558.8475306858, F.K());
+    ASSERT_DOUBLE_EQ(48011.183272531453, F.M());
+    ASSERT_DOUBLE_EQ(-972388.33902999782, F.N());
+}
+
+TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
+{
+    /*
+    This test checks the non-regression of the rudder tensor independently from the propeller tensor.
+    */
+
+    // Create environnement
+    EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    auto states = b->get_states();
+    // Create rudder force model
+    const RudderForceModel rudder(RudderForceModel::parse(test_data::rudder()), b->get_name(), env);
+
+    // Create body states
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    const double t = 24;
+    states.u.record(t, s[2]);
+    states.v.record(t, s[3]);
+    states.w.record(t, s[4]);
+    b->update_kinematics(s, env.k);
+
+    // Create commands
+    std::map<std::string,double> commands;
+    commands["rpm"] = 200;//defaut unit is rad/s
+    commands["P/D"] = 1.2;
+    commands["beta"] = PI/6;
+    const double prop_thrust=0.3*1024*(10000/PI/PI)*16*0.479798653;
+    const double cos_theta_cos_psi = 0.9846577620214009;// with theta=-10° and psi=-1° from input data
+
+    const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi); // rudder forces and moments in propeller frame expressed at the propeller location
+
+    ASSERT_NEAR(-115319.575, rudder_force(0),EPS);
+    ASSERT_NEAR(443015.203, rudder_force(1),EPS);
+    ASSERT_NEAR(0, rudder_force(2),EPS);
+    ASSERT_NEAR(0, rudder_force(3),EPS);
+    ASSERT_NEAR(0, rudder_force(4),EPS);
+    ASSERT_NEAR(-1.1*443015.203, rudder_force(5),EPS);//there is -1.1m from the propeller to the rudder
+}
+
+TEST_F(RudderForceModelTest, force_and_torque_with_phi_angle)
+{
+    /*
+    This test checks that the rudder and propeller tensor is unchanged if the propeller frame is rotated by an angle phi around its x-axis.
+    */
+
+    std::string input=test_data::rudder();
+    // Create environnement
+    EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    auto states = b->get_states();
+    // Create rudder force model without phi angle
+    const RudderForceModel rudder_nophi(RudderForceModel::parse(input), b->get_name(), env);
+    // Create rudder force model with phi angle
+    std::string old_str="    phi: {value:  0";
+    std::string new_str="    phi: {value: 90";
+    input.replace(input.find(old_str), old_str.length(), new_str);
+    const RudderForceModel rudder_phi(RudderForceModel::parse(input), b->get_name(), env);
+
+    // Create body states
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    const double t = 24;
+    states.u.record(t, s[2]);
+    states.v.record(t, s[3]);
+    states.w.record(t, s[4]);
+    b->update_kinematics(s, env.k);
+
+    // Create commands
+    std::map<std::string,double> commands;
+    commands["rpm"] = 200;
+    commands["P/D"] = 1.2;
+    commands["beta"] = PI/6;
+
+    const auto F_nophi = rudder_nophi.get_force(states, t, env, commands);
+    const auto F_phi = rudder_phi.get_force(states, t, env, commands);
+
+    // We compare the two tensors which are both expressed in body frame
+    ASSERT_NEAR(F_phi.X(), F_nophi.X(),EPS);
+    ASSERT_NEAR(F_phi.Y(), F_nophi.Y(),EPS);
+    ASSERT_NEAR(F_phi.Z(), F_nophi.Z(),EPS);
+    ASSERT_NEAR(F_phi.K(), F_nophi.K(),EPS);
+    ASSERT_NEAR(F_phi.M(), F_nophi.M(),EPS);
+    ASSERT_NEAR(F_phi.N(), F_nophi.N(),EPS);
 }

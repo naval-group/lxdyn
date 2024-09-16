@@ -2294,7 +2294,7 @@ std::string test_data::rudder()
            "    x: {value: -4, unit: m}\n"
            "    y: {value: -2, unit: m}\n"
            "    z: {value: 2, unit: m}\n"
-           "    phi: {value: 0, unit: rad}\n"
+           "    phi: {value:  0, unit: rad}\n"
            "    theta: {value: -10, unit: deg}\n"
            "    psi: {value: -1, unit: deg}\n"
            "wake coefficient w: 0.9\n"
