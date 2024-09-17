@@ -343,7 +343,7 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
     // 1. First, calculate the state derivatives without forcing
     // du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt
     Eigen::Map<Eigen::Matrix<double,6,1> > dXdt(_U(dx_dt,idx)); // &dXdt = &dx_dt[13*idx+3]
-    dXdt = states.inverse_of_the_total_inertia->operator*(sum_of_forces.to_vector()); // As &dXdt = &dx_dt[13*idx+3], the components of dx_dt corresponding to [du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt] are updated after that.
+    dXdt = states.inverse_of_the_total_inertia * sum_of_forces.to_vector(); // As &dXdt = &dx_dt[13*idx+3], the components of dx_dt corresponding to [du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt] are updated after that.
 
     // dx/dt, dy/dt, dz/dt
     const ssc::kinematics::RotationMatrix& R = env.k->get("NED", states.name).get_rot(); // R_{NED,body}
@@ -512,12 +512,12 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
         // T_tau_Y(5,5)=-170.;
         // -- End of hack for OENG paper
         // - Matrix LHS
-        Eigen::Matrix<double,6,6> LHS( A*states.inverse_of_the_total_inertia->operator*(T_tau_Y) - T_Xi_Y * cos(rot.theta));
+        Eigen::Matrix<double,6,6> LHS( A*states.inverse_of_the_total_inertia * T_tau_Y - T_Xi_Y * cos(rot.theta));
         // - Calculate Y
         Eigen::Matrix<double,6,1> Y;
         Y = LHS.colPivHouseholderQr().solve(RHS);
         // - Update the forced acceleration vector
-        dXdt = dXdt + states.inverse_of_the_total_inertia->operator*(T_tau_Y*Y);
+        dXdt = dXdt + states.inverse_of_the_total_inertia * T_tau_Y*Y;
     }
 
     // 2.2 If velocity is forced
@@ -557,7 +557,7 @@ ssc::kinematics::Wrench Body::get_delta_F(const StateType& dx_dt, const ssc::kin
     dV(4)=pqr(1);
     dV(5)=pqr(2);
     Eigen::Matrix<double, 6, 1> Tau_F;
-    Tau_F=(*(states.total_inertia))*dV-sum_of_other_forces.to_vector();
+    Tau_F=states.total_inertia*dV-sum_of_other_forces.to_vector();
     ssc::kinematics::Wrench Tau(sum_of_other_forces.get_point(),Tau_F);
     return Tau;
 }
