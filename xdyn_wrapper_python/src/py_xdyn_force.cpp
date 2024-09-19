@@ -367,7 +367,7 @@ void py_add_module_xdyn_force(py::module& m0)
     py::class_<AbstractWageningen, ForceModel>(m, "AbstractWageningen")
         // .def(py::init<const AbstractWageningen::Yaml& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>())
         .def_static("parse", &AbstractWageningen::parse, py::arg("yaml"))
-        .def("advance_ratio", &AbstractWageningen::advance_ratio)
+        .def("get_advance_ratio", &AbstractWageningen::get_advance_ratio)
         // Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;
         ;
 

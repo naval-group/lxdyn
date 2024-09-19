@@ -37,7 +37,8 @@ class AbstractWageningen : public ForceModel
         virtual double get_Kt(const std::map<std::string,double>& commands, const double J) const = 0;
         virtual double get_Kq(const std::map<std::string,double>& commands, const double J) const = 0;
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;
-        double advance_ratio(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;
+        double get_advance_speed(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const;
+        double get_advance_ratio(const std::map<std::string,double>& commands, const double Va) const;
         static Yaml parse(const std::string& yaml);
 
     private:
