@@ -5,10 +5,11 @@
  *      Author: cady
  */
 #include "WageningenControlledForceModelTest.hpp"
-#include "WageningenControlledForceModel.hpp"
+#include "xdyn/force_models/WageningenControlledForceModel.hpp"
 #include "xdyn/core/BodyStates.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/core/BodyBuilder.hpp"
 
 #define EPS 1E-2
 #define NB_TRIALS 100
@@ -19,12 +20,17 @@
 
 #define DEG2RAD (PI/180.)
 
+#define BODY "body 1"
+
 EnvironmentAndFrames get_env();
 EnvironmentAndFrames get_env()
 {
     EnvironmentAndFrames env;
     env.rho = 1024;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
+    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     return env;
 }
 
@@ -333,80 +339,138 @@ TEST_F(WageningenControlledForceModelTest, KQ)
 //! [WageningenControlledForceModelTest KQ_example]
 }
 
+TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_without_rotations)
+{
+    // Load and modify yaml input
+    std::string input_data=test_data::wageningen();
+    std::string old_str="    theta: {value: -10";
+    std::string new_str="    theta: {value:   0";
+    input_data.replace(input_data.find(old_str), old_str.length(), new_str);
+    old_str="    psi: {value: -1";
+    new_str="    psi: {value:  0";
+    input_data.replace(input_data.find(old_str), old_str.length(), new_str);
+    // Create environnement
+    EnvironmentAndFrames env=get_env();
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    WageningenControlledForceModel w(WageningenControlledForceModel::parse(input_data), b->get_name(), env);
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
+    states.u.record(0, s[3]);//4
+    states.v.record(0, s[4]);//5
+    states.w.record(0, s[5]);//6
+    b->update_kinematics(s, env.k);
+
+    const double Va=w.get_advance_speed(states,0,env);
+    ASSERT_NEAR(Va, 4*(1-0.9),EPS);
+}
+
+TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_with_rotations)
+{
+    // Load yaml input
+    std::string input_data=test_data::wageningen();
+    // Create environnement
+    EnvironmentAndFrames env=get_env();
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    WageningenControlledForceModel w(WageningenControlledForceModel::parse(input_data), b->get_name(), env);
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
+    states.u.record(0, s[3]);//4
+    states.v.record(0, s[4]);//5
+    states.w.record(0, s[5]);//6
+    b->update_kinematics(s, env.k);
+
+    const double Va=w.get_advance_speed(states,0,env);
+    // The advance speed is states.u()*(1-w)*cos(theta)*cos(psi)
+    ASSERT_NEAR(Va,4*(1-0.9)*0.9846577620214009,EPS);
+}
+
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_ratio)
 {
     const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
-    BodyStates states;
-    states.u.record(0, 3);
     std::map<std::string,double> commands;
     commands["rpm"] = 20*2*PI;
-    ASSERT_DOUBLE_EQ(3./400., w.advance_ratio(states, 0, get_env(), commands));
+    ASSERT_DOUBLE_EQ(3./400., w.get_advance_ratio(commands,0.3));
 }
 
-TEST_F(WageningenControlledForceModelTest, force)
+TEST_F(WageningenControlledForceModelTest, force_and_torque)
 {
+// Load and modify yaml input
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     input.blade_area_ratio = 0.4;
-    const EnvironmentAndFrames env = get_env();
-    const WageningenControlledForceModel w(input, "", env);
-    BodyStates states;
+    // Create environnement
+    EnvironmentAndFrames env=get_env();
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    WageningenControlledForceModel w(input, b->get_name(), env);
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
     states.u.record(0, 1);
-
+    b->update_kinematics(s, env.k);
+    // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 5*(2*PI);
     commands["P/D"] = 0.5;
 
-    ASSERT_NEAR(0.3*1024*25*16*0.18587823151195928539, w.get_force(states, a.random<double>(), env, commands).X(), EPS);
+    ASSERT_NEAR(0.3*1024*25*16*0.185914061, w.get_force(states, a.random<double>(), env, commands).X(), EPS);
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).Y());
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).Z());
+    ASSERT_NEAR(-1024*25*32*0.0158928234, w.get_force(states, a.random<double>(), env, commands).K(), EPS);
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).M());
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).N());
 }
 
-TEST_F(WageningenControlledForceModelTest, torque)
-{
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
-    input.blade_area_ratio = 0.4;
-    const EnvironmentAndFrames env = get_env();
-    const WageningenControlledForceModel w(input, "", env);
-    BodyStates states;
-    states.u.record(0, 1);
-
-    std::map<std::string,double> commands;
-    commands["rpm"] = 5*(2*PI);
-    commands["P/D"] = 0.5;
-
-    ASSERT_NEAR(-1024*25*32*0.015890316523410611543, w.get_force(states, a.random<double>(), env, commands).K(), EPS);
-}
-
 TEST_F(WageningenControlledForceModelTest, torque_should_have_sign_corresponding_to_rotation)
 {
+    // Load and modify yaml input
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
-    BodyStates states;
-    states.u.record(0, a.random<double>().greater_than(0));
-    EnvironmentAndFrames env = get_env();
+    // Create environnement
+    EnvironmentAndFrames env=get_env();
     env.rho = a.random<double>().greater_than(0);
-
-    const WageningenControlledForceModel w_clockwise(input, "", env);
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    WageningenControlledForceModel w_clockwise(input, b->get_name(), env);
     input.rotating_clockwise = false;
-    const WageningenControlledForceModel w_anti_clockwise(input, "", env);
-
+    WageningenControlledForceModel w_anti_clockwise(input, b->get_name(), env);
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
+    states.u.record(0, a.random<double>().greater_than(0));
+    b->update_kinematics(s, env.k);
+    // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = a.random<double>().between(states.u(),2*states.u());
     commands["P/D"] = a.random<double>().between(0.5,1.4);
+
     ASSERT_GT(0, w_clockwise.get_force(states, a.random<double>(), env, commands).K());
     ASSERT_LT(0, w_anti_clockwise.get_force(states, a.random<double>(), env, commands).K());
 }
 
 TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_zero)
 {
+    // Load and modify yaml input
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     input.blade_area_ratio = 0.4;
-    const EnvironmentAndFrames env = get_env();
-    const WageningenControlledForceModel w(input, "", env);
-    BodyStates states;
+    // Create environnement
+    EnvironmentAndFrames env=get_env();
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    WageningenControlledForceModel w(input, b->get_name(), env);
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
     states.u.record(0, 1);
-
+    b->update_kinematics(s, env.k);
+    // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 0;
     commands["P/D"] = 0.5;
@@ -421,13 +485,21 @@ TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_z
 
 TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_near_zero)
 {
+// Load and modify yaml input
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     input.blade_area_ratio = 0.4;
-    const EnvironmentAndFrames env = get_env();
-    const WageningenControlledForceModel w(input, "", env);
-    BodyStates states;
+    // Create environnement
+    EnvironmentAndFrames env=get_env();
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    WageningenControlledForceModel w(input, b->get_name(), env);
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
     states.u.record(0, 1);
-
+    b->update_kinematics(s, env.k);
+    // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 1e-16;
     commands["P/D"] = 0.5;
