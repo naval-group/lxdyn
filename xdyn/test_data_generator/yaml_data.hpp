@@ -120,6 +120,7 @@ namespace test_data
     std::string tutorial_13_precal_r_force_model();
     std::string tutorial_14_filtered_states();
     std::string test_ship_gm_test();
+    std::string tutorial_18_OTT();
 }
 
 #endif /* YAML_DATA_HPP_ */

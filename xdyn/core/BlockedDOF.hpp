@@ -33,16 +33,18 @@
 #include "xdyn/external_data_structures/YamlBody.hpp"
 #include "xdyn/core/StateMacros.hpp"
 
+std::ostream& operator<<(std::ostream& os, const BlockableState& s);
+
 class BlockedDOF
 {
     public:
-        /** \brief Initialize DoFs forcing 
+        /** \brief Initialize DoFs forcing
          *  \details To be able to force a state, one must provide:
-         * 
+         *
          * - the name of the forced state (among x,y,z,u,v,w,p,q,r,phi,theta,psi),
          * - its value at some times
          * - an interpolation method between these times. They can be "piecewise constant", "linear" or "spline"
-         * 
+         *
          * That information is contained in the 'input' data
          * */
         BlockedDOF(const YamlBlockedDOF& input, const size_t body_idx=0);
@@ -67,20 +69,20 @@ class BlockedDOF
         void force_state_derivatives(StateType& dx_dt, const double t) const;
 
         /** \brief Calculate the force required to achieve forced states
-         *  \details This method calculates the forcing force which is required to achieve the required forced states. 
-         *  This force is equal to the inertia matrix * (the forced accelerations - the free accelerations). The free accelerations are 
+         *  \details This method calculates the forcing force which is required to achieve the required forced states.
+         *  This force is equal to the inertia matrix * (the forced accelerations - the free accelerations). The free accelerations are
          *  obtained from the inertia and sum of other forces.
          *  \param dx_dt states derivatives vector
          *  \param total_inertia inertia matrix (including added mass)
          *  \param sum_of_other_forces sum of forces excluding the forcing force
-         *  \returns The forcing force (6 components, at COG, in body reference frame) 
+         *  \returns The forcing force (6 components, at COG, in body reference frame)
         */
-        typedef Eigen::Matrix<double,6,1> Vector;        
+        typedef Eigen::Matrix<double,6,1> Vector;
         Vector get_delta_F(const StateType& dx_dt, const Eigen::Matrix<double,6,6>& total_inertia, const ssc::kinematics::Wrench& sum_of_other_forces) const;
 
         /** \brief Get the k derivative of forced positions at current time
-         *  \details This method calculates and returns the k derivative of the forced positions $(x^(k),y^(k),z^(k),phi^(k),theta^(k),psi^(k))$ at current time. 
-         *  
+         *  \details This method calculates and returns the k derivative of the forced positions $(x^(k),y^(k),z^(k),phi^(k),theta^(k),psi^(k))$ at current time.
+         *
          *  If a position is not forced, the input value is left unchanged.
          *  \param t the current time
          *  \returns $x^(k)$
@@ -88,17 +90,17 @@ class BlockedDOF
         void get_forced_x_k(const double t, Eigen::Matrix<double,6,1>& x, size_t k) const;
 
         /** \brief Get the k derivative of forced velocities at current time
-         *  \details This method calculates and returns the k derivative of the forced positions $(u^(k),v^(k),w^(k),p^(k),q^(k),r^(k))$ at current time. 
-         *  
+         *  \details This method calculates and returns the k derivative of the forced positions $(u^(k),v^(k),w^(k),p^(k),q^(k),r^(k))$ at current time.
+         *
          *  If a position is not forced, the input value is left unchanged.
          *  \param t the current time
-         *  \returns $v^(k)$ 
+         *  \returns $v^(k)$
         */
         void get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, size_t k) const;
 
         /** \brief Get the forcing matrix of motion (x, y, z, roll, pitch, yaw)
          *  \details The forcing matrix of angles is a 6x6 diagonal matrix. It is such as:
-         * 
+         *
          * - (0,0)=1 if the x-coordinate is forced (0 otherwise)
          * - (1,1)=1 if the y-coordinate is forced (0 otherwise)
          * - (2,2)=1 if the z-coordinate is forced (0 otherwise)
@@ -107,14 +109,14 @@ class BlockedDOF
          * - (5,5)=1 if the yaw angle is forced (0 otherwise)
          * \returns The forcing matrix of angles
         */
-        Eigen::Matrix<double,6,6> get_delta_x() const; // Angles 
+        Eigen::Matrix<double,6,6> get_delta_x() const; // Angles
 
         /** \brief Get the forcing matrix of velocities (u, v, w,p, q, r)*/
         Eigen::Matrix<double,6,6> get_delta_v() const; // Velocities
 
     private:
         struct Impl;
-        TR1(shared_ptr)<Impl> pimpl;  
+        TR1(shared_ptr)<Impl> pimpl;
 };
 
 #endif /* BLOCKEDDOF_HPP_ */

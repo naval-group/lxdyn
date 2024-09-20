@@ -22,7 +22,7 @@
 
 typedef YamlDOF<std::vector<double> > Table;
 
-std::ostream& operator<<(std::ostream& os, const BlockableState& s);
+// std::ostream& operator<<(std::ostream& os, const BlockableState& s);
 std::ostream& operator<<(std::ostream& os, const BlockableState& s)
 {
     switch(s)

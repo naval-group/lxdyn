@@ -4,11 +4,26 @@
  *  Created on: Aug 19, 2015
  *      Author: cady
  */
+
+// Local
 #include "BlockedDOFTest.hpp"
+#include "BodyBuilder.hpp"
 #include "xdyn/core/BlockedDOF.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
+#include "xdyn/test_data_generator/hdb_data.hpp"
+#include "xdyn/core/BodyBuilder.hpp"
+
+
+// Third Party
+#include "yaml.h"
 #include <boost/filesystem.hpp> // For boost::filesystem::unique_path
+
+//STL
 #include <fstream>
+
 
 
 
@@ -274,4 +289,29 @@ TEST_F(BlockedDOFTest, force_delta)
     EXPECT_DOUBLE_EQ(227.0, delta_F(3));
     EXPECT_DOUBLE_EQ(474.0, delta_F(4));
     EXPECT_DOUBLE_EQ(281.0, delta_F(5));
+}
+
+TEST_F(BlockedDOFTest, define_matrix_of_forced_DoF)
+{
+    // ARRANGE
+    std::ofstream writeHDB("KVLCC2.hdb");
+    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB.close();
+    YamlSimulatorInput yaml = SimulatorYamlParser(test_data::tutorial_18_OTT()).parse();
+    std::remove("KVLCC2.hdb");
+    // ACT
+    BlockedDOF blocked_states((yaml.bodies.front()).blocked_dof,0);
+    Eigen::Matrix<double,6,6> m_delta_x = blocked_states.get_delta_x();
+    // ASSERT
+    EXPECT_EQ(m_delta_x(0,0), 1.);
+    EXPECT_EQ(m_delta_x(1,1), 1.);
+    EXPECT_EQ(m_delta_x(2,2), 0.);
+    EXPECT_EQ(m_delta_x(3,3), 1.);
+    EXPECT_EQ(m_delta_x(4,4), 0.);
+    EXPECT_EQ(m_delta_x(5,5), 1.);
+    /*
+    BodyBuilder builder(yaml.rotations);
+    VectorOfVectorOfPoints mesh;
+    BodyPtr KVLCC2 = builder.build(yaml.bodies.front(), mesh, 0, 0., yaml.rotations, 100.);
+    */
 }
