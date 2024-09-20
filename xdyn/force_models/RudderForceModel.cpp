@@ -17,6 +17,7 @@
 #define PI M_PI
 
 #define HYPOT(X,Y,Z) sqrt((X)*(X)+(Y)*(Y)+(Z)*(Z))
+#include<algorithm> // for std::max used in get_force
 
 std::string RudderForceModel::model_name() {return "propeller+rudder";}
 
@@ -249,7 +250,10 @@ Wrench RudderForceModel::get_force(
     const Wrench propeller_wrench_propeller_frame_at_P = propulsionModel.get_force(states, t, env, commands);// propeller tensor in propeller frame expressed at the propeller location
     const std::string frame = propeller_wrench_propeller_frame_at_P.get_frame();// get propeller frame
     const Wrench propeller_wrench_body_frame_at_P = propeller_wrench_propeller_frame_at_P.change_frame(body_name,env.k);// propeller tensor in body frame expressed at the propeller location
-    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)propeller_wrench_body_frame_at_P.X()); // rudder forces and moments in propeller frame expressed at the propeller location
+    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)std::max(propeller_wrench_body_frame_at_P.X(),0.)); // rudder forces and moments in propeller frame expressed at the propeller location
+    /*
+    Negative propeller thrust means that the propeller wake is forward and therefore there is no acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would fails the calculation of CTh (negative square root calculation).
+    */
     const Wrench rudder_wrench_body_frame_at_P(ssc::kinematics::Point(frame,0,0,0), body_name, rudder_force);// rudder tensor in body frame expressed at the propeller location
     const Wrench rudderAndPropeller_wrench_body_frame_at_P = rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;//rudder+propeller wrench in body frame expressed at the propeller location
 
