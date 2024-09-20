@@ -24,7 +24,7 @@
 
 #define DEG2RAD (PI/180.)
 
-#define EPS 1E-2
+#define EPS 1E-6
 
 namespace ssc
 {
@@ -332,12 +332,12 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
 
     const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi); // rudder forces and moments in propeller frame expressed at the propeller location
 
-    ASSERT_NEAR(-115319.575, rudder_force(0),EPS);
-    ASSERT_NEAR(443015.203, rudder_force(1),EPS);
-    ASSERT_NEAR(0, rudder_force(2),EPS);
-    ASSERT_NEAR(0, rudder_force(3),EPS);
-    ASSERT_NEAR(0, rudder_force(4),EPS);
-    ASSERT_NEAR(-1.1*443015.203, rudder_force(5),EPS);//there is -1.1m from the propeller to the rudder
+    ASSERT_DOUBLE_EQ(-115319.57494583167, rudder_force(0));
+    ASSERT_DOUBLE_EQ(443015.20308726869, rudder_force(1));
+    ASSERT_DOUBLE_EQ(0, rudder_force(2));
+    ASSERT_DOUBLE_EQ(0, rudder_force(3));
+    ASSERT_DOUBLE_EQ(0, rudder_force(4));
+    ASSERT_DOUBLE_EQ(-1.1*443015.20308726869, rudder_force(5));//there is -1.1m from the propeller to the rudder
 }
 
 TEST_F(RudderForceModelTest, force_and_torque_with_phi_angle)

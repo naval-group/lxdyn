@@ -387,7 +387,7 @@ TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_with_rota
 
     const double Va=w.get_advance_speed(states,0,env);
     // The advance speed is states.u()*(1-w)*cos(theta)*cos(psi)
-    ASSERT_NEAR(Va,4*(1-0.9)*0.9846577620214009,EPS);
+    ASSERT_NEAR(Va,4*(1-0.9)*0.9846577620214009,1E-6);
 }
 
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_ratio)
