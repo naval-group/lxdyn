@@ -686,7 +686,7 @@ TEST_F(SimTest, bug_2984)
     const auto Fx = m.find("Fx(propeller,ship,ship)");
     ASSERT_NE(m.end(), Fx);
     ASSERT_EQ(2, Fx->second.size());
-    ASSERT_NEAR(69246985.714379996, Fx->second.back(), 1E-6);
+    ASSERT_NEAR(69248324.336179808, Fx->second.back(), 1E-6);
     const auto Fy = m.find("Fy(propeller,ship,ship)");
     ASSERT_NE(m.end(), Fy);
     ASSERT_EQ(2, Fy->second.size());
@@ -694,7 +694,7 @@ TEST_F(SimTest, bug_2984)
     const auto Fz = m.find("Fz(propeller,ship,ship)");
     ASSERT_NE(m.end(), Fz);
     ASSERT_EQ(2, Fz->second.size());
-    ASSERT_NEAR(-4842220.9477044018, Fz->second.back(), 1E-6);
+    ASSERT_NEAR(-4842314.553259261, Fz->second.back(), 1E-6);
 
     ASSERT_NEAR(4*PI/180., std::atan2(-Fz->second.back(),Fx->second.back()), 1E-6);
 }

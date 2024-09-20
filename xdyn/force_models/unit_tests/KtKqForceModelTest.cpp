@@ -9,6 +9,7 @@
 #include "KtKqForceModel.hpp"
 #include "xdyn/exceptions/NumericalErrorException.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/BodyBuilder.hpp"
 
 #include "gmock/gmock.h"
 using ::testing::_;
@@ -20,6 +21,9 @@ using ::testing::ElementsAreArray;
 
 #define DEG2RAD (atan(1)/45.)
 #define EPS 1E-6
+
+#define BODY "body 1"
+
 
 KtKqForceModelTest::KtKqForceModelTest() : a(ssc::random_data_generator::DataGenerator(9876))
 {
@@ -60,35 +64,63 @@ TEST_F(KtKqForceModelTest, parser)
 
 TEST_F(KtKqForceModelTest, force)
 {
+    // Load and modify yaml input
     auto input = KtKqForceModel::parse(test_data::kt_kq());
+    // Create environnement
     EnvironmentAndFrames env;
     env.rho = 1024;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
-    const KtKqForceModel w(input, "", env);
-    ASSERT_EQ("Kt(J) & Kq(J)", w.model_name());
-    BodyStates states;
-    states.u.record(0, 1);
+    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    const KtKqForceModel w(input, b->get_name(), env);
 
+    ASSERT_EQ("Kt(J) & Kq(J)", w.model_name());
+
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
+    states.u.record(0, 50);
+    b->update_kinematics(s, env.k);
+    // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 5*(2*PI);
 
-    ASSERT_NEAR(306063.03332753148, w.get_force(states, a.random<double>(), env, commands).X(), EPS);
-    ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).Y());
-    ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).Z());
-    ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).M());
-    ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).N());
+    Wrench propeller_wrench=w.get_force(states, a.random<double>(), env, commands);
+
+    ASSERT_NEAR(0.3*1024*25*16*0.779242603138131, propeller_wrench.X(), EPS);
+    ASSERT_EQ(0, propeller_wrench.Y());
+    ASSERT_EQ(0, propeller_wrench.Z());
+    ASSERT_NEAR(-1024*25*32*0.0950221346793814, propeller_wrench.K(), EPS);
+    ASSERT_EQ(0, propeller_wrench.M());
+    ASSERT_EQ(0, propeller_wrench.N());
 }
 
 TEST_F(KtKqForceModelTest, clarify_exception_message_for_Kt_Kq_interpolation_errors)
 {
+    // Load and modify yaml input
     auto input = KtKqForceModel::parse(test_data::kt_kq());
+    // Create environnement
     EnvironmentAndFrames env;
     env.rho = 1024;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
-    const KtKqForceModel w(input, "", env);
-    BodyStates states;
-    states.u.record(0, 1);
+    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Create propeller model 
+    const KtKqForceModel w(input, b->get_name(), env);
 
+    // Define one state
+    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    auto states = b->get_states();
+    states.u.record(0, 1);
+    b->update_kinematics(s, env.k);
+    // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 2*PI*0.025;
     EXPECT_THROW( w.get_force(states, a.random<double>(), env, commands).X(), NumericalErrorException);
