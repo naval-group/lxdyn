@@ -54,6 +54,7 @@ double AbstractWageningen::get_advance_speed(const BodyStates& states, const dou
     const Eigen::Vector3d Va_vector_body_frame((1-w)*(states.u()-current_in_body(0)),0,0);
     // The propeller axis need not be parallel to the hull's, so the advance speed is the projection
     // of that vector onto the propeller frame's X-axis.
+    can_find_internal_frame(env.k);
     const ssc::kinematics::RotationMatrix R = env.k->get(name,body_name).get_rot();
     return (R*Va_vector_body_frame)(0);
 }

@@ -142,12 +142,12 @@ class ForceModel
         std::vector<std::string> commands;
         std::string name;
         std::string body_name;
+        void can_find_internal_frame(const ssc::kinematics::KinematicsPtr& k) const;
 
     private:
         ForceModel(); // Deactivated
         double get_command(const std::string& command_name, ssc::data_source::DataSource& command_listener, const double t) const;
         std::map<std::string,double> get_commands(ssc::data_source::DataSource& command_listener, const double t) const;
-        void can_find_internal_frame(const ssc::kinematics::KinematicsPtr& k) const;
 
         bool has_internal_frame;
         std::string known_reference_frame;
