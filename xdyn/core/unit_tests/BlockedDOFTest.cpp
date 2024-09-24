@@ -7,15 +7,18 @@
 
 // Local
 #include "BlockedDOFTest.hpp"
-#include "BodyBuilder.hpp"
 #include "xdyn/core/BlockedDOF.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
 #include "xdyn/test_data_generator/hdb_data.hpp"
+#include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
-
+#include "xdyn/core/Body.hpp"
+#include "xdyn/core/SimulatorBuilder.hpp"
+#include "xdyn/core/DefaultSurfaceElevation.hpp"
+#include "xdyn/environment_models/DefaultWindModel.hpp"
 
 // Third Party
 #include "yaml.h"
@@ -314,4 +317,47 @@ TEST_F(BlockedDOFTest, define_matrix_of_forced_DoF)
     VectorOfVectorOfPoints mesh;
     BodyPtr KVLCC2 = builder.build(yaml.bodies.front(), mesh, 0, 0., yaml.rotations, 100.);
     */
+}
+
+TEST_F(BlockedDOFTest, force_acceleration)
+{
+    // ARRANGE
+    std::ofstream writeHDB("KVLCC2.hdb");
+    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB.close();
+    YamlSimulatorInput input = SimulatorYamlParser(test_data::tutorial_18_OTT()).parse();
+    SimulatorBuilder builder(input);
+    builder.can_parse<DefaultSurfaceElevation>();
+    builder.can_parse<DefaultWindModel>();
+    EnvironmentAndFrames env = builder.build_environment_and_frames();
+    MeshMap dummyMesh;
+    dummyMesh[input.bodies.front().name] = two_triangles();
+    std::vector<BodyPtr> bodies = builder.get_bodies(dummyMesh, std::vector<bool>(1,false), std::map<std::string,double>());
+    builder.add_initial_transforms(bodies,env.k);
+    StateType x = builder.get_initial_states();
+    for (int i=0; i<13; ++i) {
+        x[i] = 0.1*i;
+    }
+    std::remove("KVLCC2.hdb");
+    // ACT
+    StateType dx;
+    dx.resize(13);
+    ssc::kinematics::Point O("NED");
+    ssc::kinematics::Wrench zeroForce(O);
+    double t(0.);
+    bodies.front()->calculate_state_derivatives(zeroForce, x, dx, t, env);
+    // ASSERT
+    EXPECT_NEAR(dx[0], -0.488022, 0.000001);
+    EXPECT_NEAR(dx[1], -0.108789, 0.000001);
+    EXPECT_NEAR(dx[2], 0.5, 0.1);
+    EXPECT_NEAR(dx[3], 11.9752, 0.0001);
+    EXPECT_NEAR(dx[4], 140.078, 0.001);
+    EXPECT_NEAR(dx[5], 0.0795591, 0.0000001);
+    EXPECT_NEAR(dx[6], -63.617, 0.001);
+    EXPECT_NEAR(dx[7], 0.0260779, 0.0000001);
+    EXPECT_NEAR(dx[8], -17.9174, 0.0001);
+    EXPECT_NEAR(dx[9], -1.165, 0.001);
+    EXPECT_NEAR(dx[10], 0.29, 0.01);
+    EXPECT_NEAR(dx[11], 0.275, 0.001);
+    EXPECT_NEAR(dx[12], 0.38, 0.01);
 }
