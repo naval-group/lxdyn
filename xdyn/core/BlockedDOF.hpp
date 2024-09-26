@@ -98,21 +98,21 @@ class BlockedDOF
         */
         void get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, size_t k) const;
 
-        /** \brief Get the forcing matrix of motion (x, y, z, roll, pitch, yaw)
-         *  \details The forcing matrix of angles is a 6x6 diagonal matrix. It is such as:
-         *
+        /** \brief Get the forcing matrix of motion (x, y, z, roll, pitch, yaw) at time t
+         *  \details The forcing matrix of angles is a 6x6 diagonal matrix. It is such as:         *
          * - (0,0)=1 if the x-coordinate is forced (0 otherwise)
          * - (1,1)=1 if the y-coordinate is forced (0 otherwise)
          * - (2,2)=1 if the z-coordinate is forced (0 otherwise)
          * - (3,3)=1 if the roll angle is forced (0 otherwise)
          * - (4,4)=1 if the pitch angle is forced (0 otherwise)
          * - (5,5)=1 if the yaw angle is forced (0 otherwise)
+         * Note : it depends on time as the forced and unforced degrees of freedom may change over time
          * \returns The forcing matrix of angles
         */
-        Eigen::Matrix<double,6,6> get_delta_x() const; // Angles
+        Eigen::Matrix<double,6,6> get_delta_x(const double & t = 0.) const;
 
         /** \brief Get the forcing matrix of velocities (u, v, w,p, q, r)*/
-        Eigen::Matrix<double,6,6> get_delta_v() const; // Velocities
+        Eigen::Matrix<double,6,6> get_delta_v(const double & t = 0.) const;
 
         /** \brief Get the T operator for forcing motion (x, y, z, roll, pitch, yaw)
          *  \details The T operator of angles is a 6x6  matrix. It reflects how the forcing is applied (see 2023 JST paper for details)

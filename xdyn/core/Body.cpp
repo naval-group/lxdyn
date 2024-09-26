@@ -19,8 +19,6 @@ Body::Body(const size_t i, const BlockedDOF& blocked_states_, const YamlFiltered
     , idx(i)
     , blocked_states(blocked_states_)
     , states_filter(filtered_states)
-    , m_delta_x(blocked_states_.get_delta_x())
-    , m_delta_v(blocked_states_.get_delta_v())
     , m_T_x(blocked_states_.get_T_x())
 {
 }
@@ -30,8 +28,6 @@ Body::Body(const BodyStates& s, const size_t i, const BlockedDOF& blocked_states
     , idx(i)
     , blocked_states(blocked_states_)
     , states_filter(filtered_states)
-    , m_delta_x(blocked_states_.get_delta_x())
-    , m_delta_v(blocked_states_.get_delta_v())
     , m_T_x(blocked_states_.get_T_x())
 {
 }
@@ -41,8 +37,6 @@ Body::Body(const size_t i, const BlockedDOF& blocked_states_, const StatesFilter
     , idx(i)
     , blocked_states(blocked_states_)
     , states_filter(states_filter_)
-    , m_delta_x(blocked_states_.get_delta_x())
-    , m_delta_v(blocked_states_.get_delta_v())
     , m_T_x(blocked_states_.get_T_x())
 {
 }
@@ -52,8 +46,6 @@ Body::Body(const BodyStates& states_, const size_t i, const BlockedDOF& blocked_
     , idx(i)
     , blocked_states(blocked_states_)
     , states_filter(states_filter_)
-    , m_delta_x(blocked_states_.get_delta_x())
-    , m_delta_v(blocked_states_.get_delta_v())
     , m_T_x(blocked_states_.get_T_x())
 {
 }
@@ -133,9 +125,12 @@ void Body::update_body_states(StateType x, const double t)
 
 void Body::force_states(StateType& x, const double t) const
 {
+    // Forcing matrices (forced DoFs) at current time
+    Eigen::Matrix<double,6,6> delta_x = blocked_states.get_delta_x(t);
+    Eigen::Matrix<double,6,6> delta_v = blocked_states.get_delta_v(t);
     // If motion is forced
-    if ((m_delta_x.maxCoeff() > 0) && (t < 1.))
- //   if (m_delta_x.maxCoeff() > 0)
+    // if ((delta_x.maxCoeff() > 0) && (t < 1.))
+    if (delta_x.maxCoeff() > 0)
     {
         // Without forcing
         // Velocities
@@ -150,12 +145,12 @@ void Body::force_states(StateType& x, const double t) const
         Eigen::Matrix<double,6,1> x_f;
         x_f << *_X(x,idx), *_Y(x,idx), *_Z(x,idx), rot.phi, rot.theta, rot.psi ; // Initialize forced rotations vector
         blocked_states.get_forced_x_k(t, x_f, 0); // Get the forced motions
-        if (m_delta_x(0,0) == 1) {*_X(x,idx) = x_f(0);} // Update x if forced
-        if (m_delta_x(1,1) == 1) {*_Y(x,idx) = x_f(1);} // Update y if forced
-        if (m_delta_x(2,2) == 1) {*_Z(x,idx) = x_f(2);} // Update z if forced
-        if (m_delta_x(3,3) == 1) {rot.phi = x_f(3);} // Update phi if forced
-        if (m_delta_x(4,4) == 1) {rot.theta = x_f(4);} // Update theta if forced
-        if (m_delta_x(5,5) == 1) {rot.psi = x_f(5);} // Update psi if forced
+        if (delta_x(0,0) == 1) {*_X(x,idx) = x_f(0);} // Update x if forced
+        if (delta_x(1,1) == 1) {*_Y(x,idx) = x_f(1);} // Update y if forced
+        if (delta_x(2,2) == 1) {*_Z(x,idx) = x_f(2);} // Update z if forced
+        if (delta_x(3,3) == 1) {rot.phi = x_f(3);} // Update phi if forced
+        if (delta_x(4,4) == 1) {rot.theta = x_f(4);} // Update theta if forced
+        if (delta_x(5,5) == 1) {rot.psi = x_f(5);} // Update psi if forced
         Eigen::Quaternion<double> q1;
         if ((states.convention.order_by == "angle") && (match(states.convention.convention, "z", "y'", "x''")))
         {
@@ -222,9 +217,9 @@ void Body::force_states(StateType& x, const double t) const
         Eigen::Matrix<double,6,1> dx_f;  // Vector of forced rotations (if any)
         dx_f << 0.,0.,0.,drot.phi, drot.theta, drot.psi; // Initialization
         blocked_states.get_forced_x_k(t, dx_f, 1); // Get the forced rotations
-        if (m_delta_x(3,3) == 1) {drot.phi = dx_f(3);} // Update phi if forced
-        if (m_delta_x(4,4) == 1) {drot.theta = dx_f(4);} // Update theta if forced
-        if (m_delta_x(5,5) == 1) {drot.psi = dx_f(5);} // Update psi if forced
+        if (delta_x(3,3) == 1) {drot.phi = dx_f(3);} // Update phi if forced
+        if (delta_x(4,4) == 1) {drot.theta = dx_f(4);} // Update theta if forced
+        if (delta_x(5,5) == 1) {drot.psi = dx_f(5);} // Update psi if forced
         // Calculate dq taking into accound forced rotations
         Eigen::Matrix<double,4,4> Aq;
         Aq(0,0) = q1.w();
@@ -289,7 +284,7 @@ void Body::force_states(StateType& x, const double t) const
     }
 
      // If forced Velocities
-    if (m_delta_v.maxCoeff() > 0)
+    if (delta_v.maxCoeff() > 0)
     {
         // Update velocities
         blocked_states.force_states(x,t);
@@ -374,8 +369,11 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
     *_QK(dx_dt,idx) = 0.5*(double)dq_dt.z(); // dx_dt[13*idx+13] = dqk/dt
 
     // 2. Second, calculate the state derivatives with forcing
+    // 2.0 Forcing matrices (forced DoFs) at current time
+    Eigen::Matrix<double,6,6> delta_x = blocked_states.get_delta_x(t);
+    Eigen::Matrix<double,6,6> delta_v = blocked_states.get_delta_v(t);
     // 2.1 If motion is forced
-    if (m_delta_x.maxCoeff() > 0)
+    if (delta_x.maxCoeff() > 0)
     {
         // Define dq1 for convenience
         const Eigen::Quaternion<double> dq1(*_QR(dx_dt,idx),*_QI(dx_dt,idx),*_QJ(dx_dt,idx),*_QK(dx_dt,idx));
@@ -507,12 +505,12 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
         // - Operator T_Xi_Y
         Eigen::Matrix<double,6,6> T_Xi_Y = Eigen::Matrix<double,6,6>::Zero();
         int j = 0;
-        for (int i = 0; i < 6; i++) {if ((m_delta_x.rowwise().maxCoeff())(i) == 0) {T_Xi_Y(i,j)=1.;j++;}}
+        for (int i = 0; i < 6; i++) {if ((delta_x.rowwise().maxCoeff())(i) == 0) {T_Xi_Y(i,j)=1.;j++;}}
         // - Operator T_tau_Y
         Eigen::Matrix<double,6,6> T_tau_Y = Eigen::Matrix<double,6,6>::Zero();
         j = 5;
         for (int i = 0; i < 6; i++) {
-            if ((m_delta_x.rowwise().maxCoeff())(i) > 0) {
+            if ((delta_x.rowwise().maxCoeff())(i) > 0) {
                 for (int k=0; k<6; k++) {T_tau_Y(k,j)=m_T_x(k,i);} // Put the forcing pattern at the end of the T_tau_Y operator
                 j--;
             }
@@ -531,9 +529,9 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
     }
 
     // 2.2 If velocity is forced
-    if (m_delta_v.maxCoeff() > 0)
+    if (delta_v.maxCoeff() > 0)
     {
-            // Update with forced accelerations
+        // Update with forced accelerations
         Eigen::Matrix<double,6,1> dV_f(dXdt);
         blocked_states.get_forced_v_k(t, dV_f, 1);
         dXdt(0)=dV_f(0);

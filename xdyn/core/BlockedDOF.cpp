@@ -661,14 +661,76 @@ void BlockedDOF::get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, si
         }
 }
 
-Eigen::Matrix<double,6,6> BlockedDOF::get_delta_x() const
+Eigen::Matrix<double,6,6> BlockedDOF::get_delta_x(const double & t) const
 {
-    return pimpl->m_delta_x;
+    Eigen::Matrix<double,6,6> delta_x = Eigen::Matrix<double,6,6>::Zero();
+    for (const auto &dof:pimpl->blocked_dof)
+    {
+        // Check whether that DoF shall be forced at the current time
+        if (pimpl->state_is_blocked_at_that_date(dof.first, t))
+        {
+            switch(dof.first)
+            {
+                case BlockableState::X:
+                    {delta_x(0,0)+=1;
+                    break;}
+                case BlockableState::Y:
+                    {delta_x(1,1)+=1;
+                    break;}
+                case BlockableState::Z:
+                    {delta_x(2,2)+=1;
+                    break;}
+                case BlockableState::PHI:
+                    {delta_x(3,3)+=1;
+                    break;}
+                case BlockableState::THETA:
+                    {delta_x(4,4)+=1;
+                    break;}
+                case BlockableState::PSI:
+                    {delta_x(5,5)+=1;
+                    break;}
+                default:
+                    break;
+            }
+        }
+    }
+    return delta_x;
 }
 
-Eigen::Matrix<double,6,6> BlockedDOF::get_delta_v() const
+Eigen::Matrix<double,6,6> BlockedDOF::get_delta_v(const double & t) const
 {
-    return pimpl->m_delta_v;
+    Eigen::Matrix<double,6,6> delta_v = Eigen::Matrix<double,6,6>::Zero();
+    for (const auto &dof:pimpl->blocked_dof)
+    {
+        // Check whether that DoF shall be forced at the current time
+        if (pimpl->state_is_blocked_at_that_date(dof.first, t))
+        {
+            switch(dof.first)
+            {
+                case BlockableState::U:
+                    delta_v(0,0)+=1;
+                    break;
+                case BlockableState::V:
+                    delta_v(1,1)+=1;
+                    break;
+                case BlockableState::W:
+                    delta_v(2,2)+=1;
+                    break;
+                case BlockableState::P:
+                    delta_v(3,3)+=1;
+                    break;
+                case BlockableState::Q:
+                    delta_v(4,4)+=1;
+                    break;
+                case BlockableState::R:
+                    delta_v(5,5)+=1;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    return delta_v;
 }
 
 Eigen::Matrix<double,6,6> BlockedDOF::get_T_x() const

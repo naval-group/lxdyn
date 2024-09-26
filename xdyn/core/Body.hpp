@@ -192,11 +192,7 @@ class Body
         StatesFilter states_filter;
 
         // DoFs blocking logic
-        /// Matrices of forced DoFs
-        Eigen::Matrix<double,6,6> m_delta_x; // Positions
-        Eigen::Matrix<double,6,6> m_delta_v; // Velocities
-        /// T_x operator (= T_tau,mu in 2023 JST paper)
-        Eigen::Matrix<double,6,6> m_T_x;
+        Eigen::Matrix<double,6,6> m_T_x; // T_x operator (~= T_tau,mu in 2023 JST paper)
 
 };
 
