@@ -114,6 +114,13 @@ class BlockedDOF
         /** \brief Get the forcing matrix of velocities (u, v, w,p, q, r)*/
         Eigen::Matrix<double,6,6> get_delta_v() const; // Velocities
 
+        /** \brief Get the T operator for forcing motion (x, y, z, roll, pitch, yaw)
+         *  \details The T operator of angles is a 6x6  matrix. It reflects how the forcing is applied (see 2023 JST paper for details)
+         *
+         * \returns The T operator
+        */
+        Eigen::Matrix<double,6,6> get_T_x() const; // Velocities
+
     private:
         struct Impl;
         TR1(shared_ptr)<Impl> pimpl;

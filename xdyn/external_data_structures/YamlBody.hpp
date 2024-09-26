@@ -28,13 +28,15 @@ template <typename T> struct YamlDOF
         state(BlockableState::U),
         t(),
         value(),
-        interpolation(InterpolationType::PIECEWISE_CONSTANT)
+        interpolation(InterpolationType::PIECEWISE_CONSTANT),
+        howApplied({0.,0.,0.,0.,0.,0.})
     {}
     virtual ~YamlDOF() {}
     BlockableState state;
     T t;
     T value;
     InterpolationType interpolation;
+    std::vector<double> howApplied;
 };
 
 struct YamlCSVDOF : public YamlDOF<std::string>

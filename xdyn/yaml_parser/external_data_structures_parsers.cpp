@@ -372,6 +372,39 @@ void operator >> (const YAML::Node& node, YamlDOF<std::vector<double> >& g)
     node["state"]         >> g.state;
     node["t"]             >> g.t;
     node["value"]         >> g.value;
+    if (node.FindValue("how applied")) {
+        node["how applied"] >> g.howApplied;
+        if (g.howApplied.size() != 6) {
+            THROW(__PRETTY_FUNCTION__, InvalidInputException, "The forcing force must have 6 components (Fx, Fy, Fz, Mx, My, Mz)");
+        }
+    }
+    else {
+        g.howApplied.resize(6);
+        for (int i=0; i<6; ++i) {g.howApplied[i] = 0.;}
+        switch(g.state)
+        {
+            case BlockableState::X:
+                g.howApplied[0] = 1.;
+                break;
+            case BlockableState::Y:
+                g.howApplied[1] = 1.;
+                break;
+            case BlockableState::Z:
+                g.howApplied[2] = 1.;
+                break;
+            case BlockableState::PHI:
+                g.howApplied[3] = 1.;
+                break;
+            case BlockableState::THETA:
+                g.howApplied[4] = 1.;
+                break;
+            case BlockableState::PSI:
+                g.howApplied[5] = 1.;
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void operator >> (const YAML::Node& node, YamlBlockedDOF& b)

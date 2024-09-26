@@ -121,6 +121,18 @@ class Builder
             return tmax;
         }
 
+        std::map<BlockableState, std::array<double,6>> getHowApplied() const
+        {
+            std::map<BlockableState, std::array<double,6>> howApplied;
+            for (const auto& DoF:input.from_yaml)
+            {
+                std::array<double,6> temp;
+                for (int i=0; i<6; ++i) {temp[i] = DoF.howApplied[i];}
+                howApplied[DoF.state] = temp;
+            }
+            return howApplied;
+        }
+
     private:
         Builder();
 
@@ -223,6 +235,7 @@ struct BlockedDOF::Impl
             , tmax(builder.get_tmax())
             , m_delta_x(Eigen::Matrix<double,6,6>::Zero())
             , m_delta_v(Eigen::Matrix<double,6,6>::Zero())
+            , m_T_x(Eigen::Matrix<double,6,6>::Zero())
     {
         // Initialize matrices of forced DoFs
         m_delta_x <<    0,0,0,0,0,0,
@@ -237,19 +250,31 @@ struct BlockedDOF::Impl
                         0,0,0,0,0,0,
                         0,0,0,0,0,0,
                         0,0,0,0,0,0;
+        m_T_x <<        0,0,0,0,0,0,
+                        0,0,0,0,0,0,
+                        0,0,0,0,0,0,
+                        0,0,0,0,0,0,
+                        0,0,0,0,0,0,
+                        0,0,0,0,0,0;
         for (const auto &dof:blocked_dof)
         {
             switch(dof.first)
             {
-                case BlockableState::X:
-                    m_delta_x(0,0)+=1;
-                    break;
-                case BlockableState::Y:
-                    m_delta_x(1,1)+=1;
-                    break;
+            case BlockableState::X:
+                    {m_delta_x(0,0)+=1;
+                    std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::X];
+                    for (int i=0; i<6; ++i) {m_T_x(i,0) = howApplied[i];}
+                    break;}
+            case BlockableState::Y:
+                    {m_delta_x(1,1)+=1;
+                    std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::Y];
+                    for (int i=0; i<6; ++i) {m_T_x(i,1) = howApplied[i];}
+                    break;}
                 case BlockableState::Z:
-                    m_delta_x(2,2)+=1;
-                    break;
+                    {m_delta_x(2,2)+=1;
+                    std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::Z];
+                    for (int i=0; i<6; ++i) {m_T_x(i,2) = howApplied[i];}
+                    break;}
                 case BlockableState::U:
                     m_delta_v(0,0)+=1;
                     break;
@@ -269,14 +294,20 @@ struct BlockedDOF::Impl
                     m_delta_v(5,5)+=1;
                     break;
                 case BlockableState::PHI:
-                    m_delta_x(3,3)+=1;
-                    break;
+                    {m_delta_x(3,3)+=1;
+                    std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::PHI];
+                    for (int i=0; i<6; ++i) {m_T_x(i,3) = howApplied[i];}
+                    break;}
                 case BlockableState::THETA:
-                    m_delta_x(4,4)+=1;
-                    break;
+                    {m_delta_x(4,4)+=1;
+                    std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::THETA];
+                    for (int i=0; i<6; ++i) {m_T_x(i,4) = howApplied[i];}
+                    break;}
                 case BlockableState::PSI:
-                    m_delta_x(5,5)+=1;
-                    break;
+                    {m_delta_x(5,5)+=1;
+                    std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::PSI];
+                    for (int i=0; i<6; ++i) {m_T_x(i,5) = howApplied[i];}
+                    break;}
                 default:
                     break;
             }
@@ -300,6 +331,8 @@ struct BlockedDOF::Impl
     // Matrices of forced DoFs
     Eigen::Matrix<double,6,6> m_delta_x; // Positions
     Eigen::Matrix<double,6,6> m_delta_v; // Velocities
+    // T operator
+    Eigen::Matrix<double,6,6> m_T_x;
 
     bool state_is_blocked_at_that_date(const BlockableState& s, const double t) const
     {
@@ -636,6 +669,11 @@ Eigen::Matrix<double,6,6> BlockedDOF::get_delta_x() const
 Eigen::Matrix<double,6,6> BlockedDOF::get_delta_v() const
 {
     return pimpl->m_delta_v;
+}
+
+Eigen::Matrix<double,6,6> BlockedDOF::get_T_x() const
+{
+    return pimpl->m_T_x;
 }
 
 

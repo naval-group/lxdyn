@@ -191,9 +191,13 @@ class Body
         BlockedDOF blocked_states;
         StatesFilter states_filter;
 
-        // Matrices of forced DoFs
+        // DoFs blocking logic
+        /// Matrices of forced DoFs
         Eigen::Matrix<double,6,6> m_delta_x; // Positions
         Eigen::Matrix<double,6,6> m_delta_v; // Velocities
+        /// T_x operator (= T_tau,mu in 2023 JST paper)
+        Eigen::Matrix<double,6,6> m_T_x;
+
 };
 
 typedef TR1(shared_ptr)<Body> BodyPtr;

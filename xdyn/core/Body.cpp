@@ -21,6 +21,7 @@ Body::Body(const size_t i, const BlockedDOF& blocked_states_, const YamlFiltered
     , states_filter(filtered_states)
     , m_delta_x(blocked_states_.get_delta_x())
     , m_delta_v(blocked_states_.get_delta_v())
+    , m_T_x(blocked_states_.get_T_x())
 {
 }
 
@@ -31,6 +32,7 @@ Body::Body(const BodyStates& s, const size_t i, const BlockedDOF& blocked_states
     , states_filter(filtered_states)
     , m_delta_x(blocked_states_.get_delta_x())
     , m_delta_v(blocked_states_.get_delta_v())
+    , m_T_x(blocked_states_.get_T_x())
 {
 }
 
@@ -41,6 +43,7 @@ Body::Body(const size_t i, const BlockedDOF& blocked_states_, const StatesFilter
     , states_filter(states_filter_)
     , m_delta_x(blocked_states_.get_delta_x())
     , m_delta_v(blocked_states_.get_delta_v())
+    , m_T_x(blocked_states_.get_T_x())
 {
 }
 
@@ -51,6 +54,7 @@ Body::Body(const BodyStates& states_, const size_t i, const BlockedDOF& blocked_
     , states_filter(states_filter_)
     , m_delta_x(blocked_states_.get_delta_x())
     , m_delta_v(blocked_states_.get_delta_v())
+    , m_T_x(blocked_states_.get_T_x())
 {
 }
 
@@ -506,7 +510,13 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
         for (int i = 0; i < 6; i++) {if ((m_delta_x.rowwise().maxCoeff())(i) == 0) {T_Xi_Y(i,j)=1.;j++;}}
         // - Operator T_tau_Y
         Eigen::Matrix<double,6,6> T_tau_Y = Eigen::Matrix<double,6,6>::Zero();
-        for (int i = 0; i < 6; i++) {if ((m_delta_x.rowwise().maxCoeff())(i) > 0) {T_tau_Y(i,j)=1.;j++;}}
+        j = 5;
+        for (int i = 0; i < 6; i++) {
+            if ((m_delta_x.rowwise().maxCoeff())(i) > 0) {
+                for (int k=0; k<6; k++) {T_tau_Y(k,j)=m_T_x(k,i);} // Put the forcing pattern at the end of the T_tau_Y operator
+                j--;
+            }
+        }
         // -- Hack for OENG paper
         // T_tau_Y(1,5)=1.;
         // T_tau_Y(5,5)=-170.;
