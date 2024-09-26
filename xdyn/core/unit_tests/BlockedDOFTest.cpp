@@ -305,6 +305,7 @@ TEST_F(BlockedDOFTest, define_matrix_of_forced_DoF)
     // ACT
     BlockedDOF blocked_states((yaml.bodies.front()).blocked_dof,0);
     Eigen::Matrix<double,6,6> m_delta_x = blocked_states.get_delta_x(0.);
+    Eigen::Matrix<double,6,6> m_delta_x_t1500 = blocked_states.get_delta_x(1500.);
     // ASSERT
     EXPECT_EQ(m_delta_x(0,0), 1.);
     EXPECT_EQ(m_delta_x(1,1), 1.);
@@ -312,6 +313,12 @@ TEST_F(BlockedDOFTest, define_matrix_of_forced_DoF)
     EXPECT_EQ(m_delta_x(3,3), 1.);
     EXPECT_EQ(m_delta_x(4,4), 0.);
     EXPECT_EQ(m_delta_x(5,5), 1.);
+    EXPECT_EQ(m_delta_x_t1500(0,0), 0.);
+    EXPECT_EQ(m_delta_x_t1500(1,1), 0.);
+    EXPECT_EQ(m_delta_x_t1500(2,2), 0.);
+    EXPECT_EQ(m_delta_x_t1500(3,3), 0.);
+    EXPECT_EQ(m_delta_x_t1500(4,4), 0.);
+    EXPECT_EQ(m_delta_x_t1500(5,5), 0.);
     /*
     BodyBuilder builder(yaml.rotations);
     VectorOfVectorOfPoints mesh;
