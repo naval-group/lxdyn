@@ -4164,7 +4164,7 @@ std::string test_data::added_mass_from_precal_file()
     return ss.str();
 }
 
-std::string test_data::tutorial_18_OTT()
+std::string test_data::kvlcc2()
 {
     return rotation_convention()
        + "\n"
@@ -4173,9 +4173,16 @@ std::string test_data::tutorial_18_OTT()
        + "  - model: no waves\n"
        + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        + "    \n"
+       + "commands:\n"
+       + "  - name: propellerAndRudder\n"
+       + "    t: [0, 10]\n"
+       + "    P/D: {unit: none, values: [0.721, 0.721]}\n"
+       + "    rpm: {unit: rpm, values: [99, 99]}\n"
+       + "    beta: {unit: none, values: [0, 0]}\n"
        + "# Fixed frame: NED\n"
        + "bodies: # All bodies have NED as parent frame\n"
        + "  - name: ship\n"
+       + "  \n"
        + position_relative_to_mesh(0, 0, 0., 0, 0, 0)
        + initial_position_of_body_frame(0, 0, 0, 0, 0, 15.)
        + initial_velocity("ship", 7.72740661, -2.07055236, 0, 0, 0, 0)
@@ -4349,12 +4356,43 @@ std::string test_data::tutorial_18_OTT()
        + "           t: [0., 1000.]\n"
        + "           value: [0.2618, 0.2618]\n"
        + "           interpolation: linear\n"
-       + "\n"
-       + "commands:\n"
-       + "  - name: propellerAndRudder\n"
-       + "    t: [0, 10]\n"
-       + "    P/D: {unit: none, values: [0.721, 0.721]}\n"
-       + "    rpm: {unit: rpm, values: [99, 99]}\n"
-       + "    beta: {unit: none, values: [0, 0]}\n"
        ;
+}
+
+
+std::string test_data::blockedDoF_OTT()
+{
+    std::string ret = std::string("    blocked dof:\n")
+       + "       from YAML:\n"
+       + "         - state: x\n"
+       + "           t: [0., 1000.]\n"
+       + "           value: [0, 8000.]\n"
+       + "           interpolation: linear\n"
+       + "         - state: y\n"
+       + "           t: [0., 1000.]\n"
+       + "           value: [0, 0.]\n"
+       + "           interpolation: linear\n"
+       + "         - state: phi\n"
+       + "           t: [0., 1000.]\n"
+       + "           value: [0., 0.]\n"
+       + "           interpolation: linear\n"
+       + "         - state: psi\n"
+       + "           t: [0., 1000.]\n"
+       + "           value: [0.2618, 0.2618]\n"
+       + "           interpolation: linear\n"
+       ;
+    return ret;
+}
+
+std::string test_data::blockedDoF_idealRudder()
+{
+    std::string ret = std::string("    blocked dof:\n")
+       + "       from YAML:\n"
+       + "         - state: psi\n"
+       + "           t: [0., 1000.]\n"
+       + "           value: [0.2618, 0.2618]\n"
+       + "           interpolation: linear\n"
+       + "           how applied: [0., 1., 0., 0., 0., -170.]"
+       ;
+    return ret;
 }
