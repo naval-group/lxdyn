@@ -263,17 +263,17 @@ struct BlockedDOF::Impl
             case BlockableState::X:
                     {m_delta_x(0,0)+=1;
                     std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::X];
-                    for (std::size_t i=0; i<6; ++i) {m_T_x(i,0) = howApplied[i];}
+                    for (std::size_t i=0; i<6; ++i) {m_T_x(static_cast<int>(i),0) = howApplied[i];}
                     break;}
             case BlockableState::Y:
                     {m_delta_x(1,1)+=1;
                     std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::Y];
-                    for (std::size_t i=0; i<6; ++i) {m_T_x(i,1) = howApplied[i];}
+                    for (std::size_t i=0; i<6; ++i) {m_T_x(static_cast<int>(i),1) = howApplied[i];}
                     break;}
                 case BlockableState::Z:
                     {m_delta_x(2,2)+=1;
                     std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::Z];
-                    for (std::size_t i=0; i<6; ++i) {m_T_x(i,2) = howApplied[i];}
+                    for (std::size_t i=0; i<6; ++i) {m_T_x(static_cast<int>(i),2) = howApplied[i];}
                     break;}
                 case BlockableState::U:
                     m_delta_v(0,0)+=1;
@@ -296,17 +296,17 @@ struct BlockedDOF::Impl
                 case BlockableState::PHI:
                     {m_delta_x(3,3)+=1;
                     std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::PHI];
-                    for (std::size_t i=0; i<6; ++i) {m_T_x(i,3) = howApplied[i];}
+                    for (std::size_t i=0; i<6; ++i) {m_T_x(static_cast<int>(i),3) = howApplied[i];}
                     break;}
                 case BlockableState::THETA:
                     {m_delta_x(4,4)+=1;
                     std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::THETA];
-                    for (std::size_t i=0; i<6; ++i) {m_T_x(i,4) = howApplied[i];}
+                    for (std::size_t i=0; i<6; ++i) {m_T_x(static_cast<int>(i),4) = howApplied[i];}
                     break;}
                 case BlockableState::PSI:
                     {m_delta_x(5,5)+=1;
                     std::array<double,6> howApplied = builder.getHowApplied()[BlockableState::PSI];
-                    for (std::size_t i=0; i<6; ++i) {m_T_x(i,5) = howApplied[i];}
+                    for (std::size_t i=0; i<6; ++i) {m_T_x(static_cast<int>(i),5) = howApplied[i];}
                     break;}
                 default:
                     break;

@@ -342,8 +342,8 @@ TEST_F(BlockedDOFTest, force_acceleration)
     std::vector<BodyPtr> bodies = builder.get_bodies(dummyMesh, std::vector<bool>(1,false), std::map<std::string,double>());
     builder.add_initial_transforms(bodies,env.k);
     StateType x = builder.get_initial_states();
-    for (int i=0; i<13; ++i) {
-        x[i] = 0.1*i;
+    for (std::size_t i=0; i<13; ++i) {
+        x[i] = 0.1*static_cast<int>(i);
     }
     std::remove("KVLCC2.hdb");
     // ACT
@@ -413,8 +413,8 @@ TEST_F(BlockedDOFTest, force_acceleration_w_idealRudder)
     std::vector<BodyPtr> bodies = builder.get_bodies(dummyMesh, std::vector<bool>(1,false), std::map<std::string,double>());
     builder.add_initial_transforms(bodies,env.k);
     StateType x = builder.get_initial_states();
-    for (int i=0; i<13; ++i) {
-        x[i] = 0.1*i;
+    for (std::size_t i=0; i<13; ++i) {
+        x[i] = 0.1*static_cast<int>(i);
     }
     std::remove("KVLCC2.hdb");
     // ACT
@@ -424,7 +424,7 @@ TEST_F(BlockedDOFTest, force_acceleration_w_idealRudder)
     ssc::kinematics::Wrench zeroForce(O);
     double t(0.);
     bodies.front()->calculate_state_derivatives(zeroForce, x, dx, t, env);
-    for (int i=0; i<13; ++i) {
+    for (std::size_t i=0; i<13; ++i) {
         std::cout << "dx(" << i << "), " << dx[i] << std::endl;
     }
     // ASSERT
