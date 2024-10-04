@@ -123,6 +123,7 @@ namespace test_data
     std::string kvlcc2();
     std::string blockedDoF_OTT();
     std::string blockedDoF_idealRudder();
+    std::string MMGPropeller();
 }
 
 #endif /* YAML_DATA_HPP_ */

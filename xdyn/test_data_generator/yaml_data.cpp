@@ -4379,3 +4379,30 @@ std::string test_data::blockedDoF_idealRudder()
        ;
     return ret;
 }
+
+std::string test_data::MMGPropeller()
+{
+    /*
+    The above data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+    */
+    std::stringstream ss;
+    ss << "name: port side propeller\n"
+       << "model: MMG propeller\n"
+       << "position of propeller frame:\n"
+       << "    frame: mesh(body 1)\n"
+       << "    x: {value: -171, unit: m}\n"//from Rhino 3D at full-scale
+       << "    y: {value: 0, unit: m}\n"//from Rhino 3D at full-scale
+       << "    z: {value: 12.6, unit: m}\n"//from Rhino 3D at full-scale
+       << "    phi: {value: 0, unit: rad}\n"
+       << "    theta: {value: 0, unit: deg}\n"
+       << "    psi: {value: 0, unit: deg}\n"
+       << "wake coefficient w: 0.35\n"
+       << "relative rotative efficiency etaR: 1\n"
+       << "thrust deduction factor t: 0.22\n"
+       << "rotation: clockwise\n"
+       << "diameter: {value: 9.86, unit: m}\n"
+       << "k0: 0.2931\n"
+       << "k1: -0.2753\n"
+       << "k2: -0.1385\n";
+    return ss.str();
+}
