@@ -51,7 +51,7 @@ double AbstractWageningen::get_advance_speed(const BodyStates& states, const dou
     const Eigen::Vector3d current_in_body = states.get_rot_from_ned_to_body().transpose()*env.get_UWCurrent(Eigen::Vector3d(states.x(), states.y(), states.z()), t);
     // Only the surge is scaled by the wake factor, so the transverse components are left out of the
     // rotation into the propeller frame: how the wake affects them is not known.
-    const Eigen::Vector3d Va_vector_body_frame((1-w)*(states.u()-current_in_body(0)),0,0);
+    const Eigen::Vector3d Va_vector_body_frame((1-get_wake_factor(states))*(states.u()-current_in_body(0)),0,0);
     // The propeller axis need not be parallel to the hull's, so the advance speed is the projection
     // of that vector onto the propeller frame's X-axis.
     can_find_internal_frame(env.k);
@@ -63,6 +63,11 @@ double AbstractWageningen::get_advance_ratio(const std::map<std::string,double>&
 {
     const double n = commands.at("rpm")/(2*PI);
     return Va/n/D;
+}
+
+double AbstractWageningen::get_wake_factor(const BodyStates&) const
+{
+    return w;
 }
 
 AbstractWageningen::AbstractWageningen(const Yaml& input, const std::string& body_name_, const EnvironmentAndFrames& env) :

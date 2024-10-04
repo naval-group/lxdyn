@@ -10,7 +10,7 @@
 
 #include "xdyn/core/ForceModel.hpp"
 
-/** \details This class was created to
+/** \details This class was created to define a standard propeller model in xdyn
  *  \addtogroup module
  *  \ingroup module
  *  \section ex1 Example
@@ -36,15 +36,18 @@ class AbstractWageningen : public ForceModel
         AbstractWageningen(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
         virtual double get_Kt(const std::map<std::string,double>& commands, const double J) const = 0;
         virtual double get_Kq(const std::map<std::string,double>& commands, const double J) const = 0;
+        virtual double get_wake_factor(const BodyStates& states)  const;
         Wrench get_pure_thrust_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;//!< Compute the pure thrust (before applying the thrust deduction)
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;
         double get_advance_speed(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const;
         double get_advance_ratio(const std::map<std::string,double>& commands, const double Va) const;
         static Yaml parse(const std::string& yaml);
 
+    protected:
+        double w;
+
     private:
         AbstractWageningen();
-        double w;
         double eta_R;
         double t;
         double kappa;
