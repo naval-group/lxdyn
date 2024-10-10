@@ -23,7 +23,7 @@ class RudderForceModel : public ForceModel
             double effective_aspect_ratio_factor;                           //!< Non-dimensional (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 97 § b)
             double lift_coeff;                                              //!< Non-dimensional: lift is multiplied by it (for tuning)
             double drag_coeff;                                              //!< Non-dimensional: drag is multiplied by it (for tuning)
-            YamlCoordinates position_of_the_rudder_frame_in_the_body_frame;
+            YamlCoordinates position_of_the_rudder_frame_in_the_body_frame; //!< Position of the rudder in the body frame
         };
 
         RudderForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
@@ -95,8 +95,8 @@ class RudderForceModel : public ForceModel
             double get_Cl(const double alpha_wake //!< Angle of rudder wrt the fluid (in radian)
                          ) const;
 
-            /**  \brief Wrench created by the rudder on the ship
-             *   \details Expressed in the rudder's reference frame
+            /**  \brief Wrench created by the rudder on the ship, separated into the contributions inside and outside the propeller wake
+             *   \details Expressed in body frame at the rudder location
               */
             InOutWake<ssc::kinematics::Vector6d> get_wrench(const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
                                                             const InOutWake<double>& fluid_angle,  //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
@@ -105,7 +105,7 @@ class RudderForceModel : public ForceModel
                                                              ) const;
 
             /**  \brief Wrench created by the rudder on the ship
-             *   \details Expressed in the rudder's reference frame
+             *   \details Expressed in body frame at the rudder location
               */
             ssc::kinematics::Vector6d get_wrench(const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
                                                  const double fluid_angle,  //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
@@ -113,8 +113,8 @@ class RudderForceModel : public ForceModel
                                                  const double area          //!< Rudder area (in or outside wake) in m^2
                                                              ) const;
 
-            /**  \brief Wrench created by the rudder on the ship
-             *   \details Expressed in the rudder's reference frame
+            /**  \brief Tota wrench created by the rudder on the ship, considering the contributions inside and outside the propeller wake
+             *   \details Expressed in body frame at the rudder location
               */
             ssc::kinematics::Vector6d get_force(const double lift, //!< Norm of the lift (in N)
                                                 const double drag, //!< Norm of the drag (in N)
@@ -136,28 +136,36 @@ class RudderForceModel : public ForceModel
             InOutWake<double> get_fluid_angle(const InOutWake<ssc::kinematics::Point>& Vs   //!< Ship speed relative to the fluid, inside & outside wake
                                               ) const;
 
+            /**  \brief Returns propeller diameter
+              *  \returns propeller diameter (in m)
+              */
             double get_D() const;
+            
+            /**  \brief Returns rudder location in body frame
+              *  \returns Rudder location in body frame
+              */
+            Eigen::Vector3d get_rudder_location() const;
             
             private:
                 RudderModel(); // Disabled
-                double Ar;
+                double Ar;// Rudder lateral projected area (in m^2)
                 double D; //!< Propeller diameter (in m)
                 double Kr;//!< Contraction factor (cf. Marine Rudders & Control Surfaces, Molland & Turnock, eq. 3.37 p.51)
-                double chord;
-                double lambda;
-                double lift_coeff;
-                double drag_coeff;
-                double rho;
-                double nu;
-                Eigen::Vector3d translation_from_rudder_to_propeller;
+                double chord;// Rudder mean chord (in m)
+                double lambda;// Rudder effective aspect ratio
+                double lift_coeff;//Tuning coefficient for the rudder lift
+                double drag_coeff;//Tuning coefficient for the rudder drag
+                double rho;//Fluid density (in kg/m^3)
+                double nu;//Kinematic fluid viscosity (in m^2/s)
+                Eigen::Vector3d position_of_the_rudder_frame_in_the_body_frame;//!< Position of the rudder in the body frame
         };
     protected:
         void extra_observations(Observer& observer) const override;
 
 
     private:
-        WageningenControlledForceModel propulsionModel;
-        RudderModel rudderModel;
+        WageningenControlledForceModel propulsionModel;//!< Propeller model
+        RudderModel rudderModel;//!< Rudder model
         double w; //!< Wake fraction
         // These variables are computed at each time step and stored for outputting
         std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame

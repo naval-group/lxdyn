@@ -312,14 +312,14 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
     const double prop_thrust=1024*(10000/PI/PI)*16*0.479798653;
     const double cos_theta_cos_psi = 0.9846577620214009;// with theta=-10° and psi=-1° from input data
 
-    const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi);// rudder forces and moments in propeller frame expressed at the propeller location
+    const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi);// rudder forces and moments in body frame expressed at the rudder location
 
     ASSERT_DOUBLE_EQ(-361272.67620997917, rudder_force(0));
     ASSERT_DOUBLE_EQ(1876488.4373155038, rudder_force(1));
     ASSERT_DOUBLE_EQ(0, rudder_force(2));
     ASSERT_DOUBLE_EQ(0, rudder_force(3));
     ASSERT_DOUBLE_EQ(0, rudder_force(4));
-    ASSERT_DOUBLE_EQ(-1.1*1876488.4373155038, rudder_force(5));//there is -1.1m from the propeller to the rudder
+    ASSERT_DOUBLE_EQ(0, rudder_force(5));
 }
 
 TEST_F(RudderForceModelTest, force_and_torque_with_phi_angle)

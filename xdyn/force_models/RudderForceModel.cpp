@@ -53,12 +53,12 @@ RudderForceModel::RudderModel::RudderModel(
         drag_coeff(parameters_.drag_coeff),
         rho(rho_),
         nu(nu_),
-        translation_from_rudder_to_propeller(
-            parameters_.position_of_propeller_frame.coordinates.x - parameters_.position_of_the_rudder_frame_in_the_body_frame.x,
-            parameters_.position_of_propeller_frame.coordinates.y - parameters_.position_of_the_rudder_frame_in_the_body_frame.y,
-            parameters_.position_of_propeller_frame.coordinates.z - parameters_.position_of_the_rudder_frame_in_the_body_frame.z)
+        position_of_the_rudder_frame_in_the_body_frame(
+            parameters_.position_of_the_rudder_frame_in_the_body_frame.x,
+            parameters_.position_of_the_rudder_frame_in_the_body_frame.y,
+            parameters_.position_of_the_rudder_frame_in_the_body_frame.z)
 {
-    const double distance_between_rudder_and_screw = std::abs(translation_from_rudder_to_propeller(0));
+    const double distance_between_rudder_and_screw = std::abs(position_of_the_rudder_frame_in_the_body_frame(0)-parameters_.position_of_propeller_frame.coordinates.x);
     Kr = 0.5+0.5/(1+0.15/std::abs(distance_between_rudder_and_screw/parameters_.diameter));
 }
 
@@ -118,18 +118,10 @@ ssc::kinematics::Vector6d RudderForceModel::RudderModel::get_force(
     ) const
 {
     ssc::kinematics::Vector6d ret = ssc::kinematics::Vector6d::Zero();
-    const Eigen::Vector3d f(- lift * sin (angle) - drag * cos (angle),
-                            + lift * cos (angle) - drag * sin (angle),
-                            0);
-    const Eigen::Vector3d m = -translation_from_rudder_to_propeller.cross(f);
-    ret(0) = f(0);
-    ret(1) = f(1);
-    ret(2) = f(2);
-    ret(3) = m(0);
-    ret(4) = m(1);
-    ret(5) = m(2);
+    ret(0)=- lift * sin (angle) - drag * cos (angle);
+    ret(1)=+ lift * cos (angle) - drag * sin (angle);
 
-    return ret;
+    return ret;//rudder force at rudder location in body frame
 }
 
 RudderForceModel::InOutWake<ssc::kinematics::Point> RudderForceModel::RudderModel::get_vs(
@@ -238,9 +230,15 @@ ssc::kinematics::Vector6d RudderForceModel::get_rudder_force(
     const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v());
     const InOutWake<double> fluid_angle = rudderModel.get_fluid_angle(Vs);
     const InOutWake<double> area = rudderModel.get_Ar(CTh);
-    const InOutWake<ssc::kinematics::Vector6d> w = rudderModel.get_wrench(rudder_angle, fluid_angle, Vs, area);
+    const InOutWake<ssc::kinematics::Vector6d> w = rudderModel.get_wrench(rudder_angle, fluid_angle, Vs, area);//rudder tensor in body frame at rudder location
     return w.in_wake + w.outside_wake;
 }
+
+Eigen::Vector3d RudderForceModel::RudderModel::get_rudder_location() const
+{
+    return position_of_the_rudder_frame_in_the_body_frame;
+}
+
 
 Wrench RudderForceModel::get_force(
     const BodyStates& states, const double t,
@@ -257,8 +255,9 @@ Wrench RudderForceModel::get_force(
     /*
     Negative propeller thrust means that the propeller wake is forward and therefore there is no acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would fails the calculation of CTh (negative square root calculation).
     */
-    const Wrench rudder_wrench_body_frame_at_P(ssc::kinematics::Point(frame,0,0,0), body_name, rudder_force);// rudder tensor in body frame expressed at the propeller location
-        const Wrench rudderAndPropeller_wrench_body_frame_at_P = rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;//rudder+propeller wrench in body frame expressed at the propeller location
+    const Wrench rudder_wrench_body_frame_at_R(ssc::kinematics::Point(body_name, rudderModel.get_rudder_location()), body_name, rudder_force);// rudder tensor in body frame expressed at the rudder location
+    const Wrench rudder_wrench_body_frame_at_P=rudder_wrench_body_frame_at_R.transport_to(ssc::kinematics::Point(frame,0,0,0),env.k);// rudder tensor in body frame expressed at the propeller location
+    const Wrench rudderAndPropeller_wrench_body_frame_at_P = rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;//rudder+propeller wrench in body frame expressed at the propeller location
 
     *m_propeller_wrench_internal_frame_at_P=propeller_wrench_propeller_frame_at_P;// Save propeller torser in internal frame
     
