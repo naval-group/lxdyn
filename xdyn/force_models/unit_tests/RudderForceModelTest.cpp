@@ -7,14 +7,6 @@
 #include "RudderForceModelTest.hpp"
 #include "xdyn/force_models/RudderForceModel.hpp"
 #include "env_for_tests.hpp"
-#include "xdyn/core/BodyWithoutSurfaceForces.hpp"
-#include "xdyn/environment_models/Airy.hpp"
-#include "xdyn/environment_models/DiscreteDirectionalWaveSpectrum.hpp"
-#include "xdyn/environment_models/DiracSpectralDensity.hpp"
-#include "xdyn/environment_models/DiracDirectionalSpreading.hpp"
-#include "xdyn/environment_models/discretize.hpp"
-#include "xdyn/environment_models/Stretching.hpp"
-#include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
 
@@ -25,6 +17,8 @@
 #define DEG2RAD (PI/180.)
 
 #define EPS 1E-6
+
+#define BODY "body 1"
 
 namespace ssc
 {
@@ -59,6 +53,18 @@ void RudderForceModelTest::SetUp()
 
 void RudderForceModelTest::TearDown()
 {
+}
+
+EnvironmentAndFrames RudderForceModelTest::get_env()
+{
+    EnvironmentAndFrames env;
+    env.rho = 1024;
+    env.g = 9.81;
+    env.rot = YamlRotation("angle", {"z","y'","x''"});
+    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
+    env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
+    return env;
 }
 
 TEST_F(RudderForceModelTest, angle_of_attack)
@@ -211,26 +217,6 @@ TEST_F(RudderForceModelTest, get_fluid_angle)
     ASSERT_DOUBLE_EQ(-3*PI/4, vs.outside_wake);
 }
 
-TR1(shared_ptr)<WaveModel> RudderForceModelTest::get_wave_model() const
-{
-    const double Hs = 0.1;
-    const double Tp = 5;
-    const double omega0 = 2*PI/Tp;
-    double psi = 0;
-    double phi = 5.8268;
-    const double omega_min = a.random<double>().greater_than(0);
-    const double omega_max = a.random<double>().greater_than(omega_min);
-    const size_t nfreq = a.random<size_t>().between(2,100);
-    const size_t ndir = a.random<size_t>().between(2,100);
-    YamlStretching ys;
-    ys.h = 0;
-    ys.delta = 1;
-    const Stretching ss(ys);
-    const DiscreteDirectionalWaveSpectrum A = discretize(DiracSpectralDensity(omega0, Hs), DiracDirectionalSpreading(psi), omega_min, omega_max, nfreq, ndir, ss, false);
-
-    return TR1(shared_ptr)<WaveModel>(new Airy(A, phi));
-}
-
 TEST_F(RudderForceModelTest, parser)
 {
     const auto w = RudderForceModel::parse(test_data::rudder());
@@ -266,7 +252,7 @@ TEST_F(RudderForceModelTest, force_and_torque)
     */
 
     // Create environnement
-    EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
@@ -307,7 +293,7 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
     */
 
     // Create environnement
-    EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
@@ -348,7 +334,7 @@ TEST_F(RudderForceModelTest, force_and_torque_with_phi_angle)
 
     std::string input=test_data::rudder();
     // Create environnement
-    EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();

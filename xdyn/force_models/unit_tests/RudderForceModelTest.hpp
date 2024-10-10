@@ -9,10 +9,10 @@
 #ifndef RUDDERFORCEMODELTEST_HPP_
 #define RUDDERFORCEMODELTEST_HPP_
 
-#include "xdyn/environment_models/WaveModel.hpp"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 #include <ssc/macros.hpp>
 #include "gtest/gtest.h"
+#include "xdyn/core/EnvironmentAndFrames.hpp"
 
 class RudderForceModelTest : public ::testing::Test
 {
@@ -21,7 +21,7 @@ class RudderForceModelTest : public ::testing::Test
         virtual ~RudderForceModelTest();
         virtual void SetUp();
         virtual void TearDown();
-        TR1(shared_ptr)<WaveModel> get_wave_model() const;
+        EnvironmentAndFrames get_env();
         ssc::random_data_generator::DataGenerator a;
 };
 

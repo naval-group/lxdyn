@@ -44,19 +44,21 @@ RudderForceModel::Yaml::Yaml(const WageningenControlledForceModel::Yaml& yaml) :
 
 RudderForceModel::RudderModel::RudderModel(
     const Yaml& parameters_, const double rho_, const double nu_) :
-        parameters(parameters_),
-        chord(parameters.Ar/parameters.b),
-        lambda(parameters.effective_aspect_ratio_factor * parameters.b*parameters.b / parameters.Ar),
+        Ar(parameters_.Ar),
         D(parameters_.diameter),
         Kr(),
+        chord(Ar/parameters_.b),
+        lambda(parameters_.effective_aspect_ratio_factor * parameters_.b*parameters_.b / Ar),
+        lift_coeff(parameters_.lift_coeff),
+        drag_coeff(parameters_.drag_coeff),
         rho(rho_),
         nu(nu_),
         translation_from_rudder_to_propeller(
-            parameters.position_of_propeller_frame.coordinates.x - parameters.position_of_the_rudder_frame_in_the_body_frame.x,
-            parameters.position_of_propeller_frame.coordinates.y - parameters.position_of_the_rudder_frame_in_the_body_frame.y,
-            parameters.position_of_propeller_frame.coordinates.z - parameters.position_of_the_rudder_frame_in_the_body_frame.z)
+            parameters_.position_of_propeller_frame.coordinates.x - parameters_.position_of_the_rudder_frame_in_the_body_frame.x,
+            parameters_.position_of_propeller_frame.coordinates.y - parameters_.position_of_the_rudder_frame_in_the_body_frame.y,
+            parameters_.position_of_propeller_frame.coordinates.z - parameters_.position_of_the_rudder_frame_in_the_body_frame.z)
 {
-    const double distance_between_rudder_and_screw = std::abs(parameters_.position_of_propeller_frame.coordinates.x - parameters_.position_of_the_rudder_frame_in_the_body_frame.x);
+    const double distance_between_rudder_and_screw = std::abs(translation_from_rudder_to_propeller(0));
     Kr = 0.5+0.5/(1+0.15/std::abs(distance_between_rudder_and_screw/parameters_.diameter));
 }
 
@@ -97,7 +99,7 @@ double RudderForceModel::RudderModel::get_lift(
     const double area   //!< Rudder area (in or outside wake) in m^2
     ) const
 {
-    return 0.5 * rho * area * Vs*Vs * Cl * cos(alpha) * parameters.lift_coeff;
+    return 0.5 * rho * area * Vs*Vs * Cl * cos(alpha) * lift_coeff;
 }
 
 double RudderForceModel::RudderModel::get_drag(
@@ -106,7 +108,7 @@ double RudderForceModel::RudderModel::get_drag(
     const double area   //!< Rudder area (in or outside wake) in m^2
     ) const
 {
-    return 0.5 * rho * area * Vs*Vs * Cl * parameters.drag_coeff;
+    return 0.5 * rho * area * Vs*Vs * Cl * drag_coeff;
 }
 
 ssc::kinematics::Vector6d RudderForceModel::RudderModel::get_force(
@@ -195,8 +197,8 @@ RudderForceModel::InOutWake<double> RudderForceModel::RudderModel::get_Ar(
     // Jet speed coefficient, "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 96 eq. 1.2.44
     const double Cj = 1 + Kr * (sqrt(1 + CTh) -1);
     const double Dwake = D * sqrt((1 + 0.5 * (sqrt(1 + CTh) - 1)) / Cj);
-    ar.in_wake = std::min(parameters.Ar, chord*Dwake);
-    ar.outside_wake = parameters.Ar-ar.in_wake;
+    ar.in_wake = std::min(Ar, chord*Dwake);
+    ar.outside_wake = Ar-ar.in_wake;
     return ar;
 }
 
@@ -206,7 +208,6 @@ RudderForceModel::RudderForceModel(
     const EnvironmentAndFrames& env) :
         ForceModel(input_.name,{"rpm","P/D","beta"},input_.position_of_propeller_frame, body_name_, env),
         propulsionModel(WageningenControlledForceModel(input_, body_name_, env)),
-        rudder_position(ssc::kinematics::Point(make_point(input_.position_of_propeller_frame.coordinates, input_.position_of_propeller_frame.frame))),// this is the propeller position in propeller frame, not the rudder position ! Used only for tests
         rudderModel(input_, env.rho, env.nu),
         w(input_.wake_coefficient),
         m_propeller_wrench_internal_frame_at_P(new Wrench(ssc::kinematics::Point(input_.position_of_propeller_frame.frame,0,0,0))),
@@ -257,7 +258,7 @@ Wrench RudderForceModel::get_force(
     Negative propeller thrust means that the propeller wake is forward and therefore there is no acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would fails the calculation of CTh (negative square root calculation).
     */
     const Wrench rudder_wrench_body_frame_at_P(ssc::kinematics::Point(frame,0,0,0), body_name, rudder_force);// rudder tensor in body frame expressed at the propeller location
-    const Wrench rudderAndPropeller_wrench_body_frame_at_P = rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;//rudder+propeller wrench in body frame expressed at the propeller location
+        const Wrench rudderAndPropeller_wrench_body_frame_at_P = rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;//rudder+propeller wrench in body frame expressed at the propeller location
 
     *m_propeller_wrench_internal_frame_at_P=propeller_wrench_propeller_frame_at_P;// Save propeller torser in internal frame
     

@@ -83,6 +83,7 @@ class RudderForceModel : public ForceModel
                             ) const;
 
             /**  \brief Calculates the drag coefficient (non-dimensional)
+              *   \ref // Soeding formula, "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 78 eq. 1.2.9
               */
             double get_Cd(const double Vs, //!< Norm of the speed of the ship relative to the fluid
                           const double Cl  //!< Rudder lift coefficient (non-dimensional)
@@ -136,14 +137,16 @@ class RudderForceModel : public ForceModel
                                               ) const;
 
             double get_D() const;
-
+            
             private:
                 RudderModel(); // Disabled
-                Yaml parameters;
-                double chord;
-                double lambda;
+                double Ar;
                 double D; //!< Propeller diameter (in m)
                 double Kr;//!< Contraction factor (cf. Marine Rudders & Control Surfaces, Molland & Turnock, eq. 3.37 p.51)
+                double chord;
+                double lambda;
+                double lift_coeff;
+                double drag_coeff;
                 double rho;
                 double nu;
                 Eigen::Vector3d translation_from_rudder_to_propeller;
@@ -154,7 +157,6 @@ class RudderForceModel : public ForceModel
 
     private:
         WageningenControlledForceModel propulsionModel;
-        ssc::kinematics::Point rudder_position;
         RudderModel rudderModel;
         double w; //!< Wake fraction
         // These variables are computed at each time step and stored for outputting
