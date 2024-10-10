@@ -138,13 +138,10 @@ TEST_F(MMGPropellerForceModelTest, force)
     // Create propeller model 
     const MMGPropellerForceModel w(input, b->get_name(), env);
 
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
-    auto states = b->get_states();
     // Define a drifting behaviour of 30°
+    auto states = b->get_states();
     states.u.record(0, 1.7320508075688772);
     states.v.record(0, -1);
-    b->update_kinematics(s, env.k);
     // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 5*(2*PI);

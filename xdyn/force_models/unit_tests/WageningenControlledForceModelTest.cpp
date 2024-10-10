@@ -355,13 +355,11 @@ TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_without_r
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model 
     WageningenControlledForceModel w(WageningenControlledForceModel::parse(input_data), b->get_name(), env);
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
-    states.u.record(0, s[3]);//4
-    states.v.record(0, s[4]);//5
-    states.w.record(0, s[5]);//6
-    b->update_kinematics(s, env.k);
+    states.u.record(0, 4);
+    states.v.record(0, 5);
+    states.w.record(0, 6);
 
     const double Va=w.get_advance_speed(states,0,env);
     ASSERT_NEAR(Va, 4*(1-0.9),EPS);
@@ -377,13 +375,11 @@ TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_with_rota
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model 
     WageningenControlledForceModel w(WageningenControlledForceModel::parse(input_data), b->get_name(), env);
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
-    states.u.record(0, s[3]);//4
-    states.v.record(0, s[4]);//5
-    states.w.record(0, s[5]);//6
-    b->update_kinematics(s, env.k);
+    states.u.record(0, 4);
+    states.v.record(0, 5);
+    states.w.record(0, 6);
 
     const double Va=w.get_advance_speed(states,0,env);
     // The advance speed is states.u()*(1-w)*cos(theta)*cos(psi)
@@ -409,11 +405,9 @@ TEST_F(WageningenControlledForceModelTest, force_and_torque)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model 
     WageningenControlledForceModel w(input, b->get_name(), env);
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
-    b->update_kinematics(s, env.k);
     // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 5*(2*PI);
@@ -440,11 +434,9 @@ TEST_F(WageningenControlledForceModelTest, torque_should_have_sign_corresponding
     WageningenControlledForceModel w_clockwise(input, b->get_name(), env);
     input.rotating_clockwise = false;
     WageningenControlledForceModel w_anti_clockwise(input, b->get_name(), env);
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
     states.u.record(0, a.random<double>().greater_than(0));
-    b->update_kinematics(s, env.k);
     // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = a.random<double>().between(states.u(),2*states.u());
@@ -465,11 +457,9 @@ TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_z
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model 
     WageningenControlledForceModel w(input, b->get_name(), env);
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
-    b->update_kinematics(s, env.k);
     // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 0;
@@ -494,11 +484,9 @@ TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_n
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model 
     WageningenControlledForceModel w(input, b->get_name(), env);
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
-    b->update_kinematics(s, env.k);
     // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 1e-16;

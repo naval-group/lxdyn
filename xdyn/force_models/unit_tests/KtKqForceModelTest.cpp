@@ -80,11 +80,9 @@ TEST_F(KtKqForceModelTest, force)
 
     ASSERT_EQ("Kt(J) & Kq(J)", w.model_name());
 
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 50);
-    b->update_kinematics(s, env.k);
     // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 5*(2*PI);
@@ -115,11 +113,9 @@ TEST_F(KtKqForceModelTest, clarify_exception_message_for_Kt_Kq_interpolation_err
     // Create propeller model 
     const KtKqForceModel w(input, b->get_name(), env);
 
-    // Define one state
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
-    b->update_kinematics(s, env.k);
     // Define a command rpm
     std::map<std::string,double> commands;
     commands["rpm"] = 2*PI*0.025;

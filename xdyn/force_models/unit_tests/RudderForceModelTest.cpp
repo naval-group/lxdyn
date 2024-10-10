@@ -262,13 +262,11 @@ TEST_F(RudderForceModelTest, force_and_torque)
     // Check model name
     ASSERT_EQ("propeller+rudder", rudder.model_name());
     
-    // Create body states
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     const double t = 24;
-    states.u.record(t, s[2]);
-    states.v.record(t, s[3]);
-    states.w.record(t, s[4]);
-    b->update_kinematics(s, env.k);
+    states.u.record(t, 3);
+    states.v.record(t, 4);
+    states.w.record(t, 5);
 
     // Create commands
     std::map<std::string,double> commands;
@@ -300,13 +298,11 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
     // Create rudder force model
     const RudderForceModel rudder(RudderForceModel::parse(test_data::rudder()), b->get_name(), env);
 
-    // Create body states
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     const double t = 24;
-    states.u.record(t, s[2]);
-    states.v.record(t, s[3]);
-    states.w.record(t, s[4]);
-    b->update_kinematics(s, env.k);
+    states.u.record(t, 3);
+    states.v.record(t, 4);
+    states.w.record(t, 5);
 
     // Create commands
     std::map<std::string,double> commands;
@@ -316,7 +312,7 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
     const double prop_thrust=1024*(10000/PI/PI)*16*0.479798653;
     const double cos_theta_cos_psi = 0.9846577620214009;// with theta=-10° and psi=-1° from input data
 
-    const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi); // rudder forces and moments in propeller frame expressed at the propeller location
+    const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi);// rudder forces and moments in propeller frame expressed at the propeller location
 
     ASSERT_DOUBLE_EQ(-361272.67620997917, rudder_force(0));
     ASSERT_DOUBLE_EQ(1876488.4373155038, rudder_force(1));
@@ -346,13 +342,11 @@ TEST_F(RudderForceModelTest, force_and_torque_with_phi_angle)
     input.replace(input.find(old_str), old_str.length(), new_str);
     const RudderForceModel rudder_phi(RudderForceModel::parse(input), b->get_name(), env);
 
-    // Create body states
-    std::vector<double> s = {1,2,3,4,5,6,0,0,0,1,0,0,0};
+    // Define body velocities
     const double t = 24;
-    states.u.record(t, s[2]);
-    states.v.record(t, s[3]);
-    states.w.record(t, s[4]);
-    b->update_kinematics(s, env.k);
+    states.u.record(t, 3);
+    states.v.record(t, 4);
+    states.w.record(t, 5);
 
     // Create commands
     std::map<std::string,double> commands;
