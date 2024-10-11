@@ -16,6 +16,7 @@ class MMGRudderForceModel : public ForceModel
     public:
         struct Yaml : MMGPropellerForceModel::Yaml
         {
+            Yaml();
             Yaml(const MMGPropellerForceModel::Yaml& yaml);
             double Ar;//!< Rudder projected area without considering the horn part(in m^2)
             double b;//!< Rudder span (in m)

@@ -124,6 +124,7 @@ namespace test_data
     std::string blockedDoF_OTT();
     std::string blockedDoF_idealRudder();
     std::string MMGPropeller();
+    std::string MMGRudderAndPropeller();
 }
 
 #endif /* YAML_DATA_HPP_ */

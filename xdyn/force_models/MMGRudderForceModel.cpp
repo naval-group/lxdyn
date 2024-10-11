@@ -9,8 +9,8 @@
 #include "xdyn/core/yaml2eigen.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 
-#include <ssc/yaml_parser.hpp>
-#include "yaml.h"
+#include "xdyn/yaml_parser/parse_unit_value.hpp"
+#include "xdyn/yaml_parser/yaml_compat.h"
 
 #define _USE_MATH_DEFINE
 #include <cmath>
@@ -140,6 +140,21 @@ void MMGRudderForceModel::extra_observations(Observer& observer) const
 ///////////////////////////////////////////////////////////////
 
 std::string MMGRudderForceModel::model_name() {return "MMG propeller+rudder";}
+
+MMGRudderForceModel::Yaml::Yaml() :
+    Ar(),
+    b(),
+    xH(),
+    lR(),
+    tR(),
+    aH(),
+    gammaR(),
+    epsilon(),
+    kappaMmg(),
+    effective_aspect_ratio(),
+    position_of_the_rudder_frame_in_the_body_frame()
+{
+}
 
 MMGRudderForceModel::Yaml::Yaml(const MMGPropellerForceModel::Yaml& yaml) :
     MMGPropellerForceModel::Yaml(yaml),
@@ -308,16 +323,13 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
 
 MMGRudderForceModel::Yaml MMGRudderForceModel::parse(const std::string& yaml)
 {
-    std::stringstream stream(yaml);
-    YAML::Parser parser(stream);
-    YAML::Node node;
-    parser.GetNextDocument(node);
+    YAML::Node node = YAML::Load(yaml);
     Yaml ret(MMGPropellerForceModel::parse(yaml));
 
-    ssc::yaml_parser::parse_uv(node["rudder area"], ret.Ar);
-    ssc::yaml_parser::parse_uv(node["rudder height"], ret.b);
-    ssc::yaml_parser::parse_uv(node["xH"], ret.xH);
-    ssc::yaml_parser::parse_uv(node["lR"], ret.lR);
+    xdyn::yaml_parser::parse_uv(node["rudder area"], ret.Ar);
+    xdyn::yaml_parser::parse_uv(node["rudder height"], ret.b);
+    xdyn::yaml_parser::parse_uv(node["xH"], ret.xH);
+    xdyn::yaml_parser::parse_uv(node["lR"], ret.lR);
     
     node["tR"] >> ret.tR;
     node["aH"] >> ret.aH;

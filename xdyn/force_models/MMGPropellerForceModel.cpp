@@ -13,6 +13,13 @@
 
 std::string MMGPropellerForceModel::model_name() {return "MMG propeller";}
 
+MMGPropellerForceModel::Yaml::Yaml() :
+        k0(),
+        k1(),
+        k2()
+{
+}
+
 MMGPropellerForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
         AbstractWageningen::Yaml(y),
         k0(),
