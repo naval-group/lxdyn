@@ -54,13 +54,13 @@ class RudderForceModel : public ForceModel
             InOutWake<double> get_Ar(const double CTh //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
                                     ) const;
 
-            /**  \brief Calculates the angle between the propeller's wake & the rudder
-              *  \details When positive, the wake is coming towards the rudder's port side
+            /**  \brief Calculates the angle between the fluid flow & the rudder
+              *  \details When positive, the flow is coming towards the rudder's port side
               *  \returns Angle of attack (in radian)
               *  \snippet force_models/unit_tests/RudderForceModelTest.cpp RudderForceModelTest get_alpha_example
               */
             double get_angle_of_attack(const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-                                       const double fluid_angle   //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
+                                       const double fluid_angle   //!< Angle of the fluid at the rudder location in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
                                       ) const;
 
             /**  \brief Calculates the norm of the lift force acting on the rudder
@@ -99,7 +99,6 @@ class RudderForceModel : public ForceModel
              *   \details Expressed in body frame at the rudder location
               */
             InOutWake<ssc::kinematics::Vector6d> get_wrench(const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-                                                            const InOutWake<double>& fluid_angle,  //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
                                                             const InOutWake<ssc::kinematics::Point>& Vs,           //!< Norm of the speed of the ship relative to the fluid (in m/s)
                                                             const InOutWake<double>& area          //!< Rudder area (in or outside wake) in m^2
                                                              ) const;
@@ -108,8 +107,7 @@ class RudderForceModel : public ForceModel
              *   \details Expressed in body frame at the rudder location
               */
             ssc::kinematics::Vector6d get_wrench(const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-                                                 const double fluid_angle,  //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-                                                 const double Vs,           //!< Norm of the speed of the ship relative to the fluid (in m/s)
+                                                 ssc::kinematics::Point Vs,           //!< Speed of the ship relative to the fluid (in m/s)
                                                  const double area          //!< Rudder area (in or outside wake) in m^2
                                                              ) const;
 
@@ -121,20 +119,20 @@ class RudderForceModel : public ForceModel
                                                 const double angle //!< Angle between the fluid & the rudder (in radian)
                                                 ) const;
 
-            /**  \brief Calculates speed inside & outside wake
+            /**  \brief Calculates flow velocity at the rudder location booth inside & outside the propeller wake             
              *   \details Ship speed relative to the fluid, in m/s
-              *  \returns Rudder area (in m^2)
+             *  \returns Rudder area (in m^2)
               */
             InOutWake<ssc::kinematics::Point> get_vs(const double CTh, //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
                                                      const double Va,  //!< Projection of the ship speed (relative to the current) on the X-axis of the ship's reference frame (m/s)
                                                      const double v    //!< Projection of the ship speed (relative to the current) on the Y-axis of the ship's reference frame (m/s)
                                                      ) const;
 
-            /**  \brief Calculates the angle of incidence of the fluid, inside & outside wake
+            /**  \brief Calculates the angle of incidence of the fluid at the rudder location
               *  \returns Angle in radian
               */
-            InOutWake<double> get_fluid_angle(const InOutWake<ssc::kinematics::Point>& Vs   //!< Ship speed relative to the fluid, inside & outside wake
-                                              ) const;
+            double get_fluid_angle(    const ssc::kinematics::Point Vs   //!< Ship speed relative to the fluid, inside & outside wake
+    ) const;
 
             /**  \brief Returns propeller diameter
               *  \returns propeller diameter (in m)

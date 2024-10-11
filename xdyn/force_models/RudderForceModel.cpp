@@ -16,7 +16,6 @@
 #include <cmath>
 #define PI M_PI
 
-#define HYPOT(X,Y,Z) sqrt((X)*(X)+(Y)*(Y)+(Z)*(Z))
 #include<algorithm> // for std::max used in get_force
 
 std::string RudderForceModel::model_name() {return "propeller+rudder";}
@@ -64,7 +63,7 @@ RudderForceModel::RudderModel::RudderModel(
 
 double RudderForceModel::RudderModel::get_angle_of_attack(
     const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-    const double fluid_angle   //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
+    const double fluid_angle   //!< Angle of the fluid at the rudder location in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
     ) const
 {
     return rudder_angle-fluid_angle;
@@ -143,41 +142,37 @@ RudderForceModel::InOutWake<ssc::kinematics::Point> RudderForceModel::RudderMode
     return Vs;
 }
 
-RudderForceModel::InOutWake<double> RudderForceModel::RudderModel::get_fluid_angle(
-    const RudderForceModel::InOutWake<ssc::kinematics::Point>& Vs   //!< Ship speed relative to the fluid, inside & outside wake
+double RudderForceModel::RudderModel::get_fluid_angle(
+    const ssc::kinematics::Point Vs   //!< Ship speed relative to the fluid, inside & outside wake
     ) const
 {
-    RudderForceModel::InOutWake<double> angle;
-    angle.in_wake      = atan2(Vs.in_wake.y(), Vs.in_wake.x());
-    angle.outside_wake = atan2(Vs.outside_wake.y(), Vs.outside_wake.x());
-    return angle;
+    return atan2(Vs.y(), Vs.x());
 }
 
 RudderForceModel::InOutWake<ssc::kinematics::Vector6d> RudderForceModel::RudderModel::get_wrench(
     const double rudder_angle,                                      //!< Rudder angle (in radian): positive if rudder on port side
-    const RudderForceModel::InOutWake<double>& fluid_angle,         //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-    const RudderForceModel::InOutWake<ssc::kinematics::Point>& Vs,  //!< Norm of the speed of the ship relative to the fluid (in m/s)
+    const RudderForceModel::InOutWake<ssc::kinematics::Point>& Vs,  //!< Speed of the ship relative to the fluid (in m/s)
     const RudderForceModel::InOutWake<double>& area                 //!< Rudder area (in or outside wake) in m^2
     ) const
 {
     RudderForceModel::InOutWake<ssc::kinematics::Vector6d> ret;
-    ret.in_wake = get_wrench(rudder_angle, fluid_angle.in_wake, (double)Vs.in_wake.v.norm(), area.in_wake);
-    ret.outside_wake = get_wrench(rudder_angle, fluid_angle.outside_wake, (double)Vs.outside_wake.v.norm(), area.outside_wake);
+    ret.in_wake = get_wrench(rudder_angle, Vs.in_wake, area.in_wake);
+    ret.outside_wake = get_wrench(rudder_angle, Vs.outside_wake, area.outside_wake);
     return ret;
 }
 
 ssc::kinematics::Vector6d RudderForceModel::RudderModel::get_wrench(
     const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-    const double fluid_angle,  //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-    const double Vs,           //!< Norm of the speed of the ship relative to the fluid (in m/s)
+    ssc::kinematics::Point Vs,           //!< Speed of the ship relative to the fluid (in m/s)
     const double area          //!< Rudder area (in or outside wake) in m^2
     ) const
 {
+    const double fluid_angle=get_fluid_angle(Vs);
     const double alpha = get_angle_of_attack(rudder_angle, fluid_angle);
     const double Cl = get_Cl(alpha);
-    const double lift = get_lift(Vs, Cl, alpha, area);
-    const double Cd = get_Cd(Vs, Cl);
-    const double drag = get_drag(Vs, Cd, area);
+    const double lift = get_lift(Vs.v.norm(), Cl, alpha, area);
+    const double Cd = get_Cd(Vs.v.norm(), Cl);
+    const double drag = get_drag(Vs.v.norm(), Cd, area);
     return get_force(lift, drag, fluid_angle);
 }
 
@@ -227,10 +222,9 @@ ssc::kinematics::Vector6d RudderForceModel::get_rudder_force(
     const double CTh = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa*DVa);
 
     const double rudder_angle = commands.at("beta");
-    const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v());
-    const InOutWake<double> fluid_angle = rudderModel.get_fluid_angle(Vs);
+    const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v(), T);
     const InOutWake<double> area = rudderModel.get_Ar(CTh);
-    const InOutWake<ssc::kinematics::Vector6d> w = rudderModel.get_wrench(rudder_angle, fluid_angle, Vs, area);//rudder tensor in body frame at rudder location
+    const InOutWake<ssc::kinematics::Vector6d> w = rudderModel.get_wrench(rudder_angle, Vs, area);//rudder tensor in body frame at rudder location
     return w.in_wake + w.outside_wake;
 }
 
