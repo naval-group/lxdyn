@@ -154,8 +154,10 @@ TEST_F(RudderForceModelTest, get_wrench)
     parameters.effective_aspect_ratio_factor = 2.3;
     RudderForceModel::RudderModel riw(parameters,1024,0.75);
     const double area = 1.467;
-    ssc::kinematics::Vector6d v = riw.get_wrench(3,4,0.5,area);
-    ASSERT_DOUBLE_EQ(-2021.4412785509464, v(0));
+    Eigen::Vector3d vs_vec(0.5*cos(4),0.5*sin(4),0);
+    const ssc::kinematics::Point vs_pt("",vs_vec);
+    ssc::kinematics::Vector6d v = riw.get_wrench(3,vs_pt,area);
+    ASSERT_DOUBLE_EQ(-2021.4412785509451, v(0));
     ASSERT_DOUBLE_EQ(1757.2988992064641, v(1));
     ASSERT_DOUBLE_EQ(0, v(2));
     ASSERT_DOUBLE_EQ(0, v(3));
@@ -212,9 +214,8 @@ TEST_F(RudderForceModelTest, get_fluid_angle)
     V.outside_wake.x() = -4;
     V.outside_wake.y() = -4;
     V.outside_wake.z() = a.random<double>();
-    const auto vs = riw.get_fluid_angle(V);
-    ASSERT_DOUBLE_EQ(1.1071487177940904, vs.in_wake);
-    ASSERT_DOUBLE_EQ(-3*PI/4, vs.outside_wake);
+    ASSERT_DOUBLE_EQ(1.1071487177940904, riw.get_fluid_angle(V.in_wake));
+    ASSERT_DOUBLE_EQ(-3*PI/4, riw.get_fluid_angle(V.outside_wake));
 }
 
 TEST_F(RudderForceModelTest, parser)
