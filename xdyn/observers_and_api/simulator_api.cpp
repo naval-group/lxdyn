@@ -41,6 +41,8 @@
 #include "xdyn/force_models/LinearStiffnessForceModel.hpp"
 #include "xdyn/force_models/ManeuveringForceModel.hpp"
 #include "xdyn/force_models/MMGManeuveringForceModel.hpp"
+#include "xdyn/force_models/MMGPropellerForceModel.hpp"
+#include "xdyn/force_models/MMGRudderForceModel.hpp"
 #include "xdyn/force_models/QuadraticDampingForceModel.hpp"
 #include "xdyn/force_models/RadiationDampingForceModel.hpp"
 #include "xdyn/force_models/ResistanceCurveForceModel.hpp"
@@ -99,7 +101,9 @@ SimulatorBuilder get_builder(const YamlSimulatorInput& input, const double t0, c
            .can_parse<LinearFroudeKrylovForceModel>()
            .can_parse<MMGManeuveringForceModel>()
            .can_parse<LinearStiffnessForceModel>()
-           .can_parse<FlettnerRotorForceModel>();
+           .can_parse<FlettnerRotorForceModel>()
+           .can_parse<MMGPropellerForceModel>()
+           .can_parse<MMGRudderForceModel>();
     return builder;
 }
 
