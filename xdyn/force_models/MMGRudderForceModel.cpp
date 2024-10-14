@@ -375,18 +375,18 @@ ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_force(
     const double rudder_angle //!< Rudder angle (in rad)
 ) const
 {
-    ssc::kinematics::Vector6d ret = ssc::kinematics::Vector6d::Zero();
     // Equation (18)
     // First we compute the rudder force without considering the additional force acting on the hull
     // (represented by the coefficients a_H and x_H)
+    ssc::kinematics::Vector6d ret = ssc::kinematics::Vector6d::Zero();
     ret(0) = -(1 - m_tR) * Fn * sin(rudder_angle);
     ret(1) = -Fn * cos(rudder_angle);
     // Then we compute the additional force acting on the hull, represented by the coefficients a_H
     // and x_H
     ssc::kinematics::Vector6d ret_add = ssc::kinematics::Vector6d::Zero();
-    ret_add(2) = -m_aH * Fn * cos(rudder_angle);
+    ret_add(1) = -m_aH * Fn * cos(rudder_angle);
     // This force is located at (x_H-x_R) forward from the rudder location.
-    ret_add(5) = (m_xH - position_of_the_rudder_frame_in_the_body_frame(2)) * ret_add(2);
+    ret_add(5) = (m_xH - position_of_the_rudder_frame_in_the_body_frame(0)) * ret_add(1);
 
     return ret + ret_add;
 }

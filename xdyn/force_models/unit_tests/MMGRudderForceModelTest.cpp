@@ -110,6 +110,18 @@ TEST_F(MMGRudderForceModelTest, parser)
     ASSERT_DOUBLE_EQ(12.6, rudderModel_parser.position_of_the_rudder_frame_in_the_body_frame.z);
 }
 
+TEST_F(MMGRudderForceModelTest, check_name)
+{
+    /*
+    The purpose of this test is to check that the ForceModel name is correct.
+    */
+       // Create environnement
+        EnvironmentAndFrames env = get_env();
+        // Create MMGRudderForceModel object
+        MMGRudderForceModel rudderForceModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),"",env);
+        ASSERT_EQ("MMG propeller+rudder", rudderForceModel.model_name());
+}
+
 TEST_F(MMGRudderForceModelTest, get_angle_of_attack)
 {
     /*
@@ -140,7 +152,7 @@ TEST_F(MMGRudderForceModelTest, get_fluid_angle)
 TEST_F(MMGRudderForceModelTest, get_Ar)
 {
     /*
-    The purpose of this test is to check the non-regression of the function get_Ar
+    The purpose of this test is to check the non-regression of the function get_Ar which computes the rudder area both inside and outside the propeller wake
     */
     const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
     ASSERT_DOUBLE_EQ(9.86/15.8*112.5, rudderModel.get_Ar().in_wake);
@@ -152,26 +164,94 @@ TEST_F(MMGRudderForceModelTest, get_Ar)
 TEST_F(MMGRudderForceModelTest, get_Fn)
 {
     /*
-    The purpose of this test is to check the non-regression of the function get_Fn
+    The purpose of this test is to check the non-regression of the function get_Fn which computes the gradient lift coefficient of the rudder force inside or outside the propeller wake
     */
     const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
     ASSERT_DOUBLE_EQ(0.5*1025*100*100*4.864865162355531*0.5,rudderModel.get_Fn(1025,100,10,30*DEG2RAD));
 }
 
-TEST_F(MMGRudderForceModelTest, get_force)
+TEST_F(MMGRudderForceModelTest, get_force_subfunction)
+{
+    /*
+    The purpose of this test is to check the non-regression of the function RudderForceget::get_force which computes the total rudder tensor inside or outside the propeller wake.
+
+    With a positive rudder angle, the rudder side force is orientated toward the negative y and thus the yaw moment is positive. 
+    */
+    const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
+    
+    ssc::kinematics::Vector6d force=rudderModel.get_force(1000,30*DEG2RAD);
+
+    ASSERT_DOUBLE_EQ(-(1-0.387)*1000*0.5,force(0));
+    ASSERT_DOUBLE_EQ(-(1+0.312)*1000*0.8660254037844386,force(1));
+    ASSERT_DOUBLE_EQ(0,force(2));
+    ASSERT_DOUBLE_EQ(0,force(3));
+    ASSERT_DOUBLE_EQ(0,force(4));
+    ASSERT_DOUBLE_EQ(-1000*0.8660254037844386*0.312*(171.1-148.48),force(5));
+
+}
+
+
+TEST_F(MMGRudderForceModelTest, get_vr_betaR_pos)
+{
+    /*
+    The purpose of this test is to check the non-regression of the function get_vr which computes the effective lateral fluid velocity at the rudder location, with an effective leeway angle $\beta_R$ slightly larger than 0.
+    */
+
+    // Define a 10m/s ship speed with a 30° drift angle in MMG ref (i.e. v<0)
+    BodyStates states;
+    const double t = 0;
+    states.u.record(t, 10*0.8660254037844386);
+    states.v.record(t, -5);
+    // Add a yaw velocity in rad/s
+    states.r.record(t, -0.023);// $\beta_R$>0 <=> r>-0.023045720756967376
+    
+    const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
+
+    double vr = rudderModel.get_vr(states.u(),states.v(),states.r());
+    ASSERT_DOUBLE_EQ(10*0.64*(PI/6-0.71*0.023*320/10),vr);//gamma_R=0.64 as $beta_R$>0
+}
+
+
+TEST_F(MMGRudderForceModelTest, get_vr_betaR_neg)
+{
+    /*
+    The purpose of this test is to check the non-regression of the function get_vr which computes the effective lateral fluid velocity at the rudder location, with an effective leeway angle $\beta_R$ slightly smaller than 0.
+    */
+
+    // Define a 10m/s ship speed with a 30° drift angle in MMG ref (i.e. v<0)
+    BodyStates states;
+    const double t = 0;
+    states.u.record(t, 10*0.8660254037844386);
+    states.v.record(t, -5);
+    // Add a yaw velocity in rad/s
+    states.r.record(t, -0.025);// $\beta_R$>0 <=> r>-0.023045720756967376
+    
+    const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
+
+    double vr = rudderModel.get_vr(states.u(),states.v(),states.r());
+    ASSERT_DOUBLE_EQ(10*0.395*(PI/6-0.71*0.025*320/10),vr);//gamma_R=0.395 as $beta_R$<0
+}
+
+
+TEST_F(MMGRudderForceModelTest, get_vs)
 {
 
 }
 
 TEST_F(MMGRudderForceModelTest, get_wrench)
 {
-
-}
-
-
-TEST_F(MMGRudderForceModelTest, get_Vs)
-{
-
+//     const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
+//     ssc::kinematics::Point vs;
+//     Eigen::Vector3d vs_vec(10*cos(10*DEG2RAD),10*sin(10*DEG2RAD),0);
+//     const ssc::kinematics::Point vs_pt("",vs_vec);
+//     ssc::kinematics::Vector6d force=rudderModel.get_wrench(30*DEG2RAD,vs,100);
+    
+//     ASSERT_DOUBLE_EQ(-(1-0.387)*12466216.978536047,force(0));
+//     ASSERT_DOUBLE_EQ(-(1+0.312)*1000*0.8660254037844386,force(1));
+//     ASSERT_DOUBLE_EQ(0,force(2));
+//     ASSERT_DOUBLE_EQ(0,force(3));
+//     ASSERT_DOUBLE_EQ(0,force(4));
+//     ASSERT_DOUBLE_EQ(-1000*0.8660254037844386*0.312*(171.1-148.48),force(5));
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque)

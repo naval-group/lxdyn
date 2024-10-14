@@ -4433,8 +4433,8 @@ std::string test_data::MMGRudderAndPropeller()
         << "k2: -0.1385\n"
         << "rudder area: {value: 112.5, unit: m^2}\n"//not including horn part, as recommended by MMG
         << "rudder height: {value: 15.8, unit: m}\n"
-        << "xH: {value: -148480, unit: mm}\n"//-0.464*320
-        << "lR: {value: -2272, unit: dm}\n"//-0.71*320
+        << "xH: {value: -148480, unit: mm}\n"//-0.464*320 in meters
+        << "lR: {value: -2272, unit: dm}\n"//-0.71*320 in meters
         << "tR: 0.387\n"
         << "aH: 0.312\n"
         << "gammaR: [0.395,0.640]\n"
