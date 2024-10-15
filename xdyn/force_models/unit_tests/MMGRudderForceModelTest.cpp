@@ -28,18 +28,31 @@ namespace ssc
         template <> MMGRudderForceModel::Yaml TypedScalarDataGenerator<MMGRudderForceModel::Yaml>::get() const
         {
             MMGRudderForceModel::Yaml ret;
-            ret.Ar = random<double>().between(0,1e5);
+            ret.Ar = random<double>();
             ret.b = random<double>();
             ret.xH = random<double>();
             ret.lR = random<double>();
             ret.tR = random<double>();
             ret.aH = random<double>();
-            ret.gammaR[0] = random<double>();
-            ret.gammaR[1] = random<double>();
+            ret.gammaR = {random<double>(),random<double>()};
             ret.epsilon = random<double>();
             ret.kappaMmg = random<double>();
             ret.effective_aspect_ratio = random<double>();
-
+            //ret.position_of_the_rudder_frame_in_the_body_frame
+            
+            //Inherited inputs from AbstractWageningen
+            ret.name = random<std::string>();
+            //ret.position_of_propeller_frame
+            ret.wake_coefficient = random<double>();
+            ret.relative_rotative_efficiency = random<double>();
+            ret.thrust_deduction_factor = random<double>();
+            ret.rotating_clockwise = random<bool>();
+            ret.diameter = random<double>();
+            
+            //Inherited inputs from MMGPropellerForceModel
+            ret.k0 = random<double>();
+            ret.k1 = random<double>();
+            ret.k2 = random<double>();
             return ret;
         }
     }
@@ -78,6 +91,7 @@ TEST_F(MMGRudderForceModelTest, parser)
     /*
     The purpose of this test is to check that the input data are well parsed
     */
+
     const auto rudderModel_parser = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
     ASSERT_EQ("MMG port side propeller", rudderModel_parser.name);
     ASSERT_DOUBLE_EQ(152.73, rudderModel_parser.position_of_propeller_frame.coordinates.x);
@@ -115,11 +129,12 @@ TEST_F(MMGRudderForceModelTest, check_name)
     /*
     The purpose of this test is to check that the ForceModel name is correct.
     */
-       // Create environnement
-        EnvironmentAndFrames env = get_env();
-        // Create MMGRudderForceModel object
-        MMGRudderForceModel rudderForceModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),"",env);
-        ASSERT_EQ("MMG propeller+rudder", rudderForceModel.model_name());
+
+    // Create environnement
+    EnvironmentAndFrames env = get_env();
+    // Create MMGRudderForceModel object
+    const MMGRudderForceModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),"",env);
+    ASSERT_EQ("MMG propeller+rudder", rudderModel.model_name());
 }
 
 TEST_F(MMGRudderForceModelTest, get_angle_of_attack)
@@ -127,9 +142,10 @@ TEST_F(MMGRudderForceModelTest, get_angle_of_attack)
     /*
     The purpose of this test is to check the non-regression of the function get_angle_of_attack (same test than in RudderForceModel).
     */
-        MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),a.random<double>());
-        ASSERT_DOUBLE_EQ(-1,rudderModel.get_angle_of_attack(1, 2));
-        ASSERT_DOUBLE_EQ(1,rudderModel.get_angle_of_attack(2, 1));
+
+    const MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),a.random<double>());
+    ASSERT_DOUBLE_EQ(-1,rudderModel.get_angle_of_attack(1, 2));
+    ASSERT_DOUBLE_EQ(1,rudderModel.get_angle_of_attack(2, 1));
 }
 
 TEST_F(MMGRudderForceModelTest, get_fluid_angle)
@@ -137,6 +153,7 @@ TEST_F(MMGRudderForceModelTest, get_fluid_angle)
     /*
     The purpose of this test is to check the non-regression of the function get_fluid_angle (same test than in RudderForceModel).
     */
+
     const MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),a.random<double>());
     MMGRudderForceModel::InOutWake<ssc::kinematics::Point> V;
     V.in_wake.x() = 1;
@@ -154,6 +171,7 @@ TEST_F(MMGRudderForceModelTest, get_Ar)
     /*
     The purpose of this test is to check the non-regression of the function get_Ar which computes the rudder area both inside and outside the propeller wake
     */
+
     const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
     ASSERT_DOUBLE_EQ(9.86/15.8*112.5, rudderModel.get_Ar().in_wake);
     ASSERT_DOUBLE_EQ(5.94/15.8*112.5, rudderModel.get_Ar().outside_wake);
@@ -166,6 +184,7 @@ TEST_F(MMGRudderForceModelTest, get_Fn)
     /*
     The purpose of this test is to check the non-regression of the function get_Fn which computes the gradient lift coefficient of the rudder force inside or outside the propeller wake
     */
+
     const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
     ASSERT_DOUBLE_EQ(0.5*1025*100*100*4.864865162355531*0.5,rudderModel.get_Fn(1025,100,10,30*DEG2RAD));
 }
@@ -177,6 +196,7 @@ TEST_F(MMGRudderForceModelTest, get_force_subfunction)
 
     With a positive rudder angle, the rudder side force is orientated toward the negative y and thus the yaw moment is positive. 
     */
+
     const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
     
     ssc::kinematics::Vector6d force=rudderModel.get_force(1000,30*DEG2RAD);
