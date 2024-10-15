@@ -4440,7 +4440,7 @@ std::string test_data::MMGRudderAndPropeller()
         << "gammaR: [0.395,0.640]\n"
         << "epsilon: 1.09\n"
         << "kappa: 0.5\n"
-        << "effective aspect ratio: 8.652\n"//It is the rudder lateral area with the horn part which is considered, i.e. 136.7/15.8
+        << "effective aspect ratio: 1.827\n"//It is the rudder lateral area with the horn part which is considered
         << "position of rudder in body frame:\n"//centroïd of the rudder lateral projected area from Rhino
         << "    x: {value: -171.1, unit: m}\n"
         << "    y: {value: 0, unit: m}\n"

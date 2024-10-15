@@ -118,7 +118,7 @@ TEST_F(MMGRudderForceModelTest, parser)
     ASSERT_DOUBLE_EQ(0.640,rudderModel_parser.gammaR[1]);
     ASSERT_DOUBLE_EQ(1.09,rudderModel_parser.epsilon);
     ASSERT_DOUBLE_EQ(0.5,rudderModel_parser.kappaMmg);
-    ASSERT_DOUBLE_EQ(8.652,rudderModel_parser.effective_aspect_ratio);
+    ASSERT_DOUBLE_EQ(1.827,rudderModel_parser.effective_aspect_ratio);
     ASSERT_DOUBLE_EQ(-171.1, rudderModel_parser.position_of_the_rudder_frame_in_the_body_frame.x);
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_the_rudder_frame_in_the_body_frame.y);
     ASSERT_DOUBLE_EQ(12.6, rudderModel_parser.position_of_the_rudder_frame_in_the_body_frame.z);
@@ -184,9 +184,11 @@ TEST_F(MMGRudderForceModelTest, get_Fn)
     /*
     The purpose of this test is to check the non-regression of the function get_Fn which computes the gradient lift coefficient of the rudder force inside or outside the propeller wake
     */
-
-    const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),a.random<double>());
-    ASSERT_DOUBLE_EQ(0.5*1025*100*100*4.864865162355531*0.5,rudderModel.get_Fn(1025,100,10,30*DEG2RAD));
+    
+    MMGRudderForceModel::Yaml parameters = a.random<MMGRudderForceModel::Yaml>();
+    parameters.effective_aspect_ratio = 1.827;
+    const MMGRudderForceModel::RudderModel rudderModel(parameters,a.random<double>());
+    ASSERT_DOUBLE_EQ(0.5*1025*100*100*2.7469977924944815*0.5,rudderModel.get_Fn(1025,100,10,30*DEG2RAD));
 }
 
 TEST_F(MMGRudderForceModelTest, get_force_subfunction)
