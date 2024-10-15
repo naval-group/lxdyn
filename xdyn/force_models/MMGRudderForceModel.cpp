@@ -445,7 +445,7 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
     const double CTh
         = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa * DVa);
 
-    const double rudder_angle = commands.at("beta");
+    const double rudder_angle = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the opposite of the one used in xdyn (positive to starboard)
     const double vR = m_rudderModel.get_vr(states.u(), states.v(), states.r());
     const InOutWake<ssc::kinematics::Point> Vrud = m_rudderModel.get_vs(
         CTh, Va, vR); // flow velocity at rudder location, in & outside the propeller wake
