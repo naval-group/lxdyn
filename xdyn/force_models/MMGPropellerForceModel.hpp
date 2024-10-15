@@ -37,10 +37,15 @@ class MMGPropellerForceModel : public AbstractWageningen
         virtual double get_Kq(const std::map<std::string,double>& commands, const double J) const;//!< inherited function to compute K_Q which is always null here
         virtual double get_wake_factor(const BodyStates& states) const;//!< inherited function to compute the wake factor given the leeway angle
         static std::string model_name();
+        void check(const double J) const;//!< Throw an error message if J is outside its domain of validity
+        double saturate(const double J) const;//!< Correct J if it is outside its domain of validity
 
     private:
         double m_k0;//!< constant term in the second-order polynomial MMG propeller model
         double m_k1;//!< linear term in the second-order polynomial MMG propeller model
         double m_k2;//!< quadratic term in the second-order polynomial MMG propeller model
+        double m_Jmax;//!< maximum J value to have K_T>=0
+
+
 };
 #endif /* MMGPROPELLERFORCEMODEL_HPP */
