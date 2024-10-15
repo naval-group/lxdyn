@@ -255,7 +255,24 @@ TEST_F(MMGRudderForceModelTest, get_vr_betaR_neg)
 
 TEST_F(MMGRudderForceModelTest, get_vs)
 {
+    /*
+    The purpose of this test is to check the non-regression of the function get_vs which computes the fluid velocity at the rudder location both inside and outside the propeller wake
+    */
 
+    MMGRudderForceModel::Yaml parameters = a.random<MMGRudderForceModel::Yaml>();
+    parameters.diameter = 1;
+    parameters.b = 4;
+    parameters.kappaMmg = 0.5;
+    parameters.epsilon = 0.8;
+    const MMGRudderForceModel::RudderModel rudderModel(parameters,1025);
+    const auto vs = rudderModel.get_vs(1.5,10,2);
+
+    ASSERT_DOUBLE_EQ(8*sqrt(0.25*(1+0.5*(sqrt(2.5)-1))*(1+0.5*(sqrt(2.5)-1))+0.75), vs.in_wake.v.x());
+    ASSERT_DOUBLE_EQ(2, vs.in_wake.v.y());
+    ASSERT_DOUBLE_EQ(0, vs.in_wake.v.z());
+    ASSERT_DOUBLE_EQ(10, vs.outside_wake.v.x());
+    ASSERT_DOUBLE_EQ(2, vs.outside_wake.v.y());
+    ASSERT_DOUBLE_EQ(0, vs.outside_wake.v.z());
 }
 
 TEST_F(MMGRudderForceModelTest, get_wrench)

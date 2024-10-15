@@ -328,7 +328,9 @@ MMGRudderForceModel::InOutWake<ssc::kinematics::Point> MMGRudderForceModel::Rudd
 ) const
 {
     MMGRudderForceModel::InOutWake<ssc::kinematics::Point> Vrud;
+    // Equation (40)
     double eta = m_D / m_b; // propeller to rudder ratio
+    // Equation (25) or (46)
     // Ship speed (relative to the current) in the ship's reference frame (m/s)
     Vrud.in_wake.x()
         = m_epsilon * Va * sqrt(eta * pow(1 + m_kappaMmg * (sqrt(1 + CTh) - 1), 2) + 1 - eta);
