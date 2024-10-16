@@ -48,7 +48,7 @@ MMGRudderForceModel::InOutWake<ssc::kinematics::Vector6d> MMGRudderForceModel::R
     get_wrench(
         const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
         const MMGRudderForceModel::InOutWake<ssc::kinematics::Point>&
-            Vs, //!< Speed of the ship relative to the fluid (in m/s)
+            Vs, //!< Speed of the ship relative to the fluid at the rudder location (in m/s)
         const MMGRudderForceModel::InOutWake<double>&
             area //!< Rudder area (in or outside wake) in m^2
     ) const
@@ -395,16 +395,16 @@ ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_force(
 
 ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_wrench(
     const double rudder_angle,       //!< Rudder angle (in radian): positive if rudder on port side
-    const ssc::kinematics::Point Vs, //!< Speed of the ship relative to the fluid (in m/s)
+    const ssc::kinematics::Point Vs, //!< Speed of the ship relative to the fluid at the rudder location (in m/s)
     const double area                //!< Rudder area (in or outside wake) in m^2
 ) const
 {
     double rudder_inflow_angle = get_angle_of_attack(rudder_angle, get_fluid_angle(Vs));
-    double Fn = get_Fn(m_rho, area, Vs.v.norm(), rudder_inflow_angle);
+    double Fn = get_Fn(area, Vs.v.norm(), rudder_inflow_angle);
     return get_force(Fn, rudder_angle);
 }
 
-double MMGRudderForceModel::RudderModel::get_Fn(const double rho, const double area,
+double MMGRudderForceModel::RudderModel::get_Fn(const double area,
                                                 const double speed,
                                                 const double rudder_inflow_angle) const
 {
@@ -412,7 +412,7 @@ double MMGRudderForceModel::RudderModel::get_Fn(const double rho, const double a
     double friction_coeff = 6.13 * m_effective_aspect_ratio / (m_effective_aspect_ratio + 2.25);
 
     // Equation (19)
-    double Fn = 0.5 * rho * area * speed * speed * friction_coeff * sin(rudder_inflow_angle);
+    double Fn = 0.5 * m_rho * area * speed * speed * friction_coeff * sin(rudder_inflow_angle);
 
     return Fn;
 }

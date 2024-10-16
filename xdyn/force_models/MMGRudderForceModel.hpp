@@ -9,7 +9,6 @@
 #define MMGRUDDERFORCEMODEL_HPP_
 
 #include "MMGPropellerForceModel.hpp"
-#include <memory>
 
 class MMGRudderForceModel : public ForceModel
 {
@@ -85,31 +84,31 @@ class MMGRudderForceModel : public ForceModel
          *  \returns force (in Newton)
          */
         double get_Fn(
-            const double rho,                         //!< Fluid density (in kg/(m^3)
-            const double area,                        //!< Rudder area (in m^2)
-            const double speed,                       //!< Norm of the fluid velocity at the rudder location (in m/s)
-            const double rudder_inflow_angle) const;  //!< Effective angle between the rudder and the inflow (in rad)
+            const double area,  //!< Rudder area (in m^2)
+            const double speed, //!< Norm of the fluid velocity at the rudder location (in m/s)
+            const double rudder_inflow_angle)
+            const; //!< Effective angle between the rudder and the inflow (in rad)
 
-        /**  \brief Wrench created by the rudder on the ship, separated into the contributions
-         * inside and outside the propeller wake \details Expressed in body frame at the rudder
-         * location
+        /**  \brief Wrench (tensor) created by the rudder on the ship, separated into the
+         * contributions inside and outside the propeller wake \details Expressed in body frame at
+         * the rudder location
          */
         InOutWake<ssc::kinematics::Vector6d> get_wrench(
             const double
                 rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
             const InOutWake<ssc::kinematics::Point>&
-                Vs, //!< Norm of the speed of the ship relative to the fluid (in m/s)
+                Vs, //!< Speed of the ship relative to the fluid at the rudder location (in m/s)
             const InOutWake<double>& area //!< Rudder area (in or outside wake) in m^2
         ) const;
 
-        /**  \brief Wrench created by the rudder on the ship
-         *   \details Expressed in body frame at the rudder location
+        /**  \brief Wrench (tensor) created by the rudder on the ship inside or outside the
+         * propeller wake \details Expressed in body frame at the rudder location
          */
         ssc::kinematics::Vector6d get_wrench(
             const double
                 rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
             const ssc::kinematics::Point
-                Vs,           //!< Norm of the speed of the ship relative to the fluid (in m/s)
+                Vs, //!< Speed of the ship relative to the fluid at the rudder location (in m/s)
             const double area //!< Rudder area (in or outside wake) in m^2
         ) const;
 
@@ -161,9 +160,9 @@ class MMGRudderForceModel : public ForceModel
         double m_xH;   //!< Longitudinal coordinate of acting point of the additional lateral force
                        //!< (in m)
         double m_lR;   //!< Effective longitudinal coordinate of rudder position in formula of
-                     //!< $\beta_R$ (in m)
-        double m_tR;                  //!< Steering resistance deduction factor
-        double m_aH;                  //!< Rudder force increase factor
+                       //!< $\beta_R$ (in m)
+        double m_tR;   //!< Steering resistance deduction factor
+        double m_aH;   //!< Rudder force increase factor
         std::vector<double> m_gammaR; //!< Flow straightening coefficient (first value for negative
                                       //!< $\beta_R$,second value for positive $\beta_R$)
         double m_epsilon;             //!< Ratio of wake fraction at propeller and rudder positions
