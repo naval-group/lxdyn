@@ -4397,7 +4397,7 @@ std::string test_data::MMGPropeller()
        << "    theta: {value: 0, unit: deg}\n"
        << "    psi: {value: 0, unit: deg}\n"
        << "wake coefficient w: 0.35\n"
-       << "relative rotative efficiency etaR: 1\n"
+       << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary from AbstractWageningen
        << "thrust deduction factor t: 0.22\n"
        << "rotation: clockwise\n"//useless for MMG but necessary from AbstractWageningen
        << "diameter: {value: 9.86, unit: m}\n"
@@ -4410,7 +4410,7 @@ std::string test_data::MMGPropeller()
 std::string test_data::MMGRudderAndPropeller()
 {    
     /*
-    The above data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+    This data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
     */
     std::stringstream ss;
     ss  << "name: MMG port side propeller\n"
@@ -4418,13 +4418,13 @@ std::string test_data::MMGRudderAndPropeller()
         << "position of propeller frame:\n"
         << "    frame: body 1\n"
         << "    x: {value: 152.73, unit: m}\n"//from Rhino 3D at full-scale
-        << "    y: {value: 0, unit: m}\n"//from Rhino 3D at full-scale
-        << "    z: {value: 15, unit: m}\n"//from Rhino 3D at full-scale
+        << "    y: {value: 0, unit: m}\n"
+        << "    z: {value: 0, unit: m}\n"
         << "    phi: {value: 0, unit: rad}\n"
         << "    theta: {value: 0, unit: deg}\n"
         << "    psi: {value: 0, unit: deg}\n"
         << "wake coefficient w: 0.35\n"
-        << "relative rotative efficiency etaR: 1\n"
+        << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary from AbstractWageningen
         << "thrust deduction factor t: 0.22\n"
         << "rotation: clockwise\n"//useless for MMG but necessary from AbstractWageningen
         << "diameter: {value: 9.86, unit: m}\n"
@@ -4441,9 +4441,9 @@ std::string test_data::MMGRudderAndPropeller()
         << "epsilon: 1.09\n"
         << "kappa: 0.5\n"
         << "effective aspect ratio: 1.827\n"//It is the rudder lateral area with the horn part which is considered
-        << "position of rudder in body frame:\n"//centroïd of the rudder lateral projected area from Rhino
-        << "    x: {value: -171.1, unit: m}\n"
+        << "position of rudder in body frame:\n"// Aft perpendicular
+        << "    x: {value: -160, unit: m}\n"
         << "    y: {value: 0, unit: m}\n"
-        << "    z: {value: 12.6, unit: m}\n";
+        << "    z: {value: 0, unit: m}\n";
     return ss.str();
 }
