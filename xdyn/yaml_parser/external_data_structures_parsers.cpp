@@ -380,7 +380,7 @@ void operator >> (const YAML::Node& node, YamlDOF<std::vector<double> >& g)
     }
     else {
         g.howApplied.resize(6);
-        for (int i=0; i<6; ++i) {g.howApplied[i] = 0.;}
+        for (std::size_t i=0; i<6; ++i) {g.howApplied[i] = 0.;}
         switch(g.state)
         {
             case BlockableState::X:
