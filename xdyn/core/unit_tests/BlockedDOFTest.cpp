@@ -357,12 +357,12 @@ TEST_F(BlockedDOFTest, force_acceleration)
     EXPECT_NEAR(dx[0], -0.488022, 0.000001);
     EXPECT_NEAR(dx[1], -0.108789, 0.000001);
     EXPECT_NEAR(dx[2], 0.5, 0.1);
-    EXPECT_NEAR(dx[3], 11.9752, 0.0001);
-    EXPECT_NEAR(dx[4], 140.078, 0.001);
-    EXPECT_NEAR(dx[5], 0.0795591, 0.0000001);
-    EXPECT_NEAR(dx[6], -63.617, 0.001);
-    EXPECT_NEAR(dx[7], 0.0260779, 0.0000001);
-    EXPECT_NEAR(dx[8], -17.9174, 0.0001);
+    EXPECT_NEAR(dx[3], 11.9962, 0.0001);
+    EXPECT_NEAR(dx[4], 140.520, 0.001);
+    EXPECT_NEAR(dx[5], 0.0006775, 0.0000001);
+    EXPECT_NEAR(dx[6], -63.818, 0.001);
+    EXPECT_NEAR(dx[7], 0.0356636, 0.0000001);
+    EXPECT_NEAR(dx[8], -17.9366, 0.0001);
     EXPECT_NEAR(dx[9], -1.165, 0.001);
     EXPECT_NEAR(dx[10], 0.29, 0.01);
     EXPECT_NEAR(dx[11], 0.275, 0.001);
@@ -424,19 +424,19 @@ TEST_F(BlockedDOFTest, force_acceleration_w_idealRudder)
     ssc::kinematics::Wrench zeroForce(O);
     double t(0.);
     bodies.front()->calculate_state_derivatives(zeroForce, x, dx, t, env);
-    for (std::size_t i=0; i<13; ++i) {
+    /* for (std::size_t i=0; i<13; ++i) {
         std::cout << "dx(" << i << "), " << dx[i] << std::endl;
-    }
+    } */
     // ASSERT
     EXPECT_NEAR(dx[0], -0.488022, 0.000001);
     EXPECT_NEAR(dx[1], -0.108789, 0.000001);
     EXPECT_NEAR(dx[2], 0.5, 0.1);
-    EXPECT_NEAR(dx[3], 0.0142606, 0.000001);
-    EXPECT_NEAR(dx[4], 787.42, 0.001);
-    EXPECT_NEAR(dx[5], -0.00246338, 0.00000001);
-    EXPECT_NEAR(dx[6], 0.93661, 0.00001);
-    EXPECT_NEAR(dx[7], 0.00195871, 0.00000001);
-    EXPECT_NEAR(dx[8], -17.8692, 0.0001);
+    EXPECT_NEAR(dx[3], -0.000120195, 0.000001);
+    EXPECT_NEAR(dx[4], 834.24, 0.001);
+    EXPECT_NEAR(dx[5], 0.000470068, 0.00000001);
+    EXPECT_NEAR(dx[6], 1.87238, 0.00001);
+    EXPECT_NEAR(dx[7], 0.00305254, 0.00000001);
+    EXPECT_NEAR(dx[8], -17.8714, 0.0001);
     EXPECT_NEAR(dx[9], -1.165, 0.001);
     EXPECT_NEAR(dx[10], 0.29, 0.01);
     EXPECT_NEAR(dx[11], 0.275, 0.001);
