@@ -10,6 +10,15 @@
 
 #include "MMGPropellerForceModel.hpp"
 
+/** \details This class was created to define the rudder model used in the MMG model
+ * 
+ *  It is based on H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+ * 
+ *  \addtogroup ForceModels
+ *  \ingroup module
+ *  \section 
+ *  \snippet module/unit_tests/MMGRudderForceModelTest.cpp
+ */
 class MMGRudderForceModel : public ForceModel
 {
   public:
@@ -45,26 +54,15 @@ class MMGRudderForceModel : public ForceModel
     static Yaml parse(const std::string& yaml);
     static std::string model_name();
 
-    template <typename T> struct InOutWake
-    {
-        InOutWake()
-            : in_wake()
-            , outside_wake()
-        {
-        }
-        T in_wake;
-        T outside_wake;
-    };
-
     struct RudderModel
     {
         RudderModel(const Yaml& parameters, const double rho);
         virtual ~RudderModel() {}
 
-        /**  \brief Calculates the rudder area (in or outside wake)
+        /**  \brief Returns the rudder area
          *  \returns Rudder area (in m^2)
          */
-        InOutWake<double> get_Ar() const;
+        double get_Ar() const;
 
         /**  \brief Calculates the angle between the fluid flow & the rudder
          *  \details When positive, the flow is coming towards the rudder's port side
@@ -89,43 +87,27 @@ class MMGRudderForceModel : public ForceModel
             const double rudder_inflow_angle)
             const; //!< Effective angle between the rudder and the inflow (in rad)
 
-        /**  \brief Wrench (tensor) created by the rudder on the ship, separated into the
-         * contributions inside and outside the propeller wake \details Expressed in body frame at
-         * the rudder location
-         */
-        InOutWake<ssc::kinematics::Vector6d> get_wrench(
-            const double
-                rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-            const InOutWake<ssc::kinematics::Point>&
-                Vs, //!< Inflow velocity (body frame) relative to the ship at the rudder location in
-                    //!< m/s (in and outside wake)
-            const InOutWake<double>& area //!< Rudder area (in and outside wake) in m^2
-        ) const;
-
-        /**  \brief Wrench (tensor) created by the rudder on the ship inside or outside the
-         * propeller wake \details Expressed in body frame at the rudder location
+        /**  \brief Wrench (tensor) created by the rudder on the ship \details Expressed in body frame at the rudder location
          */
         ssc::kinematics::Vector6d get_wrench(
             const double
                 rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-            const ssc::kinematics::Point Vs, //!< Inflow velocity (body frame) relative to the ship
-                                             //!< at the rudder location in m/s (in or outside wake)
-            const double area                //!< Rudder area (in or outside wake) in m^2
+            const ssc::kinematics::Point Vs, //!< Mean inflow velocity (body frame) relative to the ship
+                                             //!< at the rudder location in m/s
+            const double area                //!< Rudder area in m^2
         ) const;
 
-        /**  \brief Tota wrench created by the rudder on the ship, considering the contributions
-         * inside and outside the propeller wake \details Expressed in body frame at the rudder
+        /**  \brief Tota wrench created by the rudder on the ship \details Expressed in body frame at the rudder
          * location
          */
         ssc::kinematics::Vector6d get_force(const double Fn, //!< Norm of the rudder force (in N)
                                             const double rudder_angle //!< Rudder angle (in rad)
         ) const;
 
-        /**  \brief Calculates the flow velocity relative to the ship at the rudder location both inside
-         * & outside the propeller wake \returns Flow velocity relative to the ship at the rudder
-         * location in m/s, both inside and outside the propeller wake
+        /**  \brief Calculates the mean inflow velocity relative to the ship at the rudder location \returns Mean inlow velocity relative to the ship at the rudder
+         * location in m/s
          */
-        InOutWake<ssc::kinematics::Point> get_vs(
+        ssc::kinematics::Point get_vs(
             const double CTh, //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual",
                               //!< J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
             const double Va,  //!< Longitudinal inflow velocity (body frame) at the propeller
@@ -141,7 +123,7 @@ class MMGRudderForceModel : public ForceModel
          */
         double get_fluid_angle(
             const ssc::kinematics::Point Vs //!< Inflow velocity relative to the ship in body frame
-                                            //!< (m/s), inside & outside wake
+                                            //!< (m/s)
         ) const;
 
         /**  \brief Returns propeller diameter
@@ -182,7 +164,6 @@ class MMGRudderForceModel : public ForceModel
   private:
     MMGPropellerForceModel m_propulsionModel; //!< Propeller model
     RudderModel m_rudderModel;                //!< Rudder model
-    double m_wakeFactor;                      //!< Wake fraction
     // These variables are computed at each time step and stored for outputting
     std::unique_ptr<Wrench>
         m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame

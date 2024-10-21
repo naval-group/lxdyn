@@ -39,26 +39,10 @@ double MMGRudderForceModel::RudderModel::get_angle_of_attack(
 
 double MMGRudderForceModel::RudderModel::get_fluid_angle(
     const ssc::kinematics::Point
-        Vs //!< Inflow velocity relative to the ship in body frame (m/s), inside & outside wake
+        Vs //!< Inflow velocity relative to the ship in body frame (m/s)
 ) const
 {
     return atan2(Vs.y(), Vs.x());
-}
-
-MMGRudderForceModel::InOutWake<ssc::kinematics::Vector6d> MMGRudderForceModel::RudderModel::
-    get_wrench(
-        const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-        const MMGRudderForceModel::InOutWake<ssc::kinematics::Point>&
-            Vs, //!< Inflow velocity (body frame) relative to the ship at the rudder location in m/s
-                //!< (in and outside wake)
-        const MMGRudderForceModel::InOutWake<double>&
-            area //!< Rudder area (in and outside wake) in m^2
-    ) const
-{
-    MMGRudderForceModel::InOutWake<ssc::kinematics::Vector6d> ret;
-    ret.in_wake = get_wrench(rudder_angle, Vs.in_wake, area.in_wake);
-    ret.outside_wake = get_wrench(rudder_angle, Vs.outside_wake, area.outside_wake);
-    return ret;
 }
 
 Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
@@ -320,7 +304,7 @@ MMGRudderForceModel::RudderModel::RudderModel(const Yaml& parameters_, const dou
 {
 }
 
-MMGRudderForceModel::InOutWake<ssc::kinematics::Point> MMGRudderForceModel::RudderModel::get_vs(
+ssc::kinematics::Point MMGRudderForceModel::RudderModel::get_vs(
     const double CTh, //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual",
                       //!< J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
     const double
@@ -332,16 +316,14 @@ MMGRudderForceModel::InOutWake<ssc::kinematics::Point> MMGRudderForceModel::Rudd
     Warning: Va and vR are the x and y components (in body frame) of a fluid velocity, not a ship
     velocity ! vR is therefore of opposite sign than ship lateral velocity v.
     */
-    MMGRudderForceModel::InOutWake<ssc::kinematics::Point> Vrud;
+    ssc::kinematics::Point Vrud;
     // Equation (40)
     double eta = m_D / m_b; // propeller to rudder ratio
     // Equation (25) or (46)
     // Ship speed (relative to the current) in the ship's reference frame (m/s)
-    Vrud.in_wake.x()
+    Vrud.x()
         = m_epsilon * Va * sqrt(eta * pow(1 + m_kappaMmg * (sqrt(1 + CTh) - 1), 2) + 1 - eta);
-    Vrud.in_wake.y() = vR;
-    Vrud.outside_wake.x() = Va;
-    Vrud.outside_wake.y() = vR;
+    Vrud.y() = vR;
     return Vrud;
 }
 
@@ -368,13 +350,9 @@ double MMGRudderForceModel::RudderModel::get_vr(const double u, const double vm,
     return vR;
 }
 
-MMGRudderForceModel::InOutWake<double> MMGRudderForceModel::RudderModel::get_Ar() const
+double MMGRudderForceModel::RudderModel::get_Ar() const
 {
-    // Equation (40)
-    InOutWake<double> ar;
-    ar.in_wake = m_D / m_b * m_Ar;
-    ar.outside_wake = m_Ar - ar.in_wake;
-    return ar;
+    return m_Ar;
 }
 
 ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_force(
@@ -400,9 +378,9 @@ ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_force(
 
 ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_wrench(
     const double rudder_angle,       //!< Rudder angle (in radian): positive if rudder on port side
-    const ssc::kinematics::Point Vs, //!< Inflow velocity (body frame) relative to the ship at the
-                                     //!< rudder location in m/s (in or outside wake)
-    const double area                //!< Rudder area (in or outside wake) in m^2
+    const ssc::kinematics::Point Vs, //!< Mean inflow velocity (body frame) relative to the ship at the
+                                     //!< rudder location in m/s
+    const double area                //!< Rudder area in m^2
 ) const
 {
     double rudder_inflow_angle = get_angle_of_attack(rudder_angle, get_fluid_angle(Vs));
@@ -428,7 +406,6 @@ MMGRudderForceModel::MMGRudderForceModel(const Yaml& input_, const std::string& 
                  body_name_, env)
     , m_propulsionModel(MMGPropellerForceModel(input_, body_name_, env))
     , m_rudderModel(input_, env.rho)
-    , m_wakeFactor(input_.wake_coefficient)
     , m_propeller_wrench_internal_frame_at_P(
           new Wrench(ssc::kinematics::Point(input_.position_of_propeller_frame.frame, 0, 0, 0)))
     , m_propeller_wrench_body_frame_at_Ob(new Wrench(ssc::kinematics::Point(body_name, 0, 0, 0)))
@@ -443,7 +420,7 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
     const std::map<std::string, double>& commands, const double T) const
 {
     // Equation (41)
-    const double Va = states.u() * (1 - m_wakeFactor);
+    const double Va = states.u() * (1 - m_propulsionModel.get_wake_factor(states));
     const double DVa = m_rudderModel.get_D() * Va;
     // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p.
     // 84, eq. 1.2.20
@@ -454,14 +431,9 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
         = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the
                                 // opposite of the one used in xdyn (positive to starboard)
     const double vR = m_rudderModel.get_vr(states.u(), states.v(), states.r());
-    const InOutWake<ssc::kinematics::Point> Vrud = m_rudderModel.get_vs(
-        CTh, Va, vR); // flow velocity at rudder location, in & outside the propeller wake
-    // Equation (21)
-    const InOutWake<double> area
-        = m_rudderModel.get_Ar(); // rudder area, in & outside the propeller wake
-    const InOutWake<ssc::kinematics::Vector6d> w
-        = m_rudderModel.get_wrench(rudder_angle, Vrud, area);
-    return w.in_wake + w.outside_wake;
+    ssc::kinematics::Point Vrud = m_rudderModel.get_vs(
+        CTh, Va, vR); // mean inflow velocity at rudder location
+    return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar());
 }
 
 MMGRudderForceModel::Yaml MMGRudderForceModel::parse(const std::string& yaml)
