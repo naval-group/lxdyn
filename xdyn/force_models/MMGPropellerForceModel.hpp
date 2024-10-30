@@ -16,7 +16,7 @@
  * 
  *  \addtogroup ForceModels
  *  \ingroup module
- *  \section ex1 Example
+ *  \section 
  *  \snippet module/unit_tests/MMGPropellerForceModelTest.cpp
  */
 class MMGPropellerForceModel : public AbstractWageningen
@@ -29,23 +29,27 @@ class MMGPropellerForceModel : public AbstractWageningen
             double k0;
             double k1;
             double k2;
+            double C1;
+            std::vector<double> C2;
         };
         MMGPropellerForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
         static Yaml parse(const std::string& yaml);
 
         virtual double get_Kt(const std::map<std::string,double>& commands, const double J) const;//!< inherited function to compute K_T given J
         virtual double get_Kq(const std::map<std::string,double>& commands, const double J) const;//!< inherited function to compute K_Q which is always null here
-        virtual double get_wake_factor(const BodyStates& states) const;//!< inherited function to compute the wake factor given the leeway angle
+        virtual double get_wake_factor(const BodyStates& states) const;//!< inherited function to compute the wake factor
         static std::string model_name();
         void check(const double J) const;//!< Throw an error message if J is outside its domain of validity
         double saturate(const double J) const;//!< Correct J if it is outside its domain of validity
+        double get_longitudinal_position_in_body_frame() const;//!< Returns the x-coordinate of the propeller location in body frame
 
     private:
         double m_k0;//!< constant term in the second-order polynomial MMG propeller model
         double m_k1;//!< linear term in the second-order polynomial MMG propeller model
         double m_k2;//!< quadratic term in the second-order polynomial MMG propeller model
+        double m_C1;//!< Experimental constants for wake factor tuning with leeway
+        std::vector<double> m_C2;//!< Experimental constants for wake factor tuning with leeway. First value for $\beta_P<0$, second value for $\beta_P>0$
+        double m_longitudinal_position_of_propeller_in_body_frame;//!< x-coordinate of the propeller location in body frame
         double m_Jmax;//!< maximum J value to have K_T>=0
-
-
 };
 #endif /* MMGPROPELLERFORCEMODEL_HPP */

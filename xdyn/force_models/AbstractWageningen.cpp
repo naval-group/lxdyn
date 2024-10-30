@@ -61,7 +61,7 @@ double AbstractWageningen::get_advance_speed(const BodyStates& states, const dou
 
 double AbstractWageningen::get_advance_ratio(const std::map<std::string,double>& commands, const double Va) const
 {
-    const double n = commands.at("rpm")/(2*PI);
+    const double n = commands.at("rpm")/(2*PI);// in rps (turns per second)
     return Va/n/D;
 }
 
