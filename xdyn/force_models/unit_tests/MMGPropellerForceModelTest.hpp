@@ -10,6 +10,7 @@
 
 #include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
+#include "xdyn/core/EnvironmentAndFrames.hpp"
 
 class MMGPropellerForceModelTest : public ::testing::Test
 {
@@ -19,6 +20,7 @@ class MMGPropellerForceModelTest : public ::testing::Test
         virtual void SetUp();
         virtual void TearDown();
         ssc::random_data_generator::DataGenerator a;
+        EnvironmentAndFrames get_env();
 };
 
 #endif  /* MMGPROPELLERFORCEMODELTEST_HPP_ */

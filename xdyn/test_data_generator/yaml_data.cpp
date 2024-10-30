@@ -4390,20 +4390,22 @@ std::string test_data::MMGPropeller()
        << "model: MMG propeller\n"
        << "position of propeller frame:\n"
        << "    frame: mesh(body 1)\n"
-       << "    x: {value: -171, unit: m}\n"//from Rhino 3D at full-scale
+       << "    x: {value: -160, unit: m}\n"//from Rhino 3D at full-scale
        << "    y: {value: 0, unit: m}\n"//from Rhino 3D at full-scale
-       << "    z: {value: 12.6, unit: m}\n"//from Rhino 3D at full-scale
+       << "    z: {value: 0, unit: m}\n"//from Rhino 3D at full-scale
        << "    phi: {value: 0, unit: rad}\n"
        << "    theta: {value: 0, unit: deg}\n"
        << "    psi: {value: 0, unit: deg}\n"
        << "wake coefficient w: 0.35\n"
-       << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary from AbstractWageningen
+       << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary for AbstractWageningen
        << "thrust deduction factor t: 0.22\n"
-       << "rotation: clockwise\n"//useless for MMG but necessary from AbstractWageningen
+       << "rotation: clockwise\n"//useless for MMG but necessary for AbstractWageningen
        << "diameter: {value: 9.86, unit: m}\n"
        << "k0: 0.2931\n"
        << "k1: -0.2753\n"
-       << "k2: -0.1385\n";
+       << "k2: -0.1385\n"
+       << "C1: 2.0\n"
+       << "C2: [1.1, 1.6]\n";
     return ss.str();
 }
 
@@ -4417,21 +4419,23 @@ std::string test_data::MMGRudderAndPropeller()
            "model: MMG propeller+rudder\n"
         << "position of propeller frame:\n"
         << "    frame: body 1\n"
-        << "    x: {value: 152.73, unit: m}\n"//from Rhino 3D at full-scale
+        << "    x: {value: -152.73, unit: m}\n"//from Rhino 3D at full-scale
         << "    y: {value: 0, unit: m}\n"
         << "    z: {value: 0, unit: m}\n"
         << "    phi: {value: 0, unit: rad}\n"
         << "    theta: {value: 0, unit: deg}\n"
         << "    psi: {value: 0, unit: deg}\n"
         << "wake coefficient w: 0.35\n"
-        << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary from AbstractWageningen
+        << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary for AbstractWageningen
         << "thrust deduction factor t: 0.22\n"
-        << "rotation: clockwise\n"//useless for MMG but necessary from AbstractWageningen
+        << "rotation: clockwise\n"//useless for MMG but necessary for AbstractWageningen
         << "diameter: {value: 9.86, unit: m}\n"
         << "k0: 0.2931\n"
         << "k1: -0.2753\n"
         << "k2: -0.1385\n"
-        << "rudder area: {value: 112.5, unit: m^2}\n"//not including horn part, as recommended by MMG
+        << "C1: 2.0\n"
+        << "C2: [1.1, 1.6]\n"        
+       << "rudder area: {value: 112.5, unit: m^2}\n"//not including horn part, as recommended by MMG
         << "rudder height: {value: 15.8, unit: m}\n"
         << "xH: {value: -148480, unit: mm}\n"//-0.464*320 in meters
         << "lR: {value: -2272, unit: dm}\n"//-0.71*320 in meters
