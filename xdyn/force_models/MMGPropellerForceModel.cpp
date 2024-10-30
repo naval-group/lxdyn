@@ -100,7 +100,15 @@ double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
     // Equation (16)
     double ratio= 1+(1-exp(-m_C1*abs(beta_P)))*(C2-1);
     
-    return 1-(1-w)*ratio;
+    double wake_fac=1-(1-w)*ratio;
+
+    if (wake_fac<0)
+    {
+        wake_fac=0;
+        std::cerr << "Warning: the computed wake factor is negative! Saturated to 0 to continue simulation." << std::endl;
+    }
+
+    return wake_fac;
 } 
 
 void MMGPropellerForceModel::check(const double J) const

@@ -135,7 +135,7 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
 
     // Define one state
     BodyStates states;
-    // Define a 30° drift angle with SOG=2 m/s
+    // Define a 30° drift angle with SOG= 2 m/s
     states.u.record(0, 1.7320508075688772);
     states.v.record(0, -1.);
 
@@ -159,12 +159,20 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_DOUBLE_EQ(1-0.65*(1+(1-exp(-PI/3))*0.1),wake_fac);
 
-    // Define a -30° drift angle with SOG=2 m/s
+    // Define a -30° drift angle with SOG= 2 m/s
     states.v.record(0, 1.);
     // If r=-PI/480 then $\beta_P$=-PI/3 and C2=1.1
     states.r.record(0, -PI/480);
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_DOUBLE_EQ(1-0.65*(1+(1-exp(-2*PI/3))*0.1),wake_fac);
+
+    // Define a 90° drift angle so that the computed wake factor is negative and is therefore replaced by zero 
+    // SOG= 2 m/s
+    states.u.record(0, 0);
+    states.v.record(0, -2);
+    states.r.record(0, 0);
+    wake_fac=propModel.get_wake_factor(states);
+    ASSERT_DOUBLE_EQ(0,wake_fac);
 }
 
 TEST_F(MMGPropellerForceModelTest, check_kt_calculation)
