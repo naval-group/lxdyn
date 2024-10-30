@@ -89,7 +89,7 @@ TEST_F(MMGRudderForceModelTest, parser)
 
     const auto rudderModel_parser = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
     ASSERT_EQ("MMG port side propeller", rudderModel_parser.name);
-    ASSERT_DOUBLE_EQ(152.73, rudderModel_parser.position_of_propeller_frame.coordinates.x);
+    ASSERT_DOUBLE_EQ(-152.73, rudderModel_parser.position_of_propeller_frame.coordinates.x);
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_propeller_frame.coordinates.y);
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_propeller_frame.coordinates.z);
     ASSERT_EQ(BODY, rudderModel_parser.position_of_propeller_frame.frame);
@@ -154,15 +154,11 @@ TEST_F(MMGRudderForceModelTest, get_fluid_angle)
 
     const MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),
                                                        a.random<double>());
-    MMGRudderForceModel::InOutWake<ssc::kinematics::Point> V;
-    V.in_wake.x() = 1;
-    V.in_wake.y() = 2;
-    V.in_wake.z() = a.random<double>();
-    V.outside_wake.x() = -4;
-    V.outside_wake.y() = -4;
-    V.outside_wake.z() = a.random<double>();
-    ASSERT_DOUBLE_EQ(1.1071487177940904, rudderModel.get_fluid_angle(V.in_wake));
-    ASSERT_DOUBLE_EQ(-3 * PI / 4, rudderModel.get_fluid_angle(V.outside_wake));
+    ssc::kinematics::Point V;
+    V.x() = 1;
+    V.y() = 2;
+    V.z() = a.random<double>();
+    ASSERT_DOUBLE_EQ(1.1071487177940904, rudderModel.get_fluid_angle(V));
 }
 
 TEST_F(MMGRudderForceModelTest, get_Ar)
@@ -174,8 +170,7 @@ TEST_F(MMGRudderForceModelTest, get_Ar)
 
     const MMGRudderForceModel::RudderModel rudderModel(
         MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
-    ASSERT_DOUBLE_EQ(9.86 / 15.8 * 112.5, rudderModel.get_Ar().in_wake);
-    ASSERT_DOUBLE_EQ(5.94 / 15.8 * 112.5, rudderModel.get_Ar().outside_wake);
+    ASSERT_DOUBLE_EQ(112.5, rudderModel.get_Ar());
 }
 
 TEST_F(MMGRudderForceModelTest, get_Fn)
@@ -278,15 +273,11 @@ TEST_F(MMGRudderForceModelTest, get_vs)
     parameters.epsilon = 0.8;
     const MMGRudderForceModel::RudderModel rudderModel(parameters, 1025);
     const auto vs = rudderModel.get_vs(1.5, 10, 2);
-
     ASSERT_DOUBLE_EQ(
         8 * sqrt(0.25 * (1 + 0.5 * (sqrt(2.5) - 1)) * (1 + 0.5 * (sqrt(2.5) - 1)) + 0.75),
-        vs.in_wake.v.x());
-    ASSERT_DOUBLE_EQ(2, vs.in_wake.v.y());
-    ASSERT_DOUBLE_EQ(0, vs.in_wake.v.z());
-    ASSERT_DOUBLE_EQ(10, vs.outside_wake.v.x());
-    ASSERT_DOUBLE_EQ(2, vs.outside_wake.v.y());
-    ASSERT_DOUBLE_EQ(0, vs.outside_wake.v.z());
+        vs.v.x());
+    ASSERT_DOUBLE_EQ(2, vs.v.y());
+    ASSERT_DOUBLE_EQ(0, vs.v.z());
 }
 
 TEST_F(MMGRudderForceModelTest, get_wrench_double)
@@ -313,52 +304,6 @@ TEST_F(MMGRudderForceModelTest, get_wrench_double)
     ASSERT_DOUBLE_EQ(-7039181.843267109 * cos(25*DEG2RAD) * 0.312 * (160- 148.48), force(5));
 }
 
-TEST_F(MMGRudderForceModelTest, get_wrench_InOutWake)
-{
-    /*
-    The purpose of this test is to check the non-regression of the function
-    get_wrench which computes the total rudder tensor inside and outside the propeller wake, given a rudder velocity, a rudder area and a rudder angle.
-    */
-
-    const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), 1025);
-    
-    // Define empty InOutWake quantities
-    MMGRudderForceModel::InOutWake<ssc::kinematics::Point> Vrud_total;
-    MMGRudderForceModel::InOutWake<double> Area_total;
-
-    // Define in-wake fluid velocity : 10 m/s with a -5° (idem test get_wrench_double)
-    Vrud_total.in_wake.x()=10 * cos(5 * DEG2RAD);
-    Vrud_total.in_wake.y()=-10 * sin(5 * DEG2RAD);
-    Vrud_total.in_wake.z()=0;
-    // Define outside-wake fluid velocity : 11 m/s with a 0°
-    Vrud_total.outside_wake.x()=11;
-    Vrud_total.outside_wake.y()=0;
-    Vrud_total.outside_wake.z()=0;
-    // Define in-wake rudder area : 100m2
-    Area_total.in_wake=100;
-    // Define outside-wake rudder area : 50m2
-    Area_total.outside_wake=50;
-
-    /*
-    We define a 25° rudder angle. 
-    In wake: we have a -5° inflow angle at the rudder location, which gives a 30° rudder angle of attack. With a 100m2 rudder area and a 10m/s fluid velocity: Fn=7039181.843267109 (idem test get_wrench_double)
-    Outside wake: we have a 0 inflow angle at the rudder location, which gives a 25° rudder angle of attack. With a 50m2 rudder area and a 11m/s fluid velocity: Fn=3599613.021560668 
-    */
-    MMGRudderForceModel::InOutWake<ssc::kinematics::Vector6d> force = rudderModel.get_wrench(25*DEG2RAD, Vrud_total, Area_total);
-    ASSERT_DOUBLE_EQ(-(1 - 0.387) * 7039181.843267109*sin(25*DEG2RAD), force.in_wake(0));
-    ASSERT_DOUBLE_EQ(-(1 + 0.312) * 7039181.843267109 * cos(25*DEG2RAD), force.in_wake(1));
-    ASSERT_DOUBLE_EQ(0, force.in_wake(2));
-    ASSERT_DOUBLE_EQ(0, force.in_wake(3));
-    ASSERT_DOUBLE_EQ(0, force.in_wake(4));
-    ASSERT_DOUBLE_EQ(-7039181.843267109 * cos(25*DEG2RAD) * 0.312 * (160 - 148.48), force.in_wake(5));
-    ASSERT_DOUBLE_EQ(-(1 - 0.387) * 3599613.021560668 *sin(25*DEG2RAD), force.outside_wake(0));
-    ASSERT_DOUBLE_EQ(-(1 + 0.312) * 3599613.021560668  * cos(25*DEG2RAD), force.outside_wake(1));
-    ASSERT_DOUBLE_EQ(0, force.outside_wake(2));
-    ASSERT_DOUBLE_EQ(0, force.outside_wake(3));
-    ASSERT_DOUBLE_EQ(0, force.outside_wake(4));
-    ASSERT_DOUBLE_EQ(-3599613.021560668  * cos(25*DEG2RAD) * 0.312 * (160 - 148.48), force.outside_wake(5));
-}
-
 TEST_F(MMGRudderForceModelTest, force_and_torque)
 {
     /*
@@ -377,22 +322,22 @@ TEST_F(MMGRudderForceModelTest, force_and_torque)
     const double t = 0;
     states.u.record(0, 8);
     states.v.record(0, 1);
-    states.r.record(0, 0.1);
+    states.r.record(0, 0.01);
     // Create commands
     std::map<std::string, double> commands;
-    commands["rpm"] = 100*2*PI/60; //70 rpm = 70*2*PI/60 rps
+    commands["rpm"] = 70*2*PI/60; //70 rpm = 70*2*PI/60 rad/s
     commands["P/D"] = 1.2;//useless for MMG propeller but necessary for AbstractWageningen
     commands["beta"] = 10*DEG2RAD;
 
     const auto rudderTensor = rudderModel.get_force(states, t, env, commands);
 
     // We compare the two tensors which are both expressed in body frame
-    ASSERT_DOUBLE_EQ(90776.920493479352, rudderTensor.X());
-    ASSERT_DOUBLE_EQ(47405471.852811106, rudderTensor.Y());
+    ASSERT_DOUBLE_EQ(1068003.9043270403, rudderTensor.X());
+    ASSERT_DOUBLE_EQ(2868941.6534986021, rudderTensor.Y());
     ASSERT_DOUBLE_EQ(0, rudderTensor.Z());
     ASSERT_DOUBLE_EQ(0, rudderTensor.K());
     ASSERT_DOUBLE_EQ(0, rudderTensor.M());
-    ASSERT_DOUBLE_EQ(-14695245344.273331, rudderTensor.N());
+    ASSERT_DOUBLE_EQ(-12997705.174082102, rudderTensor.N());
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
@@ -416,22 +361,22 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
     const double t = 0;
     states.u.record(0, 8);
     states.v.record(0, 1);
-    states.r.record(0, 0.1);
+    states.r.record(0, 0.01);
     // Create commands
     std::map<std::string, double> commands;
     commands["beta"] = PI/6;
 
-    // Define a propeller thrust with rho=1025, K_T=0.5, n=70 rpm, t=0.2 and D=9
+    // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm, t=0.2 and D=9
     const double prop_thrust=0.8*1024*pow(70/60,2)*pow(9,4)*0.5;
 
     const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
 
-    ASSERT_DOUBLE_EQ(-11426950.967574585, rudderTensor(0));
-    ASSERT_DOUBLE_EQ(42360819.351853237, rudderTensor(1));
+    ASSERT_DOUBLE_EQ(-1698918.4794772132, rudderTensor(0));
+    ASSERT_DOUBLE_EQ(6298056.1487378832, rudderTensor(1));
     ASSERT_DOUBLE_EQ(0, rudderTensor(2));
     ASSERT_DOUBLE_EQ(0, rudderTensor(3));
     ASSERT_DOUBLE_EQ(0, rudderTensor(4));
-    ASSERT_DOUBLE_EQ(116047981.20976, rudderTensor(5));
+    ASSERT_DOUBLE_EQ(17253601.625030234, rudderTensor(5));
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_with_phi)

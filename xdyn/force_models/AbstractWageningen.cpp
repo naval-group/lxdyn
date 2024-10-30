@@ -61,7 +61,7 @@ double AbstractWageningen::get_advance_speed(const BodyStates& states, const dou
 
 double AbstractWageningen::get_advance_ratio(const std::map<std::string,double>& commands, const double Va) const
 {
-    const double n = commands.at("rpm")/(2*PI);// in rps (turns per second)
+    const double n = commands.at("rpm")/(2*PI);// n in rps (turns per second)
     return Va/n/D;
 }
 
@@ -95,7 +95,7 @@ Wrench AbstractWageningen::get_pure_thrust_force(const BodyStates& states, const
 Wrench AbstractWageningen::get_force(const BodyStates& states, const double t_, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const
 {
     Wrench tau(ssc::kinematics::Point(name,0,0,0), name);
-    const double n2 = commands.at("rpm")*commands.at("rpm")/(4*PI*PI); // In turns per second (Hz)
+    const double n2 = commands.at("rpm")*commands.at("rpm")/(4*PI*PI); // n in rps (turns per second)
     const double Va = get_advance_speed(states, t_, env);
     const double J = get_advance_ratio(commands, Va);
     // The thrust deduction factor is only meaningful if the propeller axis is parallel to the body X-axis
