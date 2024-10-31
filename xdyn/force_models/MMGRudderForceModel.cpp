@@ -12,8 +12,6 @@
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-#define _USE_MATH_DEFINE
-#include <cmath>
 #define PI M_PI
 
 ///////////////////////////////////////////////////////////////
@@ -333,7 +331,7 @@ double MMGRudderForceModel::RudderModel::get_vr(const double u, const double vm,
     double beta = atan2(-vm, u); // hull drift angle at midship, as defined in MMG
     double U = sqrt(u * u + vm * vm);
     // Equation (24)
-    double betaR = beta - m_lR * r / U;
+    double betaR = MMGPropellerForceModel::wrapToPi(beta - m_lR * r / U);
 
     // Define which value of $\gamma_R$ is to be used
     double signedGammaR;

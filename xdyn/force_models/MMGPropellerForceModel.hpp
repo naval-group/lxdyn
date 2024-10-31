@@ -42,6 +42,7 @@ class MMGPropellerForceModel : public AbstractWageningen
         void check(const double J) const;//!< Throw an error message if J is outside its domain of validity
         double saturate(const double J) const;//!< Correct J if it is outside its domain of validity
         double get_longitudinal_position_in_body_frame() const;//!< Returns the x-coordinate of the propeller location in body frame
+        static double wrapToPi(double x);//!< Wrap an angle into]-PI,PI]
 
     private:
         double m_k0;//!< constant term in the second-order polynomial MMG propeller model

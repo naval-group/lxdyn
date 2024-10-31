@@ -74,6 +74,22 @@ EnvironmentAndFrames MMGPropellerForceModelTest::get_env()
     return env;
 }
 
+TEST_F(MMGPropellerForceModelTest, wrapToPi)
+{
+    /*
+    The purpose of this test is to check that the function wrapToPi returns an angle value between ]-PI,PI]
+    */
+
+    // ASSERT_NEAR is used instead of ASSERT_DOUBLE_EQ because of the function fmod which is used in wrapToPi
+    ASSERT_NEAR(PI/3, MMGPropellerForceModel::wrapToPi(PI/3),EPS);
+    ASSERT_NEAR(PI, MMGPropellerForceModel::wrapToPi(PI),EPS);
+    ASSERT_NEAR(PI, MMGPropellerForceModel::wrapToPi(-PI),EPS);
+    ASSERT_NEAR(-2*PI/3, MMGPropellerForceModel::wrapToPi(-2*PI/3),EPS);    
+    ASSERT_NEAR(PI/3, MMGPropellerForceModel::wrapToPi(PI/3+2*PI),EPS);
+    ASSERT_NEAR(-2*PI/3, MMGPropellerForceModel::wrapToPi(PI/3+PI),EPS);
+    ASSERT_NEAR(2*PI/3, MMGPropellerForceModel::wrapToPi(-PI/3+PI),EPS);
+}
+
 TEST_F(MMGPropellerForceModelTest, parser)
 {
     /*
@@ -142,29 +158,29 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     // If r=0 $\beta_P=\beta$=PI/6>0 and C2=1.6
     states.r.record(0, 0);
     double wake_fac=propModel.get_wake_factor(states);
-    ASSERT_DOUBLE_EQ(1-0.65*(1+(1-exp(-PI/3))*0.6),wake_fac);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-PI/3))*0.6),wake_fac,EPS);
     
     // If r=-PI/480 then $\beta_P$=0 (C2=1.6 but it is not used)
     states.r.record(0, -PI/480);
     wake_fac=propModel.get_wake_factor(states);
-    ASSERT_DOUBLE_EQ(0.35,wake_fac);
+    ASSERT_NEAR(0.35,wake_fac,EPS);
 
     // If r=PI/480 then $\beta_P$=PI/3>0 and C2=1.6
     states.r.record(0, PI/480);
     wake_fac=propModel.get_wake_factor(states);
-    ASSERT_DOUBLE_EQ(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac,EPS);
 
     // If r=-PI/240 then $\beta_P$=-PI/6<0 and C2=1.1
     states.r.record(0, -PI/240);
     wake_fac=propModel.get_wake_factor(states);
-    ASSERT_DOUBLE_EQ(1-0.65*(1+(1-exp(-PI/3))*0.1),wake_fac);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-PI/3))*0.1),wake_fac,EPS);
 
     // Define a -30° drift angle with SOG= 2 m/s
     states.v.record(0, 1.);
     // If r=-PI/480 then $\beta_P$=-PI/3 and C2=1.1
     states.r.record(0, -PI/480);
     wake_fac=propModel.get_wake_factor(states);
-    ASSERT_DOUBLE_EQ(1-0.65*(1+(1-exp(-2*PI/3))*0.1),wake_fac);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.1),wake_fac,EPS);
 
     // Define a 90° drift angle so that the computed wake factor is negative and is therefore replaced by zero 
     // SOG= 2 m/s
@@ -172,7 +188,7 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     states.v.record(0, -2);
     states.r.record(0, 0);
     wake_fac=propModel.get_wake_factor(states);
-    ASSERT_DOUBLE_EQ(0,wake_fac);
+    ASSERT_NEAR(0,wake_fac,EPS);
 }
 
 TEST_F(MMGPropellerForceModelTest, check_kt_calculation)

@@ -7,6 +7,7 @@
 
 #include "MMGPropellerForceModel.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
+#define PI M_PI
 
 std::string MMGPropellerForceModel::model_name() {return "MMG propeller";}
 
@@ -73,6 +74,14 @@ double MMGPropellerForceModel::get_Kq(const std::map<std::string,double>&, const
     return ret;
 }
 
+double MMGPropellerForceModel::wrapToPi(double x)
+{
+    x = fmod(x + PI,2*PI);
+    if (x <= 0)
+        x += 2*PI;
+    return x - PI;
+}
+
 double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
 {
     /*
@@ -83,9 +92,9 @@ double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
     
     double C2;  
     // Equation 15
-    double beta_P=beta-m_longitudinal_position_of_propeller_in_body_frame*states.r()/U;
+    double beta_P=wrapToPi(beta-m_longitudinal_position_of_propeller_in_body_frame*states.r()/U);
 
-    if (beta_P<=0)
+    if (beta_P<0)
     {
         C2=m_C2[0];
     }
