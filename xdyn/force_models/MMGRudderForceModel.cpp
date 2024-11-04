@@ -414,11 +414,11 @@ MMGRudderForceModel::MMGRudderForceModel(const Yaml& input_, const std::string& 
 }
 
 ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
-    const BodyStates& states, const double /*t*/, const EnvironmentAndFrames& env,
+    const BodyStates& states, const double t, const EnvironmentAndFrames& env,
     const std::map<std::string, double>& commands, const double T) const
 {
     // Equation (41)
-    const double Va = states.u() * (1 - m_propulsionModel.get_wake_factor(states));
+    const double Va = m_propulsionModel.get_advance_speed_in_body_frame(states, t, env);
     const double DVa = m_rudderModel.get_D() * Va;
     // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p.
     // 84, eq. 1.2.20
