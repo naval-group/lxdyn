@@ -87,8 +87,10 @@ double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
     /*
     Accounts for the wake factor dependency on the leeway angle as in H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
     */
-    double beta=atan2(-states.v(),states.u());//leeway angle at midship
-    double U=sqrt(states.u()*states.u()+states.v()*states.v());//ship velocity
+    const double xG = states.G.x();// Longitudinal position of the CoG in body frame
+    const double vm = states.v() - xG*states.r();// Lateral ship velocity at midship in body frame
+    double beta=atan2(-vm,states.u());//leeway angle at midship
+    double U=sqrt(states.u()*states.u()+vm*vm);//ship velocity
     
     double C2;  
     // Equation 15

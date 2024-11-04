@@ -428,7 +428,9 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
     const double rudder_angle
         = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the
                                 // opposite of the one used in xdyn (positive to starboard)
-    const double vR = m_rudderModel.get_vr(states.u(), states.v(), states.r());
+    const double xG = states.G.x();// Longitudinal position of the CoG in body frame
+    const double vm = states.v() - xG*states.r();// Lateral ship velocity at midship in body frame
+    const double vR = m_rudderModel.get_vr(states.u(), vm, states.r());// Lateral inflow velocity at rudder location
     ssc::kinematics::Point Vrud = m_rudderModel.get_vs(
         CTh, Va, vR); // mean inflow velocity at rudder location
     return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar());
