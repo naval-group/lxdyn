@@ -149,46 +149,55 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     // Create propeller model 
     const MMGPropellerForceModel propModel(MMGPropellerForceModel::parse(test_data::MMGPropeller()), b->get_name(), env);
 
-    // Define one state
+    // Define a state with CoG at body origin
     BodyStates states;
+
     // Define a 30° drift angle with SOG= 2 m/s
     states.u.record(0, 1.7320508075688772);
     states.v.record(0, -1.);
 
-    // If r=0 $\beta_P=\beta$=PI/6>0 and C2=1.6
+    // Case 1: If r=0 $\beta_P=\beta$=PI/6>0 and C2=1.6
     states.r.record(0, 0);
     double wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(1-0.65*(1+(1-exp(-PI/3))*0.6),wake_fac,EPS);
     
-    // If r=-PI/480 then $\beta_P$=0 (C2=1.6 but it is not used)
+    // Case 2: If r=-PI/480 then $\beta_P$=0 (C2=1.6 but it is not used)
     states.r.record(0, -PI/480);
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(0.35,wake_fac,EPS);
 
-    // If r=PI/480 then $\beta_P$=PI/3>0 and C2=1.6
+    // Case 3: If r=PI/480 then $\beta_P$=PI/3>0 and C2=1.6
     states.r.record(0, PI/480);
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac,EPS);
 
-    // If r=-PI/240 then $\beta_P$=-PI/6<0 and C2=1.1
+    // Case 4: If r=-PI/240 then $\beta_P$=-PI/6<0 and C2=1.1
     states.r.record(0, -PI/240);
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(1-0.65*(1+(1-exp(-PI/3))*0.1),wake_fac,EPS);
 
-    // Define a -30° drift angle with SOG= 2 m/s
+    // Case 5: Define a -30° drift angle with SOG= 2 m/s
     states.v.record(0, 1.);
     // If r=-PI/480 then $\beta_P$=-PI/3 and C2=1.1
     states.r.record(0, -PI/480);
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.1),wake_fac,EPS);
 
-    // Define a 90° drift angle so that the computed wake factor is negative and is therefore replaced by zero 
-    // SOG= 2 m/s
+    // Case 6: Define a 90° drift angle so that the computed wake factor is negative and is therefore replaced by zero 
     states.u.record(0, 0);
     states.v.record(0, -2);
     states.r.record(0, 0);
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(0,wake_fac,EPS);
+
+    // Case 7: Define a case with xG>0 equivalent to the case 3
+    states.u.record(0, 1.7320508075688772);
+    states.v.record(0, -0.9);
+    states.r.record(0, PI/480);
+    states.G=ssc::kinematics::Point(b->get_name(),{48/PI,2,3});
+    // In that case vm=-0.9-0.1=-1
+    wake_fac=propModel.get_wake_factor(states);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac,EPS);
 }
 
 TEST_F(MMGPropellerForceModelTest, check_kt_calculation)

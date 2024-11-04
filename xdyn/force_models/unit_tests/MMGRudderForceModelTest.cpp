@@ -379,6 +379,47 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
     ASSERT_DOUBLE_EQ(17253601.625030234, rudderTensor(5));
 }
 
+TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)
+{
+    /*
+    This test checks the non-regression of having the ship center of gravity forward from midship.
+    */
+    
+    MMGRudderForceModel::Yaml input
+        = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+    // Create environnement
+    EnvironmentAndFrames env = get_env();
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    auto states = b->get_states();
+    // Create rudder force model
+    const MMGRudderForceModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), b->get_name(), env);
+
+    // Define body velocities
+    const double t = 0;
+    states.u.record(0, 8);
+    states.v.record(0, 0.9);
+    states.r.record(0, 0.01);
+    states.G=ssc::kinematics::Point(b->get_name(),{-10,2,3});
+    // In that case vm=0.9+10*0.01=1
+
+    // Create commands
+    std::map<std::string, double> commands;
+    commands["beta"] = PI/6;
+
+    // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm, t=0.2 and D=9
+    const double prop_thrust=0.8*1024*pow(70/60,2)*pow(9,4)*0.5;
+
+    const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
+
+    ASSERT_DOUBLE_EQ(-1698918.4794772132, rudderTensor(0));
+    ASSERT_DOUBLE_EQ(6298056.1487378832, rudderTensor(1));
+    ASSERT_DOUBLE_EQ(0, rudderTensor(2));
+    ASSERT_DOUBLE_EQ(0, rudderTensor(3));
+    ASSERT_DOUBLE_EQ(0, rudderTensor(4));
+    ASSERT_DOUBLE_EQ(17253601.625030234, rudderTensor(5));
+}
+
 TEST_F(MMGRudderForceModelTest, force_and_torque_with_phi)
 {
     /*
