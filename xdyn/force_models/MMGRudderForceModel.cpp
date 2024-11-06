@@ -50,7 +50,7 @@ Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
     const Wrench propeller_wrench_propeller_frame_at_P = m_propulsionModel.get_force(
         states, t, env,
         commands); // propeller tensor in propeller frame expressed at the propeller location
-    const std::string frame
+    const std::string propeller_frame
         = propeller_wrench_propeller_frame_at_P.get_frame(); // get propeller frame
     can_find_internal_frame(env.k); // Check if the internal frame is accessible
     const Wrench propeller_wrench_body_frame_at_P
@@ -59,8 +59,8 @@ Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
     const ssc::kinematics::Vector6d rudder_force
         = get_rudder_force(states, t, env, commands,
                            (double)std::max(propeller_wrench_body_frame_at_P.X(),
-                                            0.)); // rudder forces and moments in propeller frame
-                                                  // expressed at the propeller location
+                                            0.)); // rudder forces and moments in body frame
+                                                  // expressed at the rudder location
     /*
     Negative propeller thrust means that the propeller wake is forward and therefore there is no
     acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would
@@ -70,7 +70,7 @@ Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
         ssc::kinematics::Point(body_name, m_rudderModel.get_rudder_location()), body_name,
         rudder_force); // rudder tensor in body frame expressed at the rudder location
     const Wrench rudder_wrench_body_frame_at_P = rudder_wrench_body_frame_at_R.transport_to(
-        ssc::kinematics::Point(frame, 0, 0, 0),
+        ssc::kinematics::Point(propeller_frame, 0, 0, 0),
         env.k); // rudder tensor in body frame expressed at the propeller location
     const Wrench rudderAndPropeller_wrench_body_frame_at_P
         = rudder_wrench_body_frame_at_P

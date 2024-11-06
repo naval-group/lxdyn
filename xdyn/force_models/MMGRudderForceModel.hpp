@@ -164,9 +164,9 @@ class MMGRudderForceModel : public ForceModel
   private:
     MMGPropellerForceModel m_propulsionModel; //!< Propeller model
     RudderModel m_rudderModel;                //!< Rudder model
-    // These variables are computed at each time step and stored for outputting
-    std::unique_ptr<Wrench>
-        m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame
+    
+    // The following variables are computed at each time step and stored only for outputting
+    std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame
     std::unique_ptr<Wrench> m_propeller_wrench_body_frame_at_Ob; //!< Propeller tensor in body frame
     std::unique_ptr<Wrench> m_propeller_wrench_NED_frame_at_G;   //!< Propeller tensor in NED frame
     std::unique_ptr<Wrench> m_rudder_wrench_body_frame_at_Ob; //!< Rudder tensor in internal frame
