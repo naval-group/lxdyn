@@ -4405,7 +4405,11 @@ std::string test_data::MMGPropeller()
        << "k1: -0.2753\n"
        << "k2: -0.1385\n"
        << "C1: 2.0\n"
-       << "C2: [1.1, 1.6]\n";
+       << "C2: [1.1, 1.6]\n"
+       << "calculation point in body frame:\n"// Should correspond to the MMG origin (midship)
+       << "    x: {value: 0, unit: m}\n"
+       << "    y: {value: 0, unit: m}\n"
+       << "    z: {value: 0, unit: m}\n";
     return ss.str();
 }
 
@@ -4416,7 +4420,7 @@ std::string test_data::MMGRudderAndPropeller()
     */
     std::stringstream ss;
     ss  << "name: MMG port side propeller\n"
-           "model: MMG propeller+rudder\n"
+        << "model: MMG propeller+rudder\n"
         << "position of propeller frame:\n"
         << "    frame: body 1\n"
         << "    x: {value: -152.73, unit: m}\n"//from Rhino 3D at full-scale
@@ -4434,11 +4438,15 @@ std::string test_data::MMGRudderAndPropeller()
         << "k1: -0.2753\n"
         << "k2: -0.1385\n"
         << "C1: 2.0\n"
-        << "C2: [1.1, 1.6]\n"        
-       << "rudder area: {value: 112.5, unit: m^2}\n"//not including horn part, as recommended by MMG
+        << "C2: [1.1, 1.6]\n"
+        << "calculation point in body frame:\n"// Should correspond to the MMG origin (midship)
+        << "    x: {value: 0, unit: m}\n"
+        << "    y: {value: 0, unit: m}\n"
+        << "    z: {value: 0, unit: m}\n"      
+        << "rudder area: {value: 112.5, unit: m^2}\n"//not including horn part, as recommended by MMG
         << "rudder height: {value: 15.8, unit: m}\n"
-        << "xH: {value: -148480, unit: mm}\n"//-0.464*320 in meters
-        << "lR: {value: -2272, unit: dm}\n"//-0.71*320 in meters
+        << "xH: -0.464\n"
+        << "lR: -0.71\n"
         << "tR: 0.387\n"
         << "aH: 0.312\n"
         << "gammaR: [0.395,0.640]\n"
@@ -4448,6 +4456,7 @@ std::string test_data::MMGRudderAndPropeller()
         << "position of rudder in body frame:\n"// Aft perpendicular
         << "    x: {value: -160, unit: m}\n"
         << "    y: {value: 0, unit: m}\n"
-        << "    z: {value: 0, unit: m}\n";
+        << "    z: {value: 0, unit: m}\n"
+        << "Lpp: {value: 320, unit: m}\n";
     return ss.str();
 }

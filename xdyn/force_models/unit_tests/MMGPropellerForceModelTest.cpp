@@ -41,6 +41,7 @@ namespace ssc
             ret.k2 = random<double>();
             ret.C1 = random<double>();
             ret.C2 = { random<double>(), random<double>() };
+            ret.application_point = YamlCoordinates(random<double>(), random<double>(),random<double>());
             return ret;
         }
     }
@@ -104,7 +105,6 @@ TEST_F(MMGPropellerForceModelTest, parser)
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.coordinates.y);
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.coordinates.z);
     ASSERT_EQ("mesh(body 1)", k.position_of_propeller_frame.frame);
-    ASSERT_DOUBLE_EQ(1, k.relative_rotative_efficiency);
     ASSERT_DOUBLE_EQ(0.22, k.thrust_deduction_factor);
     ASSERT_DOUBLE_EQ(0.35, k.wake_coefficient);
     ASSERT_DOUBLE_EQ(9.86, k.diameter);
@@ -114,6 +114,9 @@ TEST_F(MMGPropellerForceModelTest, parser)
     ASSERT_DOUBLE_EQ(2.0,k.C1);
     ASSERT_DOUBLE_EQ(1.1,k.C2[0]);
     ASSERT_DOUBLE_EQ(1.6,k.C2[1]);
+    ASSERT_DOUBLE_EQ(0, k.application_point.x);
+    ASSERT_DOUBLE_EQ(0, k.application_point.y);
+    ASSERT_DOUBLE_EQ(0, k.application_point.z);
 }
 
 TEST_F(MMGPropellerForceModelTest, name)
@@ -123,18 +126,68 @@ TEST_F(MMGPropellerForceModelTest, name)
     ASSERT_EQ("MMG propeller", propModel.model_name());
 }
 
-TEST_F(MMGPropellerForceModelTest, check_longitudinal_location_in_body_frame)
+TEST_F(MMGPropellerForceModelTest, check_propeller_longitudinal_location_in_MMG_frame)
 {
     /*
-    The purpose of this test is to check that the propeller longitudinal position in body frame is correctly computed.
+    The purpose of this test is to check that the propeller longitudinal position in MMG frame is correctly computed.
     */
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Get input data
+    MMGPropellerForceModel::Yaml input=MMGPropellerForceModel::parse(test_data::MMGPropeller());
     // Create propeller model 
-    const MMGPropellerForceModel propModel(MMGPropellerForceModel::parse(test_data::MMGPropeller()), b->get_name(), env);
-    ASSERT_EQ(-160,propModel.get_longitudinal_position_in_body_frame());
+    const MMGPropellerForceModel propModel(input, b->get_name(), env);
+
+    // Case 1: Check the longitudinal position in case the body frame longitudinal origin is located at midship
+    ASSERT_EQ(-160,propModel.get_propeller_longitudinal_position_in_MMG_frame());
+
+
+    // Case 2: application point backward from body frame origin
+    input.application_point.x=-10;
+    input.application_point.y=+20;//to checked there is no impact
+    input.application_point.z=-30;//to checked there is no impact
+    const MMGPropellerForceModel propModel2(input, b->get_name(), env);
+    // Check the longitudinal position in case the body frame longitudinal origin is forward from midship
+    ASSERT_EQ(-150,propModel2.get_propeller_longitudinal_position_in_MMG_frame());
+
+    // Case 3: application point forward from body frame origin
+    input.application_point.x=+10;
+    const MMGPropellerForceModel propModel3(input, b->get_name(), env);
+    // Check the longitudinal position in case the body frame longitudinal origin is forward from midship
+    ASSERT_EQ(-170,propModel3.get_propeller_longitudinal_position_in_MMG_frame());
+}
+
+TEST_F(MMGPropellerForceModelTest, check_CoG_longitudinal_location_in_MMG_frame)
+{
+    /*
+    The purpose of this test is to check that the CoG longitudinal coordinate in MMG fram is well computed.
+    */
+    // Create environnement
+    EnvironmentAndFrames env = get_env();
+    // Create body
+    BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
+    // Get input data
+    MMGPropellerForceModel::Yaml input=MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    // Create propeller model 
+    const MMGPropellerForceModel propModel(input, b->get_name(), env);
+
+    // Create body states
+    BodyStates states;
+
+    // Case 1: the body frame origin, the MMG frame origin and the CoG are identical
+    states.G=ssc::kinematics::Point(b->get_name(),{0,2,3});
+    ASSERT_EQ(0,propModel.get_CoG_longitudinal_position_in_MMG_frame(states));
+
+    // Case 2: the body frame origin and the CoG are identical, the MMG frame is 10m backward
+    input.application_point.x=-10;
+    const MMGPropellerForceModel propModel2(input, b->get_name(), env);
+    ASSERT_EQ(10,propModel2.get_CoG_longitudinal_position_in_MMG_frame(states));
+
+    // Case 3: MMG frame 10m backward body frame and CoG 10m frontward body frame
+    states.G.v(0)=10;
+    ASSERT_EQ(20,propModel2.get_CoG_longitudinal_position_in_MMG_frame(states));
 }
 
 TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
@@ -197,6 +250,20 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     states.G=ssc::kinematics::Point(b->get_name(),{48/PI,2,3});
     // In that case vm=-0.9-0.1=-1
     wake_fac=propModel.get_wake_factor(states);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac,EPS);
+
+    // Case 8: Define a case with body origin, MMG origin and CoG separated, equivalent to the case 3
+    MMGPropellerForceModel::Yaml input=MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    // We define the body origin 10m forward from midship
+    input.application_point.x=-10;
+    // The propeller longitudinal location is then moved 10m backward
+    input.position_of_propeller_frame.coordinates.x=-170;
+    // The CoG from case 7 is also moved 10m backward 
+    states.G=ssc::kinematics::Point(b->get_name(),{48/PI-10,2,3});
+    // Create propeller model 
+    MMGPropellerForceModel propModel2(input, b->get_name(), env);
+    // In that case we still have vm=-0.9-0.1=-1
+    wake_fac=propModel2.get_wake_factor(states);
     ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac,EPS);
 }
 
