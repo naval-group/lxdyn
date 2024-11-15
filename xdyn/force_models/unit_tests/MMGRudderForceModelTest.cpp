@@ -392,9 +392,10 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)
 {
     /*
-    This test checks the non-regression of having the ship center of gravity forward from midship.
+    This test checks that the displacement of the point of application or CoG is well taken into account.
     */
     
+    // Case 1: reference test with the body frame origin, the MMG frame origin and the CoG located at the same point
     MMGRudderForceModel::Yaml input
         = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
     // Create environnement
@@ -404,30 +405,49 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)
     auto states = b->get_states();
     // Create rudder force model
     const MMGRudderForceModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), b->get_name(), env);
-
     // Define body velocities
     const double t = 0;
     states.u.record(0, 8);
-    states.v.record(0, 0.9);
+    states.v.record(0, 1);
     states.r.record(0, 0.01);
-    states.G=ssc::kinematics::Point(b->get_name(),{-10,2,3});
-    // In that case vm=0.9+10*0.01=1
-
     // Create commands
     std::map<std::string, double> commands;
     commands["beta"] = PI/6;
-
     // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm, t=0.2 and D=9
     const double prop_thrust=0.8*1024*pow(70/60,2)*pow(9,4)*0.5;
+    // Compute rudder force
+    const auto rudderTensor_case1 = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
 
-    const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
+    // Case 2: the CoG is moved 10m backward from the body frame origin (which is still the same than the MMG origin), so that xG=-10
+    // To keep the same vm value that case 1, we need v=0.9 so that vm=0.9+10*0.01=1
+    states.v.record(0, 0.9);
+    states.G=ssc::kinematics::Point(b->get_name(),{-10,2,3});
+    // Compute rudder force
+    const auto rudderTensor_case2 = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
 
-    ASSERT_NEAR(-1698918.4794772132, rudderTensor(0), EPS);
-    ASSERT_NEAR(6298056.1487378832, rudderTensor(1), EPS);
-    ASSERT_NEAR(0, rudderTensor(2), EPS);
-    ASSERT_NEAR(0, rudderTensor(3), EPS);
-    ASSERT_NEAR(0, rudderTensor(4), EPS);
-    ASSERT_NEAR(17253601.625030234, rudderTensor(5), EPS);
+    ASSERT_NEAR(rudderTensor_case2(0), rudderTensor_case1(0), EPS);
+    ASSERT_NEAR(rudderTensor_case2(1), rudderTensor_case1(1), EPS);
+    ASSERT_NEAR(rudderTensor_case2(2), rudderTensor_case1(2), EPS);
+    ASSERT_NEAR(rudderTensor_case2(3), rudderTensor_case1(3), EPS);
+    ASSERT_NEAR(rudderTensor_case2(4), rudderTensor_case1(4), EPS);
+    ASSERT_NEAR(rudderTensor_case2(5), rudderTensor_case1(5), EPS);
+
+    // Case 3: the CoG is moved 10m backward from the body frame origin and the MMG frame origin is moved 10m forward the body frame origin, so that xG=-20.
+    input.position_of_propeller_frame.coordinates.x+=10;
+    input.application_point.x+=10;
+    // To keep the same vm value that case 1, we need v=0.8 so that vm=0.8+20*0.01=1
+    states.v.record(0, 0.8);
+    // Create a new rudder force model with new inputs
+    const MMGRudderForceModel rudderModel_new(input, b->get_name(), env);
+    // Compute rudder force
+    const auto rudderTensor_case3 = rudderModel_new.get_rudder_force(states, t, env, commands,prop_thrust);
+
+    ASSERT_NEAR(rudderTensor_case3(0), rudderTensor_case1(0), EPS);
+    ASSERT_NEAR(rudderTensor_case3(1), rudderTensor_case1(1), EPS);
+    ASSERT_NEAR(rudderTensor_case3(2), rudderTensor_case1(2), EPS);
+    ASSERT_NEAR(rudderTensor_case3(3), rudderTensor_case1(3), EPS);
+    ASSERT_NEAR(rudderTensor_case3(4), rudderTensor_case1(4), EPS);
+    ASSERT_NEAR(rudderTensor_case3(5), rudderTensor_case1(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_with_phi)
