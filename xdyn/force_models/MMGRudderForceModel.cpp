@@ -254,15 +254,17 @@ std::string MMGRudderForceModel::model_name() { return "MMG propeller+rudder"; }
 MMGRudderForceModel::Yaml::Yaml()
     : Ar()
     , b()
-    , xH()
-    , lR()
+    , xH_adim()
+    , lR_adim()
     , tR()
     , aH()
     , gammaR()
     , epsilon()
     , kappaMmg()
     , effective_aspect_ratio()
-    , position_of_the_rudder_frame_in_the_body_frame()
+    , position_of_the_rudder_frame_in_the_body_frame(YamlCoordinates())
+    , Lpp()
+
 {
 }
 
@@ -270,15 +272,16 @@ MMGRudderForceModel::Yaml::Yaml(const MMGPropellerForceModel::Yaml& yaml)
     : MMGPropellerForceModel::Yaml(yaml)
     , Ar()
     , b()
-    , xH()
-    , lR()
+    , xH_adim()
+    , lR_adim()
     , tR()
     , aH()
     , gammaR()
     , epsilon()
     , kappaMmg()
     , effective_aspect_ratio()
-    , position_of_the_rudder_frame_in_the_body_frame()
+    , position_of_the_rudder_frame_in_the_body_frame(YamlCoordinates())
+    , Lpp()
 {
 }
 
@@ -286,8 +289,8 @@ MMGRudderForceModel::RudderModel::RudderModel(const Yaml& parameters_, const dou
     : m_Ar(parameters_.Ar)
     , m_b(parameters_.b)
     , m_D(parameters_.diameter)
-    , m_xH(parameters_.xH)
-    , m_lR(parameters_.lR)
+    , m_xH(parameters_.xH_adim*parameters_.Lpp)
+    , m_lR(parameters_.lR_adim*parameters_.Lpp)
     , m_tR(parameters_.tR)
     , m_aH(parameters_.aH)
     , m_gammaR(parameters_.gammaR)
@@ -426,9 +429,8 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
         = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa * DVa);
 
     const double rudder_angle
-        = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the
-                                // opposite of the one used in xdyn (positive to starboard)
-    const double xG = states.G.x();// Longitudinal position of the CoG in body frame
+        = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the opposite of the one used in xdyn (positive to starboard)
+    const double xG = m_propulsionModel.get_CoG_longitudinal_position_in_MMG_frame(states);// Longitudinal position of the CoG in MMG frame
     const double vm = states.v() - xG*states.r();// Lateral ship velocity at midship in body frame
     const double vR = m_rudderModel.get_vr(states.u(), vm, states.r());// Lateral inflow velocity at rudder location
     ssc::kinematics::Point Vrud = m_rudderModel.get_vs(
@@ -443,11 +445,12 @@ MMGRudderForceModel::Yaml MMGRudderForceModel::parse(const std::string& yaml)
 
     xdyn::yaml_parser::parse_uv(node["rudder area"], ret.Ar);
     xdyn::yaml_parser::parse_uv(node["rudder height"], ret.b);
-    xdyn::yaml_parser::parse_uv(node["xH"], ret.xH);
-    xdyn::yaml_parser::parse_uv(node["lR"], ret.lR);
+    xdyn::yaml_parser::parse_uv(node["Lpp"], ret.Lpp);
 
     node["tR"] >> ret.tR;
     node["aH"] >> ret.aH;
+    node["xH"] >> ret.xH_adim;
+    node["lR"] >> ret.lR_adim;
     node["gammaR"] >> ret.gammaR;
     node["epsilon"] >> ret.epsilon;
     node["kappa"] >> ret.kappaMmg;

@@ -6,6 +6,7 @@
  */
 
 #include "MMGPropellerForceModel.hpp"
+#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 #define PI M_PI
 
@@ -16,7 +17,8 @@ MMGPropellerForceModel::Yaml::Yaml() :
         k1(),
         k2(),
         C1(),
-        C2()
+        C2(),
+        application_point(YamlCoordinates())
 {
 }
 
@@ -26,7 +28,8 @@ MMGPropellerForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
         k1(),
         k2(),
         C1(),
-        C2()        
+        C2(),
+        application_point(YamlCoordinates())        
 {
 }
 
@@ -39,6 +42,7 @@ MMGPropellerForceModel::Yaml MMGPropellerForceModel::parse(const std::string& ya
     node["k2"] >> ret.k2;
     node["C1"] >> ret.C1;
     node["C2"] >> ret.C2;
+    node["calculation point in body frame"] >> ret.application_point;
 
     return ret;
 }
@@ -50,11 +54,12 @@ MMGPropellerForceModel::MMGPropellerForceModel(const Yaml& input, const std::str
             m_k2(input.k2),
             m_C1(input.C1),
             m_C2(input.C2),
-            m_longitudinal_position_of_propeller_in_body_frame(),
+            m_longitudinal_position_of_propeller_in_MMG_frame(),
+            m_longitudinal_position_of_MMG_frame_in_body_frame(input.application_point.x),
             m_Jmax(std::max((-m_k1+sqrt(m_k1*m_k1-4*m_k2*m_k0))/2/m_k2,(-m_k1-sqrt(m_k1*m_k1-4*m_k2*m_k0))/2/m_k2))//larger root of the 2nd degree polynom k2*J^2+k1*J+k0
 {
     can_find_internal_frame(env.k);
-    m_longitudinal_position_of_propeller_in_body_frame= env.k->get(body_name,name).get_point().x();
+    m_longitudinal_position_of_propeller_in_MMG_frame= env.k->get(body_name,name).get_point().x()-m_longitudinal_position_of_MMG_frame_in_body_frame;
 }
 
 double MMGPropellerForceModel::get_Kt(const std::map<std::string,double>&, const double J) const
@@ -87,14 +92,14 @@ double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
     /*
     Accounts for the wake factor dependency on the leeway angle as in H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
     */
-    const double xG = states.G.x();// Longitudinal position of the CoG in body frame
+    const double xG = get_CoG_longitudinal_position_in_MMG_frame(states);// Longitudinal position of the CoG in MMG frame
     const double vm = states.v() - xG*states.r();// Lateral ship velocity at midship in body frame
     double beta=atan2(-vm,states.u());//leeway angle at midship
     double U=sqrt(states.u()*states.u()+vm*vm);//ship velocity
     
     double C2;  
     // Equation 15
-    double beta_P=wrapToPi(beta-m_longitudinal_position_of_propeller_in_body_frame*states.r()/U);
+    double beta_P=wrapToPi(beta-get_propeller_longitudinal_position_in_MMG_frame()*states.r()/U);
 
     if (beta_P<0)
     {
@@ -143,7 +148,12 @@ double MMGPropellerForceModel::saturate(const double J) const
     return std::max(std::min(J,m_Jmax),0.);
 }
 
-double MMGPropellerForceModel::get_longitudinal_position_in_body_frame() const
+double MMGPropellerForceModel::get_propeller_longitudinal_position_in_MMG_frame() const
 {
-    return m_longitudinal_position_of_propeller_in_body_frame;
+    return m_longitudinal_position_of_propeller_in_MMG_frame;
+}
+
+double MMGPropellerForceModel::get_CoG_longitudinal_position_in_MMG_frame(const BodyStates& states) const
+{
+    return states.G.x()-m_longitudinal_position_of_MMG_frame_in_body_frame;
 }
