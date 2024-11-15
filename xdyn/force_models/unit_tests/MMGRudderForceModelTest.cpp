@@ -30,15 +30,15 @@ namespace ssc
             MMGRudderForceModel::Yaml ret;
             ret.Ar = random<double>();
             ret.b = random<double>();
-            ret.xH = random<double>();
-            ret.lR = random<double>();
+            ret.xH_adim = random<double>();
+            ret.lR_adim = random<double>();
             ret.tR = random<double>();
             ret.aH = random<double>();
             ret.gammaR = { random<double>(), random<double>() };
             ret.epsilon = random<double>();
             ret.kappaMmg = random<double>();
             ret.effective_aspect_ratio = random<double>();
-            // ret.position_of_the_rudder_frame_in_the_body_frame
+            ret.position_of_the_rudder_frame_in_the_body_frame=YamlCoordinates(random<double>(),random<double>(),random<double>());
 
             // Inherited inputs from AbstractWageningen
             ret.name = random<std::string>();
@@ -53,6 +53,10 @@ namespace ssc
             ret.k0 = random<double>();
             ret.k1 = random<double>();
             ret.k2 = random<double>();
+            ret.C1 = random<double>();
+            ret.C2 = { random<double>(), random<double>() };
+            ret.application_point = YamlCoordinates(random<double>(), random<double>(),random<double>());
+
             return ret;
         }
     }
@@ -97,16 +101,21 @@ TEST_F(MMGRudderForceModelTest, parser)
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_propeller_frame.angle.theta);
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_propeller_frame.angle.psi);
     ASSERT_DOUBLE_EQ(0.35, rudderModel_parser.wake_coefficient);
-    ASSERT_DOUBLE_EQ(1, rudderModel_parser.relative_rotative_efficiency);
     ASSERT_DOUBLE_EQ(0.22, rudderModel_parser.thrust_deduction_factor);
     ASSERT_DOUBLE_EQ(9.86, rudderModel_parser.diameter);
     ASSERT_DOUBLE_EQ(0.2931, rudderModel_parser.k0);
     ASSERT_DOUBLE_EQ(-0.2753, rudderModel_parser.k1);
     ASSERT_DOUBLE_EQ(-0.1385, rudderModel_parser.k2);
+    ASSERT_DOUBLE_EQ(2.0, rudderModel_parser.C1);
+    ASSERT_DOUBLE_EQ(1.1, rudderModel_parser.C2[0]);
+    ASSERT_DOUBLE_EQ(1.6, rudderModel_parser.C2[1]);
+    ASSERT_DOUBLE_EQ(0, rudderModel_parser.application_point.x);
+    ASSERT_DOUBLE_EQ(0, rudderModel_parser.application_point.y);
+    ASSERT_DOUBLE_EQ(0, rudderModel_parser.application_point.z);
     ASSERT_DOUBLE_EQ(112.5, rudderModel_parser.Ar);
     ASSERT_DOUBLE_EQ(15.8, rudderModel_parser.b);
-    ASSERT_DOUBLE_EQ(-148.48, rudderModel_parser.xH);
-    ASSERT_DOUBLE_EQ(-227.2, rudderModel_parser.lR);
+    ASSERT_DOUBLE_EQ(-0.464, rudderModel_parser.xH_adim);
+    ASSERT_DOUBLE_EQ(-0.71, rudderModel_parser.lR_adim);
     ASSERT_DOUBLE_EQ(0.387, rudderModel_parser.tR);
     ASSERT_DOUBLE_EQ(0.312, rudderModel_parser.aH);
     ASSERT_DOUBLE_EQ(0.395, rudderModel_parser.gammaR[0]);
@@ -117,6 +126,7 @@ TEST_F(MMGRudderForceModelTest, parser)
     ASSERT_DOUBLE_EQ(-160, rudderModel_parser.position_of_the_rudder_frame_in_the_body_frame.x);
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_the_rudder_frame_in_the_body_frame.y);
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_the_rudder_frame_in_the_body_frame.z);
+    ASSERT_DOUBLE_EQ(320, rudderModel_parser.Lpp);
 }
 
 TEST_F(MMGRudderForceModelTest, check_name)
@@ -203,12 +213,12 @@ TEST_F(MMGRudderForceModelTest, get_force_subfunction)
 
     ssc::kinematics::Vector6d force = rudderModel.get_force(1000, 30 * DEG2RAD);
 
-    ASSERT_DOUBLE_EQ(-(1 - 0.387) * 1000 * 0.5, force(0));
-    ASSERT_DOUBLE_EQ(-(1 + 0.312) * 1000 * 0.8660254037844386, force(1));
-    ASSERT_DOUBLE_EQ(0, force(2));
-    ASSERT_DOUBLE_EQ(0, force(3));
-    ASSERT_DOUBLE_EQ(0, force(4));
-    ASSERT_DOUBLE_EQ(-1000 * 0.8660254037844386 * 0.312 * (160 - 148.48), force(5));
+    ASSERT_NEAR(-(1 - 0.387) * 1000 * 0.5, force(0), EPS);
+    ASSERT_NEAR(-(1 + 0.312) * 1000 * 0.8660254037844386, force(1), EPS);
+    ASSERT_NEAR(0, force(2), EPS);
+    ASSERT_NEAR(0, force(3), EPS);
+    ASSERT_NEAR(0, force(4), EPS);
+    ASSERT_NEAR(-1000 * 0.8660254037844386 * 0.312 * (160 - 148.48), force(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, get_vr_betaR_pos)
@@ -296,12 +306,12 @@ TEST_F(MMGRudderForceModelTest, get_wrench_double)
     In order to have a 30° fluid angle of attack at the rudder location, we define a 25° rudder angle
     */
     ssc::kinematics::Vector6d force = rudderModel.get_wrench(25*DEG2RAD, Vrud, 100);
-    ASSERT_DOUBLE_EQ(-(1 - 0.387) * 7039181.843267109*sin(25*DEG2RAD), force(0));
-    ASSERT_DOUBLE_EQ(-(1 + 0.312) * 7039181.843267109 * cos(25*DEG2RAD), force(1));
-    ASSERT_DOUBLE_EQ(0, force(2));
-    ASSERT_DOUBLE_EQ(0, force(3));
-    ASSERT_DOUBLE_EQ(0, force(4));
-    ASSERT_DOUBLE_EQ(-7039181.843267109 * cos(25*DEG2RAD) * 0.312 * (160- 148.48), force(5));
+    ASSERT_NEAR(-(1 - 0.387) * 7039181.843267109*sin(25*DEG2RAD), force(0), EPS);
+    ASSERT_NEAR(-(1 + 0.312) * 7039181.843267109 * cos(25*DEG2RAD), force(1), EPS);
+    ASSERT_NEAR(0, force(2), EPS);
+    ASSERT_NEAR(0, force(3), EPS);
+    ASSERT_NEAR(0, force(4), EPS);
+    ASSERT_NEAR(-7039181.843267109 * cos(25*DEG2RAD) * 0.312 * (160- 148.48), force(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque)
@@ -332,12 +342,12 @@ TEST_F(MMGRudderForceModelTest, force_and_torque)
     const auto rudderTensor = rudderModel.get_force(states, t, env, commands);
 
     // We compare the two tensors which are both expressed in body frame
-    ASSERT_DOUBLE_EQ(1068003.9043270403, rudderTensor.X());
-    ASSERT_DOUBLE_EQ(2868941.6534986021, rudderTensor.Y());
-    ASSERT_DOUBLE_EQ(0, rudderTensor.Z());
-    ASSERT_DOUBLE_EQ(0, rudderTensor.K());
-    ASSERT_DOUBLE_EQ(0, rudderTensor.M());
-    ASSERT_DOUBLE_EQ(-12997705.174082102, rudderTensor.N());
+    ASSERT_NEAR(1068003.9043270403, rudderTensor.X(), EPS);
+    ASSERT_NEAR(2868941.6534986021, rudderTensor.Y(), EPS);
+    ASSERT_NEAR(0, rudderTensor.Z(), EPS);
+    ASSERT_NEAR(0, rudderTensor.K(), EPS);
+    ASSERT_NEAR(0, rudderTensor.M(), EPS);
+    ASSERT_NEAR(-12997705.174082102, rudderTensor.N(), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
@@ -371,12 +381,12 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
 
     const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
 
-    ASSERT_DOUBLE_EQ(-1698918.4794772132, rudderTensor(0));
-    ASSERT_DOUBLE_EQ(6298056.1487378832, rudderTensor(1));
-    ASSERT_DOUBLE_EQ(0, rudderTensor(2));
-    ASSERT_DOUBLE_EQ(0, rudderTensor(3));
-    ASSERT_DOUBLE_EQ(0, rudderTensor(4));
-    ASSERT_DOUBLE_EQ(17253601.625030234, rudderTensor(5));
+    ASSERT_NEAR(-1698918.4794772132, rudderTensor(0), EPS);
+    ASSERT_NEAR(6298056.1487378832, rudderTensor(1), EPS);
+    ASSERT_NEAR(0, rudderTensor(2), EPS);
+    ASSERT_NEAR(0, rudderTensor(3), EPS);
+    ASSERT_NEAR(0, rudderTensor(4), EPS);
+    ASSERT_NEAR(17253601.625030234, rudderTensor(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)
@@ -412,12 +422,12 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)
 
     const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
 
-    ASSERT_DOUBLE_EQ(-1698918.4794772132, rudderTensor(0));
-    ASSERT_DOUBLE_EQ(6298056.1487378832, rudderTensor(1));
-    ASSERT_DOUBLE_EQ(0, rudderTensor(2));
-    ASSERT_DOUBLE_EQ(0, rudderTensor(3));
-    ASSERT_DOUBLE_EQ(0, rudderTensor(4));
-    ASSERT_DOUBLE_EQ(17253601.625030234, rudderTensor(5));
+    ASSERT_NEAR(-1698918.4794772132, rudderTensor(0), EPS);
+    ASSERT_NEAR(6298056.1487378832, rudderTensor(1), EPS);
+    ASSERT_NEAR(0, rudderTensor(2), EPS);
+    ASSERT_NEAR(0, rudderTensor(3), EPS);
+    ASSERT_NEAR(0, rudderTensor(4), EPS);
+    ASSERT_NEAR(17253601.625030234, rudderTensor(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_with_phi)
