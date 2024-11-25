@@ -19,6 +19,7 @@ std::string get_input()
         <<"    z: {value: 0, unit: m}\n"
         <<"Lpp: {value: 320, unit: m}\n"
         <<"T: {value: 20.8, unit: m}\n"
+        <<"R0: 0.022\n"
         <<"Xvv: -0.04\n"
         <<"Xrr: 0.011\n"
         <<"Xvr: 0.002\n"
@@ -46,6 +47,7 @@ TEST_F(MMGManeuveringForceModelTest, can_parse)
     ASSERT_DOUBLE_EQ(data.application_point.z, 0);
     ASSERT_DOUBLE_EQ(data.Lpp, 320);
     ASSERT_DOUBLE_EQ(data.T, 20.8);
+    ASSERT_DOUBLE_EQ(data.R0, 0.022);
     ASSERT_DOUBLE_EQ(data.Xvv, -0.04);
     ASSERT_DOUBLE_EQ(data.Xrr, 0.011);
     ASSERT_DOUBLE_EQ(data.Xvr, 0.002);
@@ -93,7 +95,7 @@ TEST_F(MMGManeuveringForceModelTest, example)
     auto force_model = MMGManeuveringForceModel(MMGManeuveringForceModel::parse(get_input()), "body", env);
     auto states = get_states();
     auto F = force_model.get_force(states, 0, env, {});
-    ASSERT_DOUBLE_EQ(F.X(), 35918728522.330902);
+    ASSERT_DOUBLE_EQ(F.X(), 35918728522.330902-500*320*20.8*0.022*(1+pow((2-11.1*3),2)));
     ASSERT_DOUBLE_EQ(F.Y(), 2003246596640.8945);
     ASSERT_DOUBLE_EQ(F.Z(), 0);
     ASSERT_DOUBLE_EQ(F.K(), 0);
