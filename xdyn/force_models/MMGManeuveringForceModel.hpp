@@ -15,6 +15,7 @@ public:
         YamlCoordinates application_point;
         double Lpp;
         double T;
+        double R0;
         double Xvv;
         double Xrr;
         double Xvr;

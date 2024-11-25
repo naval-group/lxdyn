@@ -13,6 +13,7 @@ MMGManeuveringForceModel::Input::Input():
         application_point(YamlCoordinates()),
         Lpp(0.0),
         T(0.0),
+        R0(0.0),
         Xvv(0.0),
         Xrr(0.0),
         Xvr(0.0),
@@ -46,6 +47,7 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
     node["calculation point in body frame"] >> ret.application_point;
     xdyn::yaml_parser::parse_uv(node["Lpp"], ret.Lpp);
     xdyn::yaml_parser::parse_uv(node["T"], ret.T);
+    node["R0"] >> ret.R0;
     node["Xvv"] >> ret.Xvv;
     node["Xrr"] >> ret.Xrr;
     node["Xvr"] >> ret.Xvr;
@@ -78,7 +80,7 @@ Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const doubl
     {
         const double vm_ = vm/U;
         const double r_ = r*input.Lpp/U;
-        const double X = input.Xvv*vm_*vm_ + input.Xrr*r_*r_ + input.Xvr*vm_*r_ + input.Xvvvv*vm_*vm_*vm_*vm_;
+        const double X = -input.R0 + input.Xvv*vm_*vm_ + input.Xrr*r_*r_ + input.Xvr*vm_*r_ + input.Xvvvv*vm_*vm_*vm_*vm_;
         const double Y = input.Yv*vm_ + input.Yr*r_ + input.Yvvv*vm_*vm_*vm_ + input.Yvrr*vm_*r_*r_  + input.Yrrr*r_*r_*r_ + input.Yrvv*r_*vm_*vm_;
         const double N = input.Nv*vm_ + input.Nr*r_ + input.Nvvv*vm_*vm_*vm_ + input.Nvrr*vm_*r_*r_  + input.Nrrr*r_*r_*r_ + input.Nrvv*r_*vm_*vm_;
         tau(0) = 0.5*env.rho*pow(U,2)*input.Lpp*input.T*X;
