@@ -426,7 +426,7 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
     // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p.
     // 84, eq. 1.2.20
     const double CTh
-        = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa * DVa);
+        = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / (1-m_propulsionModel.get_thrust_deduction()) / env.rho : 8 / PI * T / (1-m_propulsionModel.get_thrust_deduction()) / (env.rho * DVa * DVa);
 
     const double rudder_angle
         = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the opposite of the one used in xdyn (positive to starboard)

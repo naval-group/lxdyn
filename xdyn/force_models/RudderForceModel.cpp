@@ -216,7 +216,7 @@ ssc::kinematics::Vector6d RudderForceModel::get_rudder_force(
     const double Va = propulsionModel.get_advance_speed_in_body_frame(states, t, env); // Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p. 96, eq. 1.2.41
     const double DVa = rudderModel.get_D()*Va;
     // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
-    const double CTh = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa*DVa);
+    const double CTh = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / (1-propulsionModel.get_thrust_deduction()) / env.rho : 8 / PI * T / (1-propulsionModel.get_thrust_deduction()) / (env.rho * DVa*DVa);
 
     const double rudder_angle = commands.at("beta");
     const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v(), T);
