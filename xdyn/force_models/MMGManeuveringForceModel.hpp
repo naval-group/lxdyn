@@ -32,6 +32,8 @@ public:
         double Nrvv;
         double Nvrr;
         double Nrrr;
+        double mx;//<! non-dimensional added mass coefficient a11
+        double my;//<! non-dimensional added mass coefficient a22
     };
     MMGManeuveringForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
     MMGManeuveringForceModel() = delete;

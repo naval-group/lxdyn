@@ -29,7 +29,9 @@ MMGManeuveringForceModel::Input::Input():
         Nvvv(0.0),
         Nrvv(0.0),
         Nvrr(0.0),
-        Nrrr(0.0)
+        Nrrr(0.0),
+        mx(0.0),
+        my(0.0)
 {}
 
 std::string MMGManeuveringForceModel::model_name() {return "MMG maneuvering";}
@@ -64,6 +66,9 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
     node["Nrvv"] >> ret.Nrvv;
     node["Nvrr"] >> ret.Nvrr;
     node["Nrrr"] >> ret.Nrrr;
+    node["mx"] >> ret.mx;
+    node["my"] >> ret.my;
+
 
     return ret;
 }
@@ -71,17 +76,20 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
 Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const double /*t*/, const EnvironmentAndFrames& env, const std::map<std::string,double>& /*commands*/) const
 {
     ssc::kinematics::Vector6d tau = ssc::kinematics::Vector6d::Zero();
+    const double u = states.u();
     const double v = states.v();
     const double r = states.r();
+
     const double xG = states.G.v(0) - env.k->get(body_name, name).get_point().v(0); // The point in the transform is always P in body frame as per the input
     const double vm = v - xG*r;
-    const double U = hypot(states.u(), vm);
+    const double U = hypot(u, vm);
     if (U!=0)
     {
+        const double u_ = u/U;
         const double vm_ = vm/U;
         const double r_ = r*input.Lpp/U;
-        const double X = -input.R0 + input.Xvv*vm_*vm_ + input.Xrr*r_*r_ + input.Xvr*vm_*r_ + input.Xvvvv*vm_*vm_*vm_*vm_;
-        const double Y = input.Yv*vm_ + input.Yr*r_ + input.Yvvv*vm_*vm_*vm_ + input.Yvrr*vm_*r_*r_  + input.Yrrr*r_*r_*r_ + input.Yrvv*r_*vm_*vm_;
+        const double X = -input.R0 + input.Xvv*vm_*vm_ + input.Xrr*r_*r_ + input.Xvr*vm_*r_ + input.Xvvvv*vm_*vm_*vm_*vm_ + input.my*vm_*r_;
+        const double Y = input.Yv*vm_ + input.Yr*r_ + input.Yvvv*vm_*vm_*vm_ + input.Yvrr*vm_*r_*r_  + input.Yrrr*r_*r_*r_ + input.Yrvv*r_*vm_*vm_ - input.mx*u_*r_;
         const double N = input.Nv*vm_ + input.Nr*r_ + input.Nvvv*vm_*vm_*vm_ + input.Nvrr*vm_*r_*r_  + input.Nrrr*r_*r_*r_ + input.Nrvv*r_*vm_*vm_;
         tau(0) = 0.5*env.rho*pow(U,2)*input.Lpp*input.T*X;
         tau(1) = 0.5*env.rho*pow(U,2)*input.Lpp*input.T*Y;
