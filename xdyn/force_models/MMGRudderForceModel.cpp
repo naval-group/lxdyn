@@ -58,7 +58,7 @@ Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
             body_name, env.k); // propeller tensor in body frame expressed at the propeller location
     const ssc::kinematics::Vector6d rudder_force
         = get_rudder_force(states, t, env, commands,
-                           (double)std::max(propeller_wrench_body_frame_at_P.X(),
+                           (double)std::max(propeller_wrench_body_frame_at_P.X()/(1-m_propulsionModel.get_thrust_deduction()),
                                             0.)); // rudder forces and moments in body frame
                                                   // expressed at the rudder location
     /*
@@ -397,7 +397,7 @@ double MMGRudderForceModel::RudderModel::get_Fn(const double area, const double 
 
     // Equation (19)
     double Fn = 0.5 * m_rho * area * speed * speed * friction_coeff * sin(rudder_inflow_angle);
-
+    
     return Fn;
 }
 
@@ -426,11 +426,11 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
     // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p.
     // 84, eq. 1.2.20
     const double CTh
-        = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / (1-m_propulsionModel.get_thrust_deduction()) / env.rho : 8 / PI * T / (1-m_propulsionModel.get_thrust_deduction()) / (env.rho * DVa * DVa);
+        = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa * DVa);
 
     const double rudder_angle
         = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the opposite of the one used in xdyn (positive to starboard)
-    const double xG = m_propulsionModel.get_CoG_longitudinal_position_in_MMG_frame(states);// Longitudinal position of the CoG in MMG frame
+    const double xG = m_propulsionModel.get_CoG_longitudinal_position_in_MMG_frame(states);// Longitudinal position of the CoG from midship
     const double vm = states.v() - xG*states.r();// Lateral ship velocity at midship in body frame
     const double vR = m_rudderModel.get_vr(states.u(), vm, states.r());// Lateral inflow velocity at rudder location
     ssc::kinematics::Point Vrud = m_rudderModel.get_vs(

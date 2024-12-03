@@ -127,12 +127,14 @@ RudderForceModel::InOutWake<ssc::kinematics::Point> RudderForceModel::RudderMode
     const double CTh, //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
     const double Va,  //!< Projection of the ship speed (relative to the current) on the X-axis of the ship's reference frame (m/s)
     const double v    //!< Projection of the ship speed (relative to the current) on the Y-axis of the ship's reference frame (m/s)
+    const double v    //!< Projection of the ship speed (relative to the current) on the Y-axis of the ship's reference frame (m/s)
     ) const
 {
     RudderForceModel::InOutWake<ssc::kinematics::Point> Vs;
     // Reduction factor (cf. "Marine rudders and Control Surfaces", p.371, eq 11.1)
     const double RF = CTh>13.71742 ? 0.5 : 1 - 0.135 * sqrt(CTh); // Because 13.71742 = pow(0.5/0.135,2) and 1 - 0.135 * sqrt(pow(0.5/0.135,2)) = 0.5
     // Vchange = Vbollard - Va (cf. "Marine rudders and Control Surfaces", p.51, eq 3.38)
+    const double Vchange = Va*(sqrt(1+ CTh) - 1);
     const double Vchange = Va*(sqrt(1+ CTh) - 1);
     // Ship speed (relative to the current) in the ship's reference frame (m/s)
     Vs.in_wake.x() = (Va+Kr*Vchange) * RF;
@@ -216,10 +218,10 @@ ssc::kinematics::Vector6d RudderForceModel::get_rudder_force(
     const double Va = propulsionModel.get_advance_speed_in_body_frame(states, t, env); // Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p. 96, eq. 1.2.41
     const double DVa = rudderModel.get_D()*Va;
     // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
-    const double CTh = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / (1-propulsionModel.get_thrust_deduction()) / env.rho : 8 / PI * T / (1-propulsionModel.get_thrust_deduction()) / (env.rho * DVa*DVa);
+    const double CTh = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa*DVa);
 
     const double rudder_angle = commands.at("beta");
-    const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v(), T);
+    const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v());
     const InOutWake<double> area = rudderModel.get_Ar(CTh);
     const InOutWake<ssc::kinematics::Vector6d> w = rudderModel.get_wrench(rudder_angle, Vs, area);//rudder tensor in body frame at rudder location
     return w.in_wake + w.outside_wake;
