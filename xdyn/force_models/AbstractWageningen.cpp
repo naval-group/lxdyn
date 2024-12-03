@@ -44,11 +44,6 @@ AbstractWageningen::Yaml AbstractWageningen::parse(const std::string& yaml)
     return ret;
 }
 
-double AbstractWageningen::get_thrust_deduction()  const
-{
-    return t;
-}
-
 double AbstractWageningen::get_advance_speed_in_body_frame(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const
 {
     // The propeller sees the speed of advance through the water, so the NED current has to be

@@ -50,17 +50,17 @@ Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
     const Wrench propeller_wrench_propeller_frame_at_P = m_propulsionModel.get_force(
         states, t, env,
         commands); // propeller tensor in propeller frame expressed at the propeller location
+    const Wrench pure_thrust_wrench_propeller_frame_at_P = m_propulsionModel.get_pure_thrust_force(states, t, env, commands);// propeller pure thrust (no thrust deduction, no moment) tensor in propeller frame expressed at the propeller location
     const std::string propeller_frame
         = propeller_wrench_propeller_frame_at_P.get_frame(); // get propeller frame
     can_find_internal_frame(env.k); // Check if the internal frame is accessible
     const Wrench propeller_wrench_body_frame_at_P
         = propeller_wrench_propeller_frame_at_P.change_frame(
             body_name, env.k); // propeller tensor in body frame expressed at the propeller location
-    const ssc::kinematics::Vector6d rudder_force
-        = get_rudder_force(states, t, env, commands,
-                           (double)std::max(propeller_wrench_body_frame_at_P.X()/(1-m_propulsionModel.get_thrust_deduction()),
-                                            0.)); // rudder forces and moments in body frame
-                                                  // expressed at the rudder location
+    const Wrench pure_thrust_wrench_body_frame_at_P 
+        = pure_thrust_wrench_propeller_frame_at_P.change_frame(
+            body_name,env.k);// propeller pure thrust (no thrust deduction, no moment) tensor in body frame expressed at the propeller location. 
+    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)std::max(pure_thrust_wrench_body_frame_at_P.X(),0.)); // rudder forces and moments in body frame expressed at the rudder location
     /*
     Negative propeller thrust means that the propeller wake is forward and therefore there is no
     acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would
