@@ -342,12 +342,12 @@ TEST_F(MMGRudderForceModelTest, force_and_torque)
     const auto rudderTensor = rudderModel.get_force(states, t, env, commands);
 
     // We compare the two tensors which are both expressed in body frame
-    ASSERT_NEAR(1068003.9043270403, rudderTensor.X(), EPS);
-    ASSERT_NEAR(2868941.6534986021, rudderTensor.Y(), EPS);
+    ASSERT_NEAR(1056710.37800258, rudderTensor.X(), EPS);
+    ASSERT_NEAR(3006024.8295614929, rudderTensor.Y(), EPS);
     ASSERT_NEAR(0, rudderTensor.Z(), EPS);
     ASSERT_NEAR(0, rudderTensor.K(), EPS);
     ASSERT_NEAR(0, rudderTensor.M(), EPS);
-    ASSERT_NEAR(-12997705.174082102, rudderTensor.N(), EPS);
+    ASSERT_NEAR(-13618758.831489002, rudderTensor.N(), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
@@ -376,17 +376,17 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
     std::map<std::string, double> commands;
     commands["beta"] = PI/6;
 
-    // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm, t=0.2 and D=9
-    const double prop_thrust=0.8*1024*pow(70/60,2)*pow(9,4)*0.5;
+    // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm and D=9
+    const double prop_thrust=1024*pow(70/60,2)*pow(9,4)*0.5;
 
     const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
 
-    ASSERT_NEAR(-1698918.4794772132, rudderTensor(0), EPS);
-    ASSERT_NEAR(6298056.1487378832, rudderTensor(1), EPS);
+    ASSERT_NEAR(-1828188.6643903784, rudderTensor(0), EPS);
+    ASSERT_NEAR(6777273.305285248, rudderTensor(1), EPS);
     ASSERT_NEAR(0, rudderTensor(2), EPS);
     ASSERT_NEAR(0, rudderTensor(3), EPS);
     ASSERT_NEAR(0, rudderTensor(4), EPS);
-    ASSERT_NEAR(17253601.625030234, rudderTensor(5), EPS);
+    ASSERT_NEAR(18566422.869503364, rudderTensor(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)

@@ -12,7 +12,7 @@ MMGManeuveringForceModelTest::~MMGManeuveringForceModelTest()
 std::string get_input();
 std::string get_input()
 {
-    std::stringstream ss;
+    std::stringstream ss; // Data from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y
     ss << "calculation point in body frame:\n"
         <<"    x: {value: -11.1, unit: m}\n"
         <<"    y: {value: 0, unit: m}\n"
@@ -35,7 +35,9 @@ std::string get_input()
         <<"Nvvv: -0.03\n"
         <<"Nrvv: -0.294\n"
         <<"Nvrr: 0.055\n"
-        <<"Nrrr: -0.013\n";
+        <<"Nrrr: -0.013\n"
+        <<"mx: 0.022\n"
+        <<"my: 0.223";
     return ss.str();
 }
 
@@ -64,6 +66,8 @@ TEST_F(MMGManeuveringForceModelTest, can_parse)
     ASSERT_DOUBLE_EQ(data.Nrvv, -0.294);
     ASSERT_DOUBLE_EQ(data.Nvrr, 0.055);
     ASSERT_DOUBLE_EQ(data.Nrrr, -0.013);
+    ASSERT_DOUBLE_EQ(data.mx, 0.022);
+    ASSERT_DOUBLE_EQ(data.my, 0.223);
 }
 
 BodyStates get_states();
@@ -95,8 +99,8 @@ TEST_F(MMGManeuveringForceModelTest, example)
     auto force_model = MMGManeuveringForceModel(MMGManeuveringForceModel::parse(get_input()), "body", env);
     auto states = get_states();
     auto F = force_model.get_force(states, 0, env, {});
-    ASSERT_DOUBLE_EQ(F.X(), 35918728522.330902-500*320*20.8*0.022*(1+pow((2-11.1*3),2)));
-    ASSERT_DOUBLE_EQ(F.Y(), 2003246596640.8945);
+    ASSERT_DOUBLE_EQ(F.X(), 35918728522.330902-500*320*20.8*0.022*(1+pow((2-11.1*3),2))+0.223*500*320*320*20.8*(2-11.1*3)*3);
+    ASSERT_DOUBLE_EQ(F.Y(), 2003246596640.8945-0.022*500*320*320*20.8*1*3);
     ASSERT_DOUBLE_EQ(F.Z(), 0);
     ASSERT_DOUBLE_EQ(F.K(), 0);
     ASSERT_DOUBLE_EQ(F.M(), 0);
