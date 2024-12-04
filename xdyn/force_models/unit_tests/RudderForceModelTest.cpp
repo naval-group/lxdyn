@@ -191,8 +191,8 @@ TEST_F(RudderForceModelTest, get_Vs)
     RudderForceModel::Yaml parameters = a.random<RudderForceModel::Yaml>();
     parameters.diameter = 3.6;
     RudderForceModel::RudderModel riw(parameters,1024,a.random<double>());
-    const auto vs = riw.get_vs(1.5,12,6,12e4);
-    ASSERT_DOUBLE_EQ(12.007932248435861, vs.in_wake.v.norm());
+    const auto vs = riw.get_vs(1.5,12,6);
+    ASSERT_DOUBLE_EQ(14.250875681004253, vs.in_wake.v.norm());
     ASSERT_DOUBLE_EQ(13.416407864998739, vs.outside_wake.v.norm());
 }
 
@@ -292,12 +292,12 @@ TEST_F(RudderForceModelTest, force_and_torque)
 
     const auto F = rudder.get_force(states, t, env, commands);
 
-    ASSERT_DOUBLE_EQ(2237560.5602627154, F.X());
-    ASSERT_DOUBLE_EQ(401965.35286844603, F.Y());
+    ASSERT_DOUBLE_EQ(1991600.7989408118, F.X());
+    ASSERT_DOUBLE_EQ(1835490.3295199818, F.Y());
     ASSERT_DOUBLE_EQ(414940.19127081765, F.Z());
-    ASSERT_DOUBLE_EQ(-2750648.9323577443, F.K());
-    ASSERT_DOUBLE_EQ(48012.755709036799, F.M());
-    ASSERT_DOUBLE_EQ(-972426.1146227757, F.N());
+    ASSERT_DOUBLE_EQ(-2750648.9323577448, F.K());
+    ASSERT_DOUBLE_EQ(48012.755709036814, F.M());
+    ASSERT_DOUBLE_EQ(-2549303.5889394642, F.N());
 }
 
 TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
@@ -327,17 +327,17 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
     commands["rpm"] = 200;//defaut unit is rad/s
     commands["P/D"] = 1.2;
     commands["beta"] = PI/6;
-    const double prop_thrust=0.3*1024*(10000/PI/PI)*16*0.479798653;
+    const double prop_thrust=1024*(10000/PI/PI)*16*0.479798653;
     const double cos_theta_cos_psi = 0.9846577620214009;// with theta=-10° and psi=-1° from input data
 
     const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi); // rudder forces and moments in propeller frame expressed at the propeller location
 
-    ASSERT_DOUBLE_EQ(-115319.57494583167, rudder_force(0));
-    ASSERT_DOUBLE_EQ(443015.20308726869, rudder_force(1));
+    ASSERT_DOUBLE_EQ(-361272.67620997917, rudder_force(0));
+    ASSERT_DOUBLE_EQ(1876488.4373155038, rudder_force(1));
     ASSERT_DOUBLE_EQ(0, rudder_force(2));
     ASSERT_DOUBLE_EQ(0, rudder_force(3));
     ASSERT_DOUBLE_EQ(0, rudder_force(4));
-    ASSERT_DOUBLE_EQ(-1.1*443015.20308726869, rudder_force(5));//there is -1.1m from the propeller to the rudder
+    ASSERT_DOUBLE_EQ(-1.1*1876488.4373155038, rudder_force(5));//there is -1.1m from the propeller to the rudder
 }
 
 TEST_F(RudderForceModelTest, force_and_torque_with_phi_angle)
