@@ -77,6 +77,16 @@ AbstractWageningen::AbstractWageningen(const Yaml& input, const std::string& bod
 {
 }
 
+Wrench AbstractWageningen::get_pure_thrust_force(const BodyStates& states, const double t_, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const
+{
+    Wrench tau(ssc::kinematics::Point(name,0,0,0), name);
+    const double n2 = commands.at("rpm")*commands.at("rpm")/(4*PI*PI); // n in rps (turns per second)
+    const double Va = get_advance_speed(states, t_, env);
+    const double J = get_advance_ratio(commands, Va);
+    tau.X() = env.rho*n2*D4*get_Kt(commands, J);
+    return tau;
+}
+
 Wrench AbstractWageningen::get_force(const BodyStates& states, const double t_, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const
 {
     Wrench tau(ssc::kinematics::Point(name,0,0,0), name);

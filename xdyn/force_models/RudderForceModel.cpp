@@ -133,15 +133,14 @@ ssc::kinematics::Vector6d RudderForceModel::RudderModel::get_force(
 RudderForceModel::InOutWake<ssc::kinematics::Point> RudderForceModel::RudderModel::get_vs(
     const double CTh, //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
     const double Va,  //!< Projection of the ship speed (relative to the current) on the X-axis of the ship's reference frame (m/s)
-    const double v,   //!< Projection of the ship speed (relative to the current) on the Y-axis of the ship's reference frame (m/s)
-    const double T    //!< Propeller thrust (in N)
+    const double v    //!< Projection of the ship speed (relative to the current) on the Y-axis of the ship's reference frame (m/s)
     ) const
 {
     RudderForceModel::InOutWake<ssc::kinematics::Point> Vs;
     // Reduction factor (cf. "Marine rudders and Control Surfaces", p.371, eq 11.1)
     const double RF = CTh>13.71742 ? 0.5 : 1 - 0.135 * sqrt(CTh); // Because 13.71742 = pow(0.5/0.135,2) and 1 - 0.135 * sqrt(pow(0.5/0.135,2)) = 0.5
     // Vchange = Vbollard - Va (cf. "Marine rudders and Control Surfaces", p.51, eq 3.38)
-    const double Vchange = sqrt(Va*Va + 8 / PI * T / (rho * parameters.diameter*parameters.diameter)) - Va;
+    const double Vchange = Va*(sqrt(1+ CTh) - 1);
     // Ship speed (relative to the current) in the ship's reference frame (m/s)
     Vs.in_wake.x() = (Va+Kr*Vchange) * RF;
     Vs.in_wake.y() = v;
@@ -235,7 +234,7 @@ ssc::kinematics::Vector6d RudderForceModel::get_rudder_force(
     const double CTh = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa*DVa);
 
     const double rudder_angle = commands.at("beta");
-    const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v(), T);
+    const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v());
     const InOutWake<double> fluid_angle = rudderModel.get_fluid_angle(Vs);
     const InOutWake<double> area = rudderModel.get_Ar(CTh);
     const InOutWake<ssc::kinematics::Vector6d> w = rudderModel.get_wrench(rudder_angle, fluid_angle, Vs, area);
@@ -248,10 +247,12 @@ Wrench RudderForceModel::get_force(
     const std::map<std::string,double>& commands) const
 {
     const Wrench propeller_wrench_propeller_frame_at_P = propulsionModel.get_force(states, t, env, commands);// propeller tensor in propeller frame expressed at the propeller location
+    const Wrench pure_thrust_wrench_propeller_frame_at_P = propulsionModel.get_pure_thrust_force(states, t, env, commands);// propeller pure thrust (no thrust deduction, no moment) tensor in propeller frame expressed at the propeller location
     const std::string frame = propeller_wrench_propeller_frame_at_P.get_frame();// get propeller frame
     can_find_internal_frame(env.k);// Check if the internal frame is accessible
     const Wrench propeller_wrench_body_frame_at_P = propeller_wrench_propeller_frame_at_P.change_frame(body_name,env.k);// propeller tensor in body frame expressed at the propeller location
-    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)std::max(propeller_wrench_body_frame_at_P.X(),0.)); // rudder forces and moments in propeller frame expressed at the propeller location
+    const Wrench pure_thrust_wrench_body_frame_at_P = pure_thrust_wrench_propeller_frame_at_P.change_frame(body_name,env.k);// propeller pure thrust (no thrust deduction, no moment) tensor in body frame expressed at the propeller location. 
+    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)std::max(pure_thrust_wrench_body_frame_at_P.X(),0.)); // rudder forces and moments in propeller frame expressed at the propeller location
     /*
     Negative propeller thrust means that the propeller wake is forward and therefore there is no acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would fails the calculation of CTh (negative square root calculation).
     */
