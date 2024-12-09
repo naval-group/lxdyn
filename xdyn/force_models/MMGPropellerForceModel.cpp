@@ -10,6 +10,8 @@
 #include "xdyn/yaml_parser/yaml_compat.h"
 #define PI M_PI
 
+#include <cmath>
+
 std::string MMGPropellerForceModel::model_name() {return "MMG propeller";}
 
 MMGPropellerForceModel::Yaml::Yaml() :
@@ -29,7 +31,7 @@ MMGPropellerForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
         k2(),
         C1(),
         C2(),
-        application_point(YamlCoordinates())        
+        application_point(YamlCoordinates())
 {
 }
 
@@ -48,9 +50,9 @@ MMGPropellerForceModel::Yaml MMGPropellerForceModel::parse(const std::string& ya
 }
 
 MMGPropellerForceModel::MMGPropellerForceModel(const Yaml& input, const std::string& body_name_, const EnvironmentAndFrames& env):
-            AbstractWageningen(input, body_name_, env), 
-            m_k0(input.k0), 
-            m_k1(input.k1), 
+            AbstractWageningen(input, body_name_, env),
+            m_k0(input.k0),
+            m_k1(input.k1),
             m_k2(input.k2),
             m_C1(input.C1),
             m_C2(input.C2),
@@ -81,9 +83,9 @@ double MMGPropellerForceModel::get_Kq(const std::map<std::string,double>&, const
 
 double MMGPropellerForceModel::wrapToPi(double x)
 {
-    x = fmod(x + PI,2*PI);
+    x = fmod(x + PI,2.*PI);
     if (x <= 0)
-        x += 2*PI;
+        x += 2.*PI;
     return x - PI;
 }
 
@@ -96,8 +98,8 @@ double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
     const double vm = states.v() - xG*states.r();// Lateral ship velocity at midship in body frame
     double beta=atan2(-vm,states.u());//leeway angle at midship
     double U=sqrt(states.u()*states.u()+vm*vm);//ship velocity
-    
-    double C2;  
+
+    double C2;
     // Equation 15
     double beta_P=wrapToPi(beta-get_propeller_longitudinal_position_in_MMG_frame()*states.r()/U);
 
@@ -111,12 +113,12 @@ double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
     }
 
     // Equation 14
-    // double ratio =1+(1-cos(beta)*cos(beta))*(1-abs(beta));   
-    
+    // double ratio =1+(1-cos(beta)*cos(beta))*(1-abs(beta));
+
     // Equation (16)
-    double ratio= 1+(1-exp(-m_C1*abs(beta_P)))*(C2-1);
-    
-    double wake_fac=1-(1-w)*ratio;
+    double ratio= 1.+(1.-exp(-m_C1*std::abs(beta_P)))*(C2-1.);
+
+    double wake_fac=1.-(1.-w)*ratio;
 
     if (wake_fac<0)
     {
@@ -125,7 +127,7 @@ double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
     }
 
     return wake_fac;
-} 
+}
 
 void MMGPropellerForceModel::check(const double J) const
 {
