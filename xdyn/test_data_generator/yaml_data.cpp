@@ -4383,16 +4383,16 @@ std::string test_data::blockedDoF_idealRudder()
 std::string test_data::MMGPropeller()
 {
     /*
-    The above data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+    This data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
     */
     std::stringstream ss;
     ss << "name: port side propeller\n"
        << "model: MMG propeller\n"
        << "position of propeller frame:\n"
        << "    frame: mesh(body 1)\n"
-       << "    x: {value: -160, unit: m}\n"//from Rhino 3D at full-scale
-       << "    y: {value: 0, unit: m}\n"//from Rhino 3D at full-scale
-       << "    z: {value: 0, unit: m}\n"//from Rhino 3D at full-scale
+       << "    x: {value: -160, unit: m}\n" // -LPP/2
+       << "    y: {value: 0, unit: m}\n"
+       << "    z: {value: 12.6, unit: m}\n" // measured on the KVLCC2 geometry
        << "    phi: {value: 0, unit: rad}\n"
        << "    theta: {value: 0, unit: deg}\n"
        << "    psi: {value: 0, unit: deg}\n"
@@ -4404,6 +4404,7 @@ std::string test_data::MMGPropeller()
        << "k0: 0.2931\n"
        << "k1: -0.2753\n"
        << "k2: -0.1385\n"
+       << "C0: 0.\n" // C0 is set to 0 to use the wake formula from Yasukawa & Yoshimura (2014)
        << "C1: 2.0\n"
        << "C2: [1.1, 1.6]\n"
        << "calculation point in body frame:\n"// Should correspond to the MMG origin (midship)
@@ -4437,6 +4438,7 @@ std::string test_data::MMGRudderAndPropeller()
         << "k0: 0.2931\n"
         << "k1: -0.2753\n"
         << "k2: -0.1385\n"
+        << "C0: 0.\n" // C0 is set to 0 to use the wake formula from Yasukawa & Yoshimura (2014)
         << "C1: 2.0\n"
         << "C2: [1.1, 1.6]\n"
         << "calculation point in body frame:\n"// Should correspond to the MMG origin (midship)

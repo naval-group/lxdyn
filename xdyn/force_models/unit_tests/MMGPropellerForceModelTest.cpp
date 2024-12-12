@@ -39,6 +39,7 @@ namespace ssc
             ret.k0 = random<double>();
             ret.k1 = random<double>();
             ret.k2 = random<double>();
+            ret.C0 = random<double>();
             ret.C1 = random<double>();
             ret.C2 = { random<double>(), random<double>() };
             ret.application_point = YamlCoordinates(random<double>(), random<double>(),random<double>());
@@ -103,7 +104,7 @@ TEST_F(MMGPropellerForceModelTest, parser)
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.angle.psi);
     ASSERT_DOUBLE_EQ(-160, k.position_of_propeller_frame.coordinates.x);
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.coordinates.y);
-    ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.coordinates.z);
+    ASSERT_DOUBLE_EQ(12.6, k.position_of_propeller_frame.coordinates.z);
     ASSERT_EQ("mesh(body 1)", k.position_of_propeller_frame.frame);
     ASSERT_DOUBLE_EQ(0.22, k.thrust_deduction_factor);
     ASSERT_DOUBLE_EQ(0.35, k.wake_coefficient);
@@ -111,6 +112,7 @@ TEST_F(MMGPropellerForceModelTest, parser)
     ASSERT_DOUBLE_EQ(0.2931,k.k0);
     ASSERT_DOUBLE_EQ(-0.2753,k.k1);
     ASSERT_DOUBLE_EQ(-0.1385,k.k2);
+    ASSERT_DOUBLE_EQ(0.,k.C0);
     ASSERT_DOUBLE_EQ(2.0,k.C1);
     ASSERT_DOUBLE_EQ(1.1,k.C2[0]);
     ASSERT_DOUBLE_EQ(1.6,k.C2[1]);
@@ -140,26 +142,31 @@ TEST_F(MMGPropellerForceModelTest, check_propeller_longitudinal_location_in_MMG_
     // Create propeller model 
     const MMGPropellerForceModel propModel(input, b->get_name(), env);
 
-    // Case 1: Check the longitudinal position in case the body frame longitudinal origin is located at midship
-    ASSERT_EQ(-160,propModel.get_propeller_longitudinal_position_in_MMG_frame());
+    // Case 1: Check the longitudinal position in case the body frame and the MMG frame are the same
+    ASSERT_EQ(-160,propModel.get_propeller_position_in_MMG_frame().x());
+    ASSERT_EQ(0,propModel.get_propeller_position_in_MMG_frame().y());
+    ASSERT_EQ(12.6,propModel.get_propeller_position_in_MMG_frame().z());
 
-
-    // Case 2: application point backward from body frame origin
+    // Case 2: Check the longitudinal position in case the body frame and the MMG frame are not the same
     input.application_point.x=-10;
-    input.application_point.y=+20;//to checked there is no impact
-    input.application_point.z=-30;//to checked there is no impact
+    input.application_point.y=20;
+    input.application_point.z=5;
     const MMGPropellerForceModel propModel2(input, b->get_name(), env);
-    // Check the longitudinal position in case the body frame longitudinal origin is forward from midship
-    ASSERT_EQ(-150,propModel2.get_propeller_longitudinal_position_in_MMG_frame());
+    ASSERT_EQ(-150,propModel2.get_propeller_position_in_MMG_frame().x());
+    ASSERT_EQ(-20,propModel2.get_propeller_position_in_MMG_frame().y());
+    ASSERT_EQ(7.6,propModel2.get_propeller_position_in_MMG_frame().z());
 
-    // Case 3: application point forward from body frame origin
+    // Case 3: Check the longitudinal position in case the body frame and the MMG frame are not the same (opposites values than for the previous test)
     input.application_point.x=+10;
+    input.application_point.y=-20;
+    input.application_point.z=-5;
     const MMGPropellerForceModel propModel3(input, b->get_name(), env);
-    // Check the longitudinal position in case the body frame longitudinal origin is forward from midship
-    ASSERT_EQ(-170,propModel3.get_propeller_longitudinal_position_in_MMG_frame());
+    ASSERT_EQ(-170,propModel3.get_propeller_position_in_MMG_frame().x());
+    ASSERT_EQ(20,propModel3.get_propeller_position_in_MMG_frame().y());
+    ASSERT_EQ(17.6,propModel3.get_propeller_position_in_MMG_frame().z());
 }
 
-TEST_F(MMGPropellerForceModelTest, check_CoG_longitudinal_location_in_MMG_frame)
+TEST_F(MMGPropellerForceModelTest, check_CoG_location_in_MMG_frame)
 {
     /*
     The purpose of this test is to check that the CoG longitudinal coordinate in MMG fram is well computed.
@@ -177,17 +184,27 @@ TEST_F(MMGPropellerForceModelTest, check_CoG_longitudinal_location_in_MMG_frame)
     BodyStates states;
 
     // Case 1: the body frame origin, the MMG frame origin and the CoG are identical
-    states.G=ssc::kinematics::Point(b->get_name(),{0,2,3});
-    ASSERT_EQ(0,propModel.get_CoG_longitudinal_position_in_MMG_frame(states));
+    states.G=ssc::kinematics::Point(b->get_name(),{0,0,0});
+    ASSERT_EQ(0,propModel.get_CoG_position_in_MMG_frame(states).x());
+    ASSERT_EQ(0,propModel.get_CoG_position_in_MMG_frame(states).y());
+    ASSERT_EQ(0,propModel.get_CoG_position_in_MMG_frame(states).z());
 
-    // Case 2: the body frame origin and the CoG are identical, the MMG frame is 10m backward
+    // Case 2: the body frame origin and the CoG are identical, the MMG frame is different
     input.application_point.x=-10;
+    input.application_point.y=2;
+    input.application_point.z=-5;
     const MMGPropellerForceModel propModel2(input, b->get_name(), env);
-    ASSERT_EQ(10,propModel2.get_CoG_longitudinal_position_in_MMG_frame(states));
+    ASSERT_EQ(10,propModel2.get_CoG_position_in_MMG_frame(states).x());
+    ASSERT_EQ(-2,propModel2.get_CoG_position_in_MMG_frame(states).y());
+    ASSERT_EQ(5,propModel2.get_CoG_position_in_MMG_frame(states).z());
 
-    // Case 3: MMG frame 10m backward body frame and CoG 10m frontward body frame
-    states.G.v(0)=10;
-    ASSERT_EQ(20,propModel2.get_CoG_longitudinal_position_in_MMG_frame(states));
+    // Case 3: the body frame origin, the CoG are identical and the MMG frame origin are different
+    states.G.v(0)=8;
+    states.G.v(1)=5;
+    states.G.v(2)=4;
+    ASSERT_EQ(18,propModel2.get_CoG_position_in_MMG_frame(states).x());
+    ASSERT_EQ(3,propModel2.get_CoG_position_in_MMG_frame(states).y());
+    ASSERT_EQ(9,propModel2.get_CoG_position_in_MMG_frame(states).z());
 }
 
 TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
@@ -195,6 +212,7 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     /*
     The purpose of this test is to check that the polymorphism is well respected when computing the wake factor
     */
+
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
@@ -208,6 +226,8 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     // Define a 30° drift angle with SOG= 2 m/s
     states.u.record(0, 1.7320508075688772);
     states.v.record(0, -1.);
+
+    // FORMULA YASUKAWA : when C0=0, it is the formula (16) from Yasukawa & Yoshimura 2014 which is used
 
     // Case 1: If r=0 $\beta_P=\beta$=PI/6>0 and C2=1.6
     states.r.record(0, 0);
@@ -243,7 +263,7 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(0,wake_fac,EPS);
 
-    // Case 7: Define a case with xG>0 equivalent to the case 3
+    // Case 7: Define a case with xG equivalent to the case 3
     states.u.record(0, 1.7320508075688772);
     states.v.record(0, -0.9);
     states.r.record(0, PI/480);
@@ -252,19 +272,49 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     wake_fac=propModel.get_wake_factor(states);
     ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac,EPS);
 
-    // Case 8: Define a case with body origin, MMG origin and CoG separated, equivalent to the case 3
+    // Case 8: Define a case with xG and z_G equivalent to case 7
+    states.u.record(0, 1.7320508075688772);
+    states.v.record(0, -0.9);
+    states.r.record(0, PI/480);
+    states.p.record(0, -PI/48);
+    states.G=ssc::kinematics::Point(b->get_name(),{24/PI,2,2.4/PI});
+    // In that case vm=-0.9-0.05-0.05=-1
+    wake_fac=propModel.get_wake_factor(states);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-2*(PI/3-12.6*PI/48/2)))*0.6),wake_fac,EPS);
+
+    // Case 9: Define a case with body origin, MMG origin and CoG separated
     MMGPropellerForceModel::Yaml input=MMGPropellerForceModel::parse(test_data::MMGPropeller());
-    // We define the body origin 10m forward from midship
+    // We define the body origin 10m forward from midship and 5m below waterline
     input.application_point.x=-10;
-    // The propeller longitudinal location is then moved 10m backward
+    input.application_point.z=5;
+    // The propeller longitudinal location is then moved accordingly
     input.position_of_propeller_frame.coordinates.x=-170;
-    // The CoG from case 7 is also moved 10m backward 
-    states.G=ssc::kinematics::Point(b->get_name(),{48/PI-10,2,3});
+    input.position_of_propeller_frame.coordinates.z=17.6;
+    // The CoG from case 7 is also moved accordingly
+    states.G=ssc::kinematics::Point(b->get_name(),{24/PI-10,2,2.4/PI+5});
     // Create propeller model 
-    MMGPropellerForceModel propModel2(input, b->get_name(), env);
-    // In that case we still have vm=-0.9-0.1=-1
-    wake_fac=propModel2.get_wake_factor(states);
-    ASSERT_NEAR(1-0.65*(1+(1-exp(-2*PI/3))*0.6),wake_fac,EPS);
+    MMGPropellerForceModel propModel3(input, b->get_name(), env);
+    // In that case we still have vm=-0.9-0.05-0.05=-1
+    wake_fac=propModel3.get_wake_factor(states);
+    ASSERT_NEAR(1-0.65*(1+(1-exp(-2*(PI/3-12.6*PI/48/2)))*0.6),wake_fac,EPS);
+
+    // FORMULA OKUDA 2019 : when C0=0, it is the formula from Okuda et. all 2019 which is used
+
+    // Case 10: Verify Okuda formula 
+    input=MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    input.C2[0] = 1;
+    input.C2[1] = 1;
+    input.C0 = -2.5;
+    // Define a 30° drift angle with SOG= 2 m/s
+    states.u.record(0, 1.7320508075688772);
+    states.v.record(0, -1.);
+    // No roll nor yaw motion
+    states.p.record(0,0.);
+    states.r.record(0,0.);
+    // Create propeller model 
+    MMGPropellerForceModel propModel4(input, b->get_name(), env);
+    wake_fac=propModel4.get_wake_factor(states);
+    ASSERT_NEAR(0.35*exp(-2.5*pow(PI/6,2)),wake_fac,EPS);
 }
 
 TEST_F(MMGPropellerForceModelTest, check_kt_calculation)
