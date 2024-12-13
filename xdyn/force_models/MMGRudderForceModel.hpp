@@ -12,7 +12,11 @@
 
 /** \details This class was created to define the rudder model used in the MMG model
  * 
- *  It is based on H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+ *  It was originally based on the 3 DOF MMG model as described in
+ * H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+ * 
+ * More recently, it has been extended to 4 DOF, as described in
+ * R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174, Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
  * 
  *  \addtogroup ForceModels
  *  \ingroup module
@@ -117,7 +121,7 @@ class MMGRudderForceModel : public ForceModel
                 vR //!< Lateral inflow velocity (body frame) at the rudder location (in m/s)
         ) const;
 
-        double get_vr(const double u, const double v, const double r) const;
+        double get_vr(const double u, const double v, const double r, const double dphi_dt, const double vertical_position_of_rudder_in_MMG_frame) const;
 
         /**  \brief Calculates the angle of incidence of the fluid at the rudder location
          *  \returns Angle in radian

@@ -319,7 +319,7 @@ ssc::kinematics::Point MMGRudderForceModel::RudderModel::get_vs(
     */
     ssc::kinematics::Point Vrud;
     // Equation (40)
-    double eta = m_D / m_b; // propeller to rudder ratio
+    const double eta = m_D / m_b; // propeller to rudder ratio
     // Equation (25) or (46)
     // Ship speed (relative to the current) in the ship's reference frame (m/s)
     Vrud.x()
@@ -329,12 +329,13 @@ ssc::kinematics::Point MMGRudderForceModel::RudderModel::get_vs(
 }
 
 double MMGRudderForceModel::RudderModel::get_vr(const double u, const double vm,
-                                                const double r) const
+                                                const double r, const double dphi_dt,const double vertical_position_of_rudder_in_MMG_frame) const
 {
-    double beta = atan2(-vm, u); // hull drift angle at midship, as defined in MMG
-    double U = sqrt(u * u + vm * vm);
+    const double beta = atan2(-vm, u); // hull drift angle at midship, as defined in MMG
+    const double U = sqrt(u * u + vm * vm);
+
     // Equation (24)
-    double betaR = MMGPropellerForceModel::wrapToPi(beta - m_lR * r / U);
+    const double betaR = MMGPropellerForceModel::wrapToPi(beta - m_lR * r / U + vertical_position_of_rudder_in_MMG_frame*dphi_dt/U);
 
     // Define which value of $\gamma_R$ is to be used
     double signedGammaR;
@@ -384,8 +385,8 @@ ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_wrench(
     const double area                //!< Rudder area in m^2
 ) const
 {
-    double rudder_inflow_angle = get_angle_of_attack(rudder_angle, get_fluid_angle(Vs));
-    double Fn = get_Fn(area, Vs.v.norm(), rudder_inflow_angle);
+    const double rudder_inflow_angle = get_angle_of_attack(rudder_angle, get_fluid_angle(Vs));
+    const double Fn = get_Fn(area, Vs.v.norm(), rudder_inflow_angle);
     return get_force(Fn, rudder_angle);
 }
 
@@ -393,10 +394,10 @@ double MMGRudderForceModel::RudderModel::get_Fn(const double area, const double 
                                                 const double rudder_inflow_angle) const
 {
     // Equation (18): Fujii's formula to have the rudder lift gradient coefficient
-    double friction_coeff = 6.13 * m_effective_aspect_ratio / (m_effective_aspect_ratio + 2.25);
+    const double friction_coeff = 6.13 * m_effective_aspect_ratio / (m_effective_aspect_ratio + 2.25);
 
     // Equation (19)
-    double Fn = 0.5 * m_rho * area * speed * speed * friction_coeff * sin(rudder_inflow_angle);
+    const double Fn = 0.5 * m_rho * area * speed * speed * friction_coeff * sin(rudder_inflow_angle);
     
     return Fn;
 }
@@ -430,12 +431,15 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
 
     const double rudder_angle
         = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the opposite of the one used in xdyn (positive to starboard)
-    const double xG = m_propulsionModel.get_CoG_longitudinal_position_in_MMG_frame(states);// Longitudinal position of the CoG from midship
-    const double vm = states.v() - xG*states.r();// Lateral ship velocity at midship in body frame
-    const double vR = m_rudderModel.get_vr(states.u(), vm, states.r());// Lateral inflow velocity at rudder location
+    const double xG = m_propulsionModel.get_CoG_position_in_MMG_frame(states).x();// Longitudinal position of the CoG from midship
+    const double zG = m_propulsionModel.get_CoG_position_in_MMG_frame(states).z();// Vertical position of the CoG from midship
+    const double vm = states.v() - xG*states.r() + zG*states.p();// Lateral ship velocity at midship in body frame
+    const double phi = states.get_angles(env.rot).phi;// heel angle
+    const double zR_MMG_frame = m_rudderModel.get_rudder_location().z()- m_propulsionModel.get_MMG_frame_position_in_body_frame().z();// Vertical point of application of the rudder in the MMG frame
+    const double vR = m_rudderModel.get_vr(states.u(), vm, states.r(),states.p(),zR_MMG_frame);// Lateral inflow velocity at rudder location
     ssc::kinematics::Point Vrud = m_rudderModel.get_vs(
         CTh, Va, vR); // mean inflow velocity at rudder location
-    return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar());
+    return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar())*cos(phi);
 }
 
 MMGRudderForceModel::Yaml MMGRudderForceModel::parse(const std::string& yaml)

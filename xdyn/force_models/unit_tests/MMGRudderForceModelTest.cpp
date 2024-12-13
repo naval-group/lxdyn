@@ -162,8 +162,7 @@ TEST_F(MMGRudderForceModelTest, get_fluid_angle)
     test than in RudderForceModel).
     */
 
-    const MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),
-                                                       a.random<double>());
+    const MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),a.random<double>());
     ssc::kinematics::Point V;
     V.x() = 1;
     V.y() = 2;
@@ -240,7 +239,7 @@ TEST_F(MMGRudderForceModelTest, get_vr_betaR_pos)
     const MMGRudderForceModel::RudderModel rudderModel(
         MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
 
-    double vr = rudderModel.get_vr(states.u(), states.v(), states.r());
+    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.,0.);
     ASSERT_NEAR(10 * 0.64 * (PI / 6 - 0.71 * 0.023 * 320 / 10),
                      vr,EPS); // gamma_R=0.64 as $beta_R$>0
 }
@@ -264,7 +263,7 @@ TEST_F(MMGRudderForceModelTest, get_vr_betaR_neg)
     const MMGRudderForceModel::RudderModel rudderModel(
         MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
 
-    double vr = rudderModel.get_vr(states.u(), states.v(), states.r());
+    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.,0.);
     ASSERT_NEAR(10 * 0.395 * (PI / 6 - 0.71 * 0.025 * 320 / 10),
                      vr,EPS); // gamma_R=0.395 as $beta_R$<0
 }
