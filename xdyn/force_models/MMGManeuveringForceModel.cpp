@@ -8,6 +8,7 @@
 #include <Eigen/Dense>
 #include "xdyn/yaml_parser/yaml_compat.h"
 #include <cmath>
+#include "MMGPropellerForceModel.hpp"
 
 MMGManeuveringForceModel::Input::Input():
         application_point(YamlCoordinates()),
@@ -47,7 +48,8 @@ MMGManeuveringForceModel::Input::Input():
         Kphiphi(0.0),
         mx(0.0),
         my(0.0),
-        GM(0.0)
+        GM(0.0),
+        zH(0.0)
 {}
 
 std::string MMGManeuveringForceModel::model_name() {return "MMG maneuvering";}
@@ -100,6 +102,7 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
     node["mx"] >> ret.mx;
     node["my"] >> ret.my;
     node["GM"] >> ret.GM;
+    node["zH"] >> ret.zH;
 
     return ret;
 }
@@ -110,28 +113,35 @@ Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const doubl
     const double u = states.u();
     const double v = states.v();
     const double r = states.r();
-    const double phi = states.get_angles(env.rot).phi;
+    const double phi = MMGPropellerForceModel::wrapToPi(states.get_angles(env.rot).phi);
     const double dphi_dt = states.p();
 
     const double body_mass = states.solid_body_inertia(2,2);
-    const double xG = states.G.v(0) - env.k->get(body_name, name).get_point().v(0);
-    const double zG = states.G.v(2) - env.k->get(body_name, name).get_point().v(2);
-
-    const double vm = v - xG*r+zG*dphi_dt;
+    const double xG_mmg_frame = states.G.v(0) - env.k->get(body_name, name).get_point().v(0);
+    const double zG_mmg_frame = states.G.v(2) - env.k->get(body_name, name).get_point().v(2);
+    const double zH_mmg_frame = input.zH - env.k->get(body_name, name).get_point().v(2);
+    
+    const double vm = v - xG_mmg_frame*r+zG_mmg_frame*dphi_dt;
     const double U = hypot(u, vm);
     if (U!=0)
     {
         const double u_ = u/U;
         const double vm_ = vm/U;
         const double r_ = r*input.Lpp/U;
-        const double X_ = -input.R0 + input.Xvv*vm_*vm_ + input.Xrr*r_*r_ + input.Xvr*vm_*r_ + input.Xvvvv*vm_*vm_*vm_*vm_ + input.Xvphi*vm_*phi + input.Xrphi*r_*phi + input.Xphiphi*phi*phi + input.my*vm_*r_;
-        const double Y_ = input.Yv*vm_ + input.Yr*r_ + input.Yvvv*vm_*vm_*vm_ + input.Yvrr*vm_*r_*r_  + input.Yrrr*r_*r_*r_ + input.Yrvv*r_*vm_*vm_ + input.Yphi*phi + input.Yphivv*phi*vm_*vm_ + input.Yvphiphi*vm_*phi*phi + input.Yphirr*phi*r_*r_ + input.Yrphiphi*r_*phi*phi - input.mx*u_*r_;
+        const double X_ = -input.R0 + input.Xvv*vm_*vm_ + input.Xrr*r_*r_ + input.Xvr*vm_*r_ + input.Xvvvv*vm_*vm_*vm_*vm_ + input.Xvphi*vm_*phi + input.Xrphi*r_*phi + input.Xphiphi*phi*phi;
+        const double Y_ = input.Yv*vm_ + input.Yr*r_ + input.Yvvv*vm_*vm_*vm_ + input.Yvrr*vm_*r_*r_  + input.Yrrr*r_*r_*r_ + input.Yrvv*r_*vm_*vm_ + input.Yphi*phi + input.Yphivv*phi*vm_*vm_ + input.Yvphiphi*vm_*phi*phi + input.Yphirr*phi*r_*r_ + input.Yrphiphi*r_*phi*phi;
         const double N_ = input.Nv*vm_ + input.Nr*r_ + input.Nvvv*vm_*vm_*vm_ + input.Nvrr*vm_*r_*r_  + input.Nrrr*r_*r_*r_ + input.Nrvv*r_*vm_*vm_ + input.Nphi*phi + input.Nphivv*phi*vm_*vm_ + input.Nvphiphi*vm_*phi*phi + input.Nphirr*phi*r_*r_ + input.Nrphiphi*r_*phi*phi;
-        const double K = - body_mass*env.g*input.GM*phi + input.Kphi*dphi_dt + input.Kphiphi * dphi_dt*abs(dphi_dt);
+
+        const double Y=0.5*env.rho*pow(U,2)*input.Lpp*input.T*Y_;
+
         tau(0) = 0.5*env.rho*pow(U,2)*input.Lpp*input.T*X_;
-        tau(1) = 0.5*env.rho*pow(U,2)*input.Lpp*input.T*Y_;
-        tau(3) = K;
+        tau(1) = Y;
+        tau(3) = -zH_mmg_frame*Y - body_mass*env.g*input.GM*phi + input.Kphi*dphi_dt + input.Kphiphi * dphi_dt*abs(dphi_dt);
         tau(5) = 0.5*env.rho*pow(U,2)*input.Lpp*input.Lpp*input.T*N_;
+
+        // We then had the coriolis and centripetal hydrodynamic forces
+        tau(0)+= 0.5*env.rho*pow(U,2)*input.Lpp*input.T*input.my*vm_*r_;
+        tau(1)-= 0.5*env.rho*pow(U,2)*input.Lpp*input.T*input.mx*u_*r_;
     }
     return Wrench(ssc::kinematics::Point(name, 0, 0, 0), body_name, tau);
 }
