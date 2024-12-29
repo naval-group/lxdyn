@@ -99,7 +99,7 @@ class MMGRudderForceModel : public ForceModel
                 rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
             const ssc::kinematics::Point Vs, //!< Mean inflow velocity (body frame) relative to the ship
                                              //!< at the rudder location in m/s
-            const double area                //!< Rudder area in m^2
+            const double area               //!< Rudder area in m^2
         ) const;
 
         /**  \brief Tota wrench created by the rudder on the ship \details Expressed in body frame at the rudder
@@ -121,7 +121,7 @@ class MMGRudderForceModel : public ForceModel
                 vR //!< Lateral inflow velocity (body frame) at the rudder location (in m/s)
         ) const;
 
-        double get_vr(const double u, const double v, const double r, const double dphi_dt, const double vertical_position_of_rudder_in_MMG_frame) const;
+        double get_vr(const double u, const double v, const double r, const double dphi_dt) const;
 
         /**  \brief Calculates the angle of incidence of the fluid at the rudder location
          *  \returns Angle in radian
@@ -136,10 +136,16 @@ class MMGRudderForceModel : public ForceModel
          */
         double get_D() const;
 
-        /**  \brief Returns rudder location in body frame
-         *  \returns Rudder location in body frame
+        /**  \brief Returns rudder frame in body frame
+         *  \returns Rudder frame location in body frame
          */
-        Eigen::Vector3d get_rudder_location() const;
+        Eigen::Vector3d get_rudder_frame_location() const;
+
+        /**  \brief Returns rudder location in MMG frame
+         *  \returns Rudder location in MMG frame
+         */
+        Eigen::Vector3d get_rudder_location_in_MMG_frame() const;
+
 
       private:
         RudderModel(); // Disabled
@@ -157,8 +163,8 @@ class MMGRudderForceModel : public ForceModel
                            //!< rudder location
         double m_effective_aspect_ratio; //!< Rudder aspect ratio (considering the horn part)
         double m_rho;
-        Eigen::Vector3d position_of_the_rudder_frame_in_the_body_frame; //!< Position of the rudder
-                                                                        //!< in the body frame
+        Eigen::Vector3d position_of_the_rudder_frame_in_the_body_frame; //!< Position of the rudder frame (= MMG frame) in the body frame
+        Eigen::Vector3d position_of_the_rudder_in_the_body_frame; //!< Position of the rudder in the body frame
     };
 
   protected:

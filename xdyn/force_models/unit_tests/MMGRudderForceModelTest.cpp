@@ -196,7 +196,7 @@ TEST_F(MMGRudderForceModelTest, get_Fn)
                      rudderModel.get_Fn(100, 10, 30 * DEG2RAD));
 }
 
-TEST_F(MMGRudderForceModelTest, get_force_subfunction)
+TEST_F(MMGRudderForceModelTest, get_force)
 {
     /*
     The purpose of this test is to check the non-regression of the function
@@ -217,7 +217,7 @@ TEST_F(MMGRudderForceModelTest, get_force_subfunction)
     ASSERT_NEAR(0, force(2), EPS);
     ASSERT_NEAR(0, force(3), EPS);
     ASSERT_NEAR(0, force(4), EPS);
-    ASSERT_NEAR(-1000 * 0.8660254037844386 * 0.312 * (160 - 148.48), force(5), EPS);
+    ASSERT_NEAR(-(-160-0.312*148.48) * 1000 * 0.8660254037844386, force(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, get_vr_betaR_pos)
@@ -239,7 +239,7 @@ TEST_F(MMGRudderForceModelTest, get_vr_betaR_pos)
     const MMGRudderForceModel::RudderModel rudderModel(
         MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
 
-    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.,0.);
+    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.);
     ASSERT_NEAR(10 * 0.64 * (PI / 6 - 0.71 * 0.023 * 320 / 10),
                      vr,EPS); // gamma_R=0.64 as $beta_R$>0
 }
@@ -263,7 +263,7 @@ TEST_F(MMGRudderForceModelTest, get_vr_betaR_neg)
     const MMGRudderForceModel::RudderModel rudderModel(
         MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
 
-    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.,0.);
+    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.);
     ASSERT_NEAR(10 * 0.395 * (PI / 6 - 0.71 * 0.025 * 320 / 10),
                      vr,EPS); // gamma_R=0.395 as $beta_R$<0
 }
@@ -289,7 +289,7 @@ TEST_F(MMGRudderForceModelTest, get_vs)
     ASSERT_DOUBLE_EQ(0, vs.v.z());
 }
 
-TEST_F(MMGRudderForceModelTest, get_wrench_double)
+TEST_F(MMGRudderForceModelTest, get_wrench)
 {
     /*
     The purpose of this test is to check the non-regression of the function
@@ -310,7 +310,7 @@ TEST_F(MMGRudderForceModelTest, get_wrench_double)
     ASSERT_NEAR(0, force(2), EPS);
     ASSERT_NEAR(0, force(3), EPS);
     ASSERT_NEAR(0, force(4), EPS);
-    ASSERT_NEAR(-7039181.843267109 * cos(25*DEG2RAD) * 0.312 * (160- 148.48), force(5), EPS);
+    ASSERT_NEAR(-7039181.843267109 * cos(25*DEG2RAD) * (-160- 0.312 * 148.48), force(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque)
@@ -385,7 +385,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone)
     ASSERT_NEAR(0, rudderTensor(2), EPS);
     ASSERT_NEAR(0, rudderTensor(3), EPS);
     ASSERT_NEAR(0, rudderTensor(4), EPS);
-    ASSERT_NEAR(18566422.869503364, rudderTensor(5), EPS);
+    ASSERT_NEAR(-1065797305.9761363, rudderTensor(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)
@@ -433,6 +433,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG)
 
     // Case 3: the CoG is moved 10m backward from the body frame origin and the MMG frame origin is moved 10m forward the body frame origin, so that xG=-20.
     input.position_of_propeller_frame.coordinates.x+=10;
+    input.position_of_the_rudder_frame_in_the_body_frame.x+=10;
     input.application_point.x+=10;
     // To keep the same vm value that case 1, we need v=0.8 so that vm=0.8+20*0.01=1
     states.v.record(0, 0.8);

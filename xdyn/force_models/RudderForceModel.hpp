@@ -142,7 +142,7 @@ class RudderForceModel : public ForceModel
             /**  \brief Returns rudder location in body frame
               *  \returns Rudder location in body frame
               */
-            Eigen::Vector3d get_rudder_location() const;
+            Eigen::Vector3d get_rudder_frame_location() const;
             
             private:
                 RudderModel(); // Disabled

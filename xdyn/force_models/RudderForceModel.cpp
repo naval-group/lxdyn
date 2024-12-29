@@ -225,7 +225,7 @@ ssc::kinematics::Vector6d RudderForceModel::get_rudder_force(
     return w.in_wake + w.outside_wake;
 }
 
-Eigen::Vector3d RudderForceModel::RudderModel::get_rudder_location() const
+Eigen::Vector3d RudderForceModel::RudderModel::get_rudder_frame_location() const
 {
     return position_of_the_rudder_frame_in_the_body_frame;
 }
@@ -246,7 +246,7 @@ Wrench RudderForceModel::get_force(
     /*
     Negative propeller thrust means that the propeller wake is forward and therefore there is no acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would fails the calculation of CTh (negative square root calculation).
     */
-    const Wrench rudder_wrench_body_frame_at_R(ssc::kinematics::Point(body_name, rudderModel.get_rudder_location()), body_name, rudder_force);// rudder tensor in body frame expressed at the rudder location
+    const Wrench rudder_wrench_body_frame_at_R(ssc::kinematics::Point(body_name, rudderModel.get_rudder_frame_location()), body_name, rudder_force);// rudder tensor in body frame expressed at the rudder location
     const Wrench rudder_wrench_body_frame_at_P=rudder_wrench_body_frame_at_R.transport_to(ssc::kinematics::Point(propeller_frame,0,0,0),env.k);// rudder tensor in body frame expressed at the propeller location
     const Wrench rudderAndPropeller_wrench_body_frame_at_P = rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;//rudder+propeller wrench in body frame expressed at the propeller location
 
