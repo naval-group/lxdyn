@@ -117,9 +117,9 @@ Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const doubl
     const double dphi_dt = states.p();
 
     const double body_mass = states.solid_body_inertia(2,2);
-    const double xG_mmg_frame = states.G.v(0) - env.k->get(body_name, name).get_point().v(0);
-    const double zG_mmg_frame = states.G.v(2) - env.k->get(body_name, name).get_point().v(2);
-    const double zH_mmg_frame = input.zH - env.k->get(body_name, name).get_point().v(2);
+    const double xG_mmg_frame = states.G.x() - env.k->get(body_name, name).get_point().x();
+    const double zG_mmg_frame = states.G.z() - env.k->get(body_name, name).get_point().z();
+    const double zH_mmg_frame = input.zH - env.k->get(body_name, name).get_point().z();
     
     const double vm = v - xG_mmg_frame*r+zG_mmg_frame*dphi_dt;
     const double U = hypot(u, vm);

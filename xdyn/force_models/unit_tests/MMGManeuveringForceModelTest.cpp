@@ -41,6 +41,7 @@ std::string get_input_3dof()
         <<"mx: 0.022\n"
         <<"my: 0.223\n"
         <<"GM: 0\n"
+        <<"zH: 0\n"
         <<"Xvphi: 0\n"
         <<"Xrphi: 0\n"
         <<"Xphiphi: 0\n"
@@ -67,7 +68,7 @@ std::string get_input_4dof()
     ss << "calculation point in body frame:\n"
         <<"    x: {value: -3.39, unit: m}\n"
         <<"    y: {value: 0, unit: m}\n"
-        <<"    z: {value: -2.7, unit: m}\n"
+        <<"    z: {value: 0, unit: m}\n"
         <<"Lpp: {value: 230, unit: m}\n"
         <<"T: {value: 10.8, unit: m}\n"
         <<"R0: 0.02\n"
@@ -90,6 +91,7 @@ std::string get_input_4dof()
         <<"mx: 0.006\n"
         <<"my: 0.152\n"
         <<"GM: 0.6\n"
+        <<"zH: 3.704\n"
         <<"Xvphi: 0.01\n"
         <<"Xrphi: 0.009\n"
         <<"Xphiphi: -0.002\n"
@@ -114,7 +116,7 @@ TEST_F(MMGManeuveringForceModelTest, can_parse)
     const auto data = MMGManeuveringForceModel::parse(get_input_4dof());
     ASSERT_DOUBLE_EQ(data.application_point.x, -3.39);
     ASSERT_DOUBLE_EQ(data.application_point.y, 0);
-    ASSERT_DOUBLE_EQ(data.application_point.z, -2.7);
+    ASSERT_DOUBLE_EQ(data.application_point.z, 0);
     ASSERT_DOUBLE_EQ(data.Lpp, 230);
     ASSERT_DOUBLE_EQ(data.T, 10.8);
     ASSERT_DOUBLE_EQ(data.R0, 0.02);
@@ -137,6 +139,7 @@ TEST_F(MMGManeuveringForceModelTest, can_parse)
     ASSERT_DOUBLE_EQ(data.mx, 0.006);
     ASSERT_DOUBLE_EQ(data.my, 0.152);
     ASSERT_DOUBLE_EQ(data.GM, 0.6);
+    ASSERT_DOUBLE_EQ(data.zH, 3.704);
     ASSERT_DOUBLE_EQ(data.Xvphi, 0.01);
     ASSERT_DOUBLE_EQ(data.Xrphi, 0.009);
     ASSERT_DOUBLE_EQ(data.Xphiphi, -0.002);
@@ -223,7 +226,7 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
     ASSERT_DOUBLE_EQ(F1.X(), -1601757553.1071172);
     ASSERT_DOUBLE_EQ(F1.Y(), 40686696096.544792);
     ASSERT_DOUBLE_EQ(F1.Z(), 0);
-    ASSERT_DOUBLE_EQ(F1.K(), 0);
+    ASSERT_DOUBLE_EQ(F1.K(), -3.704*40703835696.544792);
     ASSERT_DOUBLE_EQ(F1.M(), 0);
     ASSERT_DOUBLE_EQ(F1.N(), -12949573903321.889);
 
@@ -247,22 +250,21 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
     ASSERT_DOUBLE_EQ(F2.X(), -1601757553.1071172+(0.01*-5.39/U_target*phi+0.009*230/U_target*phi-0.002*phi*phi)*dimension_const);
     ASSERT_DOUBLE_EQ(F2.Y(), 40686696096.544792+(0.001*phi+0.161*phi*pow(5.39/U_target,2)-0.243*phi*phi*(-5.39)/U_target-0.13*230/U_target*phi*phi)*dimension_const);
     ASSERT_DOUBLE_EQ(F2.Z(), 0);
-    ASSERT_DOUBLE_EQ(F2.K(), 52043000*9.81*0.6*PI/6);
+    ASSERT_DOUBLE_EQ(F2.K(), -3.704*40590119214.855896+52043000*9.81*0.6*PI/6);
     ASSERT_DOUBLE_EQ(F2.M(), 0);
     ASSERT_DOUBLE_EQ(F2.N(), -12949573903321.889+(-0.009*phi-0.327*phi*pow(5.39/U_target,2)-0.232*phi*phi*(-5.39)/U_target+0.041*230/U_target*phi*phi)*dimension_const*230);
     
-    /////////////////////////////////////////////
-    // TEST 3 : phi=-30°,  dphi_dt=-3 and zG=0 //
-    /////////////////////////////////////////////
+    ///////////////////////////////////////////////
+    // TEST 3 : phi=-30°,  dphi_dt=-0.5 and zG=0 //
+    ///////////////////////////////////////////////
 
     states.p.record(0, -.5);// define dphi_dt=-0.5
-    input.application_point.z=0; // to have zG=0 and thus the same vm than TEST 2
     force_model = MMGManeuveringForceModel(input, "body", env);
     auto F3 = force_model.get_force(states, 0, env, {});
     ASSERT_DOUBLE_EQ(F3.X(), F2.X());
     ASSERT_DOUBLE_EQ(F3.Y(), F2.Y());
     ASSERT_DOUBLE_EQ(F3.Z(), 0);
-    ASSERT_DOUBLE_EQ(F3.K(), 52043000*9.81*0.6*PI/6+35295092*.5+897604071*.25);
+    ASSERT_DOUBLE_EQ(F3.K(),F2.K()+35295092*.5+897604071*.25);
     ASSERT_DOUBLE_EQ(F3.M(), 0);
     ASSERT_DOUBLE_EQ(F3.N(), F2.N());
 
@@ -270,9 +272,8 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
     // TEST 4 : phi=-30°,  dphi_dt<>0, zG<>0 //
     ///////////////////////////////////////////
 
-    // xG and zG are modified to have the same vm than TEST 2
-    input.application_point.x-=1; 
-    input.application_point.z=2;
+    states.G.z()=2;
+    states.G.x()=-1;// xG is modified to have the same vm than TEST 2
     force_model = MMGManeuveringForceModel(input, "body", env);
     auto F4 = force_model.get_force(states, 0, env, {});
     ASSERT_DOUBLE_EQ(F4.X(), F2.X());
