@@ -42,7 +42,7 @@ class MMGRudderForceModel : public ForceModel
         double kappaMmg; //!< An experimental constant for expressing the fluid velocity at the
                          //!< rudder location
         double effective_aspect_ratio; //!< Rudder aspect ratio (considering the horn part)
-        YamlCoordinates position_of_the_rudder_frame_in_the_body_frame; //!< Position of the rudder
+        YamlCoordinates position_of_the_rudder_in_the_body_frame; //!< Position of the rudder
                                                                         //!< in the body frame
         double Lpp;//!< Length between Perpendicular (for scaling xH and lR)
     };
@@ -136,8 +136,8 @@ class MMGRudderForceModel : public ForceModel
          */
         double get_D() const;
 
-        /**  \brief Returns rudder frame in body frame
-         *  \returns Rudder frame location in body frame
+        /**  \brief Returns rudder frame (=MMG frame here) in body frame 
+         *  \returns Rudder frame (=MMG frame here)location in body frame
          */
         Eigen::Vector3d get_rudder_frame_location() const;
 

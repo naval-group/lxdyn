@@ -4458,7 +4458,7 @@ std::string test_data::MMGRudderAndPropeller()
         << "position of rudder in body frame:\n"// Aft perpendicular
         << "    x: {value: -160, unit: m}\n"
         << "    y: {value: 0, unit: m}\n"
-        << "    z: {value: 0, unit: m}\n"
+        << "    z: {value: 12.6, unit: m}\n"//from Rhino 3D at full-scale
         << "Lpp: {value: 320, unit: m}\n";
     return ss.str();
 }

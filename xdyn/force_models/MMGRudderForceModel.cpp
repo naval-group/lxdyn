@@ -20,16 +20,6 @@
 
 double MMGRudderForceModel::RudderModel::get_D() const { return m_D; }
 
-Eigen::Vector3d MMGRudderForceModel::RudderModel::get_rudder_frame_location() const
-{
-    return position_of_the_rudder_frame_in_the_body_frame;
-}
-
-Eigen::Vector3d MMGRudderForceModel::RudderModel::get_rudder_location_in_MMG_frame() const
-{
-    return position_of_the_rudder_in_the_body_frame-position_of_the_rudder_frame_in_the_body_frame;
-}
-
 double MMGRudderForceModel::RudderModel::get_angle_of_attack(
     const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
     const double
@@ -250,9 +240,19 @@ void MMGRudderForceModel::extra_observations(Observer& observer) const
                        std::string("Mz(") + new_force_name + "," + body_name + "," + "NED" + ")"));
 }
 
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 //// FUNCTIONS DIFFERENT THAN THOSE OF CLASS RUDDERFORCEMODEL ///
-///////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+
+Eigen::Vector3d MMGRudderForceModel::RudderModel::get_rudder_frame_location() const
+{
+    return position_of_the_rudder_frame_in_the_body_frame; // MMG frame. Caution: This is not the same frame than in RudderForceModelForce 
+}
+
+Eigen::Vector3d MMGRudderForceModel::RudderModel::get_rudder_location_in_MMG_frame() const
+{
+    return position_of_the_rudder_in_the_body_frame-position_of_the_rudder_frame_in_the_body_frame;
+}
 
 std::string MMGRudderForceModel::model_name() { return "MMG propeller+rudder"; }
 
@@ -267,7 +267,7 @@ MMGRudderForceModel::Yaml::Yaml()
     , epsilon()
     , kappaMmg()
     , effective_aspect_ratio()
-    , position_of_the_rudder_frame_in_the_body_frame(YamlCoordinates())
+    , position_of_the_rudder_in_the_body_frame(YamlCoordinates())
     , Lpp()
 
 {
@@ -285,7 +285,7 @@ MMGRudderForceModel::Yaml::Yaml(const MMGPropellerForceModel::Yaml& yaml)
     , epsilon()
     , kappaMmg()
     , effective_aspect_ratio()
-    , position_of_the_rudder_frame_in_the_body_frame(YamlCoordinates())
+    , position_of_the_rudder_in_the_body_frame(YamlCoordinates())
     , Lpp()
 {
 }
@@ -308,9 +308,9 @@ MMGRudderForceModel::RudderModel::RudderModel(const Yaml& parameters_, const dou
           parameters_.application_point.y,
           parameters_.application_point.z)// the rudder frame is here the MMG frame
     , position_of_the_rudder_in_the_body_frame(
-          parameters_.position_of_the_rudder_frame_in_the_body_frame.x,
-          parameters_.position_of_the_rudder_frame_in_the_body_frame.y,
-          parameters_.position_of_the_rudder_frame_in_the_body_frame.z)
+          parameters_.position_of_the_rudder_in_the_body_frame.x,
+          parameters_.position_of_the_rudder_in_the_body_frame.y,
+          parameters_.position_of_the_rudder_in_the_body_frame.z)
 {
 }
 
@@ -344,7 +344,6 @@ double MMGRudderForceModel::RudderModel::get_vr(const double u, const double vm,
     const double U = sqrt(u * u + vm * vm);
     const double zR_MMG_frame=get_rudder_location_in_MMG_frame().z();
 
-
     // Equation (24)
     const double betaR = MMGPropellerForceModel::wrapToPi(beta - m_lR * r / U + zR_MMG_frame*dphi_dt/U);
 
@@ -370,7 +369,7 @@ double MMGRudderForceModel::RudderModel::get_Ar() const
 
 ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_force(
     const double Fn,           //!< Norm of the lift (in N)
-    const double rudder_angle //!< Rudder angle (in rad)
+    const double rudder_angle  //!< Rudder angle (in rad)
 ) const
 {
     const double xR_MMG_frame=get_rudder_location_in_MMG_frame().x();
@@ -390,7 +389,7 @@ ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_wrench(
     const double rudder_angle,       //!< Rudder angle (in radian): positive if rudder on port side
     const ssc::kinematics::Point Vs, //!< Mean inflow velocity (body frame) relative to the ship at the
                                      //!< rudder location in m/s
-    const double area               //!< Rudder area in m^2
+    const double area                //!< Rudder area in m^2
 ) const
 {
     const double rudder_inflow_angle = get_angle_of_attack(rudder_angle, get_fluid_angle(Vs));
@@ -398,8 +397,10 @@ ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_wrench(
     return get_force(Fn, rudder_angle);
 }
 
-double MMGRudderForceModel::RudderModel::get_Fn(const double area, const double speed,
-                                                const double rudder_inflow_angle) const
+double MMGRudderForceModel::RudderModel::get_Fn(
+    const double area, const double speed,
+    const double rudder_inflow_angle
+) const
 {
     // Equation (18): Fujii's formula to have the rudder lift gradient coefficient
     const double friction_coeff = 6.13 * m_effective_aspect_ratio / (m_effective_aspect_ratio + 2.25);
@@ -447,7 +448,7 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
     const double vR = m_rudderModel.get_vr(states.u(), vm, states.r(),states.p());// Lateral inflow velocity at rudder location
     ssc::kinematics::Point Vrud = m_rudderModel.get_vs(
         CTh, Va, vR); // mean inflow velocity at rudder location
-    return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar())*cos(phi);
+    return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar())*cos(phi);// The heel angle is applied here
 }
 
 MMGRudderForceModel::Yaml MMGRudderForceModel::parse(const std::string& yaml)
@@ -468,7 +469,7 @@ MMGRudderForceModel::Yaml MMGRudderForceModel::parse(const std::string& yaml)
     node["kappa"] >> ret.kappaMmg;
     node["effective aspect ratio"] >> ret.effective_aspect_ratio;
 
-    node["position of rudder in body frame"] >> ret.position_of_the_rudder_frame_in_the_body_frame;
+    node["position of rudder in body frame"] >> ret.position_of_the_rudder_in_the_body_frame;
 
     return ret;
 }
