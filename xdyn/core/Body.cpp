@@ -454,9 +454,15 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
         Lambda.block<3,3>(0,3) = temp * T_qw;
         // - Operator dR_NED
         Eigen::Matrix3d dR_NED;
-        dR_NED <<   2.*(q1.w()*dq1.w()+q1.x()*dq1.x()-q1.y()*dq1.y()-q1.z()*dq1.z())  , 2.*(dq1.x()*q1.y()+q1.x()*dq1.y()-dq1.w()*q1.z()-q1.w()*dq1.z()) , 2.*(dq1.x()*q1.z()+q1.x()*dq1.z()+dq1.w()*q1.y()+q1.w()*dq1.y()),
-                    2.*(dq1.x()*q1.y()+q1.x()*dq1.y()-dq1.w()*q1.z()-q1.w()*dq1.z())  , 2.*(q1.w()*dq1.w()+q1.x()*dq1.x()-q1.y()*dq1.y()-q1.z()*dq1.z()) , 2.*(dq1.y()*q1.z()+q1.y()*dq1.z()-dq1.w()*q1.x()-q1.w()*dq1.x()),
-                    2.*(dq1.x()*q1.z()+q1.x()*dq1.z()+dq1.w()*q1.y()+q1.w()*dq1.y())  , 2.*(dq1.y()*q1.z()+q1.y()*dq1.z()-dq1.w()*q1.x()-q1.w()*dq1.x()) , 2.*(q1.w()*dq1.w()+q1.x()*dq1.x()-q1.y()*dq1.y()-q1.z()*dq1.z());
+        dR_NED <<   2.*(q1.w()*dq1.w()+q1.x()*dq1.x()-q1.y()*dq1.y()-q1.z()*dq1.z()),
+        2.*(dq1.x()*q1.y()+q1.x()*dq1.y()-dq1.w()*q1.z()-q1.w()*dq1.z()),
+        2.*(dq1.x()*q1.z()+q1.x()*dq1.z()+dq1.w()*q1.y()+q1.w()*dq1.y()),
+        2.*(dq1.x()*q1.y()+q1.x()*dq1.y()+dq1.w()*q1.z()+q1.w()*dq1.z()),
+        2.*(q1.w()*dq1.w()+q1.y()*dq1.y()-q1.x()*dq1.x()-q1.z()*dq1.z()),
+        2.*(dq1.y()*q1.z()+q1.y()*dq1.z()-dq1.w()*q1.x()-q1.w()*dq1.x()),
+        2.*(dq1.x()*q1.z()+q1.x()*dq1.z()-dq1.w()*q1.y()-q1.w()*dq1.y()),
+        2.*(dq1.y()*q1.z()+q1.y()*dq1.z()+dq1.w()*q1.x()+q1.w()*dq1.x()),
+        2.*(q1.w()*dq1.w()+q1.z()*dq1.z()-q1.x()*dq1.x()-q1.y()*dq1.y());
         // - Operator sigma
         Eigen::Vector3d sigma;
         sigma(0)=-(Lambda_phi*dT_qw)*pqr
