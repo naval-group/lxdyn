@@ -17,6 +17,7 @@ def get_input() -> str:
         z: {value: 0, unit: m}
     Lpp: {value: 320, unit: m}
     T: {value: 20.8, unit: m}
+    R0: 0.022
     Xvv: -0.04
     Xrr: 0.011
     Xvr: 0.002
@@ -94,7 +95,7 @@ class MMGManeuveringForceModelTest(unittest.TestCase):
         )
         states = get_states()
         wrench = force_model.get_force(states, 0, env)
-        self.assertEqual(wrench.X(), 35918728522.330902)
+        self.assertEqual(wrench.X(), 35918728522.330902-500*320*20.8*0.022*(1+(2-11.1*3)**2))
         self.assertEqual(wrench.Y(), 2003246596640.8945)
         self.assertEqual(wrench.Z(), 0)
         self.assertEqual(wrench.K(), 0)
