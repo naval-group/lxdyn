@@ -60,8 +60,6 @@ public:
         double Nrphiphi;
         double Kphi;
         double Kphiphi;
-        double mx;//<! non-dimensional added mass coefficient a11
-        double my;//<! non-dimensional added mass coefficient a22
         double GM;
         double zH;//<! Vertical position of the center of effort in body frame
     };

@@ -46,8 +46,6 @@ MMGManeuveringForceModel::Input::Input():
         Nrphiphi(0.0),
         Kphi(0.0),
         Kphiphi(0.0),
-        mx(0.0),
-        my(0.0),
         GM(0.0),
         zH(0.0)
 {}
@@ -99,8 +97,6 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
     node["Nrphiphi"] >> ret.Nrphiphi;
     node["Kphi"] >> ret.Kphi;
     node["Kphiphi"] >> ret.Kphiphi;
-    node["mx"] >> ret.mx;
-    node["my"] >> ret.my;    
     ssc::yaml_parser::parse_uv(node["GM"],ret.GM);
     ssc::yaml_parser::parse_uv(node["zH"],ret.zH);
 
@@ -117,6 +113,8 @@ Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const doubl
     const double dphi_dt = states.p();
 
     const double body_mass = states.solid_body_inertia(2,2);
+    const double mx = states.added_mass_matrix(0,0);
+    const double my = states.added_mass_matrix(1,1);
     const double xG_mmg_frame = states.G.x() - env.k->get(body_name, name).get_point().x();
     const double zG_mmg_frame = states.G.z() - env.k->get(body_name, name).get_point().z();
     const double zH_mmg_frame = input.zH - env.k->get(body_name, name).get_point().z();
@@ -140,8 +138,8 @@ Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const doubl
         tau(5) = 0.5*env.rho*pow(U,2)*input.Lpp*input.Lpp*input.T*N_;
 
         // We then had the coriolis and centripetal hydrodynamic forces
-        tau(0)+= 0.5*env.rho*pow(U,2)*input.Lpp*input.T*input.my*vm_*r_;
-        tau(1)-= 0.5*env.rho*pow(U,2)*input.Lpp*input.T*input.mx*u_*r_;
+        tau(0)+= my*vm*r;
+        tau(1)-= mx*u*r;
     }
     return Wrench(ssc::kinematics::Point(name, 0, 0, 0), body_name, tau);
 }

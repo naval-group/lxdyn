@@ -38,8 +38,6 @@ std::string get_input_3dof()
         <<"Nrvv: -0.294\n"
         <<"Nvrr: 0.055\n"
         <<"Nrrr: -0.013\n"
-        <<"mx: 0.022\n"
-        <<"my: 0.223\n"
         <<"GM: {value: 0, unit: m}\n"
         <<"zH: {value: 0, unit: m}\n"
         <<"Xvphi: 0\n"
@@ -88,8 +86,6 @@ std::string get_input_4dof()
         <<"Nrvv: -0.579\n"
         <<"Nvrr: -0.003\n"
         <<"Nrrr: -0.042\n"
-        <<"mx: 0.006\n"
-        <<"my: 0.152\n"
         <<"GM: {value: 0.6, unit: m}\n"
         <<"zH: {value: 3.704, unit: m}\n"
         <<"Xvphi: 0.01\n"
@@ -136,8 +132,6 @@ TEST_F(MMGManeuveringForceModelTest, can_parse)
     ASSERT_DOUBLE_EQ(data.Nrvv, -0.579);
     ASSERT_DOUBLE_EQ(data.Nvrr, -0.003);
     ASSERT_DOUBLE_EQ(data.Nrrr, -0.042);
-    ASSERT_DOUBLE_EQ(data.mx, 0.006);
-    ASSERT_DOUBLE_EQ(data.my, 0.152);
     ASSERT_DOUBLE_EQ(data.GM, 0.6);
     ASSERT_DOUBLE_EQ(data.zH, 3.704);
     ASSERT_DOUBLE_EQ(data.Xvphi, 0.01);
@@ -188,6 +182,10 @@ TEST_F(MMGManeuveringForceModelTest, example_3dof)
     env.rot = YamlRotation("angle", {"z","y'","x''"});
     auto force_model = MMGManeuveringForceModel(MMGManeuveringForceModel::parse(get_input_3dof()), "body", env);
     auto states = get_states();
+    states.added_mass_matrix=Matrix66();
+    states.added_mass_matrix(0,0)=0.5*env.rho*pow(320,2)*20.8*0.022; // mx'=0.022
+    states.added_mass_matrix(1,1)=0.5*env.rho*pow(320,2)*20.8*0.223; // my'=0.223
+
     auto F = force_model.get_force(states, 0, env, {});
     ASSERT_DOUBLE_EQ(F.X(), 35918728522.330902-500*320*20.8*0.022*(1+pow((2-11.1*3),2))+0.223*500*320*320*20.8*(2-11.1*3)*3);
     ASSERT_DOUBLE_EQ(F.Y(), 2003246596640.8945-0.022*500*320*320*20.8*1*3);
@@ -213,6 +211,9 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
     states.u.record(0, 10);
     states.v.record(0, -2);
     states.r.record(0, 1);
+    states.added_mass_matrix=Matrix66();
+    states.added_mass_matrix(0,0)=0.5*env.rho*pow(230,2)*10.8*0.006; // mx'=0.006
+    states.added_mass_matrix(1,1)=0.5*env.rho*pow(230,2)*10.8*0.152; // my'=0.152
 
     // Define a body mass
     states.solid_body_inertia(2,2)=52043000;

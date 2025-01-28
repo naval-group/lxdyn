@@ -162,6 +162,7 @@ void BodyBuilder::add_inertia(BodyStates& states, const YamlDynamics6x6Matrix& r
     const Eigen::Matrix<double,6,6> M_inv = Mt.inverse();
     states.inverse_of_the_total_inertia = M_inv;
     states.solid_body_inertia = Mrb;
+    states.added_mass_matrix = Ma;
     states.total_inertia = Mt;
 }
 
