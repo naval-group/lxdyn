@@ -100,9 +100,9 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
     node["Kphi"] >> ret.Kphi;
     node["Kphiphi"] >> ret.Kphiphi;
     node["mx"] >> ret.mx;
-    node["my"] >> ret.my;
-    node["GM"] >> ret.GM;
-    node["zH"] >> ret.zH;
+    node["my"] >> ret.my;    
+    ssc::yaml_parser::parse_uv(node["GM"],ret.GM);
+    ssc::yaml_parser::parse_uv(node["zH"],ret.zH);
 
     return ret;
 }
