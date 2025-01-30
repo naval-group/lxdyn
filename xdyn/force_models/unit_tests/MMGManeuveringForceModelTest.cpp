@@ -2,6 +2,7 @@
 #include "MMGManeuveringForceModel.hpp"
 
 #define PI M_PI
+#define EPS 1E-6
 
 MMGManeuveringForceModelTest::MMGManeuveringForceModelTest()
 {
@@ -53,8 +54,8 @@ std::string get_input_3dof()
         <<"Nvphiphi: 0\n"
         <<"Nphirr: 0\n"
         <<"Nrphiphi: 0\n"
-        <<"Kphi: 0\n"
-        <<"Kphiphi: 0\n";
+        <<"a: 0\n"
+        <<"b: 0\n";
 
     return ss.str();
 }
@@ -101,8 +102,8 @@ std::string get_input_4dof()
         <<"Nvphiphi: -0.232\n"
         <<"Nphirr: 0\n"// unused in the article
         <<"Nrphiphi: 0.041\n"
-        <<"Kphi: -35295092\n"
-        <<"Kphiphi: -897604071\n";
+        <<"a: 0.031\n"
+        <<"b: 0.002\n";
 
     return ss.str();
 }
@@ -147,15 +148,18 @@ TEST_F(MMGManeuveringForceModelTest, can_parse)
     ASSERT_DOUBLE_EQ(data.Nvphiphi, -0.232);
     ASSERT_DOUBLE_EQ(data.Nphirr, 0.);
     ASSERT_DOUBLE_EQ(data.Nrphiphi, 0.041);
-    ASSERT_DOUBLE_EQ(data.Kphi, -35295092);
-    ASSERT_DOUBLE_EQ(data.Kphiphi, -897604071);
+    ASSERT_DOUBLE_EQ(data.a, 0.031);
+    ASSERT_DOUBLE_EQ(data.b, 0.002);
 }
 
 BodyStates get_states();
 BodyStates get_states()
 {
-    BodyStates states(0);
+    BodyStates states;
     states.convention = YamlRotation("angle", {"z","y'","x''"});
+    // Eigen leaves fixed-size matrices uninitialised, and the roll damping terms read both.
+    states.solid_body_inertia = Matrix66::Zero();
+    states.added_mass_matrix = Matrix66::Zero();
     states.x.record(0, 0);
     states.y.record(0, 0);
     states.z.record(0, 0);
@@ -175,6 +179,7 @@ BodyStates get_states()
 TEST_F(MMGManeuveringForceModelTest, example_3dof)
 /*
     Verification of the 3 DOF case with KVLCC input data
+    The CoG is in (0,0,0) and the MMG frame origin is in (-11.1,0,0)
 */
 {
     EnvironmentAndFrames env;
@@ -182,7 +187,6 @@ TEST_F(MMGManeuveringForceModelTest, example_3dof)
     env.rot = YamlRotation("angle", {"z","y'","x''"});
     auto force_model = MMGManeuveringForceModel(MMGManeuveringForceModel::parse(get_input_3dof()), "body", env);
     auto states = get_states();
-    states.added_mass_matrix=Matrix66();
     states.added_mass_matrix(0,0)=0.5*env.rho*pow(320,2)*20.8*0.022; // mx'=0.022
     states.added_mass_matrix(1,1)=0.5*env.rho*pow(320,2)*20.8*0.223; // my'=0.223
 
@@ -195,6 +199,50 @@ TEST_F(MMGManeuveringForceModelTest, example_3dof)
     ASSERT_DOUBLE_EQ(F.N(), -455883858001617.88);
 }
 
+TEST_F(MMGManeuveringForceModelTest, test_get_inertia_matrix_in_Ob)
+/*
+    This test checks that the transport of an inertia matrix from the CoG to the MMG frame origin is well executed.
+The data used is from:
+R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174, Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
+*/
+{
+    EnvironmentAndFrames env;
+    env.rho = 1000;
+    env.g=9.81;
+    BodyStates states;
+
+    // Define inputs as in the article
+    const double mx=0.5*env.rho*pow(230,2)*10.8*0.006;//mx'=0.006
+    const double my=0.5*env.rho*pow(230,2)*10.8*0.152;// my'=0.152
+    const double Jx=0;// Jx included in Ix
+    const double Jz=0.5*env.rho*pow(230,4)*10.8*0.009;//Jz'=0.009
+    const double alphaZ=3.704;//alpha_Z=zH
+    const double xG=-3.39;
+    const double zG=-2.7;
+
+    // Added mass matrix in G
+    Matrix66 added_mass_matrix_in_G=Matrix66::Zero();
+    added_mass_matrix_in_G(0,0)= mx;
+    added_mass_matrix_in_G(1,1)= my;
+    added_mass_matrix_in_G(1,3)= my*(zG-alphaZ);
+    added_mass_matrix_in_G(1,5)= -my*xG;
+    added_mass_matrix_in_G(3,3)= Jx + my*zG*zG - 2*my*zG*alphaZ;
+    added_mass_matrix_in_G(3,5)= -my*xG*(zG-alphaZ);
+    added_mass_matrix_in_G(5,5)= Jz + my*xG*xG;
+    added_mass_matrix_in_G(3,1)= added_mass_matrix_in_G(1,3);
+    added_mass_matrix_in_G(5,1)= added_mass_matrix_in_G(1,5);
+    added_mass_matrix_in_G(5,3)= added_mass_matrix_in_G(3,5);
+
+    Matrix66 added_mass_matrix_in_Ob=MMGManeuveringForceModel::get_inertia_matrix_in_Ob(added_mass_matrix_in_G,Eigen::Vector3d(xG,0,zG));
+    ASSERT_NEAR(added_mass_matrix_in_Ob(0,0), mx, EPS);
+    ASSERT_NEAR(added_mass_matrix_in_Ob(1,1), my, EPS);
+    ASSERT_NEAR(added_mass_matrix_in_Ob(1,3), -my*alphaZ, EPS);
+    ASSERT_NEAR(added_mass_matrix_in_Ob(3,1), -my*alphaZ, EPS);
+    ASSERT_NEAR(added_mass_matrix_in_Ob(3,3), Jx, EPS);
+    ASSERT_NEAR(added_mass_matrix_in_Ob(5,5), Jz, EPS);
+}
+
+
 TEST_F(MMGManeuveringForceModelTest, example_4dof)
 /*
     Verification of the 4 DOF case with KCS input data
@@ -205,18 +253,41 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
     env.rho = 1000;
     env.g=9.81;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
+
     // Define states
     BodyStates states;
     states.convention = YamlRotation("angle", {"z","y'","x''"});
     states.u.record(0, 10);
     states.v.record(0, -2);
     states.r.record(0, 1);
-    states.added_mass_matrix=Matrix66();
-    states.added_mass_matrix(0,0)=0.5*env.rho*pow(230,2)*10.8*0.006; // mx'=0.006
-    states.added_mass_matrix(1,1)=0.5*env.rho*pow(230,2)*10.8*0.152; // my'=0.152
 
-    // Define a body mass
-    states.solid_body_inertia(2,2)=52043000;
+    // Define inputs as in the article, except zG=0
+    const double m=52030000;
+    const double Ix=m*pow(0.44*32.2,2);// Ix=m*(ixx*B)^2
+    const double mx=0.5*env.rho*pow(230,2)*10.8*0.006;//mx'=0.006
+    const double my=0.5*env.rho*pow(230,2)*10.8*0.152;// my'=0.152
+    const double Jx=0;// Jx included in Ix
+    const double Jz=0.5*env.rho*pow(230,4)*10.8*0.009;//Jz'=0.009
+    const double alphaZ=3.704;//alpha_Z=zH
+    double xG=-3.39;
+    double zG=0;
+
+    // Needed term from the inertia matrix
+    states.solid_body_inertia(2,2)=m;// for the calculation of the heeling righting moment
+    states.solid_body_inertia(3,3)=Ix;// for the calculation of the roll damping coefficients
+
+    // Defined an added mass matrix in G
+    states.added_mass_matrix=Matrix66::Zero();
+    states.added_mass_matrix(0,0)= mx;
+    states.added_mass_matrix(1,1)= my;
+    states.added_mass_matrix(1,3)= my*(zG-alphaZ);
+    states.added_mass_matrix(1,5)= -my*xG;
+    states.added_mass_matrix(3,3)= Jx + my*zG*zG - 2*my*zG*alphaZ;
+    states.added_mass_matrix(3,5)= -my*xG*(zG-alphaZ);
+    states.added_mass_matrix(5,5)= Jz + my*xG*xG;
+    states.added_mass_matrix(3,1)= states.added_mass_matrix(1,3);
+    states.added_mass_matrix(5,1)= states.added_mass_matrix(1,5);
+    states.added_mass_matrix(5,3)= states.added_mass_matrix(3,5);
 
     ////////////////////////////////
     // TEST1 : no phi, no dphi_dt //
@@ -251,7 +322,7 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
     ASSERT_DOUBLE_EQ(F2.X(), -1601757553.1071172+(0.01*-5.39/U_target*phi+0.009*230/U_target*phi-0.002*phi*phi)*dimension_const);
     ASSERT_DOUBLE_EQ(F2.Y(), 40686696096.544792+(0.001*phi+0.161*phi*pow(5.39/U_target,2)-0.243*phi*phi*(-5.39)/U_target-0.13*230/U_target*phi*phi)*dimension_const);
     ASSERT_DOUBLE_EQ(F2.Z(), 0);
-    ASSERT_DOUBLE_EQ(F2.K(), -3.704*40590119214.855896+52043000*9.81*0.6*PI/6);
+    ASSERT_DOUBLE_EQ(F2.K(), -3.704*40590119214.855896+m*9.81*0.6*PI/6);
     ASSERT_DOUBLE_EQ(F2.M(), 0);
     ASSERT_DOUBLE_EQ(F2.N(), -12949573903321.889+(-0.009*phi-0.327*phi*pow(5.39/U_target,2)-0.232*phi*phi*(-5.39)/U_target+0.041*230/U_target*phi*phi)*dimension_const*230);
     
@@ -265,7 +336,7 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
     ASSERT_DOUBLE_EQ(F3.X(), F2.X());
     ASSERT_DOUBLE_EQ(F3.Y(), F2.Y());
     ASSERT_DOUBLE_EQ(F3.Z(), 0);
-    ASSERT_DOUBLE_EQ(F3.K(),F2.K()+35295092*.5+897604071*.25);
+    ASSERT_DOUBLE_EQ(F3.K(), F2.K()+35295092.1219939*.5+897604071.219159*.25);
     ASSERT_DOUBLE_EQ(F3.M(), 0);
     ASSERT_DOUBLE_EQ(F3.N(), F2.N());
 
@@ -275,6 +346,22 @@ TEST_F(MMGManeuveringForceModelTest, example_4dof)
 
     states.G.z()=2;
     states.G.x()=-1;// xG is modified to have the same vm than TEST 2
+
+    // The added mass matrix in G is updated in order to have a correct value for the roll damping coefficients
+    zG+=2;
+    xG-=-1;// updated for consistency but does not impact the roll inertia moment transport
+    states.added_mass_matrix=Matrix66::Zero();
+    states.added_mass_matrix(0,0)= mx;
+    states.added_mass_matrix(1,1)= my;
+    states.added_mass_matrix(1,3)= my*(zG-alphaZ);
+    states.added_mass_matrix(1,5)= -my*xG;
+    states.added_mass_matrix(3,3)= Jx + my*zG*zG - 2*my*zG*alphaZ;
+    states.added_mass_matrix(3,5)= -my*xG*(zG-alphaZ);
+    states.added_mass_matrix(5,5)= Jz + my*xG*xG;
+    states.added_mass_matrix(3,1)= states.added_mass_matrix(1,3);
+    states.added_mass_matrix(5,1)= states.added_mass_matrix(1,5);
+    states.added_mass_matrix(5,3)= states.added_mass_matrix(3,5);
+
     force_model = MMGManeuveringForceModel(input, "body", env);
     auto F4 = force_model.get_force(states, 0, env, {});
     ASSERT_DOUBLE_EQ(F4.X(), F2.X());
