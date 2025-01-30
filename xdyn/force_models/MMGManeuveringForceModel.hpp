@@ -58,8 +58,8 @@ public:
         double Nvphiphi;
         double Nphirr;
         double Nrphiphi;
-        double Kphi;
-        double Kphiphi;
+        double a;
+        double b;//<! Caution: b is in "1/deg"
         double GM;
         double zH;//<! Vertical position of the center of effort in body frame
     };
@@ -68,6 +68,7 @@ public:
     Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
     static Input parse(const std::string& yaml);
     static std::string model_name();
+    static Matrix66 get_inertia_matrix_in_Ob(Matrix66 inertia_matrix_in_G, Eigen::Vector3d G_in_MMG_frame);
 
 private:
     Input input;
