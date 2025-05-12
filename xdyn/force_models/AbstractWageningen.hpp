@@ -38,7 +38,6 @@ class AbstractWageningen : public ForceModel
         virtual double get_Kq(const std::map<std::string,double>& commands, const double J) const = 0;
         virtual double get_wake_factor(const BodyStates& states)  const;
         Wrench get_pure_thrust_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;//!< Compute the pure thrust (before applying the thrust deduction)
-        double get_thrust_deduction()  const;//!< Returns the thrust deduction factor
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;
         double get_advance_speed_in_body_frame(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const;//!< Get the inflow advance speed at the propeller location (along the body frame x-axis)
         double get_advance_speed_in_propeller_frame(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const;//!< Get the inflow advance speed at the propeller location projected on the propeller frame x-axis
