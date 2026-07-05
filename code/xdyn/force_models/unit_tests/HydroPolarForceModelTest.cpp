@@ -96,6 +96,27 @@ BodyStates get_states(const double u = 0., const double v = 0.)
     states.qr.record(0, 0);
     return states;
 }
+
+// Like get_states() but sets a body ATTITUDE (heading psi); also sets qk (the typo above sets qr twice).
+BodyStates get_states_at_heading(const double psi, const double u, const double v)
+{
+    BodyStates states(0);
+    states.convention = YamlRotation("angle", {"z","y'","x''"});
+    states.x.record(0, 0);
+    states.y.record(0, 0);
+    states.z.record(0, 0);
+    states.u.record(0, u);
+    states.v.record(0, v);
+    states.w.record(0, 0);
+    states.p.record(0, 0);
+    states.q.record(0, 0);
+    states.r.record(0, 0);
+    states.qr.record(0, std::cos(psi / 2.)); // body->NED attitude, yaw = psi
+    states.qi.record(0, 0.);
+    states.qj.record(0, 0.);
+    states.qk.record(0, std::sin(psi / 2.));
+    return states;
+}
 }
 
 TEST_F(HydroPolarForceModelTest, orientation_test)
@@ -134,6 +155,33 @@ TEST_F(HydroPolarForceModelTest, orientation_test)
     F = force_model.get_force(states, 0, env, {});
     ASSERT_GT(F.X(), 0);
     ASSERT_NEAR(F.Y(), 0, 1e-9);
+}
+
+TEST_F(HydroPolarForceModelTest, force_must_not_depend_on_vessel_heading)
+{
+    // A foil's force depends only on the flow in its own frame, never on the vessel's compass
+    // heading. For a fixed BODY-frame inflow, rotating the vessel's yaw must not change the force.
+    HydroPolarForceModel::Input input;
+    input.name = "keel";
+    input.internal_frame = YamlPosition(YamlCoordinates(0,0,1), YamlAngle(0,0,0), "body");
+    input.reference_area = 100;
+    input.angle_of_attack   = {0.,0.12217305,0.15707963,0.20943951,0.48869219,1.04719755,1.57079633,2.0943951,2.61799388,M_PI};
+    input.lift_coefficient  = {0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,0.};
+    input.drag_coefficient  = {0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483};
+    input.use_waves_velocity = false;
+    EnvironmentAndFrames env;
+    env.rho = 1000;
+    env.rot = YamlRotation("angle", {"z","y'","x''"});
+    const HydroPolarForceModel force_model(input, "body", env);
+
+    // Same BODY-frame inflow (surge 5, sway 1) at three headings; force (surface frame == body frame) must match.
+    const auto F0  = force_model.get_force(get_states_at_heading(0.0,     5, 1), 0, env, {});
+    const auto F45 = force_model.get_force(get_states_at_heading(M_PI/4., 5, 1), 0, env, {});
+    const auto F90 = force_model.get_force(get_states_at_heading(M_PI/2., 5, 1), 0, env, {});
+    ASSERT_NEAR(F0.X(), F45.X(), 1e-6);
+    ASSERT_NEAR(F0.Y(), F45.Y(), 1e-6);
+    ASSERT_NEAR(F0.X(), F90.X(), 1e-6);
+    ASSERT_NEAR(F0.Y(), F90.Y(), 1e-6);
 }
 
 TEST_F(HydroPolarForceModelTest, should_throw_for_invalid_polar_input)
