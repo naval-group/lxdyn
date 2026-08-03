@@ -60,12 +60,12 @@ struct BodyStates : AbstractStates<History>
     ssc::kinematics::EulerAngles get_angles(const StateType& all_states, const size_t idx, const YamlRotation& c) const;
     static ssc::kinematics::EulerAngles convert(const ssc::kinematics::RotationMatrix& R, const YamlRotation& rotations);
     static std::tuple<double,double,double,double> convert(const ssc::kinematics::EulerAngles& R, const YamlRotation& rotations);
-    /** \brief Rotation matrix expressing BODY-frame vectors in NED: v_NED = R * v_body, i.e. R_{body->NED}.
+    /** \brief Return the Rotation matrix and Coordinate Transform Matrix (CTM) expressing BODY-frame vectors in NED: v_NED = CTM * v_body, i.e. CTM_{body->NED}.
      *  \note  Despite the name, this maps body->NED, NOT NED->body. The name follows the *frame-rotation*
      *         direction (the vessel attitude, as documented for the quaternion in cosimulation.proto); the
-     *         returned coordinate-transform matrix is its transpose. Consume the returned VALUE (R_{body->NED}),
-     *         exactly as core/Body.cpp (dx/dt = R*uvw) and every other caller do. Using it as R_{NED->body}
-     *         computes vectors in the wrong frame — the trap behind the HydroPolarForceModel heading bug. */
+     *         returned coordinate-transform matrix is its transpose. Consume the returned VALUE (CTM_{body->NED}),
+     *         exactly as core/Body.cpp (dx/dt = CTM*uvw) and every other caller do.
+     */
     ssc::kinematics::RotationMatrix get_rot_from_ned_to_body() const;
     /** \brief Same as get_rot_from_ned_to_body() but reading the quaternion from an external state array;
      *         also returns R_{body->NED} (same naming caveat). */
