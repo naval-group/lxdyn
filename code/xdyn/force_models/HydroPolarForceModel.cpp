@@ -120,12 +120,12 @@ Wrench HydroPolarForceModel::get_force(const BodyStates& states, const double t,
 {
     // NED, bodyNED (local body NED) and body frames are defined here (https://sirehna.github.io/xdyn/#rep%C3%A8res)
     Wrench force(ssc::kinematics::Point(name,0,0,0), name);
-    // NOTE: get_rot_from_ned_to_body() actually returns R_{body->NED} (misnamed): core/Body.cpp:173
-    // uses the same matrix for the position kinematics dx/dt = R * (u,v,w). (u,v,w) and (p,q,r) are body-frame.
-    const ssc::kinematics::RotationMatrix Rot_body_to_NED = states.get_rot_from_ned_to_body();
-    const ssc::kinematics::RotationMatrix Rot_NED_to_body = Rot_body_to_NED.transpose();
-    const ssc::kinematics::RotationMatrix Rot_body_to_name = env.k->get(name, body_name).get_rot();
-    const ssc::kinematics::RotationMatrix Rot_NED_to_name = Rot_body_to_name * Rot_NED_to_body;
+    // NOTE: get_rot_from_ned_to_body() actually returns CTM_{body->NED}
+    // uses the same matrix for the position kinematics dx/dt = CTM_{body->NED} * (u,v,w). (u,v,w) and (p,q,r) are body-frame.
+    const ssc::kinematics::RotationMatrix CTM_body_to_NED = states.get_rot_from_ned_to_body();
+    const ssc::kinematics::RotationMatrix CTM_NED_to_body = CTM_body_to_NED.transpose();
+    const ssc::kinematics::RotationMatrix CTM_body_to_name = env.k->get(name, body_name).get_rot();
+    const ssc::kinematics::RotationMatrix CTM_NED_to_name = CTM_body_to_name * CTM_NED_to_body;
     // The following variables follow the naming Variable_Object_Frame
     // P stands for position (x,y,z), V for the velocity (u,v,w)
     const Eigen::Vector3d P_body_NED(states.x(), states.y(), states.z());
@@ -133,10 +133,10 @@ Wrench HydroPolarForceModel::get_force(const BodyStates& states, const double t,
     // Omega is the angular velocities (p,q,r) with the 3-2-1 euler convention
     const Eigen::Vector3d Omega_body(states.p(), states.q(), states.r());
     const Eigen::Vector3d P_name_body = env.k->get(body_name, name).get_point().v;
-    const Eigen::Vector3d P_name_NED = P_body_NED + Rot_body_to_NED * P_name_body;
+    const Eigen::Vector3d P_name_NED = P_body_NED + CTM_body_to_NED * P_name_body;
     // Water inflow from the vessel's own motion, expressed in the name (foil) frame. It depends only on
     // the body-frame velocity + angular velocity + mounting orientation, NOT on the vessel heading/attitude.
-    Eigen::Vector3d V_water_name = Rot_body_to_name * (V_body + Omega_body.cross(P_name_body));
+    Eigen::Vector3d V_water_name = CTM_body_to_name * (V_body + Omega_body.cross(P_name_body));
     double water_surface_height = 0.;
     if (env.w.use_count())
     {
@@ -146,12 +146,12 @@ Wrench HydroPolarForceModel::get_force(const BodyStates& states, const double t,
         {
             const ssc::kinematics::PointMatrix wave_velocity_NED = env.w->get_and_check_orbital_velocity(env.g, {P_name_NED(0)}, {P_name_NED(1)}, {P_name_NED(2)}, t, wave_height);
             const Eigen::Vector3d V_waves_NED(wave_velocity_NED.m(0,0), wave_velocity_NED.m(1,0), wave_velocity_NED.m(2,0)); 
-            V_water_name -= Rot_NED_to_name * V_waves_NED; // Adding orbital velocities effect
+            V_water_name -= CTM_NED_to_name * V_waves_NED; // Adding orbital velocities effect
         }
     }
     // Naval Group Far East
-    Eigen::Vector3d V_Current_NED = env.get_UWCurrent(P_name_NED,t);
-    V_water_name -= Rot_NED_to_name * V_Current_NED;
+    const Eigen::Vector3d V_Current_NED = env.get_UWCurrent(P_name_NED,t);
+    V_water_name -= CTM_NED_to_name * V_Current_NED;
     // stop
     if (P_name_NED(2) < water_surface_height)
     {
