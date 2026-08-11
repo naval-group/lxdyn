@@ -9,6 +9,10 @@ from xdyn.core.io import YamlRotation
 from xdyn.data.yaml import kt_kq
 from xdyn.exceptions import NumericalErrorException
 from xdyn.force import KtKqForceModel
+from xdyn.ssc.kinematics import Point as SscPoint
+from xdyn.ssc.kinematics import Transform as SscTransform
+
+BODY: str = "body 1"
 
 
 class KtKqForceModelTest(unittest.TestCase):
@@ -100,16 +104,19 @@ class KtKqForceModelTest(unittest.TestCase):
         env = EnvironmentAndFrames()
         env.rho = 1024
         env.rot = YamlRotation("angle", ["z", "y'", "x''"])
-        model = KtKqForceModel(data, "", env)
+        env.k_add(SscTransform(SscPoint("NED"), "mesh(" + BODY + ")"))
+        env.k_add(SscTransform(SscPoint("NED"), BODY))
+        model = KtKqForceModel(data, BODY, env)
         self.assertEqual("Kt(J) & Kq(J)", model.model_name())
         states = BodyStates()
-        states.u.record(0, 1)
+        states.u.record(0, 50)
 
         commands = {"rpm": 5 * (2 * np.pi)}
         wrench = model.get_force(states, 42.0, env, commands)
-        self.assertAlmostEqual(306063.03332753148, wrench.X(), delta=EPS)
+        self.assertAlmostEqual(0.3 * 1024 * 25 * 16 * 0.779242603138131, wrench.X(), delta=EPS)
         self.assertEqual(0.0, wrench.Y())
         self.assertEqual(0.0, wrench.Z())
+        self.assertAlmostEqual(-1024 * 25 * 32 * 0.0950221346793814, wrench.K(), delta=EPS)
         self.assertEqual(0.0, wrench.M())
         self.assertEqual(0.0, wrench.N())
 
@@ -118,12 +125,14 @@ class KtKqForceModelTest(unittest.TestCase):
         env = EnvironmentAndFrames()
         env.rho = 1024
         env.rot = YamlRotation("angle", ["z", "y'", "x''"])
-        model = KtKqForceModel(data, "", env)
+        env.k_add(SscTransform(SscPoint("NED"), "mesh(" + BODY + ")"))
+        env.k_add(SscTransform(SscPoint("NED"), BODY))
+        model = KtKqForceModel(data, BODY, env)
         self.assertEqual("Kt(J) & Kq(J)", model.model_name())
         states = BodyStates()
         states.u.record(0, 1)
         commands = {"rpm": 2 * np.pi * 0.025}
-        expected_msg = "Unable to interpolate Kt as a function of J when using model 'Kt(J) & Kq(J)'. Got the following error: Received x0 = 2, but x0 should be within [-1,1] (xmin-x0 = -3 and x0-xmax = 1"
+        expected_msg = "Unable to interpolate Kt as a function of J when using model 'Kt(J) & Kq(J)'. Got the following error: Received x0 = 1.96932, but x0 should be within [-1,1] (xmin-x0 = -2.96932 and x0-xmax = 0.969316"
         with self.assertRaises(NumericalErrorException) as pcm:
             model.get_force(states, 42.0, env, commands)
         self.assertTrue(expected_msg in str(pcm.exception), str(pcm.exception))

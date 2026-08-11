@@ -705,7 +705,6 @@ void py_add_module_xdyn_force(py::module& m0)
             py::arg("CTh"),
             py::arg("Va"),
             py::arg("v"),
-            py::arg("T"),
             R"(Calculates speed inside & outside wake
 
                Ship speed relative to the fluid, in m/s
@@ -715,7 +714,6 @@ void py_add_module_xdyn_force(py::module& m0)
                - `CTh` (float) Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
                - `Va` (float) Projection of the ship speed (relative to the current) on the X-axis of the ship's reference frame (m/s)
                - `v` (float) Projection of the ship speed (relative to the current) on the Y-axis of the ship's reference frame (m/s)
-               - `T` (float) Propeller thrust (in N)
 
                Return
                 InOutWakeSscPoint:

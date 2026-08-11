@@ -1034,7 +1034,8 @@ std::string test_data::test_ship_propulsion()
        + "    mesh: test_ship.stl\n"
        + position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        + initial_position_of_body_frame(0, 0, 1, 0, -0.0058, 0)
-       + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
+       // Without it the out-of-trim start makes 2.7 mm/s of sternway, i.e. a negative advance ratio.
+       + initial_velocity("TestShip", 0.01, 0, 0, 0, 0, 0)
        + dynamics()
        + "    external forces:\n"
        + "      - model: gravity\n"

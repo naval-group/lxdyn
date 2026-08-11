@@ -216,8 +216,8 @@ class RudderForceModelTest(unittest.TestCase):
         parameters = self.random_rudder_force_model_input()
         parameters.diameter = 3.6
         riw = RudderModel(parameters, 1024, self.random_double())
-        vs = riw.get_vs(1.5, 12, 6, 12e4)
-        self.assertEqual(12.007932248435861, np.linalg.norm(vs.in_wake.v))
+        vs = riw.get_vs(1.5, 12, 6)
+        self.assertEqual(14.250875681004253, np.linalg.norm(vs.in_wake.v))
         self.assertEqual(13.416407864998739, np.linalg.norm(vs.outside_wake.v))
 
     def test_get_fluid_angle(self):
@@ -262,7 +262,7 @@ class RudderForceModelTest(unittest.TestCase):
     def test_force_and_torque(self):
         A, phi, _ = self.get_wave_model()
         env = get_environment_and_frames(A, phi)
-        model = RudderForceModel(RudderForceModel.parse(rudder()), self.random_string(), env)
+        model = RudderForceModel(RudderForceModel.parse(rudder()), BODY, env)
         self.assertEqual(type(model), RudderForceModel)
         self.assertEqual("propeller+rudder", model.model_name())
         states = BodyStates()
@@ -271,19 +271,20 @@ class RudderForceModelTest(unittest.TestCase):
         states.u.record(t, s[2])
         states.v.record(t, s[3])
         states.w.record(t, s[4])
-        states.name = "body"
+        states.name = BODY
+        states.G = SscPoint(BODY)
         b = BodyWithoutSurfaceForces(states, 0, BlockedDOF(""), YamlFilteredStates())
         b.update_kinematics(s, env.k)
         commands = {"rpm": 200, "P/D": 1.2, "beta": np.pi / 6}
         F = model.get_force(states, t, env, commands)
         # Same as get_wrench above: computed components get a relative tolerance, the
         # structural zeros keep assertEqual.
-        self.assertAlmostEqual(2208573.9553180891, F.X(), delta=REL_EPS * abs(F.X()))
-        self.assertAlmostEqual(777997.67996840423, F.Y(), delta=REL_EPS * abs(F.Y()))
-        self.assertEqual(0, F.Z())
-        self.assertAlmostEqual(-2793416.1021430148, F.K(), delta=REL_EPS * abs(F.K()))
-        self.assertEqual(0, F.M())
-        self.assertAlmostEqual(-855797.44796524453, F.N(), delta=REL_EPS * abs(F.N()))
+        self.assertAlmostEqual(1991600.7989408118, F.X(), delta=REL_EPS * abs(F.X()))
+        self.assertAlmostEqual(1835490.3295199818, F.Y(), delta=REL_EPS * abs(F.Y()))
+        self.assertAlmostEqual(414940.19127081765, F.Z(), delta=REL_EPS * abs(F.Z()))
+        self.assertAlmostEqual(-2750648.9323577448, F.K(), delta=REL_EPS * abs(F.K()))
+        self.assertAlmostEqual(48012.755709036814, F.M(), delta=REL_EPS * abs(F.M()))
+        self.assertAlmostEqual(-2549303.5889394642, F.N(), delta=REL_EPS * abs(F.N()))
 
 
 if __name__ == "__main__":
