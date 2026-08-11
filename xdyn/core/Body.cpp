@@ -99,14 +99,12 @@ void Body::update_kinematics(const StateType& x, const ssc::kinematics::Kinemati
 
 StateType Body::block_states_if_necessary(StateType x, const double t) const
 {
-//    blocked_states.force_states(x,t);
     force_states(x,t);
     return x;
 }
 
 void Body::update_body_states(StateType x, const double t)
 {
-//    blocked_states.force_states(x,t);
     force_states(x,t);
     states.x.record(t, *_X(x,idx));
     states.y.record(t, *_Y(x,idx));
@@ -129,7 +127,6 @@ void Body::force_states(StateType& x, const double t) const
     Eigen::Matrix<double,6,6> delta_x = blocked_states.get_delta_x(t);
     Eigen::Matrix<double,6,6> delta_v = blocked_states.get_delta_v(t);
     // If motion is forced
-    // if ((delta_x.maxCoeff() > 0) && (t < 1.))
     if (delta_x.maxCoeff() > 0)
     {
         // Without forcing
@@ -521,10 +518,6 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
                 j--;
             }
         }
-        // -- Hack for OENG paper
-        // T_tau_Y(1,5)=1.;
-        // T_tau_Y(5,5)=-170.;
-        // -- End of hack for OENG paper
         // - Matrix LHS
         Eigen::Matrix<double,6,6> LHS( A*states.inverse_of_the_total_inertia * T_tau_Y - T_Xi_Y * cos(rot.theta));
         // - Calculate Y

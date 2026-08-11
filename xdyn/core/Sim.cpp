@@ -159,14 +159,13 @@ void Sim::force_states(StateType& x, const double t) const
     }
 }
 
-//void Sim::dx_dt(const StateType& x, StateType& dxdt, const double t)
 void Sim::dx_dt(const StateType& x, StateType& dxdt, const double t)
 {
     for (auto body: pimpl->bodies)
     {
         body->update(pimpl->env,x,t);
         const auto Fext = sum_of_forces(x, body, t);
-         body->calculate_state_derivatives(Fext, x, dxdt, t, pimpl->env);
+        body->calculate_state_derivatives(Fext, x, dxdt, t, pimpl->env);
     }
     state = normalize_quaternions(x);
     pimpl->_dx_dt = dxdt;
