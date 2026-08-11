@@ -109,7 +109,6 @@ HoltropMennenForceModel::HoltropMennenForceModel(const Input& data, const std::s
         d(-0.9),
         input(data),
         derived(data),
-        apply_on_ship_speed_direction(false),
         gravity_force(input.Vol*env.rho*env.g)
 {
 }

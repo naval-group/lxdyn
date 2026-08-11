@@ -3,6 +3,7 @@
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/BodyStates.hpp"
 
+#include <cmath>
 #include <string>
 #include <sstream>
 #include <vector>
@@ -120,6 +121,15 @@ BodyStates get_steady_forward_speed_states(double u, const std::string& body_nam
     states.qk.record(0, std::get<3>(angle));
     states.G = ssc::kinematics::Point(body_name);
     states.hydrodynamic_forces_calculation_point = ssc::kinematics::Point(body_name);
+    return states;
+}
+
+BodyStates get_states_with_leeway(double u, double v, double w, const std::string& body_name = "body");
+BodyStates get_states_with_leeway(double u, double v, double w, const std::string& body_name)
+{
+    BodyStates states = get_steady_forward_speed_states(u, body_name);
+    states.v.record(0, v);
+    states.w.record(0, w);
     return states;
 }
 
@@ -249,4 +259,38 @@ TEST_F(HoltropMennenForceModelTest, numerical_example_1984)
         EXPECT_NEAR(force_model.Rtr(states, env),Rtr.at(i),1000);
         EXPECT_NEAR(-force_model(states, 0, env).X(),R.at(i),R.at(i)/100);
     }
+}
+
+TEST_F(HoltropMennenForceModelTest, force_is_along_the_x_axis_by_default)
+{
+    auto input = get_Holtrop_1984_input();
+    input.apply_on_ship_speed_direction = false;
+    auto force_model = HoltropMennenForceModel(input, "body", env);
+    const auto tau = force_model(get_states_with_leeway(25. * 1852./3600., 3, 1), 0, env);
+    ASSERT_LT(tau.X(), 0);
+    ASSERT_DOUBLE_EQ(0, tau.Y());
+    ASSERT_DOUBLE_EQ(0, tau.Z());
+}
+
+TEST_F(HoltropMennenForceModelTest, force_follows_the_ship_speed_direction_when_requested)
+{
+    /* The option was parsed into Input but read back from a private member that shadowed it and was
+     * hardcoded to false, so setting it had no effect: Y and Z silently stayed at zero.
+     */
+    const double u = 25. * 1852./3600., v = 3, w = 1;
+    auto input = get_Holtrop_1984_input();
+    input.apply_on_ship_speed_direction = true;
+    auto force_model = HoltropMennenForceModel(input, "body", env);
+    const auto tau = force_model(get_states_with_leeway(u, v, w), 0, env);
+    ASSERT_NE(0, tau.Y());
+    ASSERT_NE(0, tau.Z());
+    // The resistance opposes the velocity vector, so it is colinear with it and of opposite sign
+    const double speed = std::sqrt(u*u + v*v + w*w);
+    const double R = std::sqrt(tau.X()*tau.X() + tau.Y()*tau.Y() + tau.Z()*tau.Z());
+    EXPECT_NEAR(-u/speed*R, tau.X(), 1E-6);
+    EXPECT_NEAR(-v/speed*R, tau.Y(), 1E-6);
+    EXPECT_NEAR(-w/speed*R, tau.Z(), 1E-6);
+    // Same total resistance as the default, just redistributed over the three axes
+    auto along_x = HoltropMennenForceModel(get_Holtrop_1984_input(), "body", env);
+    EXPECT_NEAR(-along_x(get_states_with_leeway(u, v, w), 0, env).X(), R, 1E-6);
 }
