@@ -372,7 +372,7 @@ void operator >> (const YAML::Node& node, YamlDOF<std::vector<double> >& g)
     node["state"]         >> g.state;
     node["t"]             >> g.t;
     node["value"]         >> g.value;
-    if (node.FindValue("how applied")) {
+    if (node["how applied"]) {
         node["how applied"] >> g.howApplied;
         if (g.howApplied.size() != 6) {
             THROW(__PRETTY_FUNCTION__, InvalidInputException, "The forcing force must have 6 components (Fx, Fy, Fz, Mx, My, Mz)");

@@ -19,9 +19,9 @@
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/environment_models/DefaultWindModel.hpp"
+#include "xdyn/listeners_and_controllers/builders.hpp"
 
 // Third Party
-#include "yaml.h"
 #include <boost/filesystem.hpp> // For boost::filesystem::unique_path
 
 //STL
