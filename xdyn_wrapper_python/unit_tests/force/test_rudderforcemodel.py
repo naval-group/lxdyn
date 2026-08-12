@@ -5,12 +5,10 @@ import unittest
 
 import numpy as np
 from xdyn.core import (
-    BlockedDOF,
     BodyStates,
-    BodyWithoutSurfaceForces,
     EnvironmentAndFrames,
 )
-from xdyn.core.io import YamlFilteredStates, YamlRotation
+from xdyn.core.io import YamlRotation
 from xdyn.data.yaml import rudder
 from xdyn.env.wave import (
     Airy,
@@ -176,7 +174,11 @@ class RudderForceModelTest(unittest.TestCase):
         parameters.effective_aspect_ratio_factor = 2.3
         riw = RudderModel(parameters, 1024, 0.75)
         area = 1.467
-        v = riw.get_wrench(3, 4, 0.5, area)
+        # get_wrench derives the fluid angle from Vs itself, so the former (fluid_angle=4,
+        # |Vs|=0.5) pair is now expressed as the point it describes.
+        vs_pt = SscPoint("")
+        vs_pt.v = [0.5 * np.cos(4), 0.5 * np.sin(4), 0]
+        v = riw.get_wrench(3, vs_pt, area)
         # assertAlmostEqual on the two computed components: assertEqual asks for a
         # bit-identical double, which no two compilers owe each other (this one came out
         # 1 ULP off). The exact zeros below stay exact -- those are not computed.
@@ -229,9 +231,8 @@ class RudderForceModelTest(unittest.TestCase):
         V = RudderForceModelInOutWakeSscPoint()
         V.in_wake.v = [1, 2, self.random_double()]
         V.outside_wake.v = [-4, -4, self.random_double()]
-        vs = riw.get_fluid_angle(V)
-        self.assertEqual(1.1071487177940904, vs.in_wake)
-        self.assertEqual(-3 * np.pi / 4, vs.outside_wake)
+        self.assertEqual(1.1071487177940904, riw.get_fluid_angle(V.in_wake))
+        self.assertEqual(-3 * np.pi / 4, riw.get_fluid_angle(V.outside_wake))
 
     def test_parser(self):
         w = RudderForceModel.parse(rudder())
@@ -266,15 +267,12 @@ class RudderForceModelTest(unittest.TestCase):
         self.assertEqual(type(model), RudderForceModel)
         self.assertEqual("propeller+rudder", model.model_name())
         states = BodyStates()
-        s = [1, 2, 3, 4, 5, 6, 0, 0, 0, 1, 0, 0, 0]
         t = 24
-        states.u.record(t, s[2])
-        states.v.record(t, s[3])
-        states.w.record(t, s[4])
+        states.u.record(t, 3)
+        states.v.record(t, 4)
+        states.w.record(t, 5)
         states.name = BODY
         states.G = SscPoint(BODY)
-        b = BodyWithoutSurfaceForces(states, 0, BlockedDOF(""), YamlFilteredStates())
-        b.update_kinematics(s, env.k)
         commands = {"rpm": 200, "P/D": 1.2, "beta": np.pi / 6}
         F = model.get_force(states, t, env, commands)
         # Same as get_wrench above: computed components get a relative tolerance, the

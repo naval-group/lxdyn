@@ -34,6 +34,23 @@ def get_input() -> str:
     Nrvv: -0.294
     Nvrr: 0.055
     Nrrr: -0.013
+    GM: {value: 0, unit: m}
+    zH: {value: 0, unit: m}
+    Xvphi: 0
+    Xrphi: 0
+    Xphiphi: 0
+    Yphi: 0
+    Yphivv: 0
+    Yvphiphi: 0
+    Yphirr: 0
+    Yrphiphi: 0
+    Nphi: 0
+    Nphivv: 0
+    Nvphiphi: 0
+    Nphirr: 0
+    Nrphiphi: 0
+    a: 0
+    b: 0
     """
 
 
@@ -94,9 +111,19 @@ class MMGManeuveringForceModelTest(unittest.TestCase):
             MMGManeuveringForceModel.parse(get_input()), "body", env
         )
         states = get_states()
+        # mx and my are no longer YAML inputs: the model reads them off the added mass matrix.
+        states.get_added_mass_matrix()[0, 0] = 0.5 * env.rho * 320**2 * 20.8 * 0.022
+        states.get_added_mass_matrix()[1, 1] = 0.5 * env.rho * 320**2 * 20.8 * 0.223
         wrench = force_model.get_force(states, 0, env)
-        self.assertEqual(wrench.X(), 35918728522.330902-500*320*20.8*0.022*(1+(2-11.1*3)**2))
-        self.assertEqual(wrench.Y(), 2003246596640.8945)
+        self.assertEqual(
+            wrench.X(),
+            35918728522.330902
+            - 500 * 320 * 20.8 * 0.022 * (1 + (2 - 11.1 * 3) ** 2)
+            + 0.223 * 500 * 320 * 320 * 20.8 * (2 - 11.1 * 3) * 3,
+        )
+        self.assertEqual(
+            wrench.Y(), 2003246596640.8945 - 0.022 * 500 * 320 * 320 * 20.8 * 1 * 3
+        )
         self.assertEqual(wrench.Z(), 0)
         self.assertEqual(wrench.K(), 0)
         self.assertEqual(wrench.M(), 0)

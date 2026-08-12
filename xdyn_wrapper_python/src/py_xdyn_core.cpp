@@ -515,6 +515,8 @@ void py_add_module_xdyn_core(py::module& m0)
            [](BodyStates &a) {return  Eigen::Ref<Eigen::Matrix<double,6,6> >(a.total_inertia);}, py::return_value_policy::reference_internal)
         .def("get_solid_body_inertia",
             [](BodyStates &a) {return  Eigen::Ref<Eigen::Matrix<double,6,6> >(a.solid_body_inertia);}, py::return_value_policy::reference_internal)
+        .def("get_added_mass_matrix",
+            [](BodyStates &a) {return  Eigen::Ref<Eigen::Matrix<double,6,6> >(a.added_mass_matrix);}, py::return_value_policy::reference_internal)
         .def("get_inverse_of_the_total_inertia",
             [](BodyStates &a) {return  Eigen::Ref<Eigen::Matrix<double,6,6> >(a.inverse_of_the_total_inertia);}, py::return_value_policy::reference_internal)
         // .def_readwrite("total_inertia", &BodyStates::total_inertia, "COPY of 6x6 rigid body inertia matrix (i.e. without added mass) in the body frame")

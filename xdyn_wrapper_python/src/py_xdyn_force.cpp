@@ -640,21 +640,19 @@ void py_add_module_xdyn_force(py::module& m0)
         .def("get_wrench",
             static_cast<RudderForceModel::InOutWake<ssc::kinematics::Vector6d> (RudderForceModel::RudderModel::*)(
                 const double /*rudder_angle*/, //!< Rudder angle (in radian): positive if rudder on port side
-                const RudderForceModel::InOutWake<double>& /*fluid_angle*/,  //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-                const RudderForceModel::InOutWake<ssc::kinematics::Point>& /*Vs*/,  //!< Norm of the speed of the ship relative to the fluid (in m/s)
+                const RudderForceModel::InOutWake<ssc::kinematics::Point>& /*Vs*/,  //!< Speed of the ship relative to the fluid (in m/s)
                 const RudderForceModel::InOutWake<double>& /*area*/ //!< Rudder area (in or outside wake) in m^2
                 ) const>(&RudderForceModel::RudderModel::get_wrench),
             py::arg("rudder_angle"),
-            py::arg("fluid_angle"),
             py::arg("Vs"),
             py::arg("area"),
-            R"(Wrench created by the rudder on the ship
+            R"(Wrench created by the rudder on the ship, separated into the contributions inside and outside the propeller wake
+               Expressed in body frame at the rudder location
 
                Input:
 
                - `rudder_angle` (float) Rudder angle (in radian): positive if rudder on port side
-               - `fluid_angle` (InOutWake) Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-               - `Vs` (InOutWakeSscPoint) Norm of the speed of the ship relative to the fluid (in m/s)
+               - `Vs` (InOutWakeSscPoint) Speed of the ship relative to the fluid (in m/s)
                - `area` (InOutWake)Rudder area (in or outside wake) in m^2
 
                Return
@@ -663,23 +661,20 @@ void py_add_module_xdyn_force(py::module& m0)
 
         .def("get_wrench",
             static_cast<ssc::kinematics::Vector6d (RudderForceModel::RudderModel::*)(
-                const double /*rudder_angle*/, //!< Rudder angle (in radian): positive if rudder on port side
-                const double /*fluid_angle*/,  //!< Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-                const double /*Vs*/,           //!< Norm of the speed of the ship relative to the fluid (in m/s)
-                const double /*area*/          //!< Rudder area (in or outside wake) in m^2
+                const double /*rudder_angle*/,  //!< Rudder angle (in radian): positive if rudder on port side
+                ssc::kinematics::Point /*Vs*/,  //!< Speed of the ship relative to the fluid (in m/s)
+                const double /*area*/           //!< Rudder area (in or outside wake) in m^2
                 ) const>(&RudderForceModel::RudderModel::get_wrench),
             py::arg("rudder_angle"),
-            py::arg("fluid_angle"),
             py::arg("Vs"),
             py::arg("area"),
             R"(Wrench created by the rudder on the ship
-               Expressed in the rudder's reference frame
+               Expressed in body frame at the rudder location
 
                Input:
 
                - `rudder_angle` (float) Rudder angle (in radian): positive if rudder on port side
-               - `fluid_angle` (float) Angle of the fluid in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-               - `Vs` (float) Norm of the speed of the ship relative to the fluid (in m/s)
+               - `Vs` (SscPoint) Speed of the ship relative to the fluid (in m/s)
                - `area` (float) Rudder area (in or outside wake) in m^2
 
                Return
