@@ -4,11 +4,29 @@
  *  Created on: Aug 19, 2015
  *      Author: cady
  */
+
+// Local
 #include "BlockedDOFTest.hpp"
 #include "xdyn/core/BlockedDOF.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
+#include "xdyn/test_data_generator/hdb_data.hpp"
+#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/core/BodyBuilder.hpp"
+#include "xdyn/core/Body.hpp"
+#include "xdyn/core/SimulatorBuilder.hpp"
+#include "xdyn/core/DefaultSurfaceElevation.hpp"
+#include "xdyn/environment_models/DefaultWindModel.hpp"
+#include "xdyn/listeners_and_controllers/builders.hpp"
+
+// Third Party
 #include <boost/filesystem.hpp> // For boost::filesystem::unique_path
+
+//STL
 #include <fstream>
+
 
 
 
@@ -274,4 +292,153 @@ TEST_F(BlockedDOFTest, force_delta)
     EXPECT_DOUBLE_EQ(227.0, delta_F(3));
     EXPECT_DOUBLE_EQ(474.0, delta_F(4));
     EXPECT_DOUBLE_EQ(281.0, delta_F(5));
+}
+
+TEST_F(BlockedDOFTest, define_matrix_of_forced_DoF)
+{
+    // ARRANGE
+    std::ofstream writeHDB("KVLCC2.hdb");
+    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB.close();
+    YamlSimulatorInput yaml = SimulatorYamlParser(test_data::kvlcc2()+test_data::blockedDoF_OTT()).parse();
+    std::remove("KVLCC2.hdb");
+    // ACT
+    BlockedDOF blocked_states((yaml.bodies.front()).blocked_dof,0);
+    Eigen::Matrix<double,6,6> m_delta_x = blocked_states.get_delta_x(0.);
+    Eigen::Matrix<double,6,6> m_delta_x_t1500 = blocked_states.get_delta_x(1500.);
+    // ASSERT
+    EXPECT_EQ(m_delta_x(0,0), 1.);
+    EXPECT_EQ(m_delta_x(1,1), 1.);
+    EXPECT_EQ(m_delta_x(2,2), 0.);
+    EXPECT_EQ(m_delta_x(3,3), 1.);
+    EXPECT_EQ(m_delta_x(4,4), 0.);
+    EXPECT_EQ(m_delta_x(5,5), 1.);
+    EXPECT_EQ(m_delta_x_t1500(0,0), 0.);
+    EXPECT_EQ(m_delta_x_t1500(1,1), 0.);
+    EXPECT_EQ(m_delta_x_t1500(2,2), 0.);
+    EXPECT_EQ(m_delta_x_t1500(3,3), 0.);
+    EXPECT_EQ(m_delta_x_t1500(4,4), 0.);
+    EXPECT_EQ(m_delta_x_t1500(5,5), 0.);
+    /*
+    BodyBuilder builder(yaml.rotations);
+    VectorOfVectorOfPoints mesh;
+    BodyPtr KVLCC2 = builder.build(yaml.bodies.front(), mesh, 0, 0., yaml.rotations, 100.);
+    */
+}
+
+TEST_F(BlockedDOFTest, force_acceleration)
+{
+    // ARRANGE
+    std::ofstream writeHDB("KVLCC2.hdb");
+    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB.close();
+    YamlSimulatorInput input = SimulatorYamlParser(test_data::kvlcc2()+test_data::blockedDoF_OTT()).parse();
+    SimulatorBuilder builder(input);
+    builder.can_parse<DefaultSurfaceElevation>();
+    builder.can_parse<DefaultWindModel>();
+    EnvironmentAndFrames env = builder.build_environment_and_frames();
+    MeshMap dummyMesh;
+    dummyMesh[input.bodies.front().name] = two_triangles();
+    std::vector<BodyPtr> bodies = builder.get_bodies(dummyMesh, std::vector<bool>(1,false), std::map<std::string,double>());
+    builder.add_initial_transforms(bodies,env.k);
+    StateType x = builder.get_initial_states();
+    for (std::size_t i=0; i<13; ++i) {
+        x[i] = 0.1*static_cast<int>(i);
+    }
+    std::remove("KVLCC2.hdb");
+    // ACT
+    StateType dx;
+    dx.resize(13);
+    ssc::kinematics::Point O("NED");
+    ssc::kinematics::Wrench zeroForce(O);
+    double t(0.);
+    bodies.front()->calculate_state_derivatives(zeroForce, x, dx, t, env);
+    // ASSERT
+    EXPECT_NEAR(dx[0], -0.488022, 0.000001);
+    EXPECT_NEAR(dx[1], -0.108789, 0.000001);
+    EXPECT_NEAR(dx[2], 0.5, 0.1);
+    EXPECT_NEAR(dx[3], 8.53429, 0.0001);
+    EXPECT_NEAR(dx[4], 144.5652, 0.001);
+    EXPECT_NEAR(dx[5], 0.00051197, 0.0000001);
+    EXPECT_NEAR(dx[6], -63.818, 0.001);
+    EXPECT_NEAR(dx[7], 0.03566336, 0.0000001);
+    EXPECT_NEAR(dx[8], -17.9366, 0.0001);
+    EXPECT_NEAR(dx[9], -1.165, 0.001);
+    EXPECT_NEAR(dx[10], 0.29, 0.01);
+    EXPECT_NEAR(dx[11], 0.275, 0.001);
+    EXPECT_NEAR(dx[12], 0.38, 0.01);
+}
+
+TEST_F(BlockedDOFTest, define_matrix_of_forcing_force_according_to_user_info)
+{
+    // ARRANGE
+    std::ofstream writeHDB("KVLCC2.hdb");
+    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB.close();
+    YamlSimulatorInput yaml = SimulatorYamlParser(test_data::kvlcc2()+test_data::blockedDoF_idealRudder()).parse();
+    std::remove("KVLCC2.hdb");
+    // ACT
+    BlockedDOF blocked_states((yaml.bodies.front()).blocked_dof,0);
+    Eigen::Matrix<double,6,6> m_delta_x = blocked_states.get_delta_x(0.);
+    Eigen::Matrix<double,6,6> m_T_x = blocked_states.get_T_x();
+    // ASSERT
+    EXPECT_EQ(m_delta_x(0,0), 0.);
+    EXPECT_EQ(m_delta_x(1,1), 0.);
+    EXPECT_EQ(m_delta_x(2,2), 0.);
+    EXPECT_EQ(m_delta_x(3,3), 0.);
+    EXPECT_EQ(m_delta_x(4,4), 0.);
+    EXPECT_EQ(m_delta_x(5,5), 1.);
+    EXPECT_EQ(m_T_x(0,0), 0.);
+    EXPECT_EQ(m_T_x(1,1), 0.);
+    EXPECT_EQ(m_T_x(2,2), 0.);
+    EXPECT_EQ(m_T_x(3,3), 0.);
+    EXPECT_EQ(m_T_x(4,4), 0.);
+    EXPECT_EQ(m_T_x(1,5), 1.);
+    EXPECT_EQ(m_T_x(5,5), -170.);
+}
+
+TEST_F(BlockedDOFTest, force_acceleration_w_idealRudder)
+{
+    // ARRANGE
+    std::ofstream writeHDB("KVLCC2.hdb");
+    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB.close();
+    YamlSimulatorInput input = SimulatorYamlParser(test_data::kvlcc2()+test_data::blockedDoF_idealRudder()).parse();
+    SimulatorBuilder builder(input);
+    builder.can_parse<DefaultSurfaceElevation>();
+    builder.can_parse<DefaultWindModel>();
+    EnvironmentAndFrames env = builder.build_environment_and_frames();
+    MeshMap dummyMesh;
+    dummyMesh[input.bodies.front().name] = two_triangles();
+    std::vector<BodyPtr> bodies = builder.get_bodies(dummyMesh, std::vector<bool>(1,false), std::map<std::string,double>());
+    builder.add_initial_transforms(bodies,env.k);
+    StateType x = builder.get_initial_states();
+    for (std::size_t i=0; i<13; ++i) {
+        x[i] = 0.1*static_cast<int>(i);
+    }
+    std::remove("KVLCC2.hdb");
+    // ACT
+    StateType dx;
+    dx.resize(13);
+    ssc::kinematics::Point O("NED");
+    ssc::kinematics::Wrench zeroForce(O);
+    double t(0.);
+    bodies.front()->calculate_state_derivatives(zeroForce, x, dx, t, env);
+    /* for (std::size_t i=0; i<13; ++i) {
+        std::cout << "dx(" << i << "), " << dx[i] << std::endl;
+    } */
+    // ASSERT
+    EXPECT_NEAR(dx[0], -0.488022, 0.000001);
+    EXPECT_NEAR(dx[1], -0.108789, 0.000001);
+    EXPECT_NEAR(dx[2], 0.5, 0.1);
+    EXPECT_NEAR(dx[3], -0.000120195, 0.000001);
+    EXPECT_NEAR(dx[4], 834.24, 0.001);
+    EXPECT_NEAR(dx[5], 0.000470068, 0.00000001);
+    EXPECT_NEAR(dx[6], 1.87238, 0.00001);
+    EXPECT_NEAR(dx[7], 0.00305254, 0.00000001);
+    EXPECT_NEAR(dx[8], -17.8714, 0.0001);
+    EXPECT_NEAR(dx[9], -1.165, 0.001);
+    EXPECT_NEAR(dx[10], 0.29, 0.01);
+    EXPECT_NEAR(dx[11], 0.275, 0.001);
+    EXPECT_NEAR(dx[12], 0.38, 0.01);
 }

@@ -250,7 +250,8 @@ void Sim::output(const StateType& x, Observer& obs, const double t, const std::v
     for (auto body:pimpl->bodies)
     {
         body->feed(normalized_x, obs, pimpl->env.rot);
-        auto dF = body->get_delta_F(pimpl->_dx_dt,pimpl->sum_of_forces_in_body_frame[body->get_name()]);
+        ssc::kinematics::Wrench WdF = body->get_delta_F(pimpl->_dx_dt,pimpl->sum_of_forces_in_body_frame[body->get_name()]);
+        Eigen::Matrix<double,6,1> dF=WdF.to_vector();
         obs.write_before_solver_step(dF(0),DataAddressing(std::vector<std::string>{"efforts",body->get_name(),"blocked states",body->get_name(),"Fx"},std::string("Fx(blocked states,")+body->get_name()+","+body->get_name()+")"));
         obs.write_before_solver_step(dF(1),DataAddressing(std::vector<std::string>{"efforts",body->get_name(),"blocked states",body->get_name(),"Fy"},std::string("Fy(blocked states,")+body->get_name()+","+body->get_name()+")"));
         obs.write_before_solver_step(dF(2),DataAddressing(std::vector<std::string>{"efforts",body->get_name(),"blocked states",body->get_name(),"Fz"},std::string("Fz(blocked states,")+body->get_name()+","+body->get_name()+")"));

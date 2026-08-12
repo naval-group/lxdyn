@@ -1498,3 +1498,9 @@ std::string test_data::bug_3210_deprecated_aquaplus_format()
   125.00  3.029753E+00 -3.060718E-01  2.384372E+03  1.178369E+01  1.541909E+04 -3.188649E+00
 )";
 }
+
+std::string test_data::KVLCC2_hdb()
+{
+    // The real KVLCC2 database is too large to embed; test_ship is a stand-in.
+    return test_data::test_ship_hdb();
+}

@@ -109,7 +109,6 @@ HoltropMennenForceModel::HoltropMennenForceModel(const Input& data, const std::s
         d(-0.9),
         input(data),
         derived(data),
-        apply_on_ship_speed_direction(false),
         gravity_force(input.Vol*env.rho*env.g)
 {
 }
@@ -130,7 +129,7 @@ Wrench HoltropMennenForceModel::get_force(const BodyStates& states, const double
     if(states.u() > 0)
     {
         double R = Rf(states, env) + Rapp(states, env) + Rw(states, env) + Rb(states, env) + Rtr(states, env) + Ra(states, env);
-        if(!apply_on_ship_speed_direction)
+        if(!input.apply_on_ship_speed_direction)
         {
             tau.X() = -R;
         }

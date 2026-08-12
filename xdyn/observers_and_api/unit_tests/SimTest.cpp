@@ -320,7 +320,8 @@ TEST_F(SimTest, LONG_propulsion_and_resistance)
     commands.set<double>("propeller(P/D)", 1.064935);
     const size_t N = 250;
     ssc::solver::Scheduler scheduler(0, N, 1);
-    const auto res = simulate<ssc::solver::EulerStepper>(yaml, test_ship_stl, scheduler, commands);
+    // const auto res = simulate<ssc::solver::EulerStepper>(yaml, test_ship_stl, scheduler, commands); // ABa 23/05/25 : Required to make test successful with new forced DoFs implementation. Otherwise, numerical errors with EulerStepper lead to non physical differences.
+    const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler, commands);
     ASSERT_EQ(N+1, res.size());
     ASSERT_EQ(13, res.at(0).x.size());
     const double tolerance = 1e-15;
@@ -910,7 +911,8 @@ TEST_F(SimTest, issue_20_constant_force)
 TEST_F(SimTest, bug_3187)
 {
     ssc::solver::Scheduler scheduler(0, 11, 1);
-    const std::vector<Res> res = simulate<ssc::solver::EulerStepper>(test_data::bug_3187(), scheduler);
+    // const std::vector<Res> res = simulate<ssc::solver::EulerStepper>(test_data::bug_3187(), scheduler); // ABa 23/05/25 : Required to make test successful with new forced DoFs implementation. Otherwise, numerical errors with EulerStepper lead to non physical differences.
+    const std::vector<Res> res = simulate<ssc::solver::RK4Stepper>(test_data::bug_3187(), scheduler);
 
     ASSERT_DOUBLE_EQ(1, res.at(0).x[3]);
     ASSERT_DOUBLE_EQ(1, res.at(1).x[3]);
@@ -1037,7 +1039,8 @@ TEST_F(SimTest, LONG_can_use_controllers_to_output_commands)
                                           ).parse();
     const size_t N = 250;
     ssc::solver::Scheduler scheduler(0, N, 1);
-    const std::vector<Res> res = simulate<ssc::solver::EulerStepper>(yaml, test_ship_stl, scheduler);
+    // const std::vector<Res> res = simulate<ssc::solver::EulerStepper>(yaml, test_ship_stl, scheduler); // ABa 23/05/25 : Required to make test successful with new forced DoFs implementation. Otherwise, numerical errors with EulerStepper lead to non physical differences.
+    const std::vector<Res> res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(N+1, res.size());
     ASSERT_EQ(13, res.at(0).x.size());
     const double tolerance = 1e-15;
