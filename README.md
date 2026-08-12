@@ -158,7 +158,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for how to submit issues and pull
 
 ## Versioning
 
-Versions are calendar-based, `YY.M` with no leading zero on the month, so `26.8` is the August 2026 release. The version is read from the nearest git tag at build time: the Python module reports it as `xdyn.__version__`, and the container image carries it as the `org.opencontainers.image.version` label. 
+Versions are calendar-based, `YY.M` with no leading zero on the month, so `26.8` is the August 2026 release; a second release within the same month appends a patch number, `26.8.1`. The version is read from the nearest git tag at build time: the Python module reports it as `xdyn.__version__`, and the container image carries it as the `org.opencontainers.image.version` label. 
 The executables themselves print the commit they were built from, in `xdyn --help`. For the versions available, see the [tags on this repository](https://github.com/naval-group/lxdyn/tags).
 
 ## Authors

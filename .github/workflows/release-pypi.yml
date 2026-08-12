@@ -1,0 +1,51 @@
+name: Release wheel
+
+on:
+  push:
+    tags: ["[0-9][0-9].[0-9]*"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  NIX_CONFIG: experimental-features = nix-command flakes
+  MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
+
+jobs:
+  wheel:
+    runs-on: ubuntu-latest
+    # PyPI trusted publishing exchanges this token for an upload credential -- no secret is
+    # stored in the repository. Configure the trusted publisher on pypi.org against this
+    # workflow filename and the "pypi" environment below before the first tag push.
+    environment:
+      name: pypi
+      url: https://pypi.org/project/lxdyn/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Same reason as release.yml: the version is `git describe`, and the default
+          # checkout fetches no tags at all.
+          fetch-depth: 0
+      - uses: cachix/install-nix-action@v31
+
+      - name: Dependency closure
+        run: nix develop --command mise run deps:fetch x86_64-linux-gnu
+      - name: Submodules
+        run: nix develop --command mise run setup
+
+      # Builds against 3.10 and checks the wheel installs and passes in a clean venv. Not
+      # abi3: the wheel is cp310-cp310, and only 3.10 is in the classifiers.
+      - name: Build and check the wheel
+        run: nix develop --command mise run python:wheel
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: xdyn_wrapper_python/dist

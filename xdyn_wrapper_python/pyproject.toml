@@ -8,6 +8,7 @@ description = "Python bindings for xdyn, a naval hydrodynamics simulator"
 authors = [{ name = "Julien Prodhon", email = "julien@prodhon.net" }]
 license = "EPL-2.0"
 license-files = ["../LICENSE.md"]
+readme = "README.md"
 
 requires-python = ">=3.10"
 dependencies = ["numpy"]
@@ -18,11 +19,6 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Programming Language :: Python :: 3.15",
     "Topic :: Scientific/Engineering :: Physics",
 ]
 
