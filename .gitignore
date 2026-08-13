@@ -2,6 +2,8 @@ build
 install
 .zig-cache/
 
+/demos/
+
 *.o
 *.obj
 
@@ -16,9 +18,6 @@ __pycache__
 
 /host-tools/
 
-# Editor and agent scratch. AGENTS.md is the only agent-facing file this repository
-# carries; formatter and linter configs (.clang-format, .gdbinit, .envrc) are committed
-# because the build and the debugger read them.
 .vscode/
 .idea/
 .devcontainer/

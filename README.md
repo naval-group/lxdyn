@@ -33,7 +33,7 @@ alias lxdyn='podman run --rm --userns=keep-id -v "$PWD:/data" ghcr.io/naval-grou
 
 The three flags are not decoration. `-v "$PWD:/data"` mounts your working directory over the image's `/data`, without which the results are written inside the container and disappear with it. `--userns=keep-id` maps your user into the container, without which the output files come out owned by an unrelated high UID that you then cannot delete. `--rm` deletes the container, not the image, once it exits.
 
-Now run a simulation:
+Now run a simulation. `my_simulation.yml` stands for your own input file; if you do not have one yet, the next section generates a set of ready-made ones:
 
 ```bash
 lxdyn my_simulation.yml --dt 0.1 --tend 10
@@ -82,40 +82,68 @@ alias lxdyn='docker run --rm -u $(id -u):$(id -g) -v "$PWD:/data" ghcr.io/naval-
 
 Everything below is for developing lxdyn. If you only want to run simulations, the section above is all you need.
 
-### Prerequisites
+### Step 1 — Clone the repository
 
-[Nix](https://nixos.org/download/) with flakes enabled, and nothing else. The `flake.nix` at the repository root pins zig, mise, uv and every other tool the build needs, so no compiler and no C++ library has to be installed on the host.
+```bash
+git clone https://github.com/naval-group/lxdyn.git
+cd lxdyn
+```
 
-Flakes are not on by default. Either add this to `~/.config/nix/nix.conf`:
+Every command below is run from this directory.
+
+### Step 2 — Enter the environment
+
+[Nix](https://nixos.org/download/) with flakes enabled.
+The `flake.nix` at the repository root pins zig, mise, uv and every other tool the build needs, so no compiler and no C++ library has to be installed on the host.
+
+Flakes are not on by default, so pick one of the two options below. Both leave you in the same devShell, and everything after this step assumes you are in it.
+
+**Option A — enable flakes yourself.** Add this to `~/.config/nix/nix.conf`:
 
 ```
 experimental-features = nix-command flakes
 ```
 
-or use [direnv](https://direnv.net/), which the committed `.envrc` sets up for you. `direnv allow` once per clone, and entering the directory loads the devShell, so the `nix develop` below becomes optional.
-
-The C++ dependencies, Boost, gRPC, HDF5, yaml-cpp and GoogleTest, are deliberately *not* system packages: they are built against zig's libc++ into a closure of their own, so the build does not depend on what the host distribution ships. You can download a prebuilt closure in about 35 MB, or build one from source in a few hours.
+then enter the devShell, once per terminal:
 
 ```bash
 nix develop
+```
+
+**Option B — direnv.** Install [direnv](https://direnv.net/), it reads the committed `.envrc`, so entering the directory loads the devShell and you never type `nix develop`:
+
+```bash
+direnv allow
+```
+
+### Step 3 — Fetch the dependencies
+
+The C++ dependencies, Boost, gRPC, HDF5, yaml-cpp and GoogleTest, are deliberately not system packages: they are built against zig's libc++ into a closure of their own, so the build does not depend on what the host distribution ships. You can download a prebuilt closure in about 35 MB, or build one from source in a few hours.
+
+```bash
 mise run bootstrap             # submodules, SSC umbrella headers, and the closure (~35 MB)
 ```
 
-`bootstrap` is `mise run setup` plus `mise run deps:fetch x86_64-linux-gnu`, and it is re-runnable: it leaves an existing closure alone. To build a closure from source instead of downloading it, use `nix develop .#deps`, the shell that adds the cmake and ninja the recipes need and the emulators Boost's cross configure probes run, then `mise run deps:x86_64-linux-gnu`. It takes hours.
+`bootstrap` is `mise run setup` plus `mise run deps:fetch x86_64-linux-gnu`, and it is re-runnable: it leaves an existing closure alone. To build a closure from source instead of downloading it, use `nix develop .#deps`, it takes hours.
 
-### Building
+### Step 4 — Build
 
 ```bash
 zig build
 ```
 
-The binaries can then be found in `build/<target>/bin`, so `build/x86_64-linux-gnu/bin` on a typical Linux host. Codegen runs as part of the build; there is no configure step, and no separate install step either.
+The binaries can then be found in `build/<target>/bin`, so `build/x86_64-linux-gnu/bin` on a typical Linux host. 
 
-Run one straight from the build tree. The executable is `xdyn`:
+Run one straight from the build tree. The executable is `xdyn`. The tutorial inputs are generated rather than stored, so generate them first:
 
 ```bash
-$(sh tools/build-dir.sh)/bin/xdyn my_simulation.yml --dt 0.1 --tend 10
+mise run demos                 # tutorial inputs, meshes and HDB files -> demos/
+cd demos
+mise run xdyn -- tutorial_01_falling_ball.yml --dt 0.1 --tend 10 -o falling_ball_output.csv
+cat falling_ball_output.csv
 ```
+
+### Optional: cross-compiling
 
 Cross-compiling needs nothing but the matching closure:
 
@@ -126,7 +154,7 @@ zig build -Dtarget=aarch64-linux-musl
 
 The supported targets are `x86_64-linux-gnu`, `x86_64-linux-musl`, `aarch64-linux-musl` and `x86_64-windows-gnu`.
 
-### Building the container image
+### Optional: building the container image
 
 `mise run deploy:image` does no compiling. It stages already-built, already-tested binaries into `build/scratch/deploy/` first, so the image ships exactly what the test suite ran:
 
@@ -136,9 +164,66 @@ mise run deploy:image
 
 `mise run deploy:test` is the smoke test for it: the image starts, it simulates against a bind mount with readable output, and a containerised gRPC server with a published port is reachable from a native client.
 
-### Tests and debugging
+### Running the tests
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), which covers the unit and integration suites, the cross suites under qemu and wine, valgrind and GDB.
+```bash
+mise run build                 # build, then the 968 unit tests
+zig build test                 # the unit tests alone
+mise run integration           # 10 command-line scenarios
+mise run integration:grpc      # 8 gRPC + 1 JSON protocol scenarios
+mise run python:test           # 285 tests for the Python bindings
+```
+
+The unit tests are written using Google Test. They are both end-to-end tests and unit tests. The end-to-end ones can be a bit long, so you can disable them with a Google Test filter by running the binary directly:
+
+```bash
+$(sh tools/build-dir.sh)/bin/run_all_tests --gtest_filter=-'*LONG*'
+```
+
+Please refer to [the Google Test documentation for details and other available options](https://github.com/google/googletest/blob/master/googletest/docs/advanced.md#running-a-subset-of-the-tests).
+
+The cross suites run the same tests under an emulator, and need `nix develop .#cross` for qemu and wine:
+
+```bash
+mise run cross
+```
+
+Do not reach for `zig build test -Dtarget=...` directly. Where the host has `binfmt_misc` handlers registered, zig runs the foreign binary transparently and the lane passes without either emulator being involved, which makes the result a property of the machine rather than of the build. `mise run cross` names the emulators explicitly with `-fqemu` and `-fwine`.
+
+### Debugging
+
+Build a debug version first. This is `-O0 -g` for lxdyn's own code only; the dependency closure stays optimized, which is what you want, since stepping into Boost is rarely the point.
+
+```bash
+zig build -Ddebug
+```
+
+Note that this is `-Ddebug`, not `-Doptimize=Debug`.
+
+#### Valgrind
+
+The memory analyzer [Valgrind](https://valgrind.org/) can be used during development to check for memory leaks and use of uninitialized values:
+
+```bash
+valgrind $(sh tools/build-dir.sh)-debug/bin/run_all_tests
+```
+
+Any [flag `run_all_tests` accepts](https://google.github.io/googletest/advanced.html#running-test-programs-advanced-options) can be passed through, in particular filtering:
+
+```bash
+valgrind $(sh tools/build-dir.sh)-debug/bin/run_all_tests --gtest_filter='Gravity*'
+```
+
+#### GDB
+
+`mise run gdb` starts GDB on one of the debug binaries built above, with the repository's `.gdbinit` loaded. GDB otherwise declines to auto-load it, and the helpers it defines would silently not be there:
+
+```bash
+mise run gdb -- xdyn tutorial_01_falling_ball.yml
+mise run gdb -- run_all_tests --gtest_filter='Gravity*'
+```
+
+This will open a GDB prompt. To close it, press Ctrl+D. For more details on how to use GDB, refer to [the official GDB documentation](https://www.gnu.org/software/gdb/).
 
 ## Built with
 
@@ -154,7 +239,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md), which covers the unit and integration su
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for how to submit issues and pull requests, and for how to run the test suite and debug the code. Our code of conduct is the [Contributor Covenant](CODE_OF_CONDUCT.md) (original version available [here](https://www.contributor-covenant.org/version/1/4/code-of-conduct)).
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for how to submit issues and pull requests. [GOVERNANCE.md](GOVERNANCE.md) describes how contributions are reviewed and integrated, and who decides. Participation is governed by our [code of conduct](CODE_OF_CONDUCT.md).
+
+The test suites and the debugging tools are documented above, under [Building from source](#building-from-source).
 
 ## Versioning
 

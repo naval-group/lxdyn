@@ -77,6 +77,27 @@ description = "Build xdyn and run the 916 native unit tests"
 depends = ["zig:build"]
 run = "zig build test"
 
+[tasks.demos]
+description = "Generate the tutorial inputs, meshes and HDB files into demos/ (overwrites)"
+# Both generators, not just the YAML one: the tutorials from 02 onwards name test_ship.stl
+# and test_ship.hdb, which only generate_stl_examples writes.
+depends = ["zig:build"]
+run = """
+BIN=$(sh tools/build-dir.sh)/bin
+mkdir -p demos
+"$BIN/generate_yaml_example" demos
+"$BIN/generate_stl_examples" demos
+"""
+
+[tasks.xdyn]
+description = "Run xdyn from the build tree: mise run xdyn -- tutorial_01_falling_ball.yml --dt 0.1 --tend 10"
+# dir = cwd so relative input and output paths resolve where the user stands, not at the repo
+# root -- the point being to spare them the $(sh tools/build-dir.sh)/bin prefix, which is
+# still what resolves the per-host triple, just from an absolute path now.
+depends = ["zig:build"]
+dir = "{{cwd}}"
+run = 'exec "$(sh "$MISE_PROJECT_ROOT/tools/build-dir.sh")/bin/xdyn"'
+
 [tasks.integration]
 description = "Run the 10 CLI integration tests against the zig build (no docker)"
 depends = ["zig:build"]
