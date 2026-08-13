@@ -1,87 +1,72 @@
 # Contributing to lxdyn
 
-## Code of conduct
+This document explains how to contribute to the lxdyn project.
 
-This project and everyone participating in it is governed by the [lxdyn Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to charles-edouard.cady@sirehna.com.
+## Contribution Philosophy
+lxdyn aims to foster research, experimentation, and interoperability in the field of multi-agent simulation.
 
-## How can I contribute?
+A LOTUSim Governance Committee, established within Naval Group, oversees the overall coherence of the project’s developments.
+In the future, the committee may include external personas (key partners or major contributors).
 
-### Reporting bugs
-### Suggesting enhancements
-### Pull requests
+The committee publishes a roadmap highlighting priority topics and features, based on:
+- Internal needs within Naval Group,
+- Partner priorities,
+- And community-driven contributions.
 
-We do not accept AI-generated prose in issues or pull requests. A human must explain what the problem is and why the proposed change solves it. Generated code is fine when a human can defend it; a generated description of that code is not.
+This roadmap is updated every six months and available in the Project Roadmap section.
 
-## Running the tests
+New ideas that enrich lxdyn are always welcome, even if they are not listed on the roadmap.
 
-`mise run bootstrap` and `zig build` first, as described in the [README](README.md#building-from-source).
+- For roadmap-related questions, please contact the [Product Owner](mailto:lotusim_support@naval-group.com).
 
-```bash
-mise run build                 # build, then the 916 unit tests
-zig build test                 # the unit tests alone
-mise run integration           # 10 command-line scenarios
-mise run integration:grpc      # 8 gRPC + 1 JSON protocol scenarios
-mise run python:test           # 285 tests for the Python bindings
-```
+The LOTUSim Governance Committee ensures:
 
-The unit tests are written using Google Test. They are both end-to-end tests and unit tests. The end-to-end ones can be a bit long, so you can disable them with a Google Test filter by running the binary directly:
+- Technical consistency of the project core,
+- Validation of contributions,
+- Release publication in alignment with the roadmap.
 
-```bash
-$(sh tools/build-dir.sh)/bin/run_all_tests --gtest_filter=-'*LONG*'
-```
+Before proposing a contribution, please first open an issue (see the Technical Specification section).
 
-Please refer to [the Google Test documentation for details and other available options](https://github.com/google/googletest/blob/master/googletest/docs/advanced.md#running-a-subset-of-the-tests).
+## Types of Contributions
+You can contribute in several ways:
 
-The cross suites run the same tests under an emulator, and need `nix develop .#cross` for qemu and wine:
+- New features – e.g. new algorithmic modules for platform guidance.
+- New models – for platforms, sensors, or environments.
+- Enhancements – improving existing functions or models.
+- Data contributions – use cases, simulation scenarios, or datasets.
+- Bug fixes – code corrections, refactoring, or readability/maintainability improvements.
 
-```bash
-mise run cross
-```
+Please follow this process to propose changes:
 
-Do not reach for `zig build test -Dtarget=...` directly. Where the host has `binfmt_misc` handlers registered, zig runs the foreign binary transparently and the lane passes without either emulator being involved, which makes the result a property of the machine rather than of the build. `mise run cross` names the emulators explicitly with `-fqemu` and `-fwine`.
+1. Create an Issue
 
-## Debugging
+    - If none exists, open an issue on GitHub.
+    - Use one of the following labels: new_feature, new_model, enhancement, data, or bugfix.
+    - Clearly describe your proposal, including objectives, use cases, scientific background, and references if relevant.
 
-Build a debug version first. This is `-O0 -g` for lxdyn's own code only; the dependency closure stays optimized, which is what you want, since stepping into Boost is rarely the point.
+2. Announce Your Work
 
-```bash
-zig build -Ddebug
-```
+    - In the issue comments, indicate that you plan to work on it.
+    - Briefly describe your proposed solution or approach.
 
-Note that this is `-Ddebug`, not `-Doptimize=Debug`.
+3. Fork and Clone the Repository
 
-### Valgrind
+    - Fork lxdyn and clone it locally.
+    - Implement your changes.
 
-The memory analyzer [Valgrind](https://valgrind.org/) can be used during development to check for memory leaks and use of uninitialized values:
+4. Push to a Dedicated Branch
 
-```bash
-valgrind $(sh tools/build-dir.sh)-debug/bin/run_all_tests
-```
+    - Push your changes to your fork.
+    - Use a dedicated branch (e.g., feature/my-feature) to facilitate feedback and updates.
 
-Any [flag `run_all_tests` accepts](https://google.github.io/googletest/advanced.html#running-test-programs-advanced-options) can be passed through, in particular filtering:
+5. Submit a Pull Request
 
-```bash
-valgrind $(sh tools/build-dir.sh)-debug/bin/run_all_tests --gtest_filter='Gravity*'
-```
+    - Open a pull request.
+    - Clearly reference the related issue and describe the implemented changes.
 
-### GDB
+## Review and Integration
 
-`mise run gdb` starts GDB on one of the debug binaries built above, with the repository's `.gdbinit` loaded. GDB otherwise declines to auto-load it, and the helpers it defines would silently not be there:
+All pull requests are reviewed by maintainers and, if relevant, by the lxdyn Governance Committee.
+Feedback may include requests for clarification, documentation, or code improvements.
 
-```bash
-mise run gdb -- xdyn tutorial_01_falling_ball.yml
-mise run gdb -- run_all_tests --gtest_filter='Gravity*'
-```
-
-This will open a GDB prompt. To close it, press Ctrl+D. For more details on how to use GDB, refer to [the official GDB documentation](https://www.gnu.org/software/gdb/).
-
-## Style guides
-
-### Git commits
-
-Commit messages start with a gitmoji, then a summary line in the past tense, then a body explaining why the change was made and what it cost. Never replace something in a single commit: add the new thing, switch to it, then remove the old one, as three commits. Read the last few commits before writing one.
-
-### C++
-### Fortran
-### C
-### Python
+Once approved, your contribution will be merged into the main branch and included in the next release according to the project roadmap.
