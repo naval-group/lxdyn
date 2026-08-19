@@ -56,6 +56,29 @@ const ssc_modules = [_][]const u8{
     "external/ssc/ssc/solver",          "external/ssc/ssc/text_file_reader",
 };
 
+// Warnings the tree already satisfies, kept satisfied. Each one is its own -Werror=
+// rather than a blanket -Werror, so that a clang bump widening -Wall/-Wextra reports
+// rather than breaks. A plain -W flag would be invisible here: the build runner only
+// surfaces a C diagnostic when it is an error.
+const werror_flags = [_][]const u8{
+    "-Werror=cast-align",             "-Werror=comma",
+    "-Werror=ctad-maybe-unsupported", "-Werror=duplicate-enum",
+    "-Werror=embedded-directive",     "-Werror=four-char-constants",
+    "-Werror=implicit-fallthrough",   "-Werror=invalid-noreturn",
+    "-Werror=keyword-macro",          "-Werror=loop-analysis",
+    "-Werror=missing-prototypes",     "-Werror=non-virtual-dtor",
+    "-Werror=over-aligned",           "-Werror=overloaded-virtual",
+    "-Werror=pessimizing-move",       "-Werror=pointer-arith",
+    "-Werror=range-loop-analysis",    "-Werror=redundant-decls",
+    "-Werror=self-assign",            "-Werror=shift-sign-overflow",
+    "-Werror=signed-enum-bitfield",   "-Werror=string-conversion",
+    "-Werror=tautological-compare",   "-Werror=thread-safety",
+    "-Werror=undef",                  "-Werror=unused-member-function",
+    "-Werror=unused-template",        "-Werror=used-but-marked-unused",
+    "-Werror=vla",                    "-Werror=write-strings",
+    "-Wformat=2",                     "-Werror=format",
+};
+
 const ws_dir = "external/ssc/ssc/websocket/src";
 
 const not_in_libxdyn = [_][]const u8{"demo_scripts.cpp"};
@@ -85,7 +108,7 @@ pub fn build(b: *std.Build) void {
     const shim_hpp = b.pathFromRoot("xdyn/compat/ssc_serialize_compat.hpp");
     const optimize: std.builtin.OptimizeMode = .ReleaseFast;
 
-    const cpp_flags = withDebug(b, &.{ "-std=gnu++17", "-Wall", "-Wextra", "-Wno-deprecated", "-Wno-date-time", "-fPIC", "-include", shim_hpp });
+    const cpp_flags = concat(b, withDebug(b, &.{ "-std=gnu++17", "-Wall", "-Wextra", "-Wno-deprecated", "-Wno-date-time", "-fPIC", "-include", shim_hpp }), &werror_flags);
     const sir_flags = withDebug(b, &.{ "-std=gnu++17", "-Wall", "-Wno-deprecated", "-fPIC" });
     const c_flags = withDebug(b, &.{ "-std=gnu11", "-Wall", "-Wextra", "-Wno-date-time", "-fno-common", "-fPIC" });
     const f2c_flags = withDebug(b, &.{ "-std=gnu11", "-Wall", "-Wextra", "-fno-common", "-fPIC", "-Iexternal/ssc/ssc/f2c" });
@@ -361,7 +384,8 @@ fn linkWindowsSystemLibs(m: *std.Build.Module) void {
 
 fn addCommonIncludes(b: *std.Build, m: *std.Build.Module) void {
     if (target_is_windows) m.addCMacro("YAML_CPP_STATIC_DEFINE", "1");
-    m.addIncludePath(.{ .cwd_relative = b.fmt("{s}/install/include", .{deps_root}) });
+    // -isystem, not -I: the closure is third-party, and its diagnostics are not ours to fix
+    m.addSystemIncludePath(.{ .cwd_relative = b.fmt("{s}/install/include", .{deps_root}) });
     m.addIncludePath(b.path("."));
     m.addIncludePath(b.path("xdyn/cli"));
     m.addIncludePath(b.path("external/ssc"));
