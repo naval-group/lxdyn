@@ -56,32 +56,35 @@ const ssc_modules = [_][]const u8{
     "external/ssc/ssc/solver",          "external/ssc/ssc/text_file_reader",
 };
 
-// Warnings the tree already satisfies, kept satisfied. Each one is its own -Werror=
-// rather than a blanket -Werror, so that a clang bump widening -Wall/-Wextra reports
-// rather than breaks. A plain -W flag would be invisible here: the build runner only
-// surfaces a C diagnostic when it is an error.
-const werror_flags = [_][]const u8{
-    "-Werror=cast-align",             "-Werror=comma",
-    "-Werror=ctad-maybe-unsupported", "-Werror=duplicate-enum",
-    "-Werror=embedded-directive",     "-Werror=four-char-constants",
-    "-Werror=implicit-fallthrough",   "-Werror=invalid-noreturn",
-    "-Werror=keyword-macro",          "-Werror=loop-analysis",
-    "-Werror=missing-prototypes",     "-Werror=non-virtual-dtor",
-    "-Werror=over-aligned",           "-Werror=overloaded-virtual",
-    "-Werror=pessimizing-move",       "-Werror=pointer-arith",
-    "-Werror=range-loop-analysis",    "-Werror=redundant-decls",
-    "-Werror=self-assign",            "-Werror=shift-sign-overflow",
-    "-Werror=signed-enum-bitfield",   "-Werror=string-conversion",
-    "-Werror=tautological-compare",   "-Werror=thread-safety",
-    "-Werror=undef",                  "-Werror=unused-member-function",
-    "-Werror=unused-template",        "-Werror=used-but-marked-unused",
-    "-Werror=vla",                    "-Werror=write-strings",
-    "-Wformat=2",                     "-Werror=format",
+// Warnings the tree already satisfies, kept satisfied. This list only *enables*;
+// -Werror on each hand-written flag set is what makes any of them fail a build.
+// Severity has to be explicit somewhere: the build runner surfaces a C diagnostic
+// only when it is an error, so a warning nobody promotes is a warning nobody sees.
+const warning_flags = [_][]const u8{
+    "-Wcast-align",           "-Wcast-qual",
+    "-Wcomma",                "-Wctad-maybe-unsupported",
+    "-Wduplicate-enum",       "-Wembedded-directive",
+    "-Wextra-semi",           "-Wfour-char-constants",
+    "-Wimplicit-fallthrough", "-Winvalid-noreturn",
+    "-Wkeyword-macro",        "-Wloop-analysis",
+    "-Wmissing-prototypes",   "-Wmissing-variable-declarations",
+    "-Wnon-virtual-dtor",     "-Wover-aligned",
+    "-Woverloaded-virtual",   "-Wpedantic",
+    "-Wpessimizing-move",     "-Wpointer-arith",
+    "-Wrange-loop-analysis",  "-Wredundant-decls",
+    "-Wself-assign",          "-Wshift-sign-overflow",
+    "-Wsigned-enum-bitfield", "-Wstring-conversion",
+    "-Wtautological-compare", "-Wthread-safety",
+    "-Wundef",                "-Wunused-member-function",
+    "-Wunused-template",      "-Wused-but-marked-unused",
+    "-Wvla",                  "-Wwrite-strings",
+    "-Wformat=2",
 };
 
 const ws_dir = "external/ssc/ssc/websocket/src";
 
-const not_in_libxdyn = [_][]const u8{"demo_scripts.cpp"};
+// Globbed out of their module and added back below, each with a flag of its own.
+const compiled_separately = [_][]const u8{ "demo_scripts.cpp", "generate_test_ship.cpp" };
 
 const f2c_dir = "external/ssc/ssc/f2c";
 const f2c_excluded = [_][]const u8{
@@ -108,15 +111,30 @@ pub fn build(b: *std.Build) void {
     const shim_hpp = b.pathFromRoot("xdyn/compat/ssc_serialize_compat.hpp");
     const optimize: std.builtin.OptimizeMode = .ReleaseFast;
 
-    const cpp_flags = concat(b, withDebug(b, &.{ "-std=gnu++17", "-Wall", "-Wextra", "-Wno-deprecated", "-Wno-date-time", "-fPIC", "-include", shim_hpp }), &werror_flags);
-    const sir_flags = withDebug(b, &.{ "-std=gnu++17", "-Wall", "-Wno-deprecated", "-fPIC" });
-    const c_flags = withDebug(b, &.{ "-std=gnu11", "-Wall", "-Wextra", "-Wno-date-time", "-fno-common", "-fPIC" });
+    // -Wno-date-time: zig build enables -Wdate-time itself, and h5_version.c's banner
+    // wants __DATE__.
+    //
+    // -Wno-error=stack-exhausted: the one diagnostic here that describes the *compiler's*
+    // resources rather than the code. stl_data.cpp builds a fixture from a 1462-term << chain,
+    // which is deep enough that whether clang warns depends on the stack the machine gave it —
+    // clean here, fired on a CI runner. A build must not pass or fail on that, so it stays a
+    // warning. The chain itself is the real defect: clang segfaults on that file at
+    // `ulimit -s 5120`, -Werror or not.
+    const cpp_flags = concat(b, withDebug(b, &.{ "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-Wno-date-time", "-Wno-error=stack-exhausted", "-fPIC", "-include", shim_hpp }), &warning_flags);
+    // SSC is under a minimal-divergence policy, so its 11 misleading-indentation sites are
+    // suppressed rather than fixed. All 11 are in .cpp files, which is why a flag set of its
+    // own is enough — a header site would leak into every xdyn translation unit.
+    const ssc_flags = concat(b, cpp_flags, &.{"-Wno-misleading-indentation"});
+    const sir_flags = withDebug(b, &.{ "-std=gnu++17", "-Wall", "-Werror", "-fPIC" });
+    const c_flags = withDebug(b, &.{ "-std=gnu11", "-Wall", "-Wextra", "-Werror", "-Wno-date-time", "-fno-common", "-fPIC" });
+    // No -Werror on the two generated-code sets below: f2c's Fortran-to-C output and protoc's
+    // are not ours to keep clean, and their warning counts move when the generator moves.
     const f2c_flags = withDebug(b, &.{ "-std=gnu11", "-Wall", "-Wextra", "-fno-common", "-fPIC", "-Iexternal/ssc/ssc/f2c" });
-    proto_flags = withDebug(b, &.{ "-std=gnu++17", "-Wno-effc++", "-Wno-sign-conversion", "-Wno-unused-parameter", "-fPIC" });
+    proto_flags = withDebug(b, &.{ "-std=gnu++17", "-fPIC" });
     const ws_flags = withDebug(b, &.{
-        "-std=gnu++17",                 "-Wall",                            "-Wextra",                          "-Wno-deprecated",                    "-fPIC",
+        "-std=gnu++17",                 "-Wall",                            "-Wextra",                          "-Werror",                            "-fPIC",
         "-D_WEBSOCKETPP_CPP11_STL_",    "-D_WEBSOCKETPP_CPP11_THREAD_",     "-D_WEBSOCKETPP_CPP11_FUNCTIONAL_", "-D_WEBSOCKETPP_CPP11_SYSTEM_ERROR_", "-D_WEBSOCKETPP_CPP11_RANDOM_DEVICE_",
-        "-D_WEBSOCKETPP_CPP11_MEMORY_", "-Iexternal/ssc/ssc/websocket/inc", "-Iexternal/websocketpp",
+        "-D_WEBSOCKETPP_CPP11_MEMORY_", "-Iexternal/ssc/ssc/websocket/inc", "-isystem",                         "external/websocketpp",
     });
 
     // =========================================================================
@@ -128,7 +146,7 @@ pub fn build(b: *std.Build) void {
     // --- SSC modules: every *.cpp directly in each; SSC keeps its own tests one level
     // deeper, in <module>/unit_tests/, so a non-recursive glob skips them ---
     for (ssc_modules) |dir|
-        xdyn.addCSourceFiles(.{ .root = b.path(dir), .files = sourcesIn(b, dir, ".cpp", &.{}), .flags = cpp_flags });
+        xdyn.addCSourceFiles(.{ .root = b.path(dir), .files = sourcesIn(b, dir, ".cpp", &.{}), .flags = ssc_flags });
     // The f2c-derived C in these wants the f2c flags, not the C++ ones.
     for ([_][]const u8{ "external/ssc/ssc/integrate", "external/ssc/ssc/interpolation" }) |dir|
         xdyn.addCSourceFiles(.{ .root = b.path(dir), .files = sourcesIn(b, dir, ".c", &.{}), .flags = f2c_flags });
@@ -143,6 +161,8 @@ pub fn build(b: *std.Build) void {
     xdyn.addCSourceFile(.{ .file = codegen.git_sha_c, .flags = c_flags });
     xdyn.addCSourceFiles(.{ .root = b.path("xdyn/interface_hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = c_flags });
     xdyn.addCSourceFiles(.{ .root = b.path("xdyn/observers_and_api"), .files = &.{"demo_scripts.cpp"}, .flags = concat(b, cpp_flags, &.{"-Wno-c23-extensions"}) });
+    // one 253906-character string literal; ISO requires only 65536
+    xdyn.addCSourceFiles(.{ .root = b.path("xdyn/binary_stl_data"), .files = &.{"generate_test_ship.cpp"}, .flags = concat(b, cpp_flags, &.{"-Wno-overlength-strings"}) });
     addProtoSources(b, xdyn, &.{ "wave_types", "wave_grpc", "force", "controller" });
     xdyn.addCSourceFiles(.{ .root = b.path("external/thirdparty/boost_program_options_descriptions"), .files = &.{
         "CustomOptionDescription.cpp", "OptionPrinter.cpp",
@@ -531,7 +551,7 @@ fn xdynModuleSources(b: *std.Build) []const []const u8 {
     var found: std.ArrayList([]const u8) = .empty;
     for (xdynDirs(b)) |dir| {
         if (std.mem.eql(u8, dir, "executables")) continue;
-        for (sourcesIn(b, b.pathJoin(&.{ "xdyn", dir }), ".cpp", &not_in_libxdyn)) |name|
+        for (sourcesIn(b, b.pathJoin(&.{ "xdyn", dir }), ".cpp", &compiled_separately)) |name|
             found.append(b.allocator, b.pathJoin(&.{ dir, name })) catch @panic("OOM");
     }
     return sorted(b, &found);
