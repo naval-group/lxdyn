@@ -42,7 +42,7 @@ class CSVWriter
         {
         }
         CSVWriter& operator=(const CSVWriter& rhs);
-        ~CSVWriter(){};
+        ~CSVWriter(){}
         CSVWriter(const CSVWriter&);
 
         void add(const std::string& name, const std::function<double(const double)>& f, const size_t i, const size_t j)

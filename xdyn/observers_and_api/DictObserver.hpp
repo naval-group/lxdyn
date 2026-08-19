@@ -19,8 +19,8 @@ class DictObserver : public Observer
         ~DictObserver();
 
     protected:
-        virtual void flush_after_initialization(){};
-        virtual void flush_value_during_write(){};
+        virtual void flush_after_initialization(){}
+        virtual void flush_value_during_write(){}
         virtual void flush_after_write();
 
         using Observer::get_serializer;

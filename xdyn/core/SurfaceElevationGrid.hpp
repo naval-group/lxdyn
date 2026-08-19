@@ -15,7 +15,7 @@ struct SurfaceElevationGrid
             const Eigen::VectorXd& x_ = Eigen::VectorXd(),
             const Eigen::VectorXd& y_ = Eigen::VectorXd(),
             const Eigen::MatrixXd& z_ = Eigen::MatrixXd()
-            ):t(t_),x(x_),y(y_),z(z_){};
+            ):t(t_),x(x_),y(y_),z(z_){}
 
     SurfaceElevationGrid(
             const std::size_t nx,
@@ -24,7 +24,7 @@ struct SurfaceElevationGrid
             ):t(t_),
               x(Eigen::VectorXd((long)nx)),
               y(Eigen::VectorXd((long)ny)),
-              z(Eigen::MatrixXd((long)nx,(long)ny)){};
+              z(Eigen::MatrixXd((long)nx,(long)ny)){}
 
     SurfaceElevationGrid(
             const Eigen::Index nx,
@@ -33,7 +33,7 @@ struct SurfaceElevationGrid
             ):t(t_),
               x(Eigen::VectorXd(nx)),
               y(Eigen::VectorXd(ny)),
-              z(Eigen::MatrixXd(nx, ny)){};
+              z(Eigen::MatrixXd(nx, ny)){}
 };
 
 #endif /* SURFACEELEVATIONGRID_HPP_ */

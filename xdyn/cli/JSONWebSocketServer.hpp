@@ -16,7 +16,7 @@
 #include "xdyn/observers_and_api/JSONSerializer.hpp"
 #include "ErrorReporter.hpp"
 
-volatile sig_atomic_t stop;
+static volatile sig_atomic_t stop;
 
 #define ADDRESS "127.0.0.1"
 #define WEBSOCKET_ADDRESS "ws://" ADDRESS

@@ -79,7 +79,7 @@ class WaveModel
             const std::vector<double> &eta, //!< Wave elevations at (x,y) in the NED frame (in meters)
             const double t                  //!< Current time instant (in seconds)
             ) const;
-        FlatDiscreteDirectionalWaveSpectrum get_spectrum() const {return flat_spectrum;};
+        FlatDiscreteDirectionalWaveSpectrum get_spectrum() const {return flat_spectrum;}
 
     private:
         WaveModel(); // Disabled

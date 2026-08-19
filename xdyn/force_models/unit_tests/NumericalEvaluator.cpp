@@ -74,5 +74,5 @@ template <> double NumericalEvaluator::operator()(const maneuvering::FunctionCal
     if (d.function == "exp")  return std::exp(this->operator()(d.expr));
     if (d.function == "abs")  return std::abs(this->operator()(d.expr));
     if (d.function == "sqrt") return std::sqrt(this->operator()(d.expr));
-                              return std::nan("");
+    return std::nan("");
 }

@@ -90,7 +90,7 @@ namespace maneuvering
             NodePtr operator()(const Identifier& name) const
             {
                 if (name == "t") return make_time();
-                                 return make_unknown_identifier(name);
+                return make_unknown_identifier(name);
             }
             NodePtr operator()(const Base& d) const
             {
@@ -159,7 +159,7 @@ namespace maneuvering
                 if (d.function == "qi")   return make_state_qi(this->operator()(d.expr), rot);
                 if (d.function == "qj")   return make_state_qj(this->operator()(d.expr), rot);
                 if (d.function == "qk")   return make_state_qk(this->operator()(d.expr), rot);
-                                          return make_unknown_identifier(PrettyPrinter()(d));
+                return make_unknown_identifier(PrettyPrinter()(d));
             }
             YamlRotation rot;
     };

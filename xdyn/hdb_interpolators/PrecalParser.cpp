@@ -197,7 +197,7 @@ Eigen::Matrix<double, 6, 6> PrecalParser::get_added_mass() const
     return Ma;
 }
 
-std::function<bool(double, double)> double_eq
+static std::function<bool(double, double)> double_eq
     = [](double d1, double d2) { return fabs(d1 - d2) <= std::numeric_limits<double>::epsilon(); };
 
 bool rao_is_valid_and_corresponds_to_signal_and_direction(const RAO& rao,
@@ -468,7 +468,7 @@ void PrecalParser::init_wave_drift_tables()
 
 std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_diffraction_module_tables() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&diffraction_module))
+    if (const std::string* err = boost::get<std::string>(&diffraction_module))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -478,7 +478,7 @@ std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_diffraction_m
 
 std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_diffraction_phase_tables() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&diffraction_phase))
+    if (const std::string* err = boost::get<std::string>(&diffraction_phase))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -488,7 +488,7 @@ std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_diffraction_p
 
 std::vector<double> PrecalParser::get_diffraction_module_periods() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&diffraction_module))
+    if (const std::string* err = boost::get<std::string>(&diffraction_module))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -498,7 +498,7 @@ std::vector<double> PrecalParser::get_diffraction_module_periods() const
 
 std::vector<double> PrecalParser::get_diffraction_phase_periods() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&diffraction_phase))
+    if (const std::string* err = boost::get<std::string>(&diffraction_phase))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -508,7 +508,7 @@ std::vector<double> PrecalParser::get_diffraction_phase_periods() const
 
 std::vector<double> PrecalParser::get_diffraction_module_psis() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&diffraction_module))
+    if (const std::string* err = boost::get<std::string>(&diffraction_module))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -518,7 +518,7 @@ std::vector<double> PrecalParser::get_diffraction_module_psis() const
 
 std::vector<double> PrecalParser::get_diffraction_phase_psis() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&diffraction_phase))
+    if (const std::string* err = boost::get<std::string>(&diffraction_phase))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -528,7 +528,7 @@ std::vector<double> PrecalParser::get_diffraction_phase_psis() const
 
 std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_froude_krylov_module_tables() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_module))
+    if (const std::string* err = boost::get<std::string>(&froude_krylov_module))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -538,7 +538,7 @@ std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_froude_krylov
 
 std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_froude_krylov_phase_tables() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_phase))
+    if (const std::string* err = boost::get<std::string>(&froude_krylov_phase))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -548,7 +548,7 @@ std::array<std::vector<std::vector<double> >, 6> PrecalParser::get_froude_krylov
 
 std::vector<double> PrecalParser::get_froude_krylov_module_periods() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_module))
+    if (const std::string* err = boost::get<std::string>(&froude_krylov_module))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -558,7 +558,7 @@ std::vector<double> PrecalParser::get_froude_krylov_module_periods() const
 
 std::vector<double> PrecalParser::get_froude_krylov_phase_periods() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_phase))
+    if (const std::string* err = boost::get<std::string>(&froude_krylov_phase))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -568,7 +568,7 @@ std::vector<double> PrecalParser::get_froude_krylov_phase_periods() const
 
 std::vector<double> PrecalParser::get_froude_krylov_module_psis() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_module))
+    if (const std::string* err = boost::get<std::string>(&froude_krylov_module))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -578,7 +578,7 @@ std::vector<double> PrecalParser::get_froude_krylov_module_psis() const
 
 std::vector<double> PrecalParser::get_froude_krylov_phase_psis() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_phase))
+    if (const std::string* err = boost::get<std::string>(&froude_krylov_phase))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -708,7 +708,7 @@ std::vector<double> PrecalParser::get_radiation_damping_coeff(const size_t i, co
  */
 std::array<std::vector<std::vector<double> >,6 > PrecalParser::get_wave_drift_tables() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&wave_drift_tables))
+    if (const std::string* err = boost::get<std::string>(&wave_drift_tables))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -721,7 +721,7 @@ std::array<std::vector<std::vector<double> >,6 > PrecalParser::get_wave_drift_ta
  */
 std::vector<double> PrecalParser::get_wave_drift_psis() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&wave_drift_tables))
+    if (const std::string* err = boost::get<std::string>(&wave_drift_tables))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -734,7 +734,7 @@ std::vector<double> PrecalParser::get_wave_drift_psis() const
  */
 std::vector<double> PrecalParser::get_wave_drift_periods() const
 {
-    if (std::string* err = (std::string*)boost::get<std::string>(&wave_drift_tables))
+    if (const std::string* err = boost::get<std::string>(&wave_drift_tables))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }

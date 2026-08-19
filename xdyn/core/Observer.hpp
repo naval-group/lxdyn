@@ -28,11 +28,11 @@ struct DataAddressing
 {
     std::string name;
     std::vector<std::string> address;
-    DataAddressing():name(),address(){};
+    DataAddressing():name(),address(){}
     DataAddressing(
             const std::vector<std::string>& address_,
             const std::string& name_):
-        name(name_),address(address_){};
+        name(name_),address(address_){}
 };
 
 class Observer

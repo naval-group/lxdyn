@@ -329,7 +329,7 @@ class HDBParser::Impl
 
         std::array<std::vector<std::vector<double> >,6 > get_diffraction_module_tables() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&diffraction_module))
+            if ( const std::string* err = boost::get<std::string>(&diffraction_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -339,7 +339,7 @@ class HDBParser::Impl
 
         std::array<std::vector<std::vector<double> >,6 > get_diffraction_phase_tables() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&diffraction_phase))
+            if ( const std::string* err = boost::get<std::string>(&diffraction_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -349,7 +349,7 @@ class HDBParser::Impl
 
         std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_module_tables() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_module))
+            if ( const std::string* err = boost::get<std::string>(&froude_krylov_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -359,7 +359,7 @@ class HDBParser::Impl
 
         std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_phase_tables() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_phase))
+            if ( const std::string* err = boost::get<std::string>(&froude_krylov_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -369,7 +369,7 @@ class HDBParser::Impl
 
         std::array<std::vector<std::vector<double> >,6 > get_total_excitation_force_module_tables() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&total_excitation_forces_module))
+            if ( const std::string* err = boost::get<std::string>(&total_excitation_forces_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -379,7 +379,7 @@ class HDBParser::Impl
 
         std::array<std::vector<std::vector<double> >,6 > get_total_excitation_force_phase_tables() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&total_excitation_forces_phase))
+            if ( const std::string* err = boost::get<std::string>(&total_excitation_forces_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -389,7 +389,7 @@ class HDBParser::Impl
 
         std::array<std::vector<std::vector<double> >,6 > get_wave_drift_tables() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&wave_drift_forces))
+            if ( const std::string* err = boost::get<std::string>(&wave_drift_forces))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -439,7 +439,7 @@ class HDBParser::Impl
 
         std::vector<double> get_diffraction_phase_psis() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&diffraction_phase))
+            if ( const std::string* err = boost::get<std::string>(&diffraction_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -449,7 +449,7 @@ class HDBParser::Impl
 
         std::vector<double> get_diffraction_phase_omegas() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&diffraction_phase))
+            if ( const std::string* err = boost::get<std::string>(&diffraction_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -459,7 +459,7 @@ class HDBParser::Impl
 
         std::vector<double> get_diffraction_module_psis() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&diffraction_module))
+            if ( const std::string* err = boost::get<std::string>(&diffraction_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -469,7 +469,7 @@ class HDBParser::Impl
 
         std::vector<double> get_diffraction_module_periods() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&diffraction_module))
+            if ( const std::string* err = boost::get<std::string>(&diffraction_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -479,7 +479,7 @@ class HDBParser::Impl
 
         std::vector<double> get_froude_krylov_phase_psis() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_phase))
+            if ( const std::string* err = boost::get<std::string>(&froude_krylov_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -489,7 +489,7 @@ class HDBParser::Impl
 
         std::vector<double> get_froude_krylov_phase_periods() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_phase))
+            if ( const std::string* err = boost::get<std::string>(&froude_krylov_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -499,7 +499,7 @@ class HDBParser::Impl
 
         std::vector<double> get_froude_krylov_module_psis() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_module))
+            if ( const std::string* err = boost::get<std::string>(&froude_krylov_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -509,7 +509,7 @@ class HDBParser::Impl
 
         std::vector<double> get_froude_krylov_module_periods() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&froude_krylov_module))
+            if ( const std::string* err = boost::get<std::string>(&froude_krylov_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -519,7 +519,7 @@ class HDBParser::Impl
 
         std::vector<double> get_wave_drift_psis() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&wave_drift_forces))
+            if ( const std::string* err = boost::get<std::string>(&wave_drift_forces))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -529,7 +529,7 @@ class HDBParser::Impl
 
         std::vector<double> get_wave_drift_periods() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&wave_drift_forces))
+            if ( const std::string* err = boost::get<std::string>(&wave_drift_forces))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -539,7 +539,7 @@ class HDBParser::Impl
 
         std::vector<double> get_total_excitation_force_phase_psis() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&total_excitation_forces_phase))
+            if ( const std::string* err = boost::get<std::string>(&total_excitation_forces_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -549,7 +549,7 @@ class HDBParser::Impl
 
         std::vector<double> get_total_excitation_force_phase_periods() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&total_excitation_forces_phase))
+            if ( const std::string* err = boost::get<std::string>(&total_excitation_forces_phase))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -559,7 +559,7 @@ class HDBParser::Impl
 
         std::vector<double> get_total_excitation_force_module_psis() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&total_excitation_forces_module))
+            if ( const std::string* err = boost::get<std::string>(&total_excitation_forces_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -569,7 +569,7 @@ class HDBParser::Impl
 
         std::vector<double> get_total_excitation_force_module_periods() const
         {
-            if ( std::string* err = (std::string*)boost::get<std::string>(&total_excitation_forces_module))
+            if ( const std::string* err = boost::get<std::string>(&total_excitation_forces_module))
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
             }
@@ -644,7 +644,7 @@ TimestampedMatrices HDBParser::get_radiation_damping_array() const
 RAOData HDBParser::get_diffraction_module() const
 {
     auto diff = pimpl->get_diffraction_module();
-    if ( std::string* err = (std::string*)boost::get<std::string>(&diff))
+    if ( const std::string* err = boost::get<std::string>(&diff))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }
@@ -655,7 +655,7 @@ RAOData HDBParser::get_diffraction_module() const
 RAOData HDBParser::get_diffraction_phase() const
 {
     auto diff = pimpl->get_diffraction_phase();
-    if ( std::string* err = (std::string*)boost::get<std::string>(&diff))
+    if ( const std::string* err = boost::get<std::string>(&diff))
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, *err);
     }

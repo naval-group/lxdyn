@@ -22,7 +22,7 @@ struct XdynGrpcAiryCommandLineArguments
     short unsigned int port;
     std::vector<std::string> yaml_filenames;
     bool catch_exceptions;
-    XdynGrpcAiryCommandLineArguments(): port(50051), yaml_filenames(), catch_exceptions(false){};
+    XdynGrpcAiryCommandLineArguments(): port(50051), yaml_filenames(), catch_exceptions(false){}
 };
 
 po::options_description attach_command_line_arguments_to_options_description(XdynGrpcAiryCommandLineArguments& input_data);

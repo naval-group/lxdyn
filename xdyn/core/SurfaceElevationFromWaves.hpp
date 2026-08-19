@@ -35,7 +35,7 @@ class SurfaceElevationFromWaves: public SurfaceElevationInterface
             const std::pair<std::size_t,std::size_t> output_mesh_size = std::make_pair((std::size_t)0,(std::size_t)0),
             const ssc::kinematics::PointMatrixPtr& output_mesh = ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix("NED", 0)));
 
-        std::vector<WaveModelPtr> get_models() const {return directional_spectra;};
+        std::vector<WaveModelPtr> get_models() const {return directional_spectra;}
 
         void serialize_wave_spectra_before_simulation(ObserverPtr& observer) const;
     private:
