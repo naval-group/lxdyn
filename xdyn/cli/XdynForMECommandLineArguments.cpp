@@ -8,6 +8,7 @@
 #include "XdynForMECommandLineArguments.hpp"
 
 XdynForMECommandLineArguments::XdynForMECommandLineArguments() : yaml_filenames(),
+                         assets_path(),
                          catch_exceptions(false),
                          address("127.0.0.1"),
                          port(0),

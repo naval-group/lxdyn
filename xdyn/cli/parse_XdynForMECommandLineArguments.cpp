@@ -50,6 +50,7 @@ po::options_description get_options_description(XdynForMECommandLineArguments& i
         ("debug,d",                                                                      "Used by the application's support team to help error diagnosis. Allows us to pinpoint the exact location in code where the error occurred (do not catch exceptions), eg. for use in a debugger.")
         ("grpc,g",                                                                       "Launch a gRPC server instead of the (default) JSON+websocket server.")
     ;
+    desc.add(assets_path_option(input_data.assets_path));
     return desc;
 }
 

@@ -18,6 +18,7 @@ struct XdynCommandLineArguments
     std::string solver;
     std::string output_filename;
     std::string wave_output;
+    std::string assets_path;
     double initial_timestep;
     double tstart;
     double tend;

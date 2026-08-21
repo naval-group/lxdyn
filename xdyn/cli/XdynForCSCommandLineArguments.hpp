@@ -17,6 +17,7 @@ struct XdynForCSCommandLineArguments
     bool empty() const;
     std::vector<std::string> yaml_filenames;
     std::string solver;
+    std::string assets_path;
     double initial_timestep;
     bool catch_exceptions;
     std::string address;

@@ -3,6 +3,7 @@
 #include "ModelExchangeServiceImpl.hpp"
 #include "JSONWebSocketServer.hpp"
 #include "ErrorReporter.hpp"
+#include "xdyn/core/AssetPath.hpp"
 #include "xdyn/observers_and_api/XdynForME.hpp"
 #include "xdyn/observers_and_api/gRPCProtoBufServer.hpp"
 
@@ -34,6 +35,9 @@ int main(int argc, char** argv)
     int error = 0;
     ErrorReporter error_outputter;
     error_outputter.run_and_report_errors_without_yaml_dump([&error,&argc,&argv,&input_data]{error = get_input_data(argc, argv, input_data);});
+    xdyn::set_assets_root(xdyn::assets_root(input_data.assets_path,
+                                            xdyn::assets_root_from_environment(),
+                                            input_data.yaml_filenames));
     std::string yaml_input;
     error_outputter.run_and_report_errors_without_yaml_dump([&yaml_input,&input_data](){yaml_input = ssc::text_file_reader::TextFileReader(input_data.yaml_filenames).get_contents();});
     if (error)

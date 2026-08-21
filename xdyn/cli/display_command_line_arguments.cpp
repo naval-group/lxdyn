@@ -48,6 +48,15 @@ BooleanArguments parse_input(int argc, char **argv, const po::options_descriptio
     return ret;
 }
 
+po::options_description assets_path_option(std::string& assets_path)
+{
+    po::options_description desc("Assets");
+    desc.add_options()
+        ("assets-path", po::value<std::string>(&assets_path), "Root directory the relative mesh and seabed paths written inside the YAML are resolved against. Defaults to $XDYN_ASSETS_PATH, then to the directory holding the first YAML file. Paths given on the command line are unaffected: they stay relative to the working directory.")
+        ;
+    return desc;
+}
+
 void print_usage(std::ostream& os, const po::options_description& desc, const std::string& program_name, const std::string& des)
 {
     po::positional_options_description positionalOptions;

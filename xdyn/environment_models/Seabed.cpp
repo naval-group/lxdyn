@@ -3,41 +3,22 @@
  */
 
 #include "Seabed.hpp"
+#include "xdyn/core/AssetPath.hpp"
 
 #include <algorithm>
 #include <cmath>
-#include <cstdlib>
 #include <iostream>
-#include <boost/filesystem.hpp>
 #include <stb_image.h>
 
 Seabed::Seabed(const std::string sea_bed_file)
     : seabed(), width(), height(), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
 {
-    std::string seabed_path;
-    boost::filesystem::path file_path(sea_bed_file);
-    if (file_path.is_absolute() || boost::filesystem::exists(sea_bed_file))
-    {
-        seabed_path = sea_bed_file;
-    }
-    else
-    {
-        const char* lotus_path = std::getenv("LOTUSIM_MODELS_PATH");
-        if (lotus_path)
-        {
-            boost::filesystem::path full_path = boost::filesystem::path(lotus_path) / file_path;
-            seabed_path = full_path.string();
-        }
-        else
-        {
-            std::cerr << "Can't find image with this path: " << stbi_failure_reason() << std::endl;
-        }
-    }
+    const std::string seabed_path = xdyn::resolve_asset(sea_bed_file);
     int channels;
     unsigned char* img = stbi_load(seabed_path.c_str(), &width, &height, &channels, 1);
     if (!img)
     {
-        std::cerr << "Failed to load seabed image: " << stbi_failure_reason() << std::endl;
+        std::cerr << "Failed to load seabed image " << seabed_path << ": " << stbi_failure_reason() << std::endl;
     }
     for (int i = 0; i < width * height; i++)
     {

@@ -3,6 +3,7 @@
 #include "CosimulationServiceImpl.hpp"
 #include "JSONWebSocketServer.hpp"
 #include "ErrorReporter.hpp"
+#include "xdyn/core/AssetPath.hpp"
 #include "xdyn/observers_and_api/XdynForCS.hpp"
 #include "xdyn/observers_and_api/gRPCProtoBufServer.hpp"
 
@@ -47,6 +48,9 @@ int main(int argc, char** argv)
         return error;
     }
     if (input_data.empty() || input_data.show_help) return EXIT_SUCCESS;
+    xdyn::set_assets_root(xdyn::assets_root(input_data.assets_path,
+                                            xdyn::assets_root_from_environment(),
+                                            input_data.yaml_filenames));
     std::string yaml;
     error_outputter.run_and_report_errors_without_yaml_dump([&yaml, input_data]{const ssc::text_file_reader::TextFileReader yaml_reader(input_data.yaml_filenames);yaml = yaml_reader.get_contents();});
     const auto run_ws = [input_data, yaml](){

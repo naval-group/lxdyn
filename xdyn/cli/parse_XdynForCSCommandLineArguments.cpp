@@ -62,6 +62,7 @@ po::options_description get_options_description(XdynForCSCommandLineArguments& i
         ("port,p",     po::value<short unsigned int>(&input_data.port),                  "port for the websocket server. Available values are 1024-65535 (2^16, but port 0 is reserved and unavailable and ports in range 1-1023 are privileged (application needs to be run as root to have access to those ports)")
         ("grpc,g",                                                                       "Launch a gRPC server instead of the (default) JSON+websocket server.")
         ;
+    desc.add(assets_path_option(input_data.assets_path));
     return desc;
 }
 

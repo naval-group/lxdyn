@@ -58,6 +58,7 @@ po::options_description attach_command_line_arguments_to_options_description(Xdy
         ("waves,w",    po::value<std::string>(&input_data.wave_output),                  "Name of the output file where the wave heights will be stored ('output' section of the YAML file). In case output is made to a HDF5 file or web sockets, this option appends the wave height to the main output")
         ("debug,d",                                                                      "Used by the application's support team to help error diagnosis. Allows us to pinpoint the exact location in code where the error occurred (do not catch exceptions), eg. for use in a debugger.")
     ;
+    desc.add(assets_path_option(input_data.assets_path));
     return desc;
 }
 

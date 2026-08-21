@@ -9,6 +9,7 @@
 #include "build_observers_description.hpp"
 #include "parse_XdynCommandLineArguments.hpp"
 #include "XdynCommandLineArguments.hpp"
+#include "xdyn/core/AssetPath.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 
 #include <ssc/solver/solve.hpp>
@@ -90,6 +91,9 @@ void run_simulation(const XdynCommandLineArguments& input_data, ErrorReporter& e
 int run(const XdynCommandLineArguments& input_data, ErrorReporter& error_outputter);
 int run(const XdynCommandLineArguments& input_data, ErrorReporter& error_outputter)
 {
+    xdyn::set_assets_root(xdyn::assets_root(input_data.assets_path,
+                                            xdyn::assets_root_from_environment(),
+                                            input_data.yaml_filenames));
     if (not(input_data.empty())) run_simulation(input_data, error_outputter);
     if (error_outputter.contains_errors())
     {

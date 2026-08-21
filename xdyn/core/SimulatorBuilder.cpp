@@ -6,12 +6,12 @@
  */
 
 #include "SimulatorBuilder.hpp"
+#include "AssetPath.hpp"
 #include "BodyBuilder.hpp"
 #include "update_kinematics.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 
-#include <cstdlib>
 #include <ssc/text_file_reader.hpp>
 
 SimulatorBuilder::SimulatorBuilder(const YamlSimulatorInput& input_, const double t0_, const ssc::data_source::DataSource& command_listener_) :
@@ -231,22 +231,7 @@ VectorOfVectorOfPoints SimulatorBuilder::get_mesh(const YamlBody& body) const
 {
     if (not(body.mesh.empty()))
     {
-        // LOTUSim installs its models outside the working directory and points LOTUSIM_MODELS_PATH
-        // at them, so a relative mesh in the YAML is resolved against it.
-        std::string mesh_path = body.mesh;
-        const char* lotus_model_path = std::getenv("LOTUSIM_MODELS_PATH");
-        bool absolute(false);
-        #ifdef _WIN32
-            absolute = (mesh_path.size() > 2 && mesh_path[1] == ':' && (mesh_path[2] == '\\' || mesh_path[2] == '/')) || // "C:\mesh_path"
-                       (mesh_path.size() > 1 && mesh_path[0] == '\\' && mesh_path[1] == '\\'); // "\\network\mesh_path"
-        #else
-            absolute = !mesh_path.empty() && mesh_path[0] == '/';
-        #endif
-        if (lotus_model_path && !absolute)
-        {
-            mesh_path = lotus_model_path + mesh_path;
-        }
-        const ssc::text_file_reader::TextFileReader reader(mesh_path);
+        const ssc::text_file_reader::TextFileReader reader(xdyn::resolve_asset(body.mesh));
         return read_stl(reader.get_contents());
     }
     return VectorOfVectorOfPoints();
