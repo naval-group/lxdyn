@@ -9,6 +9,7 @@
 #include "MapObserverTest.hpp"
 #include "xdyn/binary_stl_data/generate_test_ship.hpp"
 #include "xdyn/core/Sim.hpp"
+#include "xdyn/core/SurfaceElevationFromWaves.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/test_data_generator/hdb_data.hpp"
@@ -1142,4 +1143,19 @@ TEST_F(SimTest, should_throw_if_a_controller_has_an_unknown_type)
                                                    + test_data::controllers()
                                                    + test_data::unknown_controller(), scheduler)
                                                    , InvalidInputException);
+}
+
+TEST_F(SimTest, waves_should_use_the_finite_depth_dispersion_relation)
+{
+    const double h = 5;
+    const double omega = 1; // shallow enough for the depth to change k, deep enough for lxdyn to accept it
+    std::string yaml = test_data::simple_waves();
+    boost::replace_all(yaml, "depth: {value: 0, unit: m}", "depth: {value: " + std::to_string(h) + ", unit: m}");
+    boost::replace_all(yaml, "omega0: {value: 0.05, unit: rad/s}", "omega0: {value: " + std::to_string(omega) + ", unit: rad/s}");
+    const EnvironmentAndFrames env = get_system(yaml, 0).get_env();
+    const auto waves = dynamic_cast<const SurfaceElevationFromWaves*>(env.w.get());
+    ASSERT_TRUE(waves != nullptr);
+    const std::vector<double> k = waves->get_models().at(0)->get_spectrum().k;
+    ASSERT_EQ(1, k.size());
+    ASSERT_DOUBLE_EQ(omega*omega, env.g*k.at(0)*tanh(k.at(0)*h));
 }

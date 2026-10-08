@@ -430,7 +430,7 @@ YamlModel ForceTests::get_regular_wave(const double propagation_angle_in_ned_fra
        << "   energy fraction: 0.999\n"
        << "spectra:\n"
        << "  - model: airy\n"
-       << "    depth: {value: 100, unit: m}\n"
+       << "    depth: {value: 0, unit: m}\n"
        << "    seed of the random data generator: none\n"
        << "    stretching:\n"
        << "      delta: 1\n"

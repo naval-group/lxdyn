@@ -82,6 +82,15 @@ std::string airy_depth_100()
            "        seed of the random data generator: 0\n";
 }
 
+std::string airy_infinite_depth();
+std::string airy_infinite_depth()
+{
+    return "    spectra:\n"
+           "      - model: airy\n"
+           "        depth: {value: 0, unit: m}\n"
+           "        seed of the random data generator: 0\n";
+}
+
 std::string position_relative_to_mesh(const double x, const double y, const double z, const double phi, const double theta, const double psi);
 std::string position_relative_to_mesh(const double x, const double y, const double z, const double phi, const double theta, const double psi)
 {
@@ -1093,7 +1102,7 @@ std::string test_data::test_ship_waves_test()
        + "           Tp: {value: 15, unit: s}\n"
        + "           gamma: 1.2\n"
        + "      - model: airy\n"
-       + "        depth: {value: 100, unit: m}\n"
+       + "        depth: {value: 0, unit: m}\n"
        + "        seed of the random data generator: 10\n"
        + stretching()
        + "        directional spreading:\n"
@@ -1141,7 +1150,7 @@ std::string test_data::waves()
        + "environment models:\n"
        + "  - model: waves\n"
        + discretization_with_ndir_nfreq()
-       + airy_depth_100()
+       + airy_infinite_depth()
        + stretching()
        + directional_spreading()
        + "        spectral density:\n"
@@ -1150,7 +1159,7 @@ std::string test_data::waves()
        + "           Tp: {value: 15, unit: s}\n"
        + "           gamma: 1.2\n"
        + "      - model: airy\n"
-       + "        depth: {value: 100, unit: m}\n"
+       + "        depth: {value: 0, unit: m}\n"
        + "        seed of the random data generator: 10\n"
        + stretching()
        + "        directional spreading:\n"
@@ -1191,7 +1200,7 @@ std::string test_data::simple_waves()
        + "       omega min: {value: 0.1, unit: rad/s}\n"
        + "       omega max: {value: 6, unit: rad/s}\n"
        + "       energy fraction: 0.999\n"
-       + airy_depth_100()
+       + airy_infinite_depth()
        + stretching()
        + directional_spreading()
        + "        spectral density:\n"
@@ -1425,7 +1434,7 @@ std::string test_data::cube_in_waves()
            << "           Tp: {value: 15, unit: s}\n"
            << "           gamma: 1.2\n"
            << "      - model: airy\n"
-           << "        depth: {value: 100, unit: m}\n"
+           << "        depth: {value: 0, unit: m}\n"
            << "        seed of the random data generator: 10\n"
            << "        stretching:\n"
            << "          delta: 1\n"
@@ -1486,7 +1495,7 @@ std::string test_data::test_ship_froude_krylov()
        << "           Tp: {value: 15, unit: s}\n"
        << "           gamma: 1.2\n"
        << "      - model: airy\n"
-       << "        depth: {value: 100, unit: m}\n"
+       << "        depth: {value: 0, unit: m}\n"
        << "        seed of the random data generator: 10\n"
        << stretching()
        << "        directional spreading:\n"
