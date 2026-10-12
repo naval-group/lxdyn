@@ -197,7 +197,7 @@ ssc::kinematics::UnsafeWrench Sim::sum_of_forces(const StateType& x, const BodyP
 
 void Sim::initialize_system_outputs_before_first_observation()
 {
-    StateType dxdt(13);
+    StateType dxdt(state.size());
     double t = 0;
     if (not(pimpl->bodies.empty()))
     {

@@ -1143,3 +1143,29 @@ TEST_F(SimTest, should_throw_if_a_controller_has_an_unknown_type)
                                                    + test_data::unknown_controller(), scheduler)
                                                    , InvalidInputException);
 }
+
+namespace
+{
+// Fails before Sim::dx_dt can write past the end of an undersized derivative vector.
+struct DerivativeSizeCheckingSim : public Sim
+{
+    explicit DerivativeSizeCheckingSim(const Sim& sim) : Sim(sim)
+    {
+    }
+    void dx_dt(const StateType& x, StateType& dxdt, const double t) override
+    {
+        ASSERT_EQ(x.size(), dxdt.size());
+        Sim::dx_dt(x, dxdt, t);
+    }
+};
+}
+
+TEST_F(SimTest, should_initialize_outputs_of_several_bodies)
+{
+    const std::string yaml = test_data::falling_ball_example();
+    auto input = SimulatorYamlParser(yaml).parse();
+    input.bodies.push_back(SimulatorYamlParser(boost::replace_all_copy(yaml, "ball", "ball2")).parse().bodies.front());
+    DerivativeSizeCheckingSim sim(get_system(input, 0));
+    ASSERT_EQ(26, sim.state.size());
+    sim.initialize_system_outputs_before_first_observation();
+}
