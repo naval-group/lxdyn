@@ -35,7 +35,7 @@ Triples: `x86_64-linux-gnu`, `x86_64-linux-musl`, `aarch64-linux-musl`, `x86_64-
 
 ```sh
 zig build                      # build
-zig build test                 # native unit suite, 916 tests
+zig build test                 # native unit suite, 963 tests
 zig build -Ddebug              # -O0 -g
 zig build gen                  # the code generators alone
 mise run cross                 # both cross suites under qemu and wine

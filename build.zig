@@ -44,7 +44,6 @@ const executables = [_]Executable{
     .{ .name = "convert_quaternion_to_euler", .source = "xdyn/executables/convert_quaternion_to_euler.cpp" },
     .{ .name = "generate_yaml_example", .source = "xdyn/executables/generate_yaml_examples.cpp" },
     .{ .name = "generate_stl_examples", .source = "xdyn/executables/generate_stl_examples.cpp" },
-    .{ .name = "generate_fmi_xml", .source = "xdyn/executables/generate_fmi_xml.cpp" },
 };
 
 const ssc_modules = [_][]const u8{
