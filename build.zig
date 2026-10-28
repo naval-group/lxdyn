@@ -210,6 +210,11 @@ pub fn build(b: *std.Build) void {
     // Python wrapper (pyxdyn) — the one shared object. Opt-in: `zig build python`
     // =========================================================================
     addPythonWrapper(b, target, optimize, libxdyn, cpp_flags);
+
+    // =========================================================================
+    // FMI 2.0 Co-Simulation FMU (xdyn_fmu) — the library an .fmu carries. Opt-in: `zig build fmu`
+    // =========================================================================
+    addFmuWrapper(b, target, optimize, libxdyn, cpp_flags);
 }
 
 // =============================================================================
@@ -493,6 +498,50 @@ fn addPythonWrapper(
         .prefix,
         b.fmt("python/xdyn{s}", .{env.ext_suffix}),
     );
+    step.dependOn(&install.step);
+}
+
+// =============================================================================
+// FMU wrapper — the library inside an .fmu, packed by xdyn_wrapper_fmi/make_fmu.py
+// =============================================================================
+
+fn addFmuWrapper(
+    b: *std.Build,
+    target: std.Build.ResolvedTarget,
+    optimize: std.builtin.OptimizeMode,
+    libxdyn: *std.Build.Step.Compile,
+    cpp_flags: []const []const u8,
+) void {
+    const step = b.step("fmu", "Build the FMI 2.0 Co-Simulation library an .fmu carries");
+
+    // Stripped: the library travels inside every .fmu, at a fraction of its debug size. Not on
+    // Windows, where the debug information goes to a .pdb beside the DLL anyway, and where
+    // stripping makes lld-link reject an object of the closure (path_traits.obj: "invalid
+    // symbol index in addrsig section").
+    const m = b.createModule(.{ .target = target, .optimize = optimize, .link_libcpp = true, .pic = true, .strip = !debug_build and !target_is_windows });
+    addCommonIncludes(b, m);
+    m.addIncludePath(b.path("xdyn_wrapper_fmi/fmi2"));
+    m.addCSourceFiles(.{
+        .root = b.path("xdyn_wrapper_fmi/src"),
+        .files = &.{ "fmu.cpp", "model.cpp" },
+        .flags = concat(b, cpp_flags, &.{"-fvisibility=hidden"}),
+    });
+    m.linkLibrary(libxdyn);
+    m.addObjectFile(.{ .cwd_relative = b.fmt("{s}/libxdyndeps_core.a", .{deps_root}) });
+    linkWindowsSystemLibs(m);
+    // dladdr and dlopen, for the library to keep itself loaded (fmu.cpp); in libdl before glibc 2.34.
+    if (target.result.os.tag == .linux and target.result.abi.isGnu()) m.linkSystemLibrary("dl", .{});
+
+    const lib = b.addLibrary(.{ .name = "xdyn_fmu", .root_module = m, .linkage = .dynamic });
+    lib.step.dependOn(codegen.step);
+    // -fvisibility=hidden only covers our own objects: the closure's archives export
+    // everything, and an importer that already has Boost, yaml-cpp or gRPC loaded (Python,
+    // Gazebo...) would bind to ours. Only the fmi2* functions leave the library.
+    if (target.result.os.tag == .linux) lib.setVersionScript(b.path("xdyn_wrapper_fmi/src/exports.map"));
+
+    // FMI names the binary after modelIdentifier, with the platform's own extension.
+    const name = if (target_is_windows) "xdyn_fmu.dll" else "xdyn_fmu.so";
+    const install = b.addInstallFileWithDir(lib.getEmittedBin(), .prefix, b.fmt("fmu/{s}", .{name}));
     step.dependOn(&install.step);
 }
 

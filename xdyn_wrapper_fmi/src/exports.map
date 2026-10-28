@@ -1,0 +1,8 @@
+/* The FMI functions and make_fmu.py's two helpers: nothing else leaves the library. */
+{
+  global:
+    fmi2*;
+    xdyn_fmu_*;
+  local:
+    *;
+};
