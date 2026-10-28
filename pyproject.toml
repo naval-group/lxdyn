@@ -25,12 +25,13 @@ test-grpc = [
     "websocket-client==0.56.0",
 ]
 wrapper = ["pybind11[global]>=3.0", "numpy", "pytest", "setuptools", "wheel"]
+fmu = ["fmpy", "numpy", "pytest"]
 lint = ["ruff"]
 wheelcheck = ["numpy", "pytest"]
 doc = ["sphinx", "sphinx-autopackagesummary", "myst-parser", "numpy"]
 
 [tool.ruff]
-include = ["xdyn_wrapper_python/**/*.py"]
+include = ["xdyn_wrapper_python/**/*.py", "xdyn_wrapper_fmi/**/*.py"]
 line-length = 100
 target-version = "py310"
 

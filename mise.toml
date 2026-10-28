@@ -227,6 +227,30 @@ PYTHONPATH="$SO_DIR" "$PY" -c "import xdyn; print('import ok, xdyn', xdyn.__vers
 echo "OK -> $SO"
 '''
 
+[tasks."fmu:build"]
+description = "Build the FMU library -> build/<triple>/fmu/"
+run = "zig build fmu"
+
+[tasks."fmu:test"]
+description = "Pack a test model as an FMU and run it through FMPy"
+depends = ["fmu:build"]
+run = '''
+UV_PROJECT_ENVIRONMENT=build/venv/fmu uv sync --only-group fmu --quiet
+LIB=$(sh tools/build-dir.sh)/fmu/xdyn_fmu.so
+mkdir -p build/scratch/fmu-tests
+cd build/scratch/fmu-tests
+XDYN_FMU_LIBRARY="$LIB" "$OLDPWD/build/venv/fmu/bin/python" -m pytest "$OLDPWD/xdyn_wrapper_fmi/unit_tests"
+'''
+
+[tasks."fmu:wine"]
+description = "Run the Windows FMU library under wine against the Linux one (needs `nix develop .#cross`)"
+run = '''
+zig build fmu
+zig build fmu -Dtarget=x86_64-windows-gnu
+UV_PROJECT_ENVIRONMENT=build/venv/fmu uv sync --only-group fmu --quiet
+sh xdyn_wrapper_fmi/unit_tests/wine.sh
+'''
+
 [tasks."python:test"]
 description = "Run the 285 Python binding tests against the built module"
 depends = ["python:build"]
