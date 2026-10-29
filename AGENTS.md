@@ -48,6 +48,8 @@ mise run python:test           # binding tests on 3.10
 mise run python:matrix         # on 3.10, 3.13 and 3.15
 mise run python:lint           # ruff check
 mise run python:wheel          # wheel plus a clean-venv check
+mise run fmu:test              # the FMU through FMPy
+mise run fmu:wine              # its Windows build under wine, against Linux (`nix develop .#cross`)
 ```
 
 ## Traps
