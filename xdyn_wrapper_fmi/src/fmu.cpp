@@ -3,7 +3,8 @@
 // Each instance owns a Sim and integrates it from t to t + h at each fmi2DoStep, with xdyn's
 // own solver and step, as the xdyn executable does over a whole simulation: the history the
 // force models read (radiation damping) goes on from one step to the next. reset_state imposes
-// another state at the start of the next step: a master may teleport a vessel or switch it to
+// another state at the start of the next step when it goes from false to true: a master may
+// teleport a vessel or switch it to
 // another model, and FMI 2.0 Co-Simulation has no other way to set a state (fmi2SetFMUstate is
 // opaque).
 
@@ -79,7 +80,7 @@ namespace
     }
 
     // resources/parameters.txt, written by make_fmu.py: "dt <value>" and "solver <name>"
-    // lines, the defaults of the xdyn_dt and solver parameters.
+    // lines, the defaults of the xdyn.dt and xdyn.solver parameters.
     void read_parameters(const std::string& path, double& dt, std::string& solver)
     {
         std::ifstream in(path);
@@ -112,7 +113,8 @@ namespace
         std::vector<double> commands;
         std::array<double, 13> state{};
         std::array<double, 3> euler{};
-        bool reset = false;
+        bool reset_input = false; // reset_state as the master set it
+        bool reset = false;       // a reset to apply at the start of the next step
         std::array<double, 13> reset_state{};
 
         void log(const fmi2Status status, const char* category, const std::string& message) const
@@ -125,16 +127,22 @@ namespace
         void load_model()
         {
             const Model model = read_model(yaml, resources);
-            command_names = model.commands;
-            commands = model.command_values;
+            command_names.clear();
+            commands.clear();
+            for (const auto& command : model.commands)
+            {
+                command_names.push_back(command.xdyn_name);
+                commands.push_back(command.value);
+            }
             state = model.state;
             reset_state = model.state;
+            reset_input = false;
             reset = false;
             sim.reset();
             history_time = -std::numeric_limits<double>::infinity();
         }
 
-        // Built at the end of initialization rather than at instantiation: xdyn_dt and solver
+        // Built at the end of initialization rather than at instantiation: xdyn.dt and xdyn.solver
         // are parameters, set in between.
         void build_sim()
         {
@@ -326,10 +334,10 @@ extern "C"
                 const auto r = vr[k];
                 if (r == VR_DT)
                 {
-                    if (i.sim)
-                        throw std::logic_error("xdyn_dt is fixed after initialization");
+                    if (i.sim and value[k] != i.dt)
+                        throw std::logic_error("xdyn.dt is fixed after initialization");
                     if (not(value[k] > 0))
-                        throw std::invalid_argument("xdyn_dt must be > 0");
+                        throw std::invalid_argument("xdyn.dt must be > 0");
                     i.dt = value[k];
                 }
                 else if (r >= VR_RESET_STATE and r < VR_RESET_STATE + 13)
@@ -344,16 +352,42 @@ extern "C"
         });
     }
 
-    fmi2Status fmi2GetInteger(fmi2Component c, const fmi2ValueReference[], size_t nvr,
-                              fmi2Integer[])
+    // xdyn.solver, the one Enumeration: item k + 1 is solvers()[k].
+    fmi2Status fmi2GetInteger(fmi2Component c, const fmi2ValueReference vr[], size_t nvr,
+                              fmi2Integer value[])
     {
-        return nvr == 0 and c ? fmi2OK : fmi2Error;
+        return guarded(c, "fmi2GetInteger", [&](Instance& i) {
+            for (size_t k = 0; k < nvr; ++k)
+            {
+                if (vr[k] != VR_SOLVER)
+                    throw std::out_of_range("no Integer variable with value reference "
+                                            + std::to_string(vr[k]));
+                value[k] = static_cast<fmi2Integer>(
+                    std::find(solvers().begin(), solvers().end(), i.solver) - solvers().begin()
+                    + 1);
+            }
+            return fmi2OK;
+        });
     }
 
-    fmi2Status fmi2SetInteger(fmi2Component c, const fmi2ValueReference[], size_t nvr,
-                              const fmi2Integer[])
+    fmi2Status fmi2SetInteger(fmi2Component c, const fmi2ValueReference vr[], size_t nvr,
+                              const fmi2Integer value[])
     {
-        return nvr == 0 and c ? fmi2OK : fmi2Error;
+        return guarded(c, "fmi2SetInteger", [&](Instance& i) {
+            for (size_t k = 0; k < nvr; ++k)
+            {
+                if (vr[k] != VR_SOLVER)
+                    throw std::out_of_range("no Integer variable with value reference "
+                                            + std::to_string(vr[k]));
+                if (value[k] < 1 or value[k] > static_cast<fmi2Integer>(solvers().size()))
+                    throw std::invalid_argument("no solver " + std::to_string(value[k]));
+                const std::string& solver = solvers()[static_cast<size_t>(value[k] - 1)];
+                if (i.sim and solver != i.solver)
+                    throw std::logic_error("xdyn.solver is fixed after initialization");
+                i.solver = solver;
+            }
+            return fmi2OK;
+        });
     }
 
     fmi2Status fmi2GetBoolean(fmi2Component c, const fmi2ValueReference vr[], size_t nvr,
@@ -365,7 +399,7 @@ extern "C"
                 if (vr[k] != VR_RESET)
                     throw std::out_of_range("no Boolean variable with value reference "
                                             + std::to_string(vr[k]));
-                value[k] = i.reset;
+                value[k] = i.reset_input;
             }
             return fmi2OK;
         });
@@ -380,45 +414,24 @@ extern "C"
                 if (vr[k] != VR_RESET)
                     throw std::out_of_range("no Boolean variable with value reference "
                                             + std::to_string(vr[k]));
-                i.reset = value[k];
+                // A master sets every input before each step: only the edge asks for a reset.
+                if (value[k] and not(i.reset_input))
+                    i.reset = true;
+                i.reset_input = value[k];
             }
             return fmi2OK;
         });
     }
 
-    fmi2Status fmi2GetString(fmi2Component c, const fmi2ValueReference vr[], size_t nvr,
-                             fmi2String value[])
+    fmi2Status fmi2GetString(fmi2Component c, const fmi2ValueReference[], size_t nvr, fmi2String[])
     {
-        return guarded(c, "fmi2GetString", [&](Instance& i) {
-            for (size_t k = 0; k < nvr; ++k)
-            {
-                if (vr[k] != VR_SOLVER)
-                    throw std::out_of_range("no String variable with value reference "
-                                            + std::to_string(vr[k]));
-                value[k] = i.solver.c_str();
-            }
-            return fmi2OK;
-        });
+        return nvr == 0 and c ? fmi2OK : fmi2Error;
     }
 
-    fmi2Status fmi2SetString(fmi2Component c, const fmi2ValueReference vr[], size_t nvr,
-                             const fmi2String value[])
+    fmi2Status fmi2SetString(fmi2Component c, const fmi2ValueReference[], size_t nvr,
+                             const fmi2String[])
     {
-        return guarded(c, "fmi2SetString", [&](Instance& i) {
-            for (size_t k = 0; k < nvr; ++k)
-            {
-                if (vr[k] != VR_SOLVER)
-                    throw std::out_of_range("no String variable with value reference "
-                                            + std::to_string(vr[k]));
-                if (i.sim)
-                    throw std::logic_error("solver is fixed after initialization");
-                const std::string s = value[k] ? value[k] : "";
-                if (s != "euler" and s != "rk4" and s != "rkck")
-                    throw std::invalid_argument("unknown solver '" + s + "'");
-                i.solver = s;
-            }
-            return fmi2OK;
-        });
+        return nvr == 0 and c ? fmi2OK : fmi2Error;
     }
 
     fmi2Status fmi2DoStep(fmi2Component c, fmi2Real t, fmi2Real h, fmi2Boolean)

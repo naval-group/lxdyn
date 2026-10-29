@@ -16,6 +16,8 @@ HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 LIBRARY = Path(os.environ["XDYN_FMU_LIBRARY"])
 STATES = ["x", "y", "z", "u", "v", "w", "p", "q", "r", "qr", "qi", "qj", "qk"]
+SHIP = "TestShip."
+RPM_INPUT, P_D_INPUT = "TestShip.propeller.rpm", "TestShip.propeller.P_D"
 RPM = 100 * 2 * np.pi / 60  # rad/s, as test_data::dummy_controllers_and_commands_for_propulsion...
 
 
@@ -86,10 +88,10 @@ def slave(fmu, name="ship"):
 
 def run(fmu, steps, rpm=RPM, h=0.5):
     s, refs = slave(fmu)
-    s.setReal([refs["propeller(rpm)"], refs["propeller(P/D)"]], [rpm, 1.064935])
+    s.setReal([refs[RPM_INPUT], refs[P_D_INPUT]], [rpm, 1.064935])
     for k in range(steps):
         s.doStep(currentCommunicationPoint=k * h, communicationStepSize=h)
-    state = s.getReal([refs[n] for n in STATES])
+    state = s.getReal([refs[SHIP + n] for n in STATES])
     s.terminate()
     s.freeInstance()
     return state
@@ -100,12 +102,56 @@ def test_fmpy_finds_nothing_wrong(fmu):
 
 
 def test_variables_come_from_the_model(fmu):
+    description = read_model_description(fmu)
+    assert description.variableNamingConvention == "structured"
+    variables = {v.name: v for v in description.modelVariables}
+    assert variables[RPM_INPUT].causality == "input"
+    assert variables[RPM_INPUT].description == "propeller(rpm)"
+    assert variables[P_D_INPUT].causality == "input"
+    assert variables["TestShip.z"].causality == "output"
+    assert float(variables["TestShip.z"].start) == 1  # the YAML's initial position
+    assert float(variables["xdyn.dt"].start) == 0.1
+    assert "[psi, theta', phi'']" in variables["TestShip.phi"].description
+
+
+def test_variables_are_in_si_units(fmu):
     variables = {v.name: v for v in read_model_description(fmu).modelVariables}
-    assert variables["propeller(rpm)"].causality == "input"
-    assert variables["propeller(P/D)"].causality == "input"
-    assert variables["z"].causality == "output"
-    assert float(variables["z"].start) == 1  # the YAML's initial position
-    assert float(variables["xdyn_dt"].start) == 0.1
+    assert (variables[RPM_INPUT].unit, variables[RPM_INPUT].displayUnit) == ("rad/s", "rpm")
+    assert variables[P_D_INPUT].unit is None
+    assert (variables["TestShip.psi"].unit, variables["TestShip.psi"].displayUnit) == ("rad", "deg")
+
+
+def test_the_solver_is_an_enumeration(fmu):
+    description = read_model_description(fmu)
+    solver = next(v for v in description.modelVariables if v.name == "xdyn.solver")
+    assert solver.type == "Enumeration"
+    assert [item.name for item in solver.declaredType.items] == ["euler", "rk4", "rkck"]
+    assert int(solver.start) == 2
+
+
+def test_outputs_depend_on_no_input(fmu):
+    assert all(o.dependencies == [] for o in read_model_description(fmu).outputs)
+
+
+def test_names_become_structured_name_parts(tmp_path):
+    yaml = tmp_path / "ship.yml"
+    text = (HERE / "propelled_ship.yml").read_text()
+    yaml.write_text(text.replace("name: propeller", "name: prop-1"))
+    fmu = pack(yaml, tmp_path / "ship.fmu")
+    variables = {v.name for v in read_model_description(fmu).modelVariables}
+    assert {"TestShip.prop_1.rpm", "TestShip.prop_1.P_D"} <= variables
+
+
+def test_names_that_collide_are_rejected(tmp_path):
+    text = (HERE / "propelled_ship.yml").read_text()
+    propeller = text[text.index("      - name: propeller") :]
+    yaml = tmp_path / "ship.yml"
+    yaml.write_text(
+        text.replace("name: propeller", "name: prop-1")
+        + propeller.replace("name: propeller", "name: prop_1")
+    )
+    with pytest.raises(subprocess.CalledProcessError):
+        pack(yaml, tmp_path / "ship.fmu")
 
 
 def test_the_propeller_pushes_the_ship_ahead(fmu):
@@ -116,17 +162,22 @@ def test_the_propeller_pushes_the_ship_ahead(fmu):
 
 def test_reset_state_imposes_the_next_state(fmu):
     s, refs = slave(fmu)
-    s.setReal([refs["propeller(rpm)"], refs["propeller(P/D)"]], [RPM, 1.064935])
+    s.setReal([refs[RPM_INPUT], refs[P_D_INPUT]], [RPM, 1.064935])
     imposed = {"x": 100.0, "y": -50.0, "z": 1.0, "qr": 1.0}
-    s.setReal([refs[f"reset_{n}"] for n in imposed], list(imposed.values()))
-    s.setBoolean([refs["reset_state"]], [True])
+    s.setReal([refs[f"TestShip.reset_{n}"] for n in imposed], list(imposed.values()))
+    s.setBoolean([refs["TestShip.reset_state"]], [True])
     s.doStep(currentCommunicationPoint=0, communicationStepSize=0.1)
-    x, y = s.getReal([refs["x"], refs["y"]])
-    s.terminate()
-    s.freeInstance()
+    x, y = s.getReal([refs["TestShip.x"], refs["TestShip.y"]])
     # From there, the propeller moves the ship by a fraction of a millimetre in one step.
     assert x == pytest.approx(100, abs=1e-2)
     assert y == pytest.approx(-50, abs=1e-2)
+    # Still true, as a master re-sets its inputs before each step: no second reset.
+    for k in range(1, 20):
+        s.setBoolean([refs["TestShip.reset_state"]], [True])
+        s.doStep(currentCommunicationPoint=k * 0.1, communicationStepSize=0.1)
+    assert s.getReal([refs["TestShip.x"]])[0] > x
+    s.terminate()
+    s.freeInstance()
 
 
 def test_the_history_goes_on_from_one_step_to_the_next(tmp_path):
@@ -163,7 +214,7 @@ def test_simulate_fmu_runs_it_end_to_end(fmu):
         str(fmu),
         stop_time=5,
         output_interval=0.5,
-        start_values={"propeller(rpm)": RPM},
-        output=["u"],
+        start_values={RPM_INPUT: RPM, P_D_INPUT: 1.064935},
+        output=["TestShip.u"],
     )
-    assert result["u"][-1] > 0
+    assert result["TestShip.u"][-1] > 0

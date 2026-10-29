@@ -14,17 +14,29 @@ namespace xdyn_fmu
     constexpr unsigned VR_STATE = 1;         // x y z u v w p q r qr qi qj qk
     constexpr unsigned VR_EULER = 14;        // phi theta psi
     constexpr unsigned VR_DT = 100;          // xdyn's integration step
-    constexpr unsigned VR_SOLVER = 101;      // String
+    constexpr unsigned VR_SOLVER = 101;      // Enumeration xdyn.Solver, read as an Integer
     constexpr unsigned VR_RESET = 200;       // Boolean
     constexpr unsigned VR_RESET_STATE = 201; // 13 states
-    constexpr unsigned VR_COMMAND = 1000;    // the model's commands, in get_command_names() order
+    constexpr unsigned VR_COMMAND = 1000;    // the model's commands, body by body, force by force
+
+    // xdyn's solvers, in the order of the xdyn.Solver enumeration: solver k is item k + 1.
+    const std::vector<std::string>& solvers();
+
+    // A command input: xdyn's name for it, e.g. propeller(rpm), and the FMU's,
+    // TestShip.propeller.rpm.
+    struct Command
+    {
+        std::string xdyn_name;
+        std::string name;
+        double value = 0; // the YAML's own value, 0 where it has none
+    };
 
     // What the FMU needs to know about a model before simulating it.
     struct Model
     {
         std::string body;
-        std::vector<std::string> commands;
-        std::vector<double> command_values; // the YAML's own values, 0 where it has none
+        std::string rotations; // the YAML's rotations convention, e.g. [psi, theta', phi'']
+        std::vector<Command> commands;
         std::array<double, 13> state{};
     };
 
