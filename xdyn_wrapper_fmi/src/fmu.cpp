@@ -1,31 +1,15 @@
-// xdyn as an FMI 2.0 Co-Simulation FMU.
-//
-// Each instance owns a Sim and integrates it from t to t + h at each fmi2DoStep, with xdyn's
-// own solver and step, as the xdyn executable does over a whole simulation: the history the
-// force models read (radiation damping) goes on from one step to the next. reset_state imposes
-// another state at the start of the next step when it goes from false to true: a master may
-// teleport a vessel or switch it to
-// another model, and FMI 2.0 Co-Simulation has no other way to set a state (fmi2SetFMUstate is
-// opaque).
+// xdyn as an FMI 2.0 FMU: what Co-Simulation (co_simulation.cpp) and Model Exchange
+// (model_exchange.cpp) share, from instantiation to the variables.
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE // dladdr
 #endif
 
-#include "model.hpp"
+#include "instance.hpp"
 #include "xdyn_fmu.h"
 
-#include "xdyn/external_data_structures/YamlState.hpp"
-#include "xdyn/observers_and_api/CoSimulationObserver.hpp"
-#include "xdyn/observers_and_api/ConfBuilder.hpp"
-#include "xdyn/observers_and_api/simulator_api.hpp"
-
-#include <ssc/solver/steppers.hpp>
-
 #include <algorithm>
-#include <cmath>
 #include <fstream>
-#include <limits>
 #include <memory>
 #include <sstream>
 
@@ -96,109 +80,6 @@ namespace
         }
     }
 
-    struct Instance
-    {
-        std::string name;
-        fmi2CallbackFunctions callbacks{};
-        bool logging = false;
-        std::string resources;
-        std::string yaml;
-        double dt = 0.1;
-        std::string solver = "rk4";
-        std::unique_ptr<ConfBuilder> sim;
-        // Time of the last state the history holds: a master going back before it (a restart
-        // without fmi2Reset) starts a new history, xdyn's only goes forward.
-        double history_time = -std::numeric_limits<double>::infinity();
-        std::vector<std::string> command_names;
-        std::vector<double> commands;
-        std::array<double, 13> state{};
-        std::array<double, 3> euler{};
-        bool reset_input = false; // reset_state as the master set it
-        bool reset = false;       // a reset to apply at the start of the next step
-        std::array<double, 13> reset_state{};
-
-        void log(const fmi2Status status, const char* category, const std::string& message) const
-        {
-            if (callbacks.logger and (logging or status != fmi2OK))
-                callbacks.logger(callbacks.componentEnvironment, name.c_str(), status, category,
-                                 "%s", message.c_str());
-        }
-
-        void load_model()
-        {
-            const Model model = read_model(yaml, resources);
-            command_names.clear();
-            commands.clear();
-            for (const auto& command : model.commands)
-            {
-                command_names.push_back(command.xdyn_name);
-                commands.push_back(command.value);
-            }
-            state = model.state;
-            reset_state = model.state;
-            reset_input = false;
-            reset = false;
-            sim.reset();
-            history_time = -std::numeric_limits<double>::infinity();
-        }
-
-        // Built at the end of initialization rather than at instantiation: xdyn.dt and xdyn.solver
-        // are parameters, set in between.
-        void build_sim()
-        {
-            sim.reset(with_assets_root(resources, [&] { return new ConfBuilder(yaml); }));
-        }
-
-        void step(const double t, const double h)
-        {
-            Sim& s = sim->sim;
-            // k * h drifts from (k - 1) * h + h by an ulp or so: that is not going back.
-            if (t < history_time - 1e-9 * std::max(1.0, std::abs(t)))
-                s.reset_history();
-            std::copy(state.begin(), state.end(), s.state.begin());
-            std::map<std::string, double> values;
-            for (size_t k = 0; k < commands.size(); ++k)
-                values[command_names[k]] = commands[k];
-            s.set_command_listener(values);
-            CoSimulationObserver observer({}, s.get_bodies().at(0)->get_name());
-            ssc::solver::Scheduler scheduler(t, t + h, dt);
-            if (solver == "euler")
-                simulate<ssc::solver::EulerStepper>(s, scheduler, observer);
-            else if (solver == "rk4")
-                simulate<ssc::solver::RK4Stepper>(s, scheduler, observer);
-            else
-                simulate<ssc::solver::RKCK>(s, scheduler, observer);
-            const std::vector<YamlState> out = observer.get();
-            if (out.empty())
-                throw std::runtime_error("xdyn returned no state");
-            const YamlState& y = out.back();
-            state = { y.x, y.y, y.z, y.u, y.v, y.w, y.p, y.q, y.r, y.qr, y.qi, y.qj, y.qk };
-            euler = { y.phi, y.theta, y.psi };
-            history_time = t + h;
-        }
-    };
-
-    Instance* as(fmi2Component c) { return static_cast<Instance*>(c); }
-
-    template <typename F> fmi2Status guarded(fmi2Component c, const char* what, F f)
-    {
-        if (not(c))
-            return fmi2Error;
-        try
-        {
-            return f(*as(c));
-        }
-        catch (const std::exception& e)
-        {
-            as(c)->log(fmi2Error, "logStatusError", std::string(what) + ": " + e.what());
-        }
-        catch (...)
-        {
-            as(c)->log(fmi2Error, "logStatusError", std::string(what) + ": unknown exception");
-        }
-        return fmi2Error;
-    }
-
     std::string& last_error()
     {
         static std::string error;
@@ -250,14 +131,17 @@ extern "C"
         i->logging = loggingOn;
         try
         {
-            if (fmuType != fmi2CoSimulation)
-                throw std::runtime_error("only Co-Simulation is supported");
+            if (fmuType != fmi2CoSimulation and fmuType != fmi2ModelExchange)
+                throw std::runtime_error("unknown FMU type");
+            i->type = fmuType;
             if (not(resourceLocation))
                 throw std::runtime_error("no resource location");
             i->resources = uri_to_path(resourceLocation);
             i->yaml = read_file(i->resources + "/model.yml");
             read_parameters(i->resources + "/parameters.txt", i->dt, i->solver);
             i->load_model();
+            if (fmuType == fmi2ModelExchange and not(i->no_model_exchange.empty()))
+                throw std::runtime_error("no Model Exchange: " + i->no_model_exchange);
             return i.release();
         }
         catch (const std::exception& e)
@@ -310,7 +194,10 @@ extern "C"
                 if (r >= VR_STATE and r < VR_STATE + 13)
                     value[k] = i.state[r - VR_STATE];
                 else if (r >= VR_EULER and r < VR_EULER + 3)
-                    value[k] = i.euler[r - VR_EULER];
+                    value[k] = i.angles()[r - VR_EULER];
+                else if (r >= VR_DERIVATIVE and r < VR_DERIVATIVE + 13
+                         and i.no_model_exchange.empty())
+                    value[k] = i.derivatives()[r - VR_DERIVATIVE];
                 else if (r == VR_DT)
                     value[k] = i.dt;
                 else if (r >= VR_RESET_STATE and r < VR_RESET_STATE + 13)
@@ -334,6 +221,7 @@ extern "C"
                 const auto r = vr[k];
                 if (r == VR_DT)
                 {
+                    // OpenModelica's importFMU sets every parameter again after initialization.
                     if (i.sim and value[k] != i.dt)
                         throw std::logic_error("xdyn.dt is fixed after initialization");
                     if (not(value[k] > 0))
@@ -434,60 +322,8 @@ extern "C"
         return nvr == 0 and c ? fmi2OK : fmi2Error;
     }
 
-    fmi2Status fmi2DoStep(fmi2Component c, fmi2Real t, fmi2Real h, fmi2Boolean)
-    {
-        return guarded(c, "fmi2DoStep", [&](Instance& i) {
-            if (not(i.sim))
-                throw std::logic_error("fmi2DoStep before fmi2ExitInitializationMode");
-            if (not(h > 0))
-                throw std::invalid_argument("the communication step must be > 0");
-            if (i.reset)
-            {
-                // The vessel jumps: the states before do not lead to this one.
-                i.state = i.reset_state;
-                i.reset = false;
-                i.sim->sim.reset_history();
-            }
-            i.step(t, h);
-            return fmi2OK;
-        });
-    }
-
-    // fmi2DoStep returns once the step is done: there is never a step to cancel or to report on.
-    fmi2Status fmi2CancelStep(fmi2Component) { return fmi2Error; }
-    fmi2Status fmi2GetStatus(fmi2Component, const fmi2StatusKind, fmi2Status*)
-    {
-        return fmi2Discard;
-    }
-    fmi2Status fmi2GetRealStatus(fmi2Component, const fmi2StatusKind, fmi2Real*)
-    {
-        return fmi2Discard;
-    }
-    fmi2Status fmi2GetIntegerStatus(fmi2Component, const fmi2StatusKind, fmi2Integer*)
-    {
-        return fmi2Discard;
-    }
-    fmi2Status fmi2GetBooleanStatus(fmi2Component, const fmi2StatusKind, fmi2Boolean*)
-    {
-        return fmi2Discard;
-    }
-    fmi2Status fmi2GetStringStatus(fmi2Component, const fmi2StatusKind, fmi2String*)
-    {
-        return fmi2Discard;
-    }
-
-    // Declared false in modelDescription.xml (canInterpolateInputs, maxOutputDerivativeOrder,
-    // canGetAndSetFMUstate, providesDirectionalDerivative): an importer does not call these.
-    fmi2Status fmi2SetRealInputDerivatives(fmi2Component, const fmi2ValueReference[], size_t,
-                                           const fmi2Integer[], const fmi2Real[])
-    {
-        return fmi2Error;
-    }
-    fmi2Status fmi2GetRealOutputDerivatives(fmi2Component, const fmi2ValueReference[], size_t,
-                                            const fmi2Integer[], fmi2Real[])
-    {
-        return fmi2Error;
-    }
+    // Declared false in modelDescription.xml (canGetAndSetFMUstate,
+    // providesDirectionalDerivative): an importer does not call these.
     fmi2Status fmi2GetFMUstate(fmi2Component, fmi2FMUstate*) { return fmi2Error; }
     fmi2Status fmi2SetFMUstate(fmi2Component, fmi2FMUstate) { return fmi2Error; }
     fmi2Status fmi2FreeFMUstate(fmi2Component, fmi2FMUstate*) { return fmi2Error; }

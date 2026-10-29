@@ -129,10 +129,6 @@ def test_the_solver_is_an_enumeration(fmu):
     assert int(solver.start) == 2
 
 
-def test_outputs_depend_on_no_input(fmu):
-    assert all(o.dependencies == [] for o in read_model_description(fmu).outputs)
-
-
 def test_names_become_structured_name_parts(tmp_path):
     yaml = tmp_path / "ship.yml"
     text = (HERE / "propelled_ship.yml").read_text()
@@ -180,14 +176,18 @@ def test_reset_state_imposes_the_next_state(fmu):
     s.freeInstance()
 
 
-def test_the_history_goes_on_from_one_step_to_the_next(tmp_path):
+def radiating_ship(tmp_path):
     yaml = tmp_path / "radiating_ship.yml"
     yaml.write_text(
         (HERE / "propelled_ship.yml")
         .read_text()
         .replace("    external forces:\n", "    external forces:\n" + RADIATION_DAMPING, 1)
     )
-    fmu = pack(yaml, tmp_path / "radiating_ship.fmu")
+    return yaml
+
+
+def test_the_history_goes_on_from_one_step_to_the_next(tmp_path):
+    fmu = pack(radiating_ship(tmp_path), tmp_path / "radiating_ship.fmu")
     # The same xdyn steps either way: a history cut at each communication step would make the
     # radiation force, hence the state, depend on the step size.
     assert run(fmu, 5, h=1.0) == pytest.approx(run(fmu, 50, h=0.1), rel=1e-9, abs=1e-12)
@@ -218,3 +218,48 @@ def test_simulate_fmu_runs_it_end_to_end(fmu):
         output=["TestShip.u"],
     )
     assert result["TestShip.u"][-1] > 0
+
+
+def test_model_exchange_follows_co_simulation(fmu):
+    def final(mode, **options):
+        result = simulate_fmu(
+            str(fmu),
+            fmi_type=mode,
+            stop_time=20,
+            output_interval=0.5,
+            start_values={RPM_INPUT: RPM, P_D_INPUT: 1.064935},
+            output=["TestShip.x", "TestShip.u", "der(TestShip.u)", "TestShip.psi"],
+            **options,
+        )
+        return result[-1]
+
+    cs = final("CoSimulation")
+    me = final("ModelExchange", solver="CVode", relative_tolerance=1e-8)
+    # xdyn's RK4 at 0.1 s against CVode: the same trajectory, to the integrators' accuracy.
+    assert me["TestShip.u"] == pytest.approx(cs["TestShip.u"], rel=1e-5)
+    assert me["TestShip.x"] == pytest.approx(cs["TestShip.x"], rel=1e-5)
+    assert me["der(TestShip.u)"] == pytest.approx(cs["der(TestShip.u)"], rel=1e-3)
+    assert me["TestShip.psi"] == pytest.approx(cs["TestShip.psi"], abs=1e-9)
+
+
+def test_model_exchange_declares_its_structure(fmu):
+    description = read_model_description(fmu)
+    assert description.modelExchange is not None
+    names = {v: v.name for v in description.modelVariables}
+    assert [names[d.variable] for d in description.derivatives][:2] == [
+        "der(TestShip.x)",
+        "der(TestShip.y)",
+    ]
+    x = next(o for o in description.outputs if o.variable.name == "TestShip.x")
+    assert [d.name for d in x.dependencies] == ["TestShip.x"]
+    euler = next(o for o in description.outputs if o.variable.name == "TestShip.phi")
+    assert [d.name for d in euler.dependencies] == [f"TestShip.{n}" for n in STATES[9:]]
+
+
+def test_no_model_exchange_for_a_model_with_history(tmp_path):
+    fmu = pack(radiating_ship(tmp_path), tmp_path / "radiating_ship.fmu")
+    description = read_model_description(fmu)
+    assert description.modelExchange is None
+    assert not any(v.name.startswith("der(") for v in description.modelVariables)
+    # Co-Simulation alone: the outputs are end-of-step states, no input reaches them.
+    assert all(o.dependencies == [] for o in description.outputs)

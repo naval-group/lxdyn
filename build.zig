@@ -211,7 +211,7 @@ pub fn build(b: *std.Build) void {
     addPythonWrapper(b, target, optimize, libxdyn, cpp_flags);
 
     // =========================================================================
-    // FMI 2.0 Co-Simulation FMU (xdyn_fmu) — the library an .fmu carries. Opt-in: `zig build fmu`
+    // FMI 2.0 FMU (xdyn_fmu) — the library an .fmu carries. Opt-in: `zig build fmu`
     // =========================================================================
     addFmuWrapper(b, target, optimize, libxdyn, cpp_flags);
 }
@@ -511,7 +511,7 @@ fn addFmuWrapper(
     libxdyn: *std.Build.Step.Compile,
     cpp_flags: []const []const u8,
 ) void {
-    const step = b.step("fmu", "Build the FMI 2.0 Co-Simulation library an .fmu carries");
+    const step = b.step("fmu", "Build the FMI 2.0 library an .fmu carries");
 
     // Stripped: the library travels inside every .fmu, at a fraction of its debug size. Not on
     // Windows, where the debug information goes to a .pdb beside the DLL anyway, and where
@@ -522,7 +522,7 @@ fn addFmuWrapper(
     m.addIncludePath(b.path("xdyn_wrapper_fmi/fmi2"));
     m.addCSourceFiles(.{
         .root = b.path("xdyn_wrapper_fmi/src"),
-        .files = &.{ "fmu.cpp", "model.cpp" },
+        .files = &.{ "fmu.cpp", "co_simulation.cpp", "model_exchange.cpp", "model.cpp" },
         .flags = concat(b, cpp_flags, &.{"-fvisibility=hidden"}),
     });
     m.linkLibrary(libxdyn);

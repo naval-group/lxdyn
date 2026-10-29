@@ -1,8 +1,16 @@
 # xdyn_wrapper_fmi
 
-xdyn as an FMI 2.0 Co-Simulation FMU. Each instance owns a `Sim`, and `fmi2DoStep(t, h)`
-integrates it from `t` to `t + h` with xdyn's solver and step, as the `xdyn` executable does over
-a whole run: the history force models read (radiation damping) goes on across steps.
+xdyn as an FMI 2.0 FMU, for Co-Simulation and, where the model allows it, Model Exchange; one
+library and one `.fmu` for both.
+
+- Co-Simulation: each instance owns a `Sim`, and `fmi2DoStep(t, h)` integrates it from `t` to
+  `t + h` with xdyn's solver and step, as the `xdyn` executable does over a whole run: the
+  history force models read (radiation damping) goes on across steps.
+- Model Exchange: the importer integrates the 13 states of the body, and `fmi2GetDerivatives` is
+  `Sim::dx_dt`. The importer evaluates the derivatives at trial states and times, which no
+  history can follow, so `modelDescription.xml` only declares Model Exchange for a model with
+  one body, no force model reading past states (`get_Tmax() > 0`) and no controllers (discrete
+  systems of xdyn's own solver; the importer computes the commands instead).
 
 ```sh
 mise run fmu:build      # build/<triple>/fmu/xdyn_fmu.so
@@ -32,6 +40,7 @@ name, `TestShip` below; each variable's description gives xdyn's own name for it
 | 200 | `TestShip.reset_state` | input (Boolean): going true, the next step starts from `reset_*` |
 | 201-213 | `TestShip.reset_x` … `TestShip.reset_qk` | input: the state to impose |
 | 1000+ | the model's commands, e.g. `TestShip.propeller.rpm` | input |
+| 300-312 | `der(TestShip.x)` … `der(TestShip.qk)` | local: the state derivatives, with Model Exchange |
 
 A command is named body, force model and command, each part with what is not `[A-Za-z0-9_]`
 turned into `_` (and `_` put before a leading digit): `propeller(P/D)` is
@@ -44,6 +53,8 @@ Everything is in SI units, with display units where they help (`deg`, `deg/s`, `
 `reset_state` is there because FMI 2.0 Co-Simulation has no other way to set a state: a master
 that teleports a vessel or switches it to another model needs one. It acts when it goes from
 false to true, as a master sets every input before each step.
+In Model Exchange the importer sets the states itself, and `xdyn.dt`, `xdyn.solver` and
+`reset_*` play no part.
 
 ## Loading
 
