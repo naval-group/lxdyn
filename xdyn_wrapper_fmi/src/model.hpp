@@ -17,6 +17,7 @@ namespace xdyn_fmu
     constexpr unsigned VR_SOLVER = 101;      // Enumeration xdyn.Solver, read as an Integer
     constexpr unsigned VR_RESET = 200;       // Boolean
     constexpr unsigned VR_RESET_STATE = 201; // 13 states
+    constexpr unsigned VR_DERIVATIVE = 300;  // der(x) ... der(qk), with Model Exchange
     constexpr unsigned VR_COMMAND = 1000;    // the model's commands, body by body, force by force
 
     // xdyn's solvers, in the order of the xdyn.Solver enumeration: solver k is item k + 1.
@@ -38,6 +39,9 @@ namespace xdyn_fmu
         std::string rotations; // the YAML's rotations convention, e.g. [psi, theta', phi'']
         std::vector<Command> commands;
         std::array<double, 13> state{};
+        std::array<double, 3> euler{}; // phi, theta, psi of the initial state
+        // Why the FMU cannot offer Model Exchange for this model, empty when it can.
+        std::string no_model_exchange;
     };
 
     std::mutex& assets_root_mutex();

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Packs an xdyn model into an FMI 2.0 Co-Simulation FMU.
+"""Packs an xdyn model into an FMI 2.0 FMU (Co-Simulation, and Model Exchange where it can).
 
     make_fmu.py model.yml [more.yml ...] -o ship.fmu --library build/<triple>/fmu/xdyn_fmu.so
                 [--binary win64=build/x86_64-windows-gnu/fmu/xdyn_fmu.dll]

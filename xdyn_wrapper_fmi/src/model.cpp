@@ -1,6 +1,7 @@
 #include "model.hpp"
 
 #include "xdyn/observers_and_api/ConfBuilder.hpp"
+#include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 #include <algorithm>
 #include <cctype>
@@ -115,7 +116,8 @@ namespace
     struct Variables
     {
         std::ostringstream xml;
-        std::vector<size_t> outputs; // 1-based indices, for <ModelStructure>
+        std::vector<size_t> outputs;     // 1-based indices, for <ModelStructure>
+        std::vector<size_t> derivatives; // idem
         std::set<std::string> names;
         size_t count = 0;
 
@@ -131,6 +133,15 @@ namespace
             if (not(display_unit.empty()))
                 type << " displayUnit=\"" << display_unit << '"';
             add(name, vr, causality, variability, initial, type.str(), description);
+        }
+
+        // The derivative of variable `state` (1-based index): calculated, so no start value.
+        void derivative(const std::string& name, const unsigned vr, const size_t state,
+                        const std::string& description)
+        {
+            add(name, vr, "local", "continuous", "calculated",
+                "Real derivative=\"" + std::to_string(state) + '"', description);
+            derivatives.push_back(count);
         }
 
         void add(const std::string& name, const unsigned vr, const std::string& causality,
@@ -171,13 +182,14 @@ xdyn_fmu::Model xdyn_fmu::read_model(const std::string& yaml, const std::string&
     Model model;
     model.body = builder.sim.get_bodies().at(0)->get_name();
     // As the YAML writes it: xdyn turns [psi, theta', phi''] into axes, ordered by angle.
-    const YamlRotation& rot = builder.sim.get_env().rot;
-    const std::map<char, std::string> angles = { { 'x', "phi" }, { 'y', "theta" }, { 'z', "psi" } };
+    const YamlRotation rot = builder.sim.get_env().rot;
+    const std::map<char, std::string> angle_names
+        = { { 'x', "phi" }, { 'y', "theta" }, { 'z', "psi" } };
     for (size_t i = 0; i < rot.convention.size(); ++i)
     {
         std::string item = rot.convention[i];
-        if (rot.order_by == "angle" and not(item.empty()) and angles.count(item[0]))
-            item = angles.at(item[0]) + item.substr(1);
+        if (rot.order_by == "angle" and not(item.empty()) and angle_names.count(item[0]))
+            item = angle_names.at(item[0]) + item.substr(1);
         model.rotations += (i ? ", " : "[") + item;
     }
     model.rotations += "]";
@@ -204,6 +216,19 @@ xdyn_fmu::Model xdyn_fmu::read_model(const std::string& yaml, const std::string&
             }
     for (size_t i = 0; i < 13; ++i)
         model.state[i] = builder.sim.state.at(i);
+    const auto angles = builder.sim.get_bodies().at(0)->get_angles(builder.sim.state, rot);
+    model.euler = { angles.phi, angles.theta, angles.psi };
+
+    // The importer integrates the states and evaluates the derivatives where it likes, trial
+    // steps included: no history can follow it, and the discrete systems xdyn's own solver runs
+    // (controllers) have no place there.
+    const size_t bodies = builder.sim.get_bodies().size();
+    if (bodies != 1)
+        model.no_model_exchange = std::to_string(bodies) + " bodies, Model Exchange needs one";
+    else if (builder.Tmax > 0)
+        model.no_model_exchange = "force models need the past states (radiation damping...)";
+    else if (not(SimulatorYamlParser(yaml).parse().controllers.empty()))
+        model.no_model_exchange = "the YAML has controllers";
     return model;
 }
 
@@ -222,8 +247,8 @@ std::string xdyn_fmu::model_description(const Model& model, const std::string& m
     const char* const euler[3] = { "phi", "theta", "psi" };
     const char* const euler_docs[3] = { "roll", "pitch", "heading" };
     for (unsigned i = 0; i < 3; ++i)
-        v.real(body + "." + euler[i], VR_EULER + i, "output", "continuous", "exact", 0, "rad",
-               "deg",
+        v.real(body + "." + euler[i], VR_EULER + i, "output", "continuous", "exact", model.euler[i],
+               "rad", "deg",
                std::string(euler[i]) + "(" + model.body + "): " + euler_docs[i]
                    + ", Euler angle in the rotations convention " + model.rotations);
     v.real("xdyn.dt", VR_DT, "parameter", "fixed", "exact", dt, "s", "",
@@ -247,14 +272,26 @@ std::string xdyn_fmu::model_description(const Model& model, const std::string& m
         v.real(c.name, VR_COMMAND + i, "input", "continuous", "", c.value, unit.unit,
                unit.display_unit, c.xdyn_name);
     }
+    const bool model_exchange = model.no_model_exchange.empty();
+    if (model_exchange)
+        for (unsigned i = 0; i < 13; ++i)
+            v.derivative(
+                std::string("der(") + body + "." + state_names[i] + ")", VR_DERIVATIVE + i, 1 + i,
+                std::string("time derivative of ") + state_names[i] + "(" + model.body + ")");
 
     std::ostringstream xml;
     xml << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         << "<fmiModelDescription fmiVersion=\"2.0\" modelName=\"" << escaped(model_name)
         << "\" guid=\"" << random_guid() << "\"\n"
-        << "  description=\"xdyn ship dynamics as a Co-Simulation FMU\" generationTool=\"xdyn\"\n"
-        << "  variableNamingConvention=\"structured\" numberOfEventIndicators=\"0\">\n"
-        << "  <CoSimulation modelIdentifier=\"xdyn_fmu\" "
+        << "  description=\"xdyn ship dynamics\" generationTool=\"xdyn\"\n"
+        << "  variableNamingConvention=\"structured\" numberOfEventIndicators=\"0\">\n";
+    if (model_exchange)
+        xml << "  <ModelExchange modelIdentifier=\"xdyn_fmu\" "
+               "completedIntegratorStepNotNeeded=\"true\"\n"
+            << "    needsExecutionTool=\"false\" canBeInstantiatedOnlyOncePerProcess=\"false\"\n"
+            << "    canNotUseMemoryManagementFunctions=\"true\" canGetAndSetFMUstate=\"false\"\n"
+            << "    canSerializeFMUstate=\"false\" providesDirectionalDerivative=\"false\"/>\n";
+    xml << "  <CoSimulation modelIdentifier=\"xdyn_fmu\" "
            "canHandleVariableCommunicationStepSize=\"true\"\n"
         << "    canInterpolateInputs=\"false\" maxOutputDerivativeOrder=\"0\" "
            "canRunAsynchronuously=\"false\"\n"
@@ -281,9 +318,29 @@ std::string xdyn_fmu::model_description(const Model& model, const std::string& m
         << "  <ModelVariables>\n"
         << v.xml.str() << "  </ModelVariables>\n"
         << "  <ModelStructure>\n    <Outputs>\n";
-    // The outputs are the states at the end of a step: no input reaches them within the step.
+    // No input reaches an output within a step: in Co-Simulation the outputs are end-of-step
+    // states. With Model Exchange, the states are the outputs themselves (variables 1 to 13),
+    // and the Euler angles depend on the quaternion (10 to 13).
     for (const size_t index : v.outputs)
-        xml << "      <Unknown index=\"" << index << "\" dependencies=\"\"/>\n";
-    xml << "    </Outputs>\n  </ModelStructure>\n</fmiModelDescription>\n";
+    {
+        std::string dependencies;
+        if (model_exchange)
+            dependencies = index <= 13 ? std::to_string(index) : "10 11 12 13";
+        xml << "      <Unknown index=\"" << index << "\" dependencies=\"" << dependencies
+            << "\"/>\n";
+    }
+    xml << "    </Outputs>\n";
+    if (model_exchange)
+    {
+        // The derivatives depend on every state and command: no dependencies attribute.
+        xml << "    <Derivatives>\n";
+        for (const size_t index : v.derivatives)
+            xml << "      <Unknown index=\"" << index << "\"/>\n";
+        xml << "    </Derivatives>\n    <InitialUnknowns>\n";
+        for (const size_t index : v.derivatives)
+            xml << "      <Unknown index=\"" << index << "\"/>\n";
+        xml << "    </InitialUnknowns>\n";
+    }
+    xml << "  </ModelStructure>\n</fmiModelDescription>\n";
     return xml.str();
 }
