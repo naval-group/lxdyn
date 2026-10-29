@@ -1,11 +1,11 @@
 // xdyn as an FMI 2.0 Co-Simulation FMU.
 //
-// Each instance holds an XdynForCS, the class behind xdyn-for-cs, and calls it the way the
-// websocket server does: fmi2DoStep(t, h) is one request with the instance's state, its
-// commands and Dt = h, so a step gives what xdyn-for-cs gives. The state stays in the FMU
-// between steps. reset_state imposes another one at the start of the next step: a master may
-// teleport a vessel or switch it to another model, and FMI 2.0 Co-Simulation has no other way
-// to set a state (fmi2SetFMUstate is opaque).
+// Each instance owns a Sim and integrates it from t to t + h at each fmi2DoStep, with xdyn's
+// own solver and step, as the xdyn executable does over a whole simulation: the history the
+// force models read (radiation damping) goes on from one step to the next. reset_state imposes
+// another state at the start of the next step: a master may teleport a vessel or switch it to
+// another model, and FMI 2.0 Co-Simulation has no other way to set a state (fmi2SetFMUstate is
+// opaque).
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE // dladdr
@@ -14,11 +14,17 @@
 #include "model.hpp"
 #include "xdyn_fmu.h"
 
-#include "xdyn/external_data_structures/YamlSimServerInputs.hpp"
 #include "xdyn/external_data_structures/YamlState.hpp"
-#include "xdyn/observers_and_api/XdynForCS.hpp"
+#include "xdyn/observers_and_api/CoSimulationObserver.hpp"
+#include "xdyn/observers_and_api/ConfBuilder.hpp"
+#include "xdyn/observers_and_api/simulator_api.hpp"
 
+#include <ssc/solver/steppers.hpp>
+
+#include <algorithm>
+#include <cmath>
 #include <fstream>
+#include <limits>
 #include <memory>
 #include <sstream>
 
@@ -89,12 +95,6 @@ namespace
         }
     }
 
-    YamlState to_yaml_state(const double t, const std::array<double, 13>& s)
-    {
-        return YamlState(t, s[0], s[1], s[2], s[3], s[4], s[5], s[6], s[7], s[8], s[9], s[10],
-                         s[11], s[12]);
-    }
-
     struct Instance
     {
         std::string name;
@@ -104,7 +104,10 @@ namespace
         std::string yaml;
         double dt = 0.1;
         std::string solver = "rk4";
-        std::unique_ptr<XdynForCS> sim;
+        std::unique_ptr<ConfBuilder> sim;
+        // Time of the last state the history holds: a master going back before it (a restart
+        // without fmi2Reset) starts a new history, xdyn's only goes forward.
+        double history_time = -std::numeric_limits<double>::infinity();
         std::vector<std::string> command_names;
         std::vector<double> commands;
         std::array<double, 13> state{};
@@ -128,13 +131,42 @@ namespace
             reset_state = model.state;
             reset = false;
             sim.reset();
+            history_time = -std::numeric_limits<double>::infinity();
         }
 
         // Built at the end of initialization rather than at instantiation: xdyn_dt and solver
         // are parameters, set in between.
         void build_sim()
         {
-            sim.reset(with_assets_root(resources, [&] { return new XdynForCS(yaml, solver, dt); }));
+            sim.reset(with_assets_root(resources, [&] { return new ConfBuilder(yaml); }));
+        }
+
+        void step(const double t, const double h)
+        {
+            Sim& s = sim->sim;
+            // k * h drifts from (k - 1) * h + h by an ulp or so: that is not going back.
+            if (t < history_time - 1e-9 * std::max(1.0, std::abs(t)))
+                s.reset_history();
+            std::copy(state.begin(), state.end(), s.state.begin());
+            std::map<std::string, double> values;
+            for (size_t k = 0; k < commands.size(); ++k)
+                values[command_names[k]] = commands[k];
+            s.set_command_listener(values);
+            CoSimulationObserver observer({}, s.get_bodies().at(0)->get_name());
+            ssc::solver::Scheduler scheduler(t, t + h, dt);
+            if (solver == "euler")
+                simulate<ssc::solver::EulerStepper>(s, scheduler, observer);
+            else if (solver == "rk4")
+                simulate<ssc::solver::RK4Stepper>(s, scheduler, observer);
+            else
+                simulate<ssc::solver::RKCK>(s, scheduler, observer);
+            const std::vector<YamlState> out = observer.get();
+            if (out.empty())
+                throw std::runtime_error("xdyn returned no state");
+            const YamlState& y = out.back();
+            state = { y.x, y.y, y.z, y.u, y.v, y.w, y.p, y.q, y.r, y.qr, y.qi, y.qj, y.qk };
+            euler = { y.phi, y.theta, y.psi };
+            history_time = t + h;
         }
     };
 
@@ -394,22 +426,16 @@ extern "C"
         return guarded(c, "fmi2DoStep", [&](Instance& i) {
             if (not(i.sim))
                 throw std::logic_error("fmi2DoStep before fmi2ExitInitializationMode");
+            if (not(h > 0))
+                throw std::invalid_argument("the communication step must be > 0");
             if (i.reset)
             {
+                // The vessel jumps: the states before do not lead to this one.
                 i.state = i.reset_state;
                 i.reset = false;
+                i.sim->sim.reset_history();
             }
-            YamlSimServerInputs request;
-            request.Dt = h;
-            request.states.push_back(to_yaml_state(t, i.state));
-            for (size_t k = 0; k < i.commands.size(); ++k)
-                request.commands[i.command_names[k]] = i.commands[k];
-            const std::vector<YamlState> out = i.sim->handle(request);
-            if (out.empty())
-                throw std::runtime_error("xdyn returned no state");
-            const YamlState& s = out.back();
-            i.state = { s.x, s.y, s.z, s.u, s.v, s.w, s.p, s.q, s.r, s.qr, s.qi, s.qj, s.qk };
-            i.euler = { s.phi, s.theta, s.psi };
+            i.step(t, h);
             return fmi2OK;
         });
     }
