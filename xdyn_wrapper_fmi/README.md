@@ -1,7 +1,8 @@
 # xdyn_wrapper_fmi
 
-xdyn as an FMI 2.0 Co-Simulation FMU. `fmi2DoStep(t, h)` calls `XdynForCS::handle` as
-`xdyn-for-cs` does for one request: same state, commands and `Dt`, same result.
+xdyn as an FMI 2.0 Co-Simulation FMU. Each instance owns a `Sim`, and `fmi2DoStep(t, h)`
+integrates it from `t` to `t + h` with xdyn's solver and step, as the `xdyn` executable does over
+a whole run: the history force models read (radiation damping) goes on across steps.
 
 ```sh
 mise run fmu:build      # build/<triple>/fmu/xdyn_fmu.so
@@ -14,7 +15,8 @@ python xdyn_wrapper_fmi/make_fmu.py ship.yml -o ship.fmu \
 
 `--asset` files land in the FMU's `resources/` under the path the YAML gives them, and
 `resources/` is the asset root the model is built against. `--binary win64=<dll>` adds the
-Windows library (`zig build fmu -Dtarget=x86_64-windows-gnu`).
+Windows library (`zig build fmu -Dtarget=x86_64-windows-gnu`). xdyn resolves meshes against the
+asset root but reads HDB files from the working directory: give those an absolute path.
 
 ## Variables
 
