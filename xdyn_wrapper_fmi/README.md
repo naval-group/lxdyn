@@ -9,7 +9,9 @@ library and one `.fmu` for both.
 - Model Exchange: the importer integrates the 13 states of the body, and `fmi2GetDerivatives` is
   `Sim::dx_dt`. The importer evaluates the derivatives at trial states and times, which no
   history can follow, so `modelDescription.xml` only declares Model Exchange for a model with
-  no force model reading past states (`get_Tmax() > 0`).
+  no force model reading past states (`get_Tmax() > 0`) and no blocked DOFs (xdyn imposes them
+  after each step of its own solver). The quaternion is normalized before xdyn reads it, the
+  importer's states left as they are.
 
 An FMU simulates one vessel: a YAML with several bodies is refused, the master instantiates the
 FMU once per vessel. So is a YAML with controllers: the commands are FMU inputs, the master

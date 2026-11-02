@@ -232,9 +232,14 @@ xdyn_fmu::Model xdyn_fmu::read_model(const std::string& yaml, const std::string&
     model.euler = { angles.phi, angles.theta, angles.psi };
 
     // The importer integrates the states and evaluates the derivatives where it likes, trial
-    // steps included: no history can follow it.
+    // steps included: no history can follow it. Nor can blocked DOFs: xdyn imposes their values
+    // on the state after each of its own steps, and dx_dt only gives the derivative of the
+    // forced value, zero for a piecewise constant one.
+    const YamlBlockedDOF& blocked = input.bodies.front().blocked_dof;
     if (builder.Tmax > 0)
         model.no_model_exchange = "force models need the past states (radiation damping...)";
+    else if (not(blocked.from_yaml.empty() and blocked.from_csv.empty()))
+        model.no_model_exchange = "blocked DOFs are imposed after each step of xdyn's solver";
     return model;
 }
 
