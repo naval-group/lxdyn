@@ -168,7 +168,9 @@
       # ===================================================================================
       xdyn = pkgs.stdenvNoCC.mkDerivation {
         pname = "xdyn";
-        version = "26.8.0";
+        # build.zig.zon holds the one version in the tree: a flake sees no git tags.
+        version = builtins.head (builtins.match
+          ".*\\.version = \"([^\"]+)\".*" (builtins.readFile ./build.zig.zon));
 
         # Deny-list, so a new source directory still builds. None of this reaches zig, and
         # leaving it in makes a CI or README edit publish a fresh 32 MB xdyn.
