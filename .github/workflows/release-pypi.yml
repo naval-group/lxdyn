@@ -33,6 +33,11 @@ jobs:
           # Same reason as release.yml: the version is `git describe`, and the default
           # checkout fetches no tags at all.
           fetch-depth: 0
+      # Before anything is built: a mismatch is fixed by retagging, which a published
+      # release could not be.
+      - name: Tag matches build.zig.zon
+        if: github.ref_type == 'tag'
+        run: sh tools/check-release-version.sh "$GITHUB_REF_NAME"
       - uses: cachix/install-nix-action@v31
 
       - name: Dependency closure
