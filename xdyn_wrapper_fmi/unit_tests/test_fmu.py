@@ -4,12 +4,13 @@ import os
 import subprocess
 import sys
 import threading
+from ctypes import POINTER, c_double
 from pathlib import Path
 
 import numpy as np
 import pytest
 from fmpy import read_model_description, simulate_fmu
-from fmpy.fmi2 import FMU2Slave
+from fmpy.fmi2 import FMU2Model, FMU2Slave
 from fmpy.validation import validate_fmu
 
 HERE = Path(__file__).resolve().parent
@@ -297,3 +298,73 @@ def test_no_model_exchange_for_a_model_with_history(tmp_path):
     assert not any(v.name.startswith("der(") for v in description.modelVariables)
     # Co-Simulation alone: the outputs are end-of-step states, no input reaches them.
     assert all(o.dependencies == [] for o in description.outputs)
+
+
+def test_no_model_exchange_for_a_model_with_blocked_dofs(tmp_path):
+    yaml = tmp_path / "blocked_ship.yml"
+    yaml.write_text(
+        (HERE / "propelled_ship.yml")
+        .read_text()
+        .replace(
+            "    external forces:\n",
+            """\
+    blocked dof:
+        from YAML:
+          - state: v
+            t: [0, 1000]
+            value: [0.5, 0.5]
+            interpolation: piecewise constant
+    external forces:
+""",
+            1,
+        )
+    )
+    fmu = pack(yaml, tmp_path / "blocked_ship.fmu")
+    assert read_model_description(fmu).modelExchange is None
+    # Co-Simulation imposes them, after each of xdyn's steps.
+    assert run(fmu, 4)[STATES.index("v")] == pytest.approx(0.5)
+
+
+def model_exchange(fmu):
+    description = read_model_description(fmu)
+    unzipped = Path(fmu).with_suffix("")
+    if not unzipped.exists():
+        from fmpy import extract
+
+        extract(fmu, unzipdir=unzipped)
+    m = FMU2Model(
+        guid=description.guid,
+        unzipDirectory=unzipped,
+        modelIdentifier=description.modelExchange.modelIdentifier,
+        instanceName="ship",
+    )
+    m.instantiate()
+    m.setupExperiment(startTime=0)
+    m.enterInitializationMode()
+    m.exitInitializationMode()
+    m.enterContinuousTimeMode()
+    refs = {v.name: v.valueReference for v in description.modelVariables}
+    return m, refs
+
+
+def test_model_exchange_reads_the_quaternion_as_a_unit_one(fmu):
+    m, refs = model_exchange(fmu)
+    m.setReal([refs[RPM_INPUT], refs[P_D_INPUT]], [RPM, 1.064935])
+    half_heading = np.radians(30) / 2
+
+    def evaluate(scale):
+        x = np.array([0, 0, 0, 2, 0.1, 0, 0, 0, 0.05, 0, 0, 0, 0], dtype=float)
+        x[9], x[12] = scale * np.cos(half_heading), scale * np.sin(half_heading)
+        m.setContinuousStates(x.ctypes.data_as(POINTER(c_double)), len(x))
+        dx = np.zeros(len(x))
+        m.getDerivatives(dx.ctypes.data_as(POINTER(c_double)), len(dx))
+        return dx, m.getReal([refs["TestShip.psi"]])[0]
+
+    unit, unit_psi = evaluate(1)
+    drifted, drifted_psi = evaluate(2)
+    assert unit_psi == pytest.approx(np.radians(30))
+    # A quaternion off its unit norm is the same rotation: the same derivatives and angles.
+    assert drifted == pytest.approx(unit, rel=1e-12, abs=1e-12)
+    assert drifted_psi == pytest.approx(unit_psi, rel=1e-12)
+    m.terminate()
+    m.freeInstance()

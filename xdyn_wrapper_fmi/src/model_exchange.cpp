@@ -1,14 +1,30 @@
 // Model Exchange: the importer integrates the 13 states of the body, and fmi2GetDerivatives is
-// Sim::dx_dt. modelDescription.xml only offers it for a model with no history, and read_model
-// takes one body and no controllers: a derivative is then a function of the time, the states and
-// the commands alone.
+// Sim::dx_dt. modelDescription.xml only offers it for a model with no history and no blocked
+// DOFs, and read_model takes one body and no controllers: a derivative is then a function of the
+// time, the states and the commands alone.
 
 #include "instance.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <map>
 
 using namespace xdyn_fmu;
+
+namespace
+{
+    // The importer integrates the quaternion as any other state, so its norm drifts, and xdyn's
+    // rotation matrix assumes a unit one. The importer's states stay as it set them.
+    StateType with_unit_quaternion(const std::array<double, 13>& state)
+    {
+        StateType x(state.begin(), state.end());
+        const double norm = std::sqrt(x[9] * x[9] + x[10] * x[10] + x[11] * x[11] + x[12] * x[12]);
+        if (norm > 0)
+            for (size_t i = 9; i < 13; ++i)
+                x[i] /= norm;
+        return x;
+    }
+} // namespace
 
 StateType xdyn_fmu::Instance::derivatives()
 {
@@ -22,7 +38,7 @@ StateType xdyn_fmu::Instance::derivatives()
     for (size_t k = 0; k < commands.size(); ++k)
         values[command_names[k]] = commands[k];
     s.set_command_listener(values);
-    const StateType x(state.begin(), state.end());
+    const StateType x = with_unit_quaternion(state);
     StateType dx_dt(x.size());
     s.dx_dt(x, dx_dt, time);
     return dx_dt;
@@ -33,7 +49,7 @@ std::array<double, 3> xdyn_fmu::Instance::angles() const
     // In Co-Simulation they come with the state at the end of each step.
     if (type == fmi2CoSimulation or not(sim))
         return euler;
-    const StateType x(state.begin(), state.end());
+    const StateType x = with_unit_quaternion(state);
     const auto a = sim->sim.get_bodies().at(0)->get_angles(x, sim->sim.get_env().rot);
     return { a.phi, a.theta, a.psi };
 }
