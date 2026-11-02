@@ -1,5 +1,6 @@
 #include "model.hpp"
 
+#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
 #include "xdyn/observers_and_api/ConfBuilder.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
@@ -178,6 +179,17 @@ std::mutex& xdyn_fmu::assets_root_mutex()
 
 xdyn_fmu::Model xdyn_fmu::read_model(const std::string& yaml, const std::string& assets_root)
 {
+    // One vessel per FMU, the master instantiates one per vessel: the variables are the first
+    // body's, the others would be simulated out of sight. The commands are inputs, so the
+    // controllers belong in the master: in the FMU they would never run, the commands frozen at
+    // what the master sends.
+    const YamlSimulatorInput input = SimulatorYamlParser(yaml).parse();
+    if (input.bodies.size() != 1)
+        throw std::invalid_argument("the YAML has " + std::to_string(input.bodies.size())
+                                    + " bodies, an FMU simulates one");
+    if (not(input.controllers.empty()))
+        throw std::invalid_argument(
+            "the YAML has controllers: the commands are FMU inputs, the master computes them");
     ConfBuilder builder = with_assets_root(assets_root, [&] { return ConfBuilder(yaml); });
     Model model;
     model.body = builder.sim.get_bodies().at(0)->get_name();
@@ -220,15 +232,9 @@ xdyn_fmu::Model xdyn_fmu::read_model(const std::string& yaml, const std::string&
     model.euler = { angles.phi, angles.theta, angles.psi };
 
     // The importer integrates the states and evaluates the derivatives where it likes, trial
-    // steps included: no history can follow it, and the discrete systems xdyn's own solver runs
-    // (controllers) have no place there.
-    const size_t bodies = builder.sim.get_bodies().size();
-    if (bodies != 1)
-        model.no_model_exchange = std::to_string(bodies) + " bodies, Model Exchange needs one";
-    else if (builder.Tmax > 0)
+    // steps included: no history can follow it.
+    if (builder.Tmax > 0)
         model.no_model_exchange = "force models need the past states (radiation damping...)";
-    else if (not(SimulatorYamlParser(yaml).parse().controllers.empty()))
-        model.no_model_exchange = "the YAML has controllers";
     return model;
 }
 

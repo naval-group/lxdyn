@@ -1,7 +1,7 @@
 // Model Exchange: the importer integrates the 13 states of the body, and fmi2GetDerivatives is
-// Sim::dx_dt. modelDescription.xml only offers it for one body, no history and no controllers
-// (see read_model), which is what makes a derivative a function of the time, the states and the
-// commands alone.
+// Sim::dx_dt. modelDescription.xml only offers it for a model with no history, and read_model
+// takes one body and no controllers: a derivative is then a function of the time, the states and
+// the commands alone.
 
 #include "instance.hpp"
 

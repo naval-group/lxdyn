@@ -9,8 +9,11 @@ library and one `.fmu` for both.
 - Model Exchange: the importer integrates the 13 states of the body, and `fmi2GetDerivatives` is
   `Sim::dx_dt`. The importer evaluates the derivatives at trial states and times, which no
   history can follow, so `modelDescription.xml` only declares Model Exchange for a model with
-  one body, no force model reading past states (`get_Tmax() > 0`) and no controllers (discrete
-  systems of xdyn's own solver; the importer computes the commands instead).
+  no force model reading past states (`get_Tmax() > 0`).
+
+An FMU simulates one vessel: a YAML with several bodies is refused, the master instantiates the
+FMU once per vessel. So is a YAML with controllers: the commands are FMU inputs, the master
+computes them.
 
 ```sh
 mise run fmu:build      # build/<triple>/fmu/xdyn_fmu.so
@@ -28,7 +31,7 @@ asset root but reads HDB files from the working directory: give those an absolut
 
 ## Variables
 
-Names are structured (`variableNamingConvention="structured"`) and start with the first body's
+Names are structured (`variableNamingConvention="structured"`) and start with the body's
 name, `TestShip` below; each variable's description gives xdyn's own name for it.
 
 | Value refs | Name | Causality |

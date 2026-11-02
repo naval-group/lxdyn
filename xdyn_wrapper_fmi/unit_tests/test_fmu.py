@@ -150,6 +150,40 @@ def test_names_that_collide_are_rejected(tmp_path):
         pack(yaml, tmp_path / "ship.fmu")
 
 
+def test_a_model_with_several_bodies_is_rejected(tmp_path, capfd):
+    text = (HERE / "propelled_ship.yml").read_text()
+    body = text[text.index("  - name: TestShip") :]
+    yaml = tmp_path / "ships.yml"
+    yaml.write_text(text + body.replace("TestShip", "OtherShip"))
+    with pytest.raises(subprocess.CalledProcessError):
+        pack(yaml, tmp_path / "ships.fmu")
+    assert "2 bodies, an FMU simulates one" in capfd.readouterr().err
+
+
+def test_a_model_with_controllers_is_rejected(tmp_path, capfd):
+    yaml = tmp_path / "controlled_ship.yml"
+    yaml.write_text(
+        (HERE / "propelled_ship.yml").read_text()
+        + """\
+controllers:
+  - name: speed
+    type: PID
+    dt: 1
+    state weights:
+      u: 1
+    setpoint: u_co
+    command: propeller(rpm)
+    gains:
+      Kp: 1
+      Ki: 0
+      Kd: 0
+"""
+    )
+    with pytest.raises(subprocess.CalledProcessError):
+        pack(yaml, tmp_path / "controlled_ship.fmu")
+    assert "the YAML has controllers" in capfd.readouterr().err
+
+
 def test_the_propeller_pushes_the_ship_ahead(fmu):
     slow = run(fmu, 20, rpm=RPM / 2)[STATES.index("u")]
     fast = run(fmu, 20)[STATES.index("u")]
