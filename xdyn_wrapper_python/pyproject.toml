@@ -7,7 +7,7 @@ name = "lxdyn"
 description = "Python bindings for xdyn, a naval hydrodynamics simulator"
 authors = [{ name = "Julien Prodhon", email = "julien@prodhon.net" }]
 license = "EPL-2.0"
-license-files = ["../LICENSE.md"]
+license-files = ["LICENSE.md"]
 readme = "README.md"
 
 requires-python = ">=3.10"
