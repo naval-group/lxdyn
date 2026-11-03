@@ -81,7 +81,7 @@ chmod -R u+w "$STAGE"
 
 if [ "$STRIP" != 0 ]; then
     before=$(stat -c %s "$STAGE/libxdyndeps_core.a")
-    # -type f skips the symlinks (protoc -> protoc-31.1.0), which would be stripped twice.
+    # -type f skips the symlinks (protoc -> protoc-<version>), which would be stripped twice.
     # Shebang files are skipped by hand: install/bin also holds h5cc and h5c++, which are
     # shell scripts, and llvm-strip rejects them. Anything else failing is a real failure and
     # is allowed to stop the pack -- no `|| true`, which is what hid the bug above.

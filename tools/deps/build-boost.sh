@@ -1,12 +1,12 @@
 #!/bin/sh
-# b2 rather than CMake: Boost 1.89 still ships no supported CMake build for the compiled
+# b2 rather than CMake: Boost's release tarball ships no supported CMake build for the compiled
 # libraries. The cross flavors need their binfmt_misc handler registered, because b2 runs its
 # configure probes -- qemu-user for aarch64, wine for win. `nix develop .#cross` provides both.
 set -e
 FLAVOR=${1:-x86_64-linux-gnu}
 . "$(dirname "$0")/common.sh"
 
-cd "$SRC/boost_1_89_0"
+cd "$SRC/boost_1_92_0"
 
 # One toolset name per flavor, from common.sh's B2_TAG -- the flavor with its dashes stripped,
 # because b2 splits `toolset=name-version` on the first dash. b2 keys its object directories
@@ -35,7 +35,10 @@ JAM
 # when the archive is unreadable, because all three produce no output for grep to find. It did
 # exactly that in a build sandbox with no llvm in it: an assertion that cannot
 # run reporting success. libboost_filesystem carries 95 St3__1 symbols when the wrapper takes.
-if ! llvm-nm "$DEPS/install/lib/"libboost_filesystem.* | grep -q 'St3__1'; then
-  echo "boost: no libc++ mangling in the output -- the zig wrapper did not take" >&2
-  exit 1
-fi
+# Captured, then tested: `llvm-nm | grep -q` stops reading at the first match, which aborts
+# llvm-nm with a broken pipe wherever SIGPIPE is ignored, as in the Nix sandbox.
+syms=$(llvm-nm "$DEPS/install/lib/"libboost_filesystem.*)
+case $syms in
+  *St3__1*) ;;
+  *) echo "boost: no libc++ mangling in the output -- the zig wrapper did not take" >&2; exit 1 ;;
+esac

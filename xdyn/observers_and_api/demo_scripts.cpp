@@ -11,8 +11,8 @@
  * directly and the generator ceases to exist, which is also what removes the
  * build's last bare `python3`.
  *
- * `#embed` is C23; clang accepts it in C++ as an extension (zig 0.16 ships
- * clang 21), hence -Wno-c23-extensions on this one file in build.zig. The
+ * `#embed` is C23; clang accepts it in C++ as an extension (zig 0.17 ships
+ * clang 22), hence -Wno-c23-extensions on this one file in build.zig. The
  * embedded files are recorded in clang's depfile, so editing a script rebuilds
  * this TU — which the `has_side_effects`
  * shell step it replaced could not do.

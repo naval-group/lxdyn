@@ -129,10 +129,10 @@ mise run bootstrap             # submodules, SSC umbrella headers, and the closu
 ### Step 4 — Build
 
 ```bash
-zig build
+mise run zig:build
 ```
 
-The binaries can then be found in `build/<target>/bin`, so `build/x86_64-linux-gnu/bin` on a typical Linux host. 
+This is `zig build --prefix build/<target>`, so the binaries can then be found in `build/x86_64-linux-gnu/bin` on a typical Linux host. A bare `zig build` installs into `zig-out/` instead, which the tasks below do not look at.
 
 Run one straight from the build tree. The executable is `xdyn`. The tutorial inputs are generated rather than stored, so generate them first:
 
@@ -149,7 +149,7 @@ Cross-compiling needs nothing but the matching closure:
 
 ```bash
 mise run deps:fetch aarch64-linux-musl
-zig build -Dtarget=aarch64-linux-musl
+zig build -Dtarget=aarch64-linux-musl --prefix build/aarch64-linux-musl
 ```
 
 The supported targets are `x86_64-linux-gnu`, `x86_64-linux-musl`, `aarch64-linux-musl` and `x86_64-windows-gnu`.
@@ -195,10 +195,10 @@ Do not reach for `zig build test -Dtarget=...` directly. Where the host has `bin
 Build a debug version first. This is `-O0 -g` for lxdyn's own code only; the dependency closure stays optimized, which is what you want, since stepping into Boost is rarely the point.
 
 ```bash
-zig build -Ddebug
+mise run zig:debug             # zig build -Ddebug --prefix build/<target>-debug
 ```
 
-Note that this is `-Ddebug`, not `-Doptimize=Debug`.
+Note that this is `-Ddebug`, not `-Doptimize=Debug`. `mise run gdb` runs it first.
 
 #### Valgrind
 

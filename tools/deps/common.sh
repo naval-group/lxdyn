@@ -36,9 +36,17 @@ case $FLAVOR in
     ZIG_TARGET=x86_64-windows-gnu
     B2_ARGS="target-os=windows threadapi=win32 architecture=x86 address-model=64"
     CMAKE_SYSTEM=Windows CMAKE_PROCESSOR=AMD64
-    # boringssl's Windows assembly is NASM syntax and would need a nasm on the host. The
-    # pure-C fallback costs nothing for xdyn's localhost gRPC.
+    # The pure-C boringssl: its Windows assembly is NASM, untried with zig's linker, and the
+    # fallback costs nothing for xdyn's localhost gRPC.
     GRPC_EXTRA=-DOPENSSL_NO_ASM=ON
+    # gRPC and c-ares pin their own _WIN32_WINNT under MinGW (0x600, 0x0602) over zig's 0x0a00,
+    # and gRPC puts the MSVC-only __declspec(empty_bases) on any Windows compiler. The rest is
+    # HDF5's Windows code: DWORD printed with %u, which is the same width there, and its stdio
+    # driver, which xdyn never selects, seeking with MinGW's 32-bit off_t.
+    NOWARN_TARGET="-Wno-macro-redefined -Wno-unknown-attributes -Wno-unknown-pragmas -Wno-undef
+      -Wno-shadow -Wno-format -Wno-gnu-zero-variadic-macro-arguments -Wno-bad-function-cast
+      -Wno-sign-conversion -Wno-unused-parameter -Wno-implicit-int-float-conversion
+      -Wno-shorten-64-to-32"
     ;;
   host-tools)
     # Not a closure flavor: the protoc and grpc_cpp_plugin the *build machine* runs. musl so they
@@ -58,6 +66,14 @@ case $FLAVOR in
     ;;
 esac
 export ZIG_TARGET
+
+# Warnings in the dependencies' own sources, each read and none ours to fix. zig-cc and zig-cxx
+# append these after the project's flags, so its -Wall/-Wextra cannot turn them back on. Named
+# one by one rather than -w, which also discards -Werror= diagnostics and so changes the result
+# of the configure probes that rely on them -- and so that a new kind still shows after a bump.
+export DEPS_NOWARN="-Wno-deprecated-declarations -Wno-cast-qual -Wno-c11-extensions
+  -Wno-incompatible-pointer-types-discards-qualifiers -Wno-enum-enum-conversion
+  -Wno-uninitialized-const-pointer ${NOWARN_TARGET-}"
 
 # b2 keys its object directories off the toolset name, so each flavor needs its own -- but the
 # triple's dashes cannot go in one: b2 splits `toolset=name-version` on the first dash. Strip
@@ -93,7 +109,7 @@ done
 PATH=$HERE/bin:$PATH
 
 # gRPC find_program()s a HOST protoc and grpc_cpp_plugin for its own build-time codegen, and
-# they must come from the same v1.78.1 tree so the gencode matches the libprotobuf it is compiled
+# they must come from the same v1.85.1 tree so the gencode matches the libprotobuf it is compiled
 # against -- a system protoc fails the version assertion the generated sources carry.
 #
 # Keyed on CMAKE_SYSTEM rather than on the flavor name: a host protoc is wanted exactly when CMake
@@ -114,8 +130,7 @@ fi
 export PATH
 
 # find_program consults $CMAKE_PREFIX_PATH before $PATH, and `nix develop` exports one naming
-# every C++ library in the flake. That beats the prepend above: gRPC took the flake's protoc 35.1,
-# generated its sources with it, and compiled them against the closure's protobuf 31.1 headers.
+# every C++ library in the flake, so gRPC would take the flake's protoc over the prepend above.
 # A closure may not discover anything through the shell that happens to be running it.
 unset CMAKE_PREFIX_PATH CMAKE_PROGRAM_PATH CMAKE_INCLUDE_PATH CMAKE_LIBRARY_PATH CMAKE_FRAMEWORK_PATH
 
@@ -145,7 +160,11 @@ fi
 # GNUInstallDirs then falls back to lib64 on any 64-bit target. b2 installs to lib regardless,
 # so leaving this unset splits the closure across two directories and merge-deps.sh silently
 # merges Boost alone.
-CMAKE_COMMON="$CMAKE_TARGET \
+#
+# -Wno-author: the deprecation notices CMake addresses to protobuf's and re2's own authors.
+# -Wno-unused-cli: the same flags go to every project and flavor, and not each one reads
+# every variable -- HDF5 has no GNUInstallDirs, and gRPC only looks for systemd on Linux.
+CMAKE_COMMON="$CMAKE_TARGET -Wno-author -Wno-unused-cli \
  -DCMAKE_CXX_STANDARD=17 \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \

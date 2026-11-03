@@ -1,6 +1,6 @@
 # xdyn gdb helpers for the zig/libc++ lane.
 #
-#   zig build -Ddebug        ->  build/<arch>-<os>-<abi>-debug/bin/
+#   mise run zig:debug       ->  build/<arch>-<os>-<abi>-debug/bin/
 #   mise run gdb run_all_tests --gtest_filter='Foo*'
 #   sh tools/gdb.sh  run_all_tests --gtest_filter='Foo*'     (same thing, without mise)
 #

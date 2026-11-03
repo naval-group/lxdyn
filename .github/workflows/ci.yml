@@ -22,7 +22,25 @@ env:
   MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
 
 jobs:
-  # 916 unit tests, the no-tabs lint, and the 19 integration scenarios.
+  # The flake checks, one job each: a runner's ~14 GB fits one unpacked closure plus a zig
+  # cache, and the failure names the target.
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check: [unit-x86_64-linux-gnu, unit-aarch64-linux-musl, unit-x86_64-windows-gnu, lint]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v31
+      # Read-only: the host tools come from xdyn-package's pushes instead of a rebuild per check.
+      - uses: cachix/cachix-action@v17
+        with:
+          name: naval-group
+      - name: ${{ matrix.check }}
+        run: nix build ".#checks.x86_64-linux.${{ matrix.check }}" --print-build-logs
+
+  # The 19 integration scenarios, against a build tree mise installs: stateful, so not a check.
   native:
     runs-on: ubuntu-latest
     steps:
@@ -40,49 +58,13 @@ jobs:
       - name: Submodules
         run: nix develop --command mise run setup
 
-      # Codegen is part of the build graph, so it needs no line of its own here. This is a step
-      # of its own so a compile failure is attributable, and because `zig build test` runs
-      # the suite without installing the executables the integration lanes need.
+      # A step of its own so a compile failure is attributable.
       - name: Build
-        run: nix develop --command zig build
-      - name: Unit suite
-        run: nix develop --command zig build test
-      - name: Lint
-        run: nix develop --command mise run lint
+        run: nix develop --command mise run zig:build
       - name: CLI integration tests
         run: nix develop --command mise run integration
       - name: Protocol integration tests
         run: nix develop --command mise run integration:grpc
-
-  # The same 916 for aarch64-linux-musl and x86_64-windows-gnu, under qemu and wine.
-  #
-  # One job per target rather than one job running both. A runner has ~14 GB of disk against
-  # an unpacked closure plus a full zig cache per target, and running both in one job is the
-  # tightest thing this workflow does -- it is what ran out of space when rehearsed on a
-  # 16 GB tmpfs. Splitting also parallelizes them and names the target in the failure.
-  cross:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [aarch64-linux-musl, x86_64-windows-gnu]
-    steps:
-      - uses: actions/checkout@v7
-      - uses: cachix/install-nix-action@v31
-
-      # The native closure as well as the target's: codegen runs a *host* protoc, so a cross
-      # build still needs it. See build.zig's -Ddeps-host / $XDYN_DEPS_HOST.
-      - name: Dependency closures
-        run: |
-          nix develop --command mise run deps:fetch x86_64-linux-gnu
-          nix develop --command mise run deps:fetch ${{ matrix.target }}
-      - name: Submodules
-        run: nix develop --command mise run setup
-
-      # -fqemu/-fwine name the emulators. Without them zig quietly uses the host's
-      # binfmt_misc where it is registered, which makes the lane a property of the machine.
-      - name: Unit suite
-        run: nix develop .#cross --command mise run cross:${{ matrix.target }}
 
   # 285 binding tests on each of 3.10, 3.13 and 3.15, plus ruff and the wheel.
   python:
@@ -127,7 +109,7 @@ jobs:
       - name: Windows FMU under wine
         run: nix develop .#cross --command mise run fmu:wine
 
-  # master only: one closure is ~634 MB compressed against a 5 GB cache tier.
+  # master only, and the one job that pushes to the cache: xdyn and the host tools.
   xdyn-package:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
@@ -136,20 +118,12 @@ jobs:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
 
-      # This lane compiles the closure rather than fetching it, so it needs more than the
-      # cross lanes that already sit closest to a runner's ~14 GB.
-      - name: Reclaim disk
-        run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
-                      /opt/hostedtoolcache/CodeQL
-          df -h /
-
-      # No pushFilter: it applies before closure expansion. The post-build hook already
-      # limits this to what CI builds, leaving the substituted nixpkgs paths out.
+      # Not the fetched closures: release-asset downloads, ~1.8 GB unpacked, that xdyn never references.
       - uses: cachix/cachix-action@v17
         with:
           name: naval-group
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          pushFilter: '(-deps-.*-closures-v[0-9]+$|-lxdyn-deps-.*\.tar\.zst$)'
 
       # The flake ref, so the cached path is the one consumers resolve — a shallow checkout
       # hashes to a different source.
