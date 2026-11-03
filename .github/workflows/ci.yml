@@ -44,7 +44,6 @@ jobs:
   native:
     runs-on: ubuntu-latest
     steps:
-      # The submodules come from `mise run setup`, as on a developer's clone.
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
 
@@ -54,8 +53,6 @@ jobs:
         run: |
           nix develop --command mise run deps:fetch host-tools
           nix develop --command mise run deps:fetch x86_64-linux-gnu
-      - name: Submodules
-        run: nix develop --command mise run setup
 
       # A step of its own so a compile failure is attributable.
       - name: Build
@@ -76,8 +73,6 @@ jobs:
         run: |
           nix develop --command mise run deps:fetch host-tools
           nix develop --command mise run deps:fetch x86_64-linux-gnu
-      - name: Submodules
-        run: nix develop --command mise run setup
 
       - name: Lint
         run: nix develop --command mise run python:lint
@@ -102,8 +97,6 @@ jobs:
           nix develop --command mise run deps:fetch host-tools
           nix develop --command mise run deps:fetch x86_64-linux-gnu
           nix develop --command mise run deps:fetch x86_64-windows-gnu
-      - name: Submodules
-        run: nix develop --command mise run setup
 
       - name: FMU tests
         run: nix develop --command mise run fmu:test
