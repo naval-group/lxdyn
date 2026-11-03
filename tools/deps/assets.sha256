@@ -5,8 +5,8 @@
 # same URL. These hashes are what identify it, and fetch.sh will not unpack without them.
 #
 # To publish a new set:
-#   1. nix build .#libcxx-deps-<triple>          -- or tools/deps/build-all.sh <triple>
-#   2. XDYN_DEPS=<result> tools/deps/pack.sh <triple>
+#   1. nix build .#libcxx-deps-<triple> .#host-tools   -- or tools/deps/build-all.sh <triple>
+#   2. XDYN_DEPS=<result> tools/deps/pack.sh <triple>, and the same for host-tools
 #   3. bump the tag, paste the lines below
 #   4. gh release create <tag> build/scratch/deps-assets/lxdyn-deps-*.tar.zst
 #
@@ -14,13 +14,14 @@
 # change. Never re-upload under an existing tag: anyone who already fetched it keeps a
 # closure these hashes no longer describe.
 #
-# These four came out of `nix build`, so each is the output of a derivation whose inputs are
+# These came out of `nix build`, so each is the output of a derivation whose inputs are
 # the recipes at this commit, the five sources pinned in flake.lock, and nothing else -- no
 # network, no /usr, no host archiver. The closures-v0 assets predated that and predated the rename
 # to target triples; both are why this is a new tag rather than an upload onto the old one.
 #
 # tag: closures-v2
-6f6e04fae752ee4d055184a6a88c89d91c0ab04e9296fbde678c4787c67f9b13  lxdyn-deps-x86_64-linux-gnu.tar.zst
+2297956388e3a6d511699b2f05229f7bc50a1bdae024444ab7096e90f4351c62  lxdyn-deps-host-tools-x86_64-linux.tar.zst
+ebf1f99cdd2525e02436534106046d97e0a4e239563d553b745e5dd844852e11  lxdyn-deps-x86_64-linux-gnu.tar.zst
 f377a1fde59267910647d54a47fdff52d75df7249e02388779f9e1df96c25bb8  lxdyn-deps-x86_64-linux-musl.tar.zst
 74a029f6f62db5bffeabf6cf5484a6094125443b10081de875a9cceeab208614  lxdyn-deps-aarch64-linux-musl.tar.zst
 7c43c4969cbc16d0d1dfd075487374e760fad9ba3a585909c55075e05cd71c66  lxdyn-deps-x86_64-windows-gnu.tar.zst

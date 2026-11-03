@@ -8,14 +8,16 @@ cd external/ssc/ssc && sh generate_module_header.sh
 """
 
 [tasks.bootstrap]
-description = "First-time setup for a fresh clone: submodules, SSC headers and a closure"
+description = "First-time setup for a fresh clone: submodules, SSC headers, the host tools and a closure"
 run = '''
 mise run setup
-if [ -e libcxx-x86_64-linux-gnu ]; then
-    echo "bootstrap: libcxx-x86_64-linux-gnu is already here -- leaving it alone"
-else
-    mise run deps:fetch x86_64-linux-gnu
-fi
+for dir in host-tools libcxx-x86_64-linux-gnu; do
+    if [ -e $dir ]; then
+        echo "bootstrap: $dir is already here -- leaving it alone"
+    else
+        mise run deps:fetch ${dir#libcxx-}
+    fi
+done
 '''
 
 [tasks."deps:x86_64-linux-gnu"]
@@ -35,11 +37,11 @@ description = "Build the x86_64-windows-gnu closure (needs deps:x86_64-linux-gnu
 run = "tools/deps/build-all.sh x86_64-windows-gnu"
 
 [tasks."deps:fetch"]
-description = "Download a prebuilt closure: mise run deps:fetch x86_64-linux-gnu"
+description = "Download a prebuilt closure, or the host tools: mise run deps:fetch x86_64-linux-gnu | host-tools"
 run = "sh tools/deps/fetch.sh"
 
 [tasks."deps:pack"]
-description = "Pack a built closure into a release asset: mise run deps:pack x86_64-linux-gnu"
+description = "Pack a built closure, or the host tools, into a release asset: mise run deps:pack x86_64-linux-gnu | host-tools"
 run = "sh tools/deps/pack.sh"
 
 # -fqemu/-fwine, or the host's binfmt_misc would run the suites without either.

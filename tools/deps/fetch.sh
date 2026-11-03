@@ -1,8 +1,9 @@
 #!/bin/sh
 # Download a prebuilt dependency closure into libcxx-<triple>/, instead of spending hours
-# building it with build-all.sh.
+# building it with build-all.sh. Every build also needs the host tools, in host-tools/.
 #
 #   tools/deps/fetch.sh x86_64-linux-gnu   # or: mise run deps:fetch x86_64-linux-gnu
+#   tools/deps/fetch.sh host-tools         # protoc and grpc_cpp_plugin for this machine
 #
 # The asset is not content-addressed by its name, so the hash in assets.sha256 is what
 # identifies it -- a moved tag or a re-uploaded file is caught here rather than by a
@@ -18,7 +19,14 @@ REPO=$(cd "$HERE/../.." && pwd)
 # An asset is named for its triple, so there is no table to keep in step with the flavor list.
 # assets.sha256 is the one place that decides what exists: an unpublished flavor has no line
 # there and the check below says so by name.
-ASSET=lxdyn-deps-$FLAVOR.tar.zst
+# The host tools are named for the machine that runs them, the way build-host-tools.sh picks its target.
+if [ "$FLAVOR" = host-tools ]; then
+    ASSET=lxdyn-deps-host-tools-$(uname -m)-linux.tar.zst
+    DEST=${XDYN_DEPS_HOST:-$REPO/host-tools}
+else
+    ASSET=lxdyn-deps-$FLAVOR.tar.zst
+    DEST=${XDYN_DEPS:-$REPO/libcxx-$FLAVOR}
+fi
 
 SUMS=$HERE/assets.sha256
 
@@ -33,7 +41,6 @@ grep -q " $ASSET\$" "$SUMS" || {
 
 SLUG=${XDYN_DEPS_REPO:-naval-group/lxdyn}
 BASE=${XDYN_DEPS_URL:-https://github.com/$SLUG/releases/download/$TAG}
-DEST=${XDYN_DEPS:-$REPO/libcxx-$FLAVOR}
 
 # Refuse to overwrite: a closure here may be one someone is midway through testing, and the
 # recipes take hours to reproduce it. Moving it aside is the caller's decision, not ours.
