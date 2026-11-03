@@ -63,6 +63,8 @@ curl --fail --location --progress-bar --output "$WORK/$ASSET" "$BASE/$ASSET"
 # closure at a path build.zig would happily link against.
 mkdir -p "$WORK/unpack"
 zstd -d -q -c "$WORK/$ASSET" | tar -C "$WORK/unpack" -xf -
+# build.zig checks this against assets.sha256, so a closure from an older tag stops the build.
+grep " $ASSET\$" "$SUMS" > "$WORK/unpack/asset.sha256"
 mv "$WORK/unpack" "$DEST"
 
 echo "OK -> $DEST"

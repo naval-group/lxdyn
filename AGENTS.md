@@ -22,10 +22,11 @@ Everything comes from Nix. `nix develop` provides zig, mise, uv, gdb, doxygen, l
 
 ## The dependency closure
 
-The C++ dependencies are prebuilt into a closure per target triple. `build.zig` **locates** a closure, it never builds one. It is found via `-Ddeps=` or `$XDYN_DEPS_<TRIPLE>`, and defaults to `./libcxx-<triple>`.
+The C++ dependencies are prebuilt into a closure per target triple. `build.zig` **locates** a closure, it never builds one. It is found via `-Ddeps=` or `$XDYN_DEPS_<TRIPLE>`, and defaults to `./libcxx-<triple>`. protoc and grpc_cpp_plugin are the host tools, one asset for every target, found via `-Ddeps-host=` or `$XDYN_DEPS_HOST`, default `./host-tools`. `build.zig` stops on a fetched tree that `tools/deps/assets.sha256` no longer names.
 
 ```sh
-mise run deps:fetch x86_64-linux-gnu     # download, hash-verified, about 35 MB
+mise run deps:fetch host-tools           # static protoc + grpc_cpp_plugin, about 2.6 MB
+mise run deps:fetch x86_64-linux-gnu     # download, hash-verified, about 32 MB
 nix build .#libcxx-deps-x86_64-linux-gnu # or build one hermetically, about 20 minutes
 ```
 
