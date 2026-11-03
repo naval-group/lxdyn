@@ -1,16 +1,20 @@
 #!/bin/sh
-# Print the build tree build.zig installed into for this host: build/<arch>-<os>-<abi>.
+# Print the install prefix the mise tasks pass to `zig build --prefix`: build/<triple>.
 #
-#   sh tools/build-dir.sh            -> /path/to/repo/build/x86_64-linux-gnu
+#   sh tools/build-dir.sh                      -> /path/to/repo/build/x86_64-linux-gnu
+#   sh tools/build-dir.sh x86_64-windows-gnu   -> /path/to/repo/build/x86_64-windows-gnu
 #
-# Those are *zig's* target names, not uname's (uname says arm64/Darwin, zig says
-# aarch64/macos). Rather than reimplement zig's triple logic, derive the plausible candidates
-# from uname and pick whichever was actually built — that also settles gnu-vs-musl without
-# having to detect the libc. Hardcoding x86_64-linux-gnu instead is what makes a task point
-# silently at nothing on any other host.
+# The default is the native target as build.zig resolves it, in *zig's* names rather than
+# uname's (uname says arm64/Darwin, zig says aarch64/macos). build.zig pins gnu on Linux, so
+# a musl host still builds -gnu by default.
 set -eu
 
 repo=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+
+if [ $# -gt 0 ]; then
+    printf '%s' "$repo/build/$1"
+    exit 0
+fi
 
 case $(uname -m) in
     x86_64 | amd64)  arch=x86_64 ;;
@@ -19,19 +23,6 @@ case $(uname -m) in
 esac
 
 case $(uname -s) in
-    Darwin) candidates="$arch-macos-none" ;;
-    Linux)  candidates="$arch-linux-gnu $arch-linux-musl" ;;
-    *)      candidates="$arch-linux-gnu" ;;
+    Darwin) printf '%s' "$repo/build/$arch-macos-none" ;;
+    *)      printf '%s' "$repo/build/$arch-linux-gnu" ;;
 esac
-
-for c in $candidates; do
-    if [ -d "$repo/build/$c" ]; then
-        printf '%s' "$repo/build/$c"
-        exit 0
-    fi
-done
-
-# Nothing built for this host. Print the first candidate anyway, so the caller's "no such
-# file" names the path that was expected instead of failing on an empty string.
-set -- $candidates
-printf '%s' "$repo/build/$1"

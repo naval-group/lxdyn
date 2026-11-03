@@ -23,7 +23,7 @@ description = "Build the x86_64-linux-gnu closure (glibc 2.28 floor) into libcxx
 run = "tools/deps/build-all.sh x86_64-linux-gnu"
 
 [tasks."deps:x86_64-linux-musl"]
-description = "Build the x86_64-linux-musl closure — statically linked, no published asset yet"
+description = "Build the x86_64-linux-musl closure (static) into libcxx-x86_64-linux-musl/ (hours)"
 run = "tools/deps/build-all.sh x86_64-linux-musl"
 
 [tasks."deps:aarch64-linux-musl"]
@@ -42,8 +42,7 @@ run = "sh tools/deps/fetch.sh"
 description = "Pack a built closure into a release asset: mise run deps:pack x86_64-linux-gnu"
 run = "sh tools/deps/pack.sh"
 
-# -fqemu/-fwine rather than the host's binfmt_misc: where a foreign binary is registered,
-# zig runs it transparently and these lanes pass without either emulator being declared.
+# -fqemu/-fwine, or the host's binfmt_misc would run the suites without either.
 [tasks."cross:aarch64-linux-musl"]
 description = "Run the unit suite for aarch64-linux-musl under qemu"
 run = "zig build test -Dtarget=aarch64-linux-musl -fqemu"
@@ -61,26 +60,31 @@ mise run cross:x86_64-windows-gnu
 
 [tasks.gdb]
 description = "gdb a debug-built exe: mise run gdb -- run_all_tests --gtest_filter=Foo*"
+depends = ["zig:debug"]
 run = "sh tools/gdb.sh"
 
 [tasks."zig:build"]
 description = "Build xdyn and the test runner -> build/<target>/bin"
 run = """
 sh tools/check-checkout.sh external/ssc/ssc/check_ssc_version.hpp
-zig build
+zig build --prefix "$(sh tools/build-dir.sh)"
+"""
+
+[tasks."zig:debug"]
+description = "Build xdyn -O0 -g, the closure left optimized -> build/<target>-debug/bin"
+run = """
+sh tools/check-checkout.sh external/ssc/ssc/check_ssc_version.hpp
+zig build -Ddebug --prefix "$(sh tools/build-dir.sh)-debug"
 """
 
 [tasks.build]
-description = "Build xdyn and run the 916 native unit tests"
-# Native only: the cross suites need `nix develop .#cross` for qemu and wine, so running them
-# here would fail for anyone in the default shell. Use `mise run cross` inside that shell.
+description = "Build xdyn and run the native unit tests"
 depends = ["zig:build"]
 run = "zig build test"
 
 [tasks.demos]
 description = "Generate the tutorial inputs, meshes and HDB files into demos/ (overwrites)"
-# Both generators, not just the YAML one: the tutorials from 02 onwards name test_ship.stl
-# and test_ship.hdb, which only generate_stl_examples writes.
+# Tutorials from 02 on need the test_ship files only generate_stl_examples writes.
 depends = ["zig:build"]
 run = """
 BIN=$(sh tools/build-dir.sh)/bin
@@ -91,15 +95,13 @@ mkdir -p demos
 
 [tasks.xdyn]
 description = "Run xdyn from the build tree: mise run xdyn -- tutorial_01_falling_ball.yml --dt 0.1 --tend 10"
-# dir = cwd so relative input and output paths resolve where the user stands, not at the repo
-# root -- the point being to spare them the $(sh tools/build-dir.sh)/bin prefix, which is
-# still what resolves the per-host triple, just from an absolute path now.
+# dir = cwd, so relative input and output paths resolve where the user stands.
 depends = ["zig:build"]
 dir = "{{cwd}}"
 run = 'exec "$(sh "$MISE_PROJECT_ROOT/tools/build-dir.sh")/bin/xdyn"'
 
 [tasks.integration]
-description = "Run the 10 CLI integration tests against the zig build (no docker)"
+description = "Run the CLI integration tests against the build tree"
 depends = ["zig:build"]
 run = """
 UV_PROJECT_ENVIRONMENT=build/venv/cli uv sync --only-group test-cli --quiet
@@ -124,7 +126,7 @@ done
 '''
 
 [tasks."integration:grpc"]
-description = "Run the 8 gRPC + 1 JSON protocol integration tests (no docker)"
+description = "Run the gRPC and JSON protocol integration tests"
 depends = ["zig:build", "integration:setup"]
 run = """
 make -C integration_tests/grpc_tests
@@ -164,8 +166,7 @@ CONTAINER=${CONTAINER:-$(command -v podman > /dev/null 2>&1 && echo podman || ec
     --build-arg VERSION="$(git describe --abbrev=0 --tag --always | cut -f2 -dv)" \
     --build-arg REVISION="$(git rev-parse HEAD)" \
     -t localhost/lxdyn .
-# `images`, not `image inspect --format`: mise renders task scripts through Tera, so a Go
-# template is parsed as a mise expression and the task never reaches the shell.
+# `images`, not `image inspect --format`: mise's Tera templating would eat the Go template.
 "$CONTAINER" images localhost/lxdyn
 '''
 
@@ -177,8 +178,7 @@ set -e
 CONTAINER=${CONTAINER:-$(command -v podman > /dev/null 2>&1 && echo podman || echo docker)}
 REGISTRY=${REGISTRY:-ghcr.io/naval-group/lxdyn}
 
-# --exact-match, not the --abbrev=0 idiom used above: that one reports 26.8 for every commit
-# after 26.8, so it would republish the release from an arbitrary tree.
+# --exact-match: --abbrev=0 names every commit after a tag by that tag.
 VERSION=${VERSION:-}
 if [ -z "$VERSION" ]; then
     VERSION=$(git describe --exact-match --tags 2>/dev/null | cut -f2 -dv) || {
@@ -218,7 +218,7 @@ description = "Build the pybind11 extension module -> build/<triple>/python/"
 depends = ["python:setup"]
 run = '''
 PY=$PWD/build/venv/wrapper-3.10/bin/python
-zig build python -Dpython="$PY" \
+zig build python -Dpython="$PY" --prefix "$(sh tools/build-dir.sh)" \
     -Dgit-version="$(git describe --abbrev=0 --tag --always | cut -f2 -dv)"
 SO_DIR=$(sh tools/build-dir.sh)/python
 SO=$SO_DIR/xdyn$("$PY" -c 'import sysconfig; print(sysconfig.get_config_var("EXT_SUFFIX"))')
@@ -229,7 +229,7 @@ echo "OK -> $SO"
 
 [tasks."fmu:build"]
 description = "Build the FMU library -> build/<triple>/fmu/"
-run = "zig build fmu"
+run = 'zig build fmu --prefix "$(sh tools/build-dir.sh)"'
 
 [tasks."fmu:test"]
 description = "Pack a test model as an FMU and run it through FMPy"
@@ -245,14 +245,14 @@ XDYN_FMU_LIBRARY="$LIB" "$OLDPWD/build/venv/fmu/bin/python" -m pytest "$OLDPWD/x
 [tasks."fmu:wine"]
 description = "Run the Windows FMU library under wine against the Linux one (needs `nix develop .#cross`)"
 run = '''
-zig build fmu
-zig build fmu -Dtarget=x86_64-windows-gnu
+zig build fmu --prefix "$(sh tools/build-dir.sh)"
+zig build fmu -Dtarget=x86_64-windows-gnu --prefix "$(sh tools/build-dir.sh x86_64-windows-gnu)"
 UV_PROJECT_ENVIRONMENT=build/venv/fmu uv sync --only-group fmu --quiet
 sh xdyn_wrapper_fmi/unit_tests/wine.sh
 '''
 
 [tasks."python:test"]
-description = "Run the 285 Python binding tests against the built module"
+description = "Run the Python binding tests against the built module"
 depends = ["python:build"]
 run = '''
 SO_DIR=$(sh tools/build-dir.sh)/python
@@ -272,7 +272,7 @@ for V in ${XDYN_PYTHON_VERSIONS:-3.10 3.13 3.15}; do
     echo "--- Python $V"
     UV_PROJECT_ENVIRONMENT=build/venv/wrapper-$V uv sync --only-group wrapper --python "$V" --quiet
     PY=$PWD/build/venv/wrapper-$V/bin/python
-    zig build python -Dpython="$PY" \
+    zig build python -Dpython="$PY" --prefix "$(sh tools/build-dir.sh)" \
         -Dgit-version="$(git describe --abbrev=0 --tag --always | cut -f2 -dv)"
     SO_DIR=$(sh tools/build-dir.sh)/python
     mkdir -p build/scratch/python-tests
@@ -317,8 +317,10 @@ if llvm-readelf -d "$DEST" | grep -qiE 'rpath|runpath'; then
 fi
 echo "manylinux_2_28: max glibc required is $(printf '%s\n' "$REQUIRED" | sort -V | tail -1), no RPATH"
 rm -rf dist
-GIT_VERSION=$(git describe --abbrev=0 --tag --always | cut -f2 -dv) "$PY" setup.py --quiet \
-    bdist_wheel --plat-name "manylinux_2_28_$(uname -m)"
+# --no-build-isolation: the backend is this venv's locked setuptools, and the build needs no network.
+GIT_VERSION=$(git describe --abbrev=0 --tag --always | cut -f2 -dv) \
+    uv build --wheel --no-build-isolation --python "$PY" --out-dir dist --quiet
+"$PY" -m wheel tags --remove --platform-tag "manylinux_2_28_$(uname -m)" dist/*.whl
 ls -la dist/*.whl
 cd ..
 UV_PROJECT_ENVIRONMENT=build/venv/wheelcheck uv sync --only-group wheelcheck --quiet
@@ -388,13 +390,4 @@ run = "rm -rf build"
 
 [tasks.lint]
 description = "Check for tabs in source files"
-run = """
-if grep --recursive --include='*.cpp' --include='*.c' --include='*.hpp' --include='*.h' \
-        --exclude-dir=ssc --exclude-dir=websocketpp \
-        --exclude-dir=eigen3-hdf5 --exclude-dir=thirdparty -P "\t" xdyn/ ; then
-    echo "Tabs found in the lines shown above."
-    exit 1
-else
-    echo "Repo passed no-tabs check."
-fi
-"""
+run = "sh tools/lint.sh"

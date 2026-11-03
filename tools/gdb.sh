@@ -19,7 +19,7 @@ BIN_DIR="build/$TRIPLE-debug/bin"
 if [ $# -eq 0 ]; then
   echo "usage: sh tools/gdb.sh <executable> [args...]" >&2
   echo "available in $BIN_DIR:" >&2
-  ls "$BIN_DIR" 2>/dev/null | sed 's/^/  /' >&2 || echo "  (none — run: zig build -Ddebug)" >&2
+  ls "$BIN_DIR" 2>/dev/null | sed 's/^/  /' >&2 || echo "  (none — run: mise run zig:debug)" >&2
   exit 2
 fi
 
@@ -28,7 +28,7 @@ shift
 
 if [ ! -x "$BIN_DIR/$exe" ]; then
   echo "tools/gdb.sh: $BIN_DIR/$exe not found." >&2
-  echo "              build it first with: zig build -Ddebug" >&2
+  echo "              build it first with: mise run zig:debug" >&2
   echo "              (set \$XDYN_TRIPLE to debug a cross build)" >&2
   exit 1
 fi

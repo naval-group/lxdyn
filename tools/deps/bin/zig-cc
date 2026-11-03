@@ -2,4 +2,4 @@
 # ZIG_TARGET is exported by tools/deps/common.sh. Failing loudly beats silently producing a
 # native object in the middle of a cross build.
 : "${ZIG_TARGET:?not set -- drive these wrappers through tools/deps/}"
-exec zig cc -target "$ZIG_TARGET" "$@"
+exec zig cc -target "$ZIG_TARGET" "$@" $DEPS_NOWARN

@@ -33,8 +33,9 @@ core=$(ls "$LIB"/*.a "$LIB"/*.lib 2>/dev/null \
 mri "$DEPS/libxdyndeps_core.a" $core
 mri "$DEPS/libxdyndeps_test.a" "$LIB/libgtest.a" "$LIB/libgmock.a"
 
-if zig ar t "$DEPS/libxdyndeps_core.a" | grep -qE 'g(test|mock)'; then
-  echo "merge: gtest leaked into the core archive" >&2
-  exit 1
-fi
-echo "$FLAVOR core: $(zig ar t "$DEPS/libxdyndeps_core.a" | wc -l) members"
+# Captured, then tested, for the same reason as build-boost.sh's check.
+members=$(zig ar t "$DEPS/libxdyndeps_core.a")
+case $members in
+  *gtest* | *gmock*) echo "merge: gtest leaked into the core archive" >&2; exit 1 ;;
+esac
+echo "$FLAVOR core: $(printf '%s\n' "$members" | wc -l) members"

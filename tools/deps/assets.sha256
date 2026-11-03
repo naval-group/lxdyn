@@ -19,8 +19,8 @@
 # network, no /usr, no host archiver. The closures-v0 assets predated that and predated the rename
 # to target triples; both are why this is a new tag rather than an upload onto the old one.
 #
-# tag: closures-v1
-734c70594e26c246a776a298ecc3d77d284b678588895759c3a0b81130bbf8c6  lxdyn-deps-x86_64-linux-gnu.tar.zst
-6abf075c4beb317e8ed9b30a75feeb9dc65249ce433e17210e97ba4a46d4dc3e  lxdyn-deps-x86_64-linux-musl.tar.zst
-c5c831faa2cffd84be8391b3bbc498d467597b218e8e23c17ed3bea42335783a  lxdyn-deps-aarch64-linux-musl.tar.zst
-a8c2696016a042f8bc4beccaf51d06ea4bb627fce4196c8b48354a8b6dd4346e  lxdyn-deps-x86_64-windows-gnu.tar.zst
+# tag: closures-v2
+6f6e04fae752ee4d055184a6a88c89d91c0ab04e9296fbde678c4787c67f9b13  lxdyn-deps-x86_64-linux-gnu.tar.zst
+f377a1fde59267910647d54a47fdff52d75df7249e02388779f9e1df96c25bb8  lxdyn-deps-x86_64-linux-musl.tar.zst
+74a029f6f62db5bffeabf6cf5484a6094125443b10081de875a9cceeab208614  lxdyn-deps-aarch64-linux-musl.tar.zst
+7c43c4969cbc16d0d1dfd075487374e760fad9ba3a585909c55075e05cd71c66  lxdyn-deps-x86_64-windows-gnu.tar.zst

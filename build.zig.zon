@@ -2,11 +2,13 @@
     .name = .xdyn,
     .version = "26.11.0",
     .fingerprint = 0x94e6ba73c3e4ae6d,
-    .minimum_zig_version = "0.15.0",
+    .minimum_zig_version = "0.17.0",
     .paths = .{
         "build.zig",
         "build.zig.zon",
         "xdyn",
+        "xdyn_wrapper_python/build.zig",
+        "xdyn_wrapper_fmi/build.zig",
         "external",
     },
 }

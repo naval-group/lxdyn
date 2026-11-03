@@ -15,6 +15,10 @@ FLAVOR=${1:-x86_64-linux-gnu}
   exit 1
 }
 
+# protobuf 35 makes SerializeToString [[nodiscard]], and gRPC's reflection and channelz services
+# drop its result.
+export DEPS_NOWARN="$DEPS_NOWARN -Wno-unused-result"
+
 # CMAKE_DISABLE_FIND_PACKAGE_systemd: gRPC picks up a host libsystemd if one is installed, and
 # every binary in the closure then needs it at link time.
 # The plugin toggles: xdyn generates C++ only, and the other six languages' plugins are a
@@ -34,7 +38,9 @@ cmake_build "$SRC/grpc" grpc \
   -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
   $GRPC_EXTRA
 
-if ! llvm-nm "$DEPS/install/lib/libgrpc++.a" | grep -q 'St3__1'; then
-  echo "grpc: no libc++ mangling in the output" >&2
-  exit 1
-fi
+# Captured, then tested, for the same reason as build-boost.sh's check.
+syms=$(llvm-nm "$DEPS/install/lib/libgrpc++.a")
+case $syms in
+  *St3__1*) ;;
+  *) echo "grpc: no libc++ mangling in the output" >&2; exit 1 ;;
+esac

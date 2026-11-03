@@ -18,7 +18,7 @@ Everything comes from Nix. `nix develop` provides zig, mise, uv, gdb, doxygen, l
 
 - `nix develop` builds and tests natively
 - `nix develop .#cross` adds qemu and wine, to *run* the cross suites
-- `nix develop .#deps` adds cmake and ninja, to *build* a dependency closure
+- `nix develop .#deps` adds cmake, ninja and nasm, to *build* a dependency closure
 
 ## The dependency closure
 
@@ -34,11 +34,12 @@ Triples: `x86_64-linux-gnu`, `x86_64-linux-musl`, `aarch64-linux-musl`, `x86_64-
 ## Commands
 
 ```sh
-zig build                      # build
+mise run zig:build             # zig build --prefix build/<triple>
 zig build test                 # native unit suite, 963 tests
-zig build -Ddebug              # -O0 -g
+mise run zig:debug             # -O0 -g, into build/<triple>-debug
 zig build gen                  # the code generators alone
 mise run cross                 # both cross suites under qemu and wine
+nix flake check                # the three suites and the lint, hermetic: what CI runs
 mise run integration           # CLI scenarios
 mise run integration:grpc      # gRPC and JSON protocol scenarios
 mise run deploy:image          # container image
@@ -54,15 +55,17 @@ mise run fmu:wine              # its Windows build under wine, against Linux (`n
 
 ## Traps
 
-**`zig build -Ddebug`, never `-Doptimize=Debug`.** The former is a debug build of lxdyn's own code with the closure left optimized. The latter is not the same thing and is not what the `.gdbinit` helpers or `mise run gdb` expect.
+**`-Ddebug`, never `-Doptimize=Debug`.** The former is a debug build of lxdyn's own code with the closure left optimized. The latter is not the same thing and is not what the `.gdbinit` helpers or `mise run gdb` expect.
 
 **`mise run setup` resets every submodule to its committed pin.** If you are testing a local checkout of a submodule, it will be discarded. Commit the pin bump first.
 
 **Do not run `zig build test -Dtarget=...` directly to check a cross target.** On a host with `binfmt_misc` handlers registered, zig runs the foreign binary transparently and the suite passes without qemu or wine being involved, which makes the result a property of that machine. `mise run cross` names the emulators with `-fqemu` and `-fwine`.
 
+**A bare `zig build` installs into `zig-out/`, which nothing reads.** The tasks, scripts and Makefiles look in `build/<triple>`, which is what `mise run zig:build` passes as `--prefix`.
+
 **The integration lanes depend on `zig:build` on purpose.** `zig build test` compiles and runs the suite but installs nothing, so on a tree where only the unit tests have run, every scenario exits 127.
 
-**`build.zig` globs its source lists.** New `.cpp` files under `xdyn/<module>/` and `xdyn/<module>/unit_tests/` register themselves, so there is no file list to update.
+**`build.zig` globs its source lists.** New `.cpp` files under `xdyn/<module>/` and `xdyn/<module>/unit_tests/` register themselves, so there is no file list to update. Each component's build is a plain Zig file beside its sources — `xdyn/build.zig`, `external/build.zig`, `xdyn_wrapper_python/build.zig`, `xdyn_wrapper_fmi/build.zig` — imported by the root `build.zig`, which owns the shared `Ctx`.
 
 ## Submodules
 

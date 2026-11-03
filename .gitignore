@@ -1,6 +1,7 @@
 build
 install
 .zig-cache/
+/zig-out/
 
 /demos/
 
