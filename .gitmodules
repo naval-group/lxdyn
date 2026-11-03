@@ -1,7 +1,0 @@
-	
-[submodule "external/websocketpp"]
-	path = external/websocketpp
-	url = https://github.com/LocutusOfBorg/websocketpp.git
-[submodule "external/stb"]
-	path = external/stb
-	url = https://github.com/nothings/stb.git
