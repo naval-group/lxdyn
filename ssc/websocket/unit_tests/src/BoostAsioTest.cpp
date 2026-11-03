@@ -1,6 +1,6 @@
 #include "BoostAsioTest.hpp"
 #include <boost/asio.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <chrono>
 
 BoostAsioTest::BoostAsioTest() : a(ssc::random_data_generator::DataGenerator(546545))
 {
@@ -8,8 +8,8 @@ BoostAsioTest::BoostAsioTest() : a(ssc::random_data_generator::DataGenerator(546
 
 TEST_F(BoostAsioTest, should_be_able_to_use_boost_asio_timer_synchronously)
 {
-    boost::asio::io_service io;
-    boost::asio::deadline_timer t(io, boost::posix_time::milliseconds(1));
+    boost::asio::io_context io;
+    boost::asio::steady_timer t(io, std::chrono::milliseconds(1));
     t.wait();
 }
 
@@ -20,8 +20,8 @@ void dummyFunction(const boost::system::error_code& /*e*/)
 
 TEST_F(BoostAsioTest, should_be_able_to_use_boost_asio_timer_asynchronously)
 {
-    boost::asio::io_service io;
-    boost::asio::deadline_timer t(io, boost::posix_time::milliseconds(1));
+    boost::asio::io_context io;
+    boost::asio::steady_timer t(io, std::chrono::milliseconds(1));
     t.async_wait(&dummyFunction);
     io.run();
 }

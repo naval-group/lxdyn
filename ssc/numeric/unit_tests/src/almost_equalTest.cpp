@@ -8,6 +8,7 @@
 #include "ssc/numeric/almost_equal.hpp"
 #include "almost_equalTest.hpp"
 #include <cmath>
+#include <iomanip>
 #include <limits>
 
 almost_equalTest::almost_equalTest() : a(ssc::random_data_generator::DataGenerator(7214222))

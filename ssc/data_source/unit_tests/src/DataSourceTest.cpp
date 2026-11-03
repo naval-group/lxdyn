@@ -294,10 +294,14 @@ TEST_F(DataSourceTest, should_be_able_to_remove_a_signal)
 
 TEST_F(DataSourceTest, can_declare_and_define_a_module_using_a_macro)
 {
+    // The test is that the macro expands in a function body; the local class is never used.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-member-function"
     MODULE(modulename,const double x1 = ds->get<double>("x1");\
                       const double x2 = ds->get<double>("x2");\
                       ds->set<double>("y1",x1+x2);\
                       ds->set<double>("y2",x1*x2))
+#pragma clang diagnostic pop
 }
 
 MODULE(ode,const double x = ds->get<double>("x");\
