@@ -3,9 +3,8 @@ description = "Submodules"
 run = "git submodule update --init"
 
 [tasks.bootstrap]
-description = "First-time setup for a fresh clone: submodules, the host tools and a closure"
+description = "First-time setup for a fresh clone: the host tools and a closure"
 run = '''
-mise run setup
 for dir in host-tools libcxx-x86_64-linux-gnu; do
     if [ -e $dir ]; then
         echo "bootstrap: $dir is already here -- leaving it alone"
@@ -63,14 +62,12 @@ run = "sh tools/gdb.sh"
 [tasks."zig:build"]
 description = "Build xdyn and the test runner -> build/<target>/bin"
 run = """
-sh tools/check-checkout.sh external/websocketpp/websocketpp external/stb/stb_image.h
 zig build --prefix "$(sh tools/build-dir.sh)"
 """
 
 [tasks."zig:debug"]
 description = "Build xdyn -O0 -g, the closure left optimized -> build/<target>-debug/bin"
 run = """
-sh tools/check-checkout.sh external/websocketpp/websocketpp external/stb/stb_image.h
 zig build -Ddebug --prefix "$(sh tools/build-dir.sh)-debug"
 """
 

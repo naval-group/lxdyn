@@ -153,12 +153,9 @@
           && !(pkgs.lib.hasSuffix ".md" rel);
       };
 
-      # `self` has no submodules. -T because each gitlink is an empty dir.
       prepareXdyn = ''
         export HOME=$TMPDIR/home ZIG_GLOBAL_CACHE_DIR=$TMPDIR/zig XDG_CACHE_HOME=$TMPDIR/cache
         mkdir -p $HOME $ZIG_GLOBAL_CACHE_DIR $XDG_CACHE_HOME
-        cp -rT ${inputs.src-websocketpp} external/websocketpp
-        cp -rT ${inputs.src-stb}         external/stb
       '';
 
       # The sandbox has no .git for headSha() and no pkg-config hook for the eigen probe.
