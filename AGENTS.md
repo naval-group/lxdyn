@@ -40,7 +40,7 @@ zig build test                 # native unit suite, 963 tests
 mise run zig:debug             # -O0 -g, into build/<triple>-debug
 zig build gen                  # the code generators alone
 mise run cross                 # both cross suites under qemu and wine
-nix flake check                # the three suites and the lint, hermetic: what CI runs
+nix flake check                # the three suites, the FMU and the lint, hermetic: what CI runs
 mise run integration           # CLI scenarios
 mise run integration:grpc      # gRPC and JSON protocol scenarios
 mise run deploy:image          # container image
@@ -52,6 +52,8 @@ mise run python:lint           # ruff check
 mise run python:wheel          # wheel plus a clean-venv check
 mise run fmu:test              # the FMU through FMPy
 mise run fmu:wine              # its Windows build under wine, against Linux (`nix develop .#cross`)
+nix build .#xdyn-fmu           # the glibc FMU library and xdyn-make-fmu, for consumers
+nix build .#xdyn-fmu-zip       # both FMU libraries and make_fmu.py: the release asset
 ```
 
 ## Traps
