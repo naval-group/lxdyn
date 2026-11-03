@@ -208,6 +208,71 @@
         meta.description = "xdyn simulator binaries, libc++, static x86_64-linux-musl";
       };
 
+      # An importer dlopens the FMU library, so it is a shared object for the importer's libc:
+      # glibc on Linux, where xdyn's binaries are static musl.
+      mkFmu = { pname, triple, platform, target ? triple }: pkgs.stdenvNoCC.mkDerivation {
+        inherit pname;
+        inherit (xdyn) version;
+        src = xdynSource;
+        nativeBuildInputs = [ pkgs.zig pkgs.removeReferencesTo ];
+        dontFixup = true;
+        buildPhase = ''
+          runHook preBuild
+          ${prepareXdyn}
+          zig build fmu -Dtarget=${target} ${zigFlags triple} --prefix $TMPDIR/prefix
+          runHook postBuild
+        '';
+        installPhase = ''
+          runHook preInstall
+          install -Dm755 -t $out/lib $TMPDIR/prefix/fmu/*
+          remove-references-to -t ${fetched.${triple}} $out/lib/*
+          runHook postInstall
+        '';
+        meta.description = "xdyn as an FMI 2.0 library, ${platform}";
+      };
+
+      # The library plus xdyn-make-fmu, which packs a model with it: `xdyn-make-fmu ship.yml -o ship.fmu`.
+      # An explicit gnu target takes zig's newest glibc, not build.zig's native 2.28 floor.
+      xdyn-fmu = (mkFmu {
+        pname = "xdyn-fmu"; triple = "x86_64-linux-gnu"; platform = "linux64";
+        target = "x86_64-linux-gnu.2.28";
+      })
+        .overrideAttrs (old: {
+          nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.makeWrapper ];
+          postInstall = ''
+            install -Dm644 -t $out/share/xdyn-fmu xdyn_wrapper_fmi/make_fmu.py
+            makeWrapper ${pkgs.python3}/bin/python3 $out/bin/xdyn-make-fmu \
+              --add-flags "$out/share/xdyn-fmu/make_fmu.py --library $out/lib/xdyn_fmu.so"
+          '';
+          doInstallCheck = true;
+          installCheckPhase = ''
+            runHook preInstallCheck
+            $out/bin/xdyn-make-fmu xdyn_wrapper_fmi/unit_tests/propelled_ship.yml -o $TMPDIR/ship.fmu
+            ${pkgs.python3}/bin/python3 -m zipfile -l $TMPDIR/ship.fmu > $TMPDIR/ship.list
+            grep -q modelDescription.xml $TMPDIR/ship.list
+            grep -q binaries/linux64/xdyn_fmu.so $TMPDIR/ship.list
+            runHook postInstallCheck
+          '';
+        });
+
+      xdyn-fmu-win64 = mkFmu { pname = "xdyn-fmu-win64"; triple = "x86_64-windows-gnu"; platform = "win64"; };
+
+      # The release asset, for importers without Nix: both libraries and the packer.
+      xdyn-fmu-zip = pkgs.runCommandLocal "lxdyn-fmu-${xdyn.version}" { } ''
+        dir=lxdyn-fmu-${xdyn.version}
+        mkdir -p $dir/linux64 $dir/win64 $out
+        cp ${xdyn-fmu}/lib/xdyn_fmu.so $dir/linux64/
+        cp ${xdyn-fmu-win64}/lib/xdyn_fmu.dll $dir/win64/
+        cp ${xdyn-fmu}/share/xdyn-fmu/make_fmu.py $dir/
+        # Store files are dated 1970, which zip cannot hold: strict_timestamps=False clamps them to 1980.
+        ${pkgs.python3}/bin/python3 -c '
+        import pathlib, sys, zipfile
+        with zipfile.ZipFile(sys.argv[1], "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as z:
+            for f in sorted(pathlib.Path(sys.argv[2]).rglob("*")):
+                z.write(f)
+        ' $out/$dir.zip $dir
+      '';
+
       # Hermetic unit suites from a cold cache: what CI trusts, too slow for the edit-test loop.
       mkUnitCheck = { triple, emulators ? [ ], test }:
         pkgs.stdenvNoCC.mkDerivation {
@@ -247,12 +312,13 @@
           emulators = [ pkgs.wine64 ];
           test = "zig build test -Dtarget=x86_64-windows-gnu -fwine ${zigFlags "x86_64-windows-gnu"}";
         };
+        fmu-x86_64-linux-gnu = xdyn-fmu;
         lint = pkgs.runCommandLocal "xdyn-lint" { src = xdynSource; } ''
           cp -r $src/. . && sh tools/lint.sh && touch $out
         '';
       };
     in {
-      packages.${system} = closures // { inherit xdyn; }
+      packages.${system} = closures // { inherit xdyn xdyn-fmu xdyn-fmu-win64 xdyn-fmu-zip; }
         // pkgs.lib.mapAttrs' (triple: drv: pkgs.lib.nameValuePair "deps-${triple}" drv) fetched;
       checks.${system} = checks;
 

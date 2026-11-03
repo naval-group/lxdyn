@@ -26,6 +26,21 @@ python xdyn_wrapper_fmi/make_fmu.py ship.yml -o ship.fmu \
     --assets-root models --asset ship/hull.stl --dt 0.1 --solver rk4
 ```
 
+Outside this repository, the library and the packer come from the flake or from a release:
+
+```sh
+nix shell github:naval-group/lxdyn#xdyn-fmu    # xdyn-make-fmu, with --library already set
+xdyn-make-fmu ship.yml -o ship.fmu --assets-root models --asset ship/hull.stl
+
+unzip lxdyn-fmu-<version>.zip                  # a release asset: linux64/, win64/, make_fmu.py
+python make_fmu.py ship.yml -o ship.fmu --library linux64/xdyn_fmu.so \
+    --binary win64=win64/xdyn_fmu.dll
+```
+
+The Linux library targets glibc 2.28 and links libc++ statically, so it needs nothing from the
+host but glibc. It is not in `packages.xdyn`, which is static musl: a glibc importer cannot
+load a musl shared object.
+
 `--asset` files land in the FMU's `resources/` under the path the YAML gives them, and
 `resources/` is the asset root the model is built against. `--binary win64=<dll>` adds the
 Windows library (`zig build fmu -Dtarget=x86_64-windows-gnu`). xdyn resolves meshes against the

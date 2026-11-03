@@ -1,0 +1,33 @@
+name: Release FMU
+
+# On a published release rather than the tag push: releases are written by hand, so the
+# release exists by the time the zip is attached to it.
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+env:
+  NIX_CONFIG: experimental-features = nix-command flakes
+  TAG: ${{ github.event.release.tag_name }}
+
+jobs:
+  fmu:
+    # The closures-vN releases carry dependency closures, not xdyn.
+    if: ${{ !startsWith(github.event.release.tag_name, 'closures-') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Tag matches build.zig.zon
+        run: sh tools/check-release-version.sh "$TAG"
+      - uses: cachix/install-nix-action@v31
+
+      - name: Build
+        run: nix build .#xdyn-fmu-zip
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$TAG" result/*.zip --clobber
