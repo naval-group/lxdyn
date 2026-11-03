@@ -23,8 +23,6 @@
         "src-googletest": "src-googletest",
         "src-grpc": "src-grpc",
         "src-hdf5": "src-hdf5",
-        "src-stb": "src-stb",
-        "src-websocketpp": "src-websocketpp",
         "src-yaml-cpp": "src-yaml-cpp"
       }
     },
@@ -91,40 +89,6 @@
         "owner": "HDFGroup",
         "ref": "2.2.0",
         "repo": "hdf5",
-        "type": "github"
-      }
-    },
-    "src-stb": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1785652929,
-        "narHash": "sha256-vA5RZLte4gf5/NkbWT3VNzGVD04kyVTHPeEZwxNnxi0=",
-        "owner": "nothings",
-        "repo": "stb",
-        "rev": "2c980bb59875b0d32144a71867fbdebb2f77cd20",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nothings",
-        "repo": "stb",
-        "rev": "2c980bb59875b0d32144a71867fbdebb2f77cd20",
-        "type": "github"
-      }
-    },
-    "src-websocketpp": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1771519395,
-        "narHash": "sha256-UXcn1ADnwhW6fBsV+btFRlaKJX1e2HrqPl24P30ZPyI=",
-        "owner": "LocutusOfBorg",
-        "repo": "websocketpp",
-        "rev": "67405e1ab225f20835e4086f89b54b805dd43bae",
-        "type": "github"
-      },
-      "original": {
-        "owner": "LocutusOfBorg",
-        "repo": "websocketpp",
-        "rev": "67405e1ab225f20835e4086f89b54b805dd43bae",
         "type": "github"
       }
     },

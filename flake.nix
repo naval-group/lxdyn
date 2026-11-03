@@ -11,10 +11,6 @@
     src-hdf5       = { url = "github:HDFGroup/hdf5/2.2.0";            flake = false; };
     src-grpc       = { url = "git+https://github.com/grpc/grpc?ref=refs/tags/v1.85.1&submodules=1"; flake = false; };
     src-boost      = { url = "tarball+https://archives.boost.io/release/1.92.0/source/boost_1_92_0.tar.bz2"; flake = false; };
-
-    # The submodules, at .gitmodules' pins: bump them together.
-    src-websocketpp = { url = "github:LocutusOfBorg/websocketpp/67405e1ab225f20835e4086f89b54b805dd43bae"; flake = false; };
-    src-stb         = { url = "github:nothings/stb/2c980bb59875b0d32144a71867fbdebb2f77cd20";              flake = false; };
   };
 
   outputs = { self, nixpkgs, ... }@inputs:
