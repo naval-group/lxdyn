@@ -160,7 +160,7 @@ no_proxy=${no_proxy:-localhost,127.0.0.1}; export no_proxy
 #
 # The instability is real and unexamined; the native `waves` scenario misses it because its
 # tests.py asserts array *lengths* only. A model question, not a packaging one.
-PYTHONPATH="$REPO/external/interfaces"; export PYTHONPATH
+PYTHONPATH="$REPO/interfaces"; export PYTHONPATH
 "$BIN/xdyn-for-me" tutorial_09_gRPC_wave_model.yml --grpc -p 9002 > xdyn.log 2>&1 &
 xdyn_pid=$!
 

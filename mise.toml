@@ -1,14 +1,9 @@
 [tasks.setup]
-description = "Submodules and the SSC umbrella headers"
-run = """
-git submodule update --init
-git -C external/ssc config submodule.ssc/f2c.url https://gitlab.com/sirehna_naval_group/ThirdParty/f2c.git
-git -C external/ssc submodule update --init ssc/f2c
-cd external/ssc/ssc && sh generate_module_header.sh
-"""
+description = "Submodules"
+run = "git submodule update --init"
 
 [tasks.bootstrap]
-description = "First-time setup for a fresh clone: submodules, SSC headers, the host tools and a closure"
+description = "First-time setup for a fresh clone: submodules, the host tools and a closure"
 run = '''
 mise run setup
 for dir in host-tools libcxx-x86_64-linux-gnu; do
@@ -68,14 +63,14 @@ run = "sh tools/gdb.sh"
 [tasks."zig:build"]
 description = "Build xdyn and the test runner -> build/<target>/bin"
 run = """
-sh tools/check-checkout.sh external/ssc/ssc/check_ssc_version.hpp
+sh tools/check-checkout.sh external/websocketpp/websocketpp external/stb/stb_image.h
 zig build --prefix "$(sh tools/build-dir.sh)"
 """
 
 [tasks."zig:debug"]
 description = "Build xdyn -O0 -g, the closure left optimized -> build/<target>-debug/bin"
 run = """
-sh tools/check-checkout.sh external/ssc/ssc/check_ssc_version.hpp
+sh tools/check-checkout.sh external/websocketpp/websocketpp external/stb/stb_image.h
 zig build -Ddebug --prefix "$(sh tools/build-dir.sh)-debug"
 """
 
@@ -113,16 +108,15 @@ make -C integration_tests/xdyn PYTHON="$PWD/build/venv/cli/bin/python" all
 [tasks."integration:setup"]
 description = "Python env + protobuf stubs for the gRPC/JSON tests"
 run = '''
-sh tools/check-checkout.sh external/interfaces/proto
 UV_PROJECT_ENVIRONMENT=build/venv/grpc uv sync --only-group test-grpc --python 3.10 --quiet
-mkdir -p external/interfaces/xdyngrpc/_proto
-touch external/interfaces/xdyngrpc/_proto/__init__.py
+mkdir -p interfaces/xdyngrpc/_proto
+touch interfaces/xdyngrpc/_proto/__init__.py
 build/venv/grpc/bin/python -m grpc_tools.protoc \
-    -I external/interfaces/proto \
-    --python_out=external/interfaces/xdyngrpc/_proto \
-    --grpc_python_out=external/interfaces/xdyngrpc/_proto \
-    external/interfaces/proto/*.proto
-for f in external/interfaces/xdyngrpc/_proto/*.py; do
+    -I interfaces/proto \
+    --python_out=interfaces/xdyngrpc/_proto \
+    --grpc_python_out=interfaces/xdyngrpc/_proto \
+    interfaces/proto/*.proto
+for f in interfaces/xdyngrpc/_proto/*.py; do
     sed -E 's/^import.*_pb2/from . &/' "$f" > "$f.rel" && mv "$f.rel" "$f"
 done
 '''
@@ -202,8 +196,7 @@ echo "pushed $REGISTRY:$VERSION and $REGISTRY:latest"
 description = "Build the xdyngrpc-python server image used by the deployment smoke test"
 run = '''
 CONTAINER=${CONTAINER:-$(command -v podman > /dev/null 2>&1 && echo podman || echo docker)}
-sh tools/check-checkout.sh external/interfaces/Dockerfile.python
-"$CONTAINER" build -f external/interfaces/Dockerfile.python -t localhost/xdyngrpc-python external/interfaces
+"$CONTAINER" build -f interfaces/Containerfile.python -t localhost/xdyngrpc-python interfaces
 '''
 
 [tasks."deploy:test"]

@@ -33,10 +33,10 @@
 #include "xdyn/force_models/unit_tests/HDBParserForTests.hpp"
 #include "xdyn/force_models/WageningenControlledForceModel.hpp"
 #include "xdyn/hdb_interpolators/HDBParser.hpp"
-#include "ssc/ssc/data_source/DataSource.hpp"
-#include "ssc/ssc/kinematics/Point.hpp"
-#include "ssc/ssc/kinematics/Wrench.hpp"
-#include "ssc/ssc/macros/tr1_macros.hpp"
+#include "ssc/data_source/DataSource.hpp"
+#include "ssc/kinematics/Point.hpp"
+#include "ssc/kinematics/Wrench.hpp"
+#include "ssc/macros/tr1_macros.hpp"
 #include <string>
 #include TR1INC(memory)
 

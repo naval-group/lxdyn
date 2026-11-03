@@ -160,17 +160,12 @@
           && !(pkgs.lib.hasSuffix ".md" rel);
       };
 
-      # `self` has no submodules. -T because each gitlink is an empty dir; writable for SSC's codegen.
+      # `self` has no submodules. -T because each gitlink is an empty dir.
       prepareXdyn = ''
         export HOME=$TMPDIR/home ZIG_GLOBAL_CACHE_DIR=$TMPDIR/zig XDG_CACHE_HOME=$TMPDIR/cache
         mkdir -p $HOME $ZIG_GLOBAL_CACHE_DIR $XDG_CACHE_HOME
-        cp -rT ${inputs.src-ssc}         external/ssc
-        cp -rT ${inputs.src-interfaces}  external/interfaces
         cp -rT ${inputs.src-websocketpp} external/websocketpp
         cp -rT ${inputs.src-stb}         external/stb
-        chmod -R u+w external
-        cp -rT ${inputs.src-f2c}         external/ssc/ssc/f2c
-        chmod -R u+w external/ssc/ssc/f2c
       '';
 
       # The sandbox has no .git for headSha() and no pkg-config hook for the eigen probe.
@@ -297,8 +292,10 @@
           test = ''
             zig build ${zigFlags "x86_64-linux-gnu"} --prefix $TMPDIR/prefix
             mkdir $TMPDIR/scratch && cd $TMPDIR/scratch
-            ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 --library-path ${pkgs.glibc}/lib \
-              $TMPDIR/prefix/bin/run_all_tests
+            for suite in run_all_tests run_ssc_tests; do
+              ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 --library-path ${pkgs.glibc}/lib \
+                $TMPDIR/prefix/bin/$suite
+            done
           '';
         };
         # -fqemu/-fwine, or the host's binfmt_misc would run the suite without either.
