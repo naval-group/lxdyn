@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+import "wave_types.proto";
+
+service Waves
+{
+    rpc set_parameters(SetParameterRequest)                    returns (SetParameterResponse);
+    rpc elevations(XYTGrid)                                    returns (XYZTGrid);
+    rpc dynamic_pressures(XYZTGrid)                            returns (DynamicPressuresResponse);
+    rpc orbital_velocities(XYZTGrid)                           returns (OrbitalVelocitiesResponse);
+    rpc spectrum(SpectrumRequest)                              returns (SpectrumResponse);
+}

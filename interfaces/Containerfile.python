@@ -1,0 +1,11 @@
+FROM python:3.10-slim
+RUN apt-get update --fix-missing -yq && \
+    apt-get install --yes --no-install-recommends \
+        wait-for-it
+ADD requirements.txt /
+RUN python -m pip install --upgrade pip && \
+    python -m pip install -r /requirements.txt
+ADD xdyngrpc /opt/xdyngrpc
+ENV PYTHONPATH=/opt
+WORKDIR /
+ENTRYPOINT ["python3"]

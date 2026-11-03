@@ -1,0 +1,11 @@
+Using:
+
+    git shortlog -s -n
+
+we can get the list of contributors to this project.   
+
+
+Charles-Edouard CADY (charles-edouard.cady@sirehna.com)
+Guillaume JACQUENOT (guillaume.jacquenot@sirehna.com)
+Léa LINCKER (lea.lincker@sirehna.com)
+Michel PICARD (michel.picard@sirehna.com)

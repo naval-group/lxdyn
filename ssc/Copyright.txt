@@ -1,0 +1,3 @@
+Le framework "Sirehna Scientific Computing" a été développé par DCNS Research.
+
+ID : @GIT_VERSION_SHORT@
