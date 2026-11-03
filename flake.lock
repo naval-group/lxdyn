@@ -20,12 +20,9 @@
       "inputs": {
         "nixpkgs": "nixpkgs",
         "src-boost": "src-boost",
-        "src-f2c": "src-f2c",
         "src-googletest": "src-googletest",
         "src-grpc": "src-grpc",
         "src-hdf5": "src-hdf5",
-        "src-interfaces": "src-interfaces",
-        "src-ssc": "src-ssc",
         "src-stb": "src-stb",
         "src-websocketpp": "src-websocketpp",
         "src-yaml-cpp": "src-yaml-cpp"
@@ -42,24 +39,6 @@
       "original": {
         "type": "tarball",
         "url": "https://archives.boost.io/release/1.92.0/source/boost_1_92_0.tar.bz2"
-      }
-    },
-    "src-f2c": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1479731186,
-        "narHash": "sha256-W+WGamktJJB3X08bw5ws+XFwt+A1l6xwdgSd86jBht8=",
-        "ref": "refs/tags/v1.0.0",
-        "rev": "844703f7eff4c533bb147931bffe914b3345ef4d",
-        "revCount": 1,
-        "type": "git",
-        "url": "https://gitlab.com/sirehna_naval_group/ThirdParty/f2c.git"
-      },
-      "original": {
-        "ref": "refs/tags/v1.0.0",
-        "rev": "844703f7eff4c533bb147931bffe914b3345ef4d",
-        "type": "git",
-        "url": "https://gitlab.com/sirehna_naval_group/ThirdParty/f2c.git"
       }
     },
     "src-googletest": {
@@ -112,40 +91,6 @@
         "owner": "HDFGroup",
         "ref": "2.2.0",
         "repo": "hdf5",
-        "type": "github"
-      }
-    },
-    "src-interfaces": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1661966030,
-        "narHash": "sha256-6pcNu8+9NLppeTzGIIPNxKeDRvrJusahClQtJlwNH7o=",
-        "owner": "naval-group",
-        "repo": "interfaces",
-        "rev": "5a3b79e3cc6c2a5c29f81d0316c0daa3d11f40d5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "naval-group",
-        "repo": "interfaces",
-        "rev": "5a3b79e3cc6c2a5c29f81d0316c0daa3d11f40d5",
-        "type": "github"
-      }
-    },
-    "src-ssc": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1662567726,
-        "narHash": "sha256-5Pce4lFne/sEL2JDe0xFh4v9jfKVAFDTHsx+uGbMcek=",
-        "owner": "naval-group",
-        "repo": "scientific_computing",
-        "rev": "690f80f6a065dbea65d9423d03c96b3a50ebb1b5",
-        "type": "github"
-      },
-      "original": {
-        "owner": "naval-group",
-        "repo": "scientific_computing",
-        "rev": "690f80f6a065dbea65d9423d03c96b3a50ebb1b5",
         "type": "github"
       }
     },

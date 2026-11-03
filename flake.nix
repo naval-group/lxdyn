@@ -12,16 +12,9 @@
     src-grpc       = { url = "git+https://github.com/grpc/grpc?ref=refs/tags/v1.85.1&submodules=1"; flake = false; };
     src-boost      = { url = "tarball+https://archives.boost.io/release/1.92.0/source/boost_1_92_0.tar.bz2"; flake = false; };
 
-    # The submodules, at .gitmodules' pins: bump them together. Not `?submodules=1`, which
-    # recurses into SSC's dead ThirdParty/eigen gitlink.
-    src-ssc         = { url = "github:naval-group/scientific_computing/690f80f6a065dbea65d9423d03c96b3a50ebb1b5"; flake = false; };
-    src-interfaces  = { url = "github:naval-group/interfaces/5a3b79e3cc6c2a5c29f81d0316c0daa3d11f40d5";           flake = false; };
-    src-websocketpp = { url = "github:LocutusOfBorg/websocketpp/67405e1ab225f20835e4086f89b54b805dd43bae";        flake = false; };
-    src-stb         = { url = "github:nothings/stb/2c980bb59875b0d32144a71867fbdebb2f77cd20";                     flake = false; };
-    src-f2c = {
-      url = "git+https://gitlab.com/sirehna_naval_group/ThirdParty/f2c.git?ref=refs/tags/v1.0.0&rev=844703f7eff4c533bb147931bffe914b3345ef4d";
-      flake = false;
-    };
+    # The submodules, at .gitmodules' pins: bump them together.
+    src-websocketpp = { url = "github:LocutusOfBorg/websocketpp/67405e1ab225f20835e4086f89b54b805dd43bae"; flake = false; };
+    src-stb         = { url = "github:nothings/stb/2c980bb59875b0d32144a71867fbdebb2f77cd20";              flake = false; };
   };
 
   outputs = { self, nixpkgs, ... }@inputs:

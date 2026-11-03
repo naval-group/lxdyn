@@ -1,10 +1,4 @@
 	
-[submodule "external/ssc"]
-	path = external/ssc
-	url = https://github.com/naval-group/scientific_computing.git
-[submodule "interfaces"]
-	path = external/interfaces
-	url = https://github.com/naval-group/interfaces.git
 [submodule "external/websocketpp"]
 	path = external/websocketpp
 	url = https://github.com/LocutusOfBorg/websocketpp.git
