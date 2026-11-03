@@ -7,10 +7,10 @@
 class WebSocketObserverTest : public ::testing::Test
 {
     protected:
-        WebSocketObserverTest() : a(ssc::random_data_generator::DataGenerator(42272)){};
-        virtual ~WebSocketObserverTest(){};
-        virtual void SetUp(){};
-        virtual void TearDown(){};
+        WebSocketObserverTest() : a(ssc::random_data_generator::DataGenerator(42272)){}
+        virtual ~WebSocketObserverTest(){}
+        virtual void SetUp(){}
+        virtual void TearDown(){}
         ssc::random_data_generator::DataGenerator a;
 };
 

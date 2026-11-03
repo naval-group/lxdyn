@@ -77,9 +77,9 @@ class SystemWithMock : public ssc::solver::ContinuousSystem
         mock.set_discrete_state(discrete_state_name, value);
     }
 
-    double get_input_value(const std::string &name) const { mock.get_input_value(name); }
+    double get_input_value(const std::string &name) const { return mock.get_input_value(name); }
 
-    double get_state_value(const std::string &name) const { mock.get_state_value(name); }
+    double get_state_value(const std::string &name) const { return mock.get_state_value(name); }
 
   protected:
     ODEMocks &mock;

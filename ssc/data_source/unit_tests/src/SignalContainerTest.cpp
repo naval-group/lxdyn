@@ -235,8 +235,6 @@ TEST_F(SignalContainerTest, should_be_able_to_set_all_coercible_types_using_a_li
     std::vector<float> vvf = signals.get<std::vector<float> >("signal4");
     for (size_t i = 0 ; i < n ; ++i)
     {
-        ref.at(k);
-        vvf.at(i);
         ASSERT_DOUBLE_EQ((float)ref.at(k++), vvf.at(i));
     }
     ASSERT_DOUBLE_EQ(ref.at(k++), signals.get<double>("signal1"));

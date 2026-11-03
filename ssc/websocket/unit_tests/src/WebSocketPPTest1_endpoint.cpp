@@ -7,10 +7,10 @@
 class WebSocketPPTest1_endpoint : public ::testing::Test
 {
     protected:
-        WebSocketPPTest1_endpoint(){};
-        virtual ~WebSocketPPTest1_endpoint(){};
-        virtual void SetUp(){};
-        virtual void TearDown(){};
+        WebSocketPPTest1_endpoint(){}
+        virtual ~WebSocketPPTest1_endpoint(){}
+        virtual void SetUp(){}
+        virtual void TearDown(){}
 };
 
 TEST_F(WebSocketPPTest1_endpoint,  construct_server_iostream ) {
@@ -64,8 +64,8 @@ TEST_F(WebSocketPPTest1_endpoint,  listen_after_listen_failure )
     server1.init_asio();
     server2.init_asio();
 
-    boost::asio::ip::tcp::endpoint ep1(boost::asio::ip::address::from_string("127.0.0.1"), 12345);
-    boost::asio::ip::tcp::endpoint ep2(boost::asio::ip::address::from_string("127.0.0.1"), 23456);
+    boost::asio::ip::tcp::endpoint ep1(boost::asio::ip::make_address("127.0.0.1"), 12345);
+    boost::asio::ip::tcp::endpoint ep2(boost::asio::ip::make_address("127.0.0.1"), 23456);
 
     server1.listen(ep1, ec);
     ASSERT_TRUE(!ec);

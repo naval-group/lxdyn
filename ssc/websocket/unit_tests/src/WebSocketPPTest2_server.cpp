@@ -8,10 +8,10 @@
 class WebSocketPPTest2_server : public ::testing::Test
 {
     protected:
-        WebSocketPPTest2_server(){};
-        virtual ~WebSocketPPTest2_server(){};
-        virtual void SetUp(){};
-        virtual void TearDown(){};
+        WebSocketPPTest2_server(){}
+        virtual ~WebSocketPPTest2_server(){}
+        virtual void SetUp(){}
+        virtual void TearDown(){}
 };
 
 typedef websocketpp::server<websocketpp::config::core> server;
