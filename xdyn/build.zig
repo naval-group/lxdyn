@@ -90,7 +90,8 @@ pub fn addExecutables(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) vo
 }
 
 // run_all_tests, with gtest and gmock from the closure: `zig build test`.
-pub fn addTests(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) void {
+// Returns the `test` step, which SSC's suite joins.
+pub fn addTests(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) *std.Build.Step {
     const b = ctx.b;
     const m = ctx.module(.{});
     // The tests include their module's headers by bare name.
@@ -111,7 +112,9 @@ pub fn addTests(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) void {
     _ = scratch.add(".keep", "");
     run.setCwd(scratch.getDirectory());
     run.addPassthruArgs();
-    b.step("test", "Run all C++ unit tests").dependOn(&run.step);
+    const step = b.step("test", "Run all C++ unit tests");
+    step.dependOn(&run.step);
+    return step;
 }
 
 fn moduleDirs(b: *std.Build) []const []const u8 {

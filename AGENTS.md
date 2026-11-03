@@ -68,11 +68,11 @@ nix build .#xdyn-fmu-zip       # both FMU libraries and make_fmu.py: the release
 
 **The integration lanes depend on `zig:build` on purpose.** `zig build test` compiles and runs the suite but installs nothing, so on a tree where only the unit tests have run, every scenario exits 127.
 
-**`build.zig` globs its source lists.** New `.cpp` files under `xdyn/<module>/` and `xdyn/<module>/unit_tests/` register themselves, so there is no file list to update. Each component's build is a plain Zig file beside its sources — `xdyn/build.zig`, `external/build.zig`, `xdyn_wrapper_python/build.zig`, `xdyn_wrapper_fmi/build.zig` — imported by the root `build.zig`, which owns the shared `Ctx`.
+**`build.zig` globs its source lists.** New `.cpp` files under `xdyn/<module>/` and `xdyn/<module>/unit_tests/` register themselves, so there is no file list to update. Each component's build is a plain Zig file beside its sources — `xdyn/build.zig`, `ssc/build.zig`, `external/build.zig`, `xdyn_wrapper_python/build.zig`, `xdyn_wrapper_fmi/build.zig` — imported by the root `build.zig`, which owns the shared `Ctx`.
 
-## Submodules
+## Absorbed and third-party sources
 
-`external/ssc` and `external/interfaces` are forks under the same organisation, pinned by commit. The policy is minimal divergence: change lxdyn to suit SSC rather than the other way round, unless there is a real reason. `external/stb` and `external/websocketpp` are upstream third parties.
+`ssc/` and `interfaces/` are SSC and xdyn's gRPC interface, absorbed from their forks, each with a `PROVENANCE.md` naming the upstream commit. They are lxdyn's own code: fix a defect where it is, and `run_ssc_tests` is SSC's suite. `external/stb` and `external/websocketpp` are upstream third parties, as submodules.
 
 ## Style
 

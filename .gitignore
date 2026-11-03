@@ -14,6 +14,7 @@ install
 
 *.swp
 __pycache__
+/interfaces/xdyngrpc/_proto/
 /.venv/
 /.direnv/
 

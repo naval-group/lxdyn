@@ -44,10 +44,7 @@ jobs:
   native:
     runs-on: ubuntu-latest
     steps:
-      # Deliberately NOT submodules: recursive, though it would now work -- .gitmodules names
-      # all three absolutely. `mise run setup` still has to run for SSC's umbrella headers, and
-      # it inits the submodules on the way, so asking checkout to do it as well is a second
-      # clone of ssc for nothing.
+      # The submodules come from `mise run setup`, as on a developer's clone.
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
 

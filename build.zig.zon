@@ -10,6 +10,8 @@
         "xdyn_wrapper_python/build.zig",
         "xdyn_wrapper_fmi/build.zig",
         "external",
+        "ssc",
+        "interfaces/proto",
         "tools/deps/assets.sha256",
     },
 }

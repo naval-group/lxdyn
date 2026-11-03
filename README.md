@@ -121,7 +121,7 @@ direnv allow
 The C++ dependencies, Boost, gRPC, HDF5, yaml-cpp and GoogleTest, are deliberately not system packages: they are built against zig's libc++ into a closure of their own, so the build does not depend on what the host distribution ships. You can download a prebuilt closure in about 32 MB, or build one from source in a few hours. The build also runs protoc, which comes as its own 2.6 MB download, the host tools.
 
 ```bash
-mise run bootstrap             # submodules, SSC umbrella headers, the host tools and the closure
+mise run bootstrap             # submodules, the host tools and the closure
 ```
 
 `bootstrap` is `mise run setup` plus `mise run deps:fetch host-tools` and `mise run deps:fetch x86_64-linux-gnu`, and it is re-runnable: it leaves an existing `host-tools/` or closure alone. To build a closure from source instead of downloading it, use `nix develop .#deps`, it takes hours.

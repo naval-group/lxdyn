@@ -4,6 +4,7 @@ const std = @import("std");
 const builtin = @import("builtin");
 const xdyn = @import("xdyn/build.zig");
 const external = @import("external/build.zig");
+const ssc = @import("ssc/build.zig");
 const python = @import("xdyn_wrapper_python/build.zig");
 const fmu = @import("xdyn_wrapper_fmi/build.zig");
 
@@ -37,7 +38,7 @@ pub fn build(b: *std.Build) void {
 
     // libxdyn: one static archive of SSC, xdyn and the generated code.
     const lib = ctx.module(.{});
-    external.addSsc(&ctx, lib);
+    ssc.addSources(&ctx, lib);
     xdyn.addSources(&ctx, lib);
     external.addThirdparty(&ctx, lib);
     const libxdyn = b.addLibrary(.{ .name = "xdyn", .root_module = lib, .linkage = .static });
@@ -45,7 +46,7 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(libxdyn);
 
     xdyn.addExecutables(&ctx, libxdyn);
-    xdyn.addTests(&ctx, libxdyn);
+    ssc.addTests(&ctx, libxdyn, xdyn.addTests(&ctx, libxdyn));
     python.add(&ctx, libxdyn); // opt-in: zig build python
     fmu.add(&ctx, libxdyn); // opt-in: zig build fmu
 }
@@ -89,7 +90,7 @@ pub const Ctx = struct {
         m.addSystemIncludePath(.{ .cwd_relative = b.fmt("{s}/install/include", .{ctx.deps_root}) });
         m.addIncludePath(b.path("."));
         m.addIncludePath(b.path("xdyn/cli"));
-        m.addIncludePath(b.path("external/ssc"));
+        m.addIncludePath(ctx.codegen.ssc_umbrellas);
         m.addIncludePath(b.path("external"));
         m.addIncludePath(ctx.codegen.proto_messages);
         m.addIncludePath(ctx.codegen.proto_services);
@@ -125,16 +126,15 @@ pub const Codegen = struct {
     step: *std.Build.Step,
     proto_messages: std.Build.LazyPath,
     proto_services: std.Build.LazyPath,
+    ssc_umbrellas: std.Build.LazyPath,
     git_sha_c: std.Build.LazyPath,
 };
 
 fn addCodegen(b: *std.Build) Codegen {
     const step = b.step("gen", "Run the code generators on their own");
 
-    const ssc_headers = b.addSystemCommand(&.{ "sh", "generate_module_header.sh" });
-    ssc_headers.setCwd(b.path("external/ssc/ssc"));
-    ssc_headers.has_side_effects = true;
-    step.dependOn(&ssc_headers.step);
+    const umbrellas = ssc.addUmbrellas(b);
+    step.dependOn(&umbrellas.step);
 
     // A host protoc even when cross-compiling: the generated C++ is arch-independent.
     const host = b.option([]const u8, "deps-host", "Host tools providing protoc (default: ./host-tools)") orelse
@@ -154,9 +154,9 @@ fn addCodegen(b: *std.Build) Codegen {
     gen_proto.addPrefixedFileArg("--plugin=protoc-gen-grpc=", .{ .cwd_relative = b.pathJoin(&.{ bin, "grpc_cpp_plugin" }) });
     const messages = gen_proto.addPrefixedOutputDirectoryArg("--cpp_out=", "proto");
     const services = gen_proto.addPrefixedOutputDirectoryArg("--grpc_out=", "proto-grpc");
-    gen_proto.addPrefixedDirectoryArg("-I", b.path("external/interfaces/proto"));
+    gen_proto.addPrefixedDirectoryArg("-I", b.path("interfaces/proto"));
     for (proto_files) |name|
-        gen_proto.addFileArg(b.path(b.fmt("external/interfaces/proto/{s}.proto", .{name})));
+        gen_proto.addFileArg(b.path(b.fmt("interfaces/proto/{s}.proto", .{name})));
     step.dependOn(&gen_proto.step);
 
     const sha = b.option([]const u8, "git-sha", "Commit stamped into the binaries (default: git rev-parse HEAD)") orelse
@@ -169,7 +169,13 @@ fn addCodegen(b: *std.Build) Codegen {
     , .{sha}));
     step.dependOn(&write_sha.step);
 
-    return .{ .step = step, .proto_messages = messages, .proto_services = services, .git_sha_c = git_sha_c };
+    return .{
+        .step = step,
+        .proto_messages = messages,
+        .proto_services = services,
+        .ssc_umbrellas = umbrellas.getDirectory(),
+        .git_sha_c = git_sha_c,
+    };
 }
 
 fn headSha(b: *std.Build) []const u8 {
