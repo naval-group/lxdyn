@@ -11,7 +11,7 @@
         "xdyn_wrapper_fmi/build.zig",
         "external",
         "ssc",
-        "interfaces/proto",
+        "proto",
         "tools/deps/assets.sha256",
     },
 }

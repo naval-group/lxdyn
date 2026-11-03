@@ -72,7 +72,7 @@ nix build .#xdyn-fmu-zip       # both FMU libraries and make_fmu.py: the release
 
 ## Absorbed and third-party sources
 
-`ssc/` and `interfaces/` are SSC and xdyn's gRPC interface, absorbed from their forks, each with a `PROVENANCE.md` naming the upstream commit. They are lxdyn's own code: fix a defect where it is, and `run_ssc_tests` is SSC's suite. `external/stb` and `external/websocketpp` are upstream third parties, as submodules.
+`ssc/`, `proto/` and `xdyn_grpc/` are SSC, xdyn's gRPC API and the Python package for writing models against it, absorbed from their forks, each with a `PROVENANCE.md` naming the upstream commit. They are lxdyn's own code: fix a defect where it is, and `run_ssc_tests` is SSC's suite. `external/stb` and `external/websocketpp` are upstream third parties, as submodules.
 
 ## Style
 

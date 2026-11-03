@@ -154,9 +154,9 @@ fn addCodegen(b: *std.Build) Codegen {
     gen_proto.addPrefixedFileArg("--plugin=protoc-gen-grpc=", .{ .cwd_relative = b.pathJoin(&.{ bin, "grpc_cpp_plugin" }) });
     const messages = gen_proto.addPrefixedOutputDirectoryArg("--cpp_out=", "proto");
     const services = gen_proto.addPrefixedOutputDirectoryArg("--grpc_out=", "proto-grpc");
-    gen_proto.addPrefixedDirectoryArg("-I", b.path("interfaces/proto"));
+    gen_proto.addPrefixedDirectoryArg("-I", b.path("proto"));
     for (proto_files) |name|
-        gen_proto.addFileArg(b.path(b.fmt("interfaces/proto/{s}.proto", .{name})));
+        gen_proto.addFileArg(b.path(b.fmt("proto/{s}.proto", .{name})));
     step.dependOn(&gen_proto.step);
 
     const sha = b.option([]const u8, "git-sha", "Commit stamped into the binaries (default: git rev-parse HEAD)") orelse
