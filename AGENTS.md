@@ -60,8 +60,6 @@ nix build .#xdyn-fmu-zip       # both FMU libraries and make_fmu.py: the release
 
 **`-Ddebug`, never `-Doptimize=Debug`.** The former is a debug build of lxdyn's own code with the closure left optimized. The latter is not the same thing and is not what the `.gdbinit` helpers or `mise run gdb` expect.
 
-**`mise run setup` resets every submodule to its committed pin.** If you are testing a local checkout of a submodule, it will be discarded. Commit the pin bump first.
-
 **Do not run `zig build test -Dtarget=...` directly to check a cross target.** On a host with `binfmt_misc` handlers registered, zig runs the foreign binary transparently and the suite passes without qemu or wine being involved, which makes the result a property of that machine. `mise run cross` names the emulators with `-fqemu` and `-fwine`.
 
 **A bare `zig build` installs into `zig-out/`, which nothing reads.** The tasks, scripts and Makefiles look in `build/<triple>`, which is what `mise run zig:build` passes as `--prefix`.
@@ -72,7 +70,7 @@ nix build .#xdyn-fmu-zip       # both FMU libraries and make_fmu.py: the release
 
 ## Absorbed and third-party sources
 
-`ssc/`, `proto/` and `xdyn_grpc/` are SSC, xdyn's gRPC API and the Python package for writing models against it, absorbed from their forks, each with a `PROVENANCE.md` naming the upstream commit. They are lxdyn's own code: fix a defect where it is, and `run_ssc_tests` is SSC's suite. `external/stb` and `external/websocketpp` are upstream third parties, as submodules.
+`ssc/`, `proto/` and `xdyn_grpc/` are SSC, xdyn's gRPC API and the Python package for writing models against it, absorbed from their forks, each with a `PROVENANCE.md` naming the upstream commit. They are lxdyn's own code: fix a defect where it is, and `run_ssc_tests` is SSC's suite. `external/stb` and `external/websocketpp` are vendored third-party code: an edit there is allowed and listed in that tree's `PROVENANCE.md`, so an update is a fresh copy plus the listed edits.
 
 ## Style
 

@@ -1,7 +1,3 @@
-[tasks.setup]
-description = "Submodules"
-run = "git submodule update --init"
-
 [tasks.bootstrap]
 description = "First-time setup for a fresh clone: the host tools and a closure"
 run = '''
