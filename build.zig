@@ -21,14 +21,15 @@ pub fn build(b: *std.Build) void {
     // Configuration reads $XDYN_*, runs git, pkg-config and python: none of it is visible to the configure cache.
     b.graph.poisonCache();
     const target = b.standardTargetOptions(.{ .default_target = native_default });
+    const codegen = addCodegen(b);
     var ctx: Ctx = .{
         .b = b,
         .target = target,
         .optimize = .ReleaseFast,
-        .deps_root = resolveDepsRoot(b, target),
+        .deps_root = resolveDepsRoot(b, target, codegen.step),
         .eigen_include = resolveEigen(b),
         .debug = b.option(bool, "debug", "Build xdyn -O0 -g for gdb (deps stay optimized)") orelse false,
-        .codegen = addCodegen(b),
+        .codegen = codegen,
     };
     ctx.cpp_flags = xdyn.cppFlags(&ctx);
     // No -Werror: protoc's output is not ours to keep clean.
@@ -141,10 +142,11 @@ fn addCodegen(b: *std.Build) Codegen {
         fromRoot(b, "host-tools");
     const bin = b.pathJoin(&.{ host, "install", "bin" });
     const protoc = b.pathJoin(&.{ bin, "protoc" });
-    std.Io.Dir.cwd().access(b.graph.io, protoc, .{}) catch {
+    if (std.Io.Dir.cwd().access(b.graph.io, protoc, .{})) |_|
+        checkStamp(b, step, host, "host-tools", null)
+    else |_|
         std.log.warn("no protoc under '{s}': codegen will fail. Fetch it with `mise run deps:fetch " ++
             "host-tools`, or name one with -Ddeps-host=<path> or $XDYN_DEPS_HOST.", .{bin});
-    };
 
     const gen_proto = b.addSystemCommand(&.{protoc});
     gen_proto.setCwd(b.path("."));
@@ -183,7 +185,7 @@ fn headSha(b: *std.Build) []const u8 {
 
 // Keyed on the full triple, since gnu and musl closures differ in exactly the libc. Order:
 // -Ddeps, $XDYN_DEPS_<TRIPLE>, $XDYN_DEPS (an override for every target), ./libcxx-<triple>.
-fn resolveDepsRoot(b: *std.Build, target: std.Build.ResolvedTarget) []const u8 {
+fn resolveDepsRoot(b: *std.Build, target: std.Build.ResolvedTarget, codegen: *std.Build.Step) []const u8 {
     const t = target.result;
     const triple = b.fmt("{s}-{s}-{s}", .{ @tagName(t.cpu.arch), @tagName(t.os.tag), @tagName(t.abi) });
 
@@ -200,12 +202,39 @@ fn resolveDepsRoot(b: *std.Build, target: std.Build.ResolvedTarget) []const u8 {
         fromRoot(b, b.fmt("libcxx-{s}", .{triple}));
 
     // A warning, so `zig build --help` still works without a closure.
-    std.Io.Dir.cwd().access(b.graph.io, b.pathJoin(&.{ root, "libxdyndeps_core.a" }), .{}) catch {
+    if (std.Io.Dir.cwd().access(b.graph.io, b.pathJoin(&.{ root, "libxdyndeps_core.a" }), .{})) |_|
+        checkStamp(b, codegen, root, triple, "install/lib")
+    else |_|
         std.log.warn("no libxdyndeps_core.a under '{s}': the {s} closure is missing. Fetch it " ++
             "with `mise run deps:fetch {s}`, build it with `mise run deps:{s}`, or name one " ++
             "with -Ddeps=<path> or ${s}.", .{ root, triple, triple, triple, env_key });
-    };
     return root;
+}
+
+// fetch.sh leaves the asset's assets.sha256 line in the tree as asset.sha256. A failing step under
+// `gen`, which every artifact depends on, so `zig build --help` still works on a stale tree.
+// Only a local build has `built_marker`: a tree without it or a stamp came from an older fetch.sh.
+fn checkStamp(b: *std.Build, codegen: *std.Build.Step, dir: []const u8, flavor: []const u8, built_marker: ?[]const u8) void {
+    const io = b.graph.io;
+    const cwd = std.Io.Dir.cwd();
+    const refetch = b.fmt("Move it aside and run `mise run deps:fetch {s}`.", .{flavor});
+    const stamp = cwd.readFileAlloc(io, b.pathJoin(&.{ dir, "asset.sha256" }), b.allocator, .limited(4096)) catch {
+        const built = if (built_marker) |marker|
+            if (cwd.access(io, b.pathJoin(&.{ dir, marker }), .{})) |_| true else |_| false
+        else
+            true;
+        if (built)
+            std.log.warn("'{s}' has no asset.sha256: a local build, not checked against tools/deps/assets.sha256.", .{dir})
+        else
+            codegen.dependOn(&b.addFail(b.fmt("'{s}' was fetched before closures carried a stamp. {s}", .{ dir, refetch })).step);
+        return;
+    };
+    const sums = cwd.readFileAlloc(io, fromRoot(b, "tools/deps/assets.sha256"), b.allocator, .limited(1 << 16)) catch |err|
+        std.debug.panic("reading tools/deps/assets.sha256: {t}", .{err});
+    const want = std.mem.trim(u8, stamp, " \r\n");
+    var lines = std.mem.tokenizeAny(u8, sums, "\r\n");
+    while (lines.next()) |line| if (std.mem.eql(u8, line, want)) return;
+    codegen.dependOn(&b.addFail(b.fmt("'{s}' is not the {s} asset tools/deps/assets.sha256 names. {s}", .{ dir, flavor, refetch })).step);
 }
 
 // Header-only and target-independent, so the host's copy serves cross builds too. Order:

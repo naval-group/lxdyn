@@ -52,8 +52,8 @@ jobs:
         run: nix develop --command mise run deploy:image
 
       # Steps 1 and 2 of integration_tests/deploy/run.sh, the two that are about the image.
-      # Its step 3 needs a native build of xdyn-for-me and the gRPC venv, and a second full
-      # zig cache next to two unpacked closures is what runs a 14 GB runner out of disk. The
+      # Its step 3 needs the gRPC venv and a native xdyn-for-me, so the gnu closure and a second
+      # full zig cache next to this job's, and that is what runs a 14 GB runner out of disk. The
       # protocol is covered natively by ci.yml, on every push; what is left to prove here is
       # that the artifact about to reach a registry starts and simulates.
       - name: Smoke test

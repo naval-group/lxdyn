@@ -136,9 +136,11 @@
             sha256 = builtins.head (pkgs.lib.splitString " " line);
           };
           nativeBuildInputs = [ pkgs.zstd ];
+          # The stamp fetch.sh writes, which build.zig checks.
           buildCommand = ''
             mkdir $out
             zstd -d -q -c $src | tar -C $out -xf -
+            echo '${line}' > $out/asset.sha256
           '';
         };
 

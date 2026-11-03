@@ -10,5 +10,6 @@
         "xdyn_wrapper_python/build.zig",
         "xdyn_wrapper_fmi/build.zig",
         "external",
+        "tools/deps/assets.sha256",
     },
 }
