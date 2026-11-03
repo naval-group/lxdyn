@@ -136,14 +136,14 @@ fn addCodegen(b: *std.Build) Codegen {
     step.dependOn(&ssc_headers.step);
 
     // A host protoc even when cross-compiling: the generated C++ is arch-independent.
-    const host = b.option([]const u8, "deps-host", "Host closure providing protoc (default: ./libcxx-x86_64-linux-gnu)") orelse
+    const host = b.option([]const u8, "deps-host", "Host tools providing protoc (default: ./host-tools)") orelse
         b.graph.environ_map.get("XDYN_DEPS_HOST") orelse
-        fromRoot(b, "libcxx-x86_64-linux-gnu");
+        fromRoot(b, "host-tools");
     const bin = b.pathJoin(&.{ host, "install", "bin" });
     const protoc = b.pathJoin(&.{ bin, "protoc" });
     std.Io.Dir.cwd().access(b.graph.io, protoc, .{}) catch {
-        std.log.warn("no protoc under '{s}': codegen will fail. Point at the native closure " ++
-            "with -Ddeps-host=<path> or $XDYN_DEPS_HOST.", .{bin});
+        std.log.warn("no protoc under '{s}': codegen will fail. Fetch it with `mise run deps:fetch " ++
+            "host-tools`, or name one with -Ddeps-host=<path> or $XDYN_DEPS_HOST.", .{bin});
     };
 
     const gen_proto = b.addSystemCommand(&.{protoc});

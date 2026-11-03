@@ -55,6 +55,7 @@
       '';
 
       # Static protoc and grpc_cpp_plugin: a closure's own are dynamic, which a sandbox can't run.
+      # Built here only to build the closures and to be packed; xdyn builds with the fetched asset.
       hostTools = pkgs.stdenvNoCC.mkDerivation {
         pname = "lxdyn-deps-host-tools";
         version = "1.85.1";
@@ -124,13 +125,12 @@
       assetTag = pkgs.lib.removePrefix "# tag: " (pkgs.lib.findFirst (pkgs.lib.hasPrefix "# tag: ")
         (throw "tools/deps/assets.sha256 has no '# tag:' line") assetLines);
 
-      fetchClosure = triple:
+      fetchAsset = flavor: asset:
         let
-          asset = "lxdyn-deps-${triple}.tar.zst";
           line = pkgs.lib.findFirst (pkgs.lib.hasSuffix "  ${asset}")
             (throw "tools/deps/assets.sha256 has no entry for ${asset}") assetLines;
         in pkgs.stdenvNoCC.mkDerivation {
-          name = "deps-${triple}-${assetTag}";
+          name = "deps-${flavor}-${assetTag}";
           src = pkgs.fetchurl {
             url = "https://github.com/naval-group/lxdyn/releases/download/${assetTag}/${asset}";
             sha256 = builtins.head (pkgs.lib.splitString " " line);
@@ -144,7 +144,8 @@
 
       fetched = pkgs.lib.genAttrs
         [ "x86_64-linux-gnu" "x86_64-linux-musl" "aarch64-linux-musl" "x86_64-windows-gnu" ]
-        fetchClosure;
+        (triple: fetchAsset triple "lxdyn-deps-${triple}.tar.zst")
+        // { host-tools = fetchAsset "host-tools" "lxdyn-deps-host-tools-x86_64-linux.tar.zst"; };
 
       # Deny-list, so a docs or CI edit doesn't rebuild xdyn.
       xdynSource = pkgs.lib.cleanSourceWith {
@@ -173,7 +174,7 @@
       # The sandbox has no .git for headSha() and no pkg-config hook for the eigen probe.
       zigFlags = triple: pkgs.lib.concatStringsSep " " [
         "-Ddeps=${fetched.${triple}}"
-        "-Ddeps-host=${hostTools}"
+        "-Ddeps-host=${fetched.host-tools}"
         "-Deigen=${pkgs.eigen_5}/include/eigen3"
         "-Dgit-sha=${self.rev or self.dirtyRev or "unknown"}"
       ];

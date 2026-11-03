@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
-      # Read-only: the host tools come from xdyn-package's pushes instead of a rebuild per check.
+      # Read-only: xdyn-package's pushes.
       - uses: cachix/cachix-action@v17
         with:
           name: naval-group
@@ -53,8 +53,10 @@ jobs:
 
       # ~34 MB against the hours build-all.sh takes. Hash-verified against
       # tools/deps/assets.sha256, which also names the release tag.
-      - name: Dependency closure
-        run: nix develop --command mise run deps:fetch x86_64-linux-gnu
+      - name: Host tools and dependency closure
+        run: |
+          nix develop --command mise run deps:fetch host-tools
+          nix develop --command mise run deps:fetch x86_64-linux-gnu
       - name: Submodules
         run: nix develop --command mise run setup
 
@@ -73,8 +75,10 @@ jobs:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
 
-      - name: Dependency closure
-        run: nix develop --command mise run deps:fetch x86_64-linux-gnu
+      - name: Host tools and dependency closure
+        run: |
+          nix develop --command mise run deps:fetch host-tools
+          nix develop --command mise run deps:fetch x86_64-linux-gnu
       - name: Submodules
         run: nix develop --command mise run setup
 
@@ -96,9 +100,9 @@ jobs:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
 
-      # The native closure as well as Windows': codegen runs a host protoc (see cross).
-      - name: Dependency closures
+      - name: Host tools and dependency closures
         run: |
+          nix develop --command mise run deps:fetch host-tools
           nix develop --command mise run deps:fetch x86_64-linux-gnu
           nix develop --command mise run deps:fetch x86_64-windows-gnu
       - name: Submodules
@@ -109,7 +113,7 @@ jobs:
       - name: Windows FMU under wine
         run: nix develop .#cross --command mise run fmu:wine
 
-  # master only, and the one job that pushes to the cache: xdyn and the host tools.
+  # master only, and the one job that pushes to the cache.
   xdyn-package:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
