@@ -14,6 +14,7 @@
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/environment_models/DefaultWindModel.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
+#include "xdyn/force_models/GravityForceModel.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
@@ -159,6 +160,21 @@ TEST_F(SimulatorBuilderTest, get_forces_should_throw_if_there_is_anything_it_can
     const auto bodies = builder.get_bodies(m, std::vector<bool>(1,false), std::map<std::string,double>());
     const auto env = builder.build_environment_and_frames();
     ASSERT_THROW(builder.get_forces(env), InvalidInputException);
+}
+
+TEST_F(SimulatorBuilderTest, get_forces_should_throw_if_two_force_models_share_a_name)
+{
+    YamlModel gravity;
+    gravity.model = "gravity";
+    auto input2 = input;
+    input2.bodies.front().external_forces = {gravity};
+    SimulatorBuilder builder2(input2, 0);
+    builder2.can_parse<DefaultSurfaceElevation>()
+            .can_parse<DefaultWindModel>()
+            .can_parse<GravityForceModel>()
+            .can_parse<GravityForceModel>();
+    const auto env = builder2.build_environment_and_frames();
+    ASSERT_THROW(builder2.get_forces(env), InvalidInputException);
 }
 
 TEST_F(SimulatorBuilderTest, wind_model_is_available_from_env)
