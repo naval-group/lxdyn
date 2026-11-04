@@ -17,7 +17,7 @@
 class DiffractionForceModelTest : public ::testing::Test
 {
     public:
-        static TR1(shared_ptr)<WaveModel> get_wave_model(const double period, const double direction=0., const double height=1.);
+        static std::shared_ptr<WaveModel> get_wave_model(const double period, const double direction=0., const double height=1.);
         static EnvironmentAndFrames get_waves_env(const double period, const double direction=0., const double amplitude = 1.);
         static BodyStates get_states_with_forward_speed(const double u = 0);
     protected:

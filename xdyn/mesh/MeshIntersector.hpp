@@ -267,7 +267,7 @@ class MeshIntersector
         bool need_to_update_closing_facet;
 };
 
-typedef TR1(shared_ptr)<MeshIntersector> MeshIntersectorPtr;
-typedef TR1(shared_ptr)<const MeshIntersector> const_MeshIntersectorPtr;
+typedef std::shared_ptr<MeshIntersector> MeshIntersectorPtr;
+typedef std::shared_ptr<const MeshIntersector> const_MeshIntersectorPtr;
 
 #endif

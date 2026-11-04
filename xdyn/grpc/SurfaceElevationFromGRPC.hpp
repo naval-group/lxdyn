@@ -107,7 +107,7 @@ class SurfaceElevationFromGRPC : public SurfaceElevationInterface
         std::vector<FlatDiscreteDirectionalWaveSpectrum> get_flat_directional_spectra(const double x, const double y, const double t) const;
         SurfaceElevationFromGRPC(); // Disabled (private & without implementation)
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 };
 
 #endif /* SURFACE_ELEVATION_FROM_GRPC_HPP */

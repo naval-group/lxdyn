@@ -9,7 +9,7 @@
 #include "env_for_tests.hpp"
 #include "xdyn/core/SurfaceElevationFromWaves.hpp"
 
-EnvironmentAndFrames get_environment_and_frames(const TR1(shared_ptr)<WaveModel>& wave_model)
+EnvironmentAndFrames get_environment_and_frames(const std::shared_ptr<WaveModel>& wave_model)
 {
     EnvironmentAndFrames env;
     env.g = 9.81;
@@ -18,7 +18,7 @@ EnvironmentAndFrames get_environment_and_frames(const TR1(shared_ptr)<WaveModel>
     env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
-    TR1(shared_ptr)<ssc::kinematics::PointMatrix> mesh;
+    std::shared_ptr<ssc::kinematics::PointMatrix> mesh;
     env.w = SurfaceElevationPtr(new SurfaceElevationFromWaves(wave_model));
     return env;
 }

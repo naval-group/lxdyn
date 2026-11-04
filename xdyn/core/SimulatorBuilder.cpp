@@ -16,12 +16,12 @@
 
 SimulatorBuilder::SimulatorBuilder(const YamlSimulatorInput& input_, const double t0_, const ssc::data_source::DataSource& command_listener_) :
         input(input_),
-        builder(TR1(shared_ptr)<BodyBuilder>(new BodyBuilder(input.rotations))),
+        builder(std::shared_ptr<BodyBuilder>(new BodyBuilder(input.rotations))),
         force_parsers(),
         surface_elevation_parsers(),
-        wave_parsers(TR1(shared_ptr)<std::vector<WaveModelBuilderPtr> >(new std::vector<WaveModelBuilderPtr>())),
-        directional_spreading_parsers(TR1(shared_ptr)<std::vector<DirectionalSpreadingBuilderPtr> >(new std::vector<DirectionalSpreadingBuilderPtr>())),
-        spectrum_parsers(TR1(shared_ptr)<std::vector<SpectrumBuilderPtr> >(new std::vector<SpectrumBuilderPtr>())),
+        wave_parsers(std::shared_ptr<std::vector<WaveModelBuilderPtr> >(new std::vector<WaveModelBuilderPtr>())),
+        directional_spreading_parsers(std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >(new std::vector<DirectionalSpreadingBuilderPtr>())),
+        spectrum_parsers(std::shared_ptr<std::vector<SpectrumBuilderPtr> >(new std::vector<SpectrumBuilderPtr>())),
         wind_model_parsers(),
         UWCurrent_model_parsers(),
         command_listener(command_listener_),

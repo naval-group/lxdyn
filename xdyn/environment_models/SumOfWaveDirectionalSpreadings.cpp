@@ -12,21 +12,21 @@
 #include <set>
 
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w) : terms(std::vector<TR1(shared_ptr)<WaveDirectionalSpreading> >(1, TR1(shared_ptr)<WaveDirectionalSpreading>(w.clone())))
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w) : terms(std::vector<std::shared_ptr<WaveDirectionalSpreading> >(1, std::shared_ptr<WaveDirectionalSpreading>(w.clone())))
 {
 }
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w1, const WaveDirectionalSpreading& w2) : terms(std::vector<TR1(shared_ptr)<WaveDirectionalSpreading> >())
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w1, const WaveDirectionalSpreading& w2) : terms(std::vector<std::shared_ptr<WaveDirectionalSpreading> >())
 {
-    terms.push_back(TR1(shared_ptr)<WaveDirectionalSpreading>(w1.clone()));
-    terms.push_back(TR1(shared_ptr)<WaveDirectionalSpreading>(w2.clone()));
+    terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(w1.clone()));
+    terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(w2.clone()));
 }
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const std::vector<WaveDirectionalSpreading>& ws) : terms(std::vector<TR1(shared_ptr)<WaveDirectionalSpreading> >())
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const std::vector<WaveDirectionalSpreading>& ws) : terms(std::vector<std::shared_ptr<WaveDirectionalSpreading> >())
 {
     for (auto t = ws.begin() ; t != ws.end() ; ++t)
     {
-        terms.push_back(TR1(shared_ptr)<WaveDirectionalSpreading>(t->clone()));
+        terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(t->clone()));
     }
 }
 

@@ -36,9 +36,8 @@
 #include "ssc/data_source/DataSource.hpp"
 #include "ssc/kinematics/Point.hpp"
 #include "ssc/kinematics/Wrench.hpp"
-#include "ssc/macros/tr1_macros.hpp"
 #include <string>
-#include TR1INC(memory)
+#include <memory>
 
 namespace py = pybind11;
 

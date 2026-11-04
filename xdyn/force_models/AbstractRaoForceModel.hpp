@@ -28,7 +28,7 @@ class AbstractRaoForceModel : public ForceModel
 
     private:
         AbstractRaoForceModel();
-        TR1(shared_ptr)<PhaseModuleRAOEvaluator> pimpl;
+        std::shared_ptr<PhaseModuleRAOEvaluator> pimpl;
 
 };
 

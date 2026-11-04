@@ -4,8 +4,7 @@
  * \date 13 nov. 2012, 16:50:25
  * \author cec
  */
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 #include "ssc/exception_handling/Exception.hpp"
 
 #include <vector>
@@ -44,7 +43,7 @@ namespace ssc
         template <typename T> class TwoDimensionalInterpolation
         {
             public:
-                TwoDimensionalInterpolation(const double& xmin_, const double& xmax_, const double& ymin_, const double& ymax_, const std::vector<std::vector<double> >& val) : interpolators(std::vector<TR1(shared_ptr)<T> >()),
+                TwoDimensionalInterpolation(const double& xmin_, const double& xmax_, const double& ymin_, const double& ymax_, const std::vector<std::vector<double> >& val) : interpolators(std::vector<std::shared_ptr<T> >()),
                 xmin(xmin_),
                 xmax(xmax_)
                 {
@@ -63,7 +62,7 @@ namespace ssc
                         {
                             THROW(__PRETTY_FUNCTION__, TwoDimensionalInterpolationException, "At least one vector in val has fewer than 2 elements");
                         }
-                        interpolators.push_back(TR1(shared_ptr)<T>(new T(ymin_, ymax_, *it)));
+                        interpolators.push_back(std::shared_ptr<T>(new T(ymin_, ymax_, *it)));
                     }
                 }
 
@@ -79,7 +78,7 @@ namespace ssc
                 }
             private:
                 TwoDimensionalInterpolation();
-                std::vector<TR1(shared_ptr)<T> > interpolators;
+                std::vector<std::shared_ptr<T> > interpolators;
                 double xmin;
                 double xmax;
         };

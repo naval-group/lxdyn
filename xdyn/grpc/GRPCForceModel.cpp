@@ -178,11 +178,11 @@ GRPCForceModel::Input GRPCForceModel::parse(const std::string& yaml)
 }
 
 GRPCForceModel::GRPCForceModel(const GRPCForceModel::Input& input, const std::string& body_name_, const EnvironmentAndFrames& env) :
-        GRPCForceModel(TR1(shared_ptr)<GRPCForceModel::Impl>(new GRPCForceModel::Impl(input, env.rot.convention, body_name_)), body_name_, env)
+        GRPCForceModel(std::shared_ptr<GRPCForceModel::Impl>(new GRPCForceModel::Impl(input, env.rot.convention, body_name_)), body_name_, env)
 {
 }
 
-GRPCForceModel::GRPCForceModel(const TR1(shared_ptr)<Impl>& pimpl_, const std::string& body_name_, const EnvironmentAndFrames& env) :
+GRPCForceModel::GRPCForceModel(const std::shared_ptr<Impl>& pimpl_, const std::string& body_name_, const EnvironmentAndFrames& env) :
         ForceModel(pimpl_->get_input().name, pimpl_->get_commands(), pimpl_->get_transformation_to_model_frame(), body_name_, env),
         pimpl(pimpl_)
 {

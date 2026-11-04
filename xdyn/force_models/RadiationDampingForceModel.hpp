@@ -9,7 +9,7 @@
 #define RadiationDampingForceModel_HPP_
 
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/external_data_structures/YamlRadiationDamping.hpp"
@@ -24,7 +24,7 @@ class RadiationDampingForceModel : public ForceModel
         struct Input
         {
             Input() : parser(), yaml(){}
-            TR1(shared_ptr)<HydroDBParser> parser;
+            std::shared_ptr<HydroDBParser> parser;
             YamlRadiationDamping yaml;
         };
         RadiationDampingForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
@@ -36,7 +36,7 @@ class RadiationDampingForceModel : public ForceModel
     private:
         RadiationDampingForceModel();
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 
 };
 

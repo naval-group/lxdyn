@@ -33,8 +33,8 @@ class GRPCForceModel : public ForceModel
         void extra_observations(Observer& observer) const override;
         GRPCForceModel(); // Disabled
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
-        GRPCForceModel(const TR1(shared_ptr)<Impl>& pimpl, const std::string& body_name, const EnvironmentAndFrames& env);
+        std::shared_ptr<Impl> pimpl;
+        GRPCForceModel(const std::shared_ptr<Impl>& pimpl, const std::string& body_name, const EnvironmentAndFrames& env);
 
 };
 

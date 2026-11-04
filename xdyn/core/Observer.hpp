@@ -14,7 +14,7 @@
 
 #include <ssc/macros.hpp>
 #include <ssc/solver/DiscreteSystem.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 #include <functional>
 #include <map>
@@ -113,6 +113,6 @@ class Observer
         std::map<std::string, std::function<void()> > initialize;
 };
 
-typedef TR1(shared_ptr)<Observer> ObserverPtr;
+typedef std::shared_ptr<Observer> ObserverPtr;
 
 #endif  /* OBSERVER_HPP_ */

@@ -7,8 +7,7 @@
 
 #include "DataSourceTest.hpp"
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 
 #include "gmock/gmock.h"
 
@@ -66,7 +65,7 @@ MODULE(OneInputTwoOutputs,const double x = ds->get<double>("x");\
 TEST_F(DataSourceTest, example)
 {
 //! [DataSourceTest example]
-    TR1(shared_ptr)<DataSource> ds(new DataSource);
+    std::shared_ptr<DataSource> ds(new DataSource);
     NiceMock<MockDataSourceModule>* mock = new NiceMock<MockDataSourceModule>();
     ON_CALL(*mock, clone()).WillByDefault(Return(mock));
     EXPECT_CALL(*mock, initialize()).Times(1);
@@ -106,7 +105,7 @@ TEST_F(DataSourceTest, should_be_able_to_add_a_module_and_get_the_list_of_module
     // Using NiceMock because we only want to specify the behavior of the method
     // of interest
     // There's a 'new' but no 'delete' because the clone() method will return
-    // this pointer, therefore it will be garbage-collected by std::tr1::shared_ptr
+    // this pointer, therefore it will be garbage-collected by std::shared_ptr
     NiceMock<MockDataSourceModule>* mock_1 = new NiceMock<MockDataSourceModule>();
     NiceMock<MockDataSourceModule>* mock_2 = new NiceMock<MockDataSourceModule>();
 
@@ -137,7 +136,7 @@ TEST_F(DataSourceTest, check_that_the_correct_functions_are_called_for_add_modul
     // DataSource::add exactly (i.e. there should not be *any* uninteresting
     // calls)
     // There's a 'new' but no 'delete' because the clone() method will return
-    // this pointer, therefore it will be garbage-collected by std::tr1::shared_ptr
+    // this pointer, therefore it will be garbage-collected by std::shared_ptr
     StrictMock<MockDataSourceModuleWithGetName>* mock = new StrictMock<MockDataSourceModuleWithGetName>();
     ON_CALL(*mock, clone()).WillByDefault(Return(mock));
     EXPECT_CALL(*mock, get_name()).Times(1);
@@ -667,7 +666,7 @@ TEST_F(DataSourceTest, when_forcing_a_signal_dependencies_should_not_be_updated)
     DataSource ds;
     ds.add<M4>();
     ds.add<M5>();
-    TR1(shared_ptr)<size_t> nb_of_updates(new size_t(0));
+    std::shared_ptr<size_t> nb_of_updates(new size_t(0));
     ds.set("nb of updates", nb_of_updates.get());
     ASSERT_EQ(0, *ds.get<size_t*>("nb of updates"));
     const double x = a.random<double>();
@@ -764,7 +763,7 @@ MODULE(VarUp, const double x = ds->get<double>("x");\
 TEST_F(DataSourceTest, should_not_update_dependencies_if_setting_signal_to_its_current_value)
 {
     DataSource ds;
-    TR1(shared_ptr)<ssc::random_data_generator::DataGenerator> rng(new ssc::random_data_generator::DataGenerator(1));
+    std::shared_ptr<ssc::random_data_generator::DataGenerator> rng(new ssc::random_data_generator::DataGenerator(1));
     ds.set<ssc::random_data_generator::DataGenerator*>("rng",rng.get());
     ds.add<VarUp>("VarUp");
     const double x0 = a.random<double>()();

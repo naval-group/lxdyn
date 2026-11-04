@@ -40,7 +40,7 @@ namespace GZ
 
             BodyPtr body;
             EnvironmentAndFrames env;
-            TR1(shared_ptr)<GravityForceModel> gravity;
+            std::shared_ptr<GravityForceModel> gravity;
             ForcePtr hydrostatic;
             double current_instant;
             ssc::kinematics::Point G;

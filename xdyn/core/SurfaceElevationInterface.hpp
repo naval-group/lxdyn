@@ -12,8 +12,7 @@
 #include "xdyn/core/SurfaceElevationGrid.hpp"
 #include "xdyn/core/Observer.hpp"
 #include <ssc/kinematics.hpp>
-#include <ssc/macros/tr1_macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 /** \author cady
  *  \date 24 avr. 2014, 10:28:25
@@ -211,6 +210,6 @@ class SurfaceElevationInterface
         std::vector<double> surface_elevation_for_each_point_in_mesh;
 };
 
-typedef TR1(shared_ptr)<SurfaceElevationInterface> SurfaceElevationPtr;
+typedef std::shared_ptr<SurfaceElevationInterface> SurfaceElevationPtr;
 
 #endif /* SURFACELEVATIONINTERFACE_HPP_ */

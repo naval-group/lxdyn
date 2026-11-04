@@ -18,7 +18,7 @@ class InterpolationModule : public ssc::data_source::DataSourceModule
                             const std::string& module_name,
                             const std::string& xname_,
                             const std::string& yname_,
-                            const TR1(shared_ptr)<ssc::interpolation::LinearInterpolationVariableStep>& I_);
+                            const std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep>& I_);
 
         InterpolationModule(const InterpolationModule& rhs, ssc::data_source::DataSource* const data_source);
 
@@ -29,7 +29,7 @@ class InterpolationModule : public ssc::data_source::DataSourceModule
     private:
         std::string xname;
         std::string yname;
-        TR1(shared_ptr)<ssc::interpolation::LinearInterpolationVariableStep> I;
+        std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep> I;
 };
 
 #endif /* INTERPOLATIONMODULE_HPP_ */

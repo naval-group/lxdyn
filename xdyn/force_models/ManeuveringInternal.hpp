@@ -21,7 +21,7 @@ namespace maneuvering
     typedef std::function<double(const BodyStates&, ssc::data_source::DataSource&, const double)> Function;
     class Node;
 
-    typedef TR1(shared_ptr)<Node> NodePtr;
+    typedef std::shared_ptr<Node> NodePtr;
 
     class AbstractNodeVisitor;
 

@@ -8,8 +8,7 @@
 #ifndef DATASOURCE_HPP_
 #define DATASOURCE_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 #include "ssc/data_source/DataSourceModule.hpp"
 #include "ssc/data_source/SignalContainer.hpp"
 #include "ssc/data_source/DataSourceException.hpp"
@@ -31,7 +30,7 @@
 #define USE_HASH_MAPS 1
 
 #if USE_HASH_MAPS
-#include TR1INC(unordered_map)
+#include <unordered_map>
 #else
 #include <map>
 #endif
@@ -40,13 +39,13 @@ namespace ssc
 {
     namespace data_source
     {
-        typedef TR1(shared_ptr)<const DataSourceModule> ModulePtr;
+        typedef std::shared_ptr<const DataSourceModule> ModulePtr;
 
         #if USE_HASH_MAPS
-            typedef TR1(unordered_map)<TypedModuleName,ModulePtr > FromName2Module;
-            typedef TR1(unordered_map)<TypedSignalName,TypedModuleName> FromSignal2Module;
-            typedef TR1(unordered_map)<TypedModuleName,std::set<TypedModuleName> > DependantModules;
-            typedef TR1(unordered_map)<TypedModuleName,bool > UpdateState;
+            typedef std::unordered_map<TypedModuleName,ModulePtr > FromName2Module;
+            typedef std::unordered_map<TypedSignalName,TypedModuleName> FromSignal2Module;
+            typedef std::unordered_map<TypedModuleName,std::set<TypedModuleName> > DependantModules;
+            typedef std::unordered_map<TypedModuleName,bool > UpdateState;
         #else
             typedef std::map<TypedModuleName,ModulePtr > FromName2Module;
             typedef std::map<TypedSignalName,TypedModuleName> FromSignal2Module;

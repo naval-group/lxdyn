@@ -10,8 +10,7 @@
 
 #include "ssc/interpolation/VariableStepInterpolation.hpp"
 #include "ssc/exception_handling/Exception.hpp"
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 
 #include <vector>
 
@@ -49,7 +48,7 @@ namespace ssc
                 double get_df(const size_t derivative_order) const;
 
                 class Impl;
-                TR1(shared_ptr)<Impl> pimpl;
+                std::shared_ptr<Impl> pimpl;
         };
     }
 }

@@ -8,7 +8,6 @@
 #ifndef DATASOURCEMODULE_HPP_
 #define DATASOURCEMODULE_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
 #include <string>
 
 namespace ssc

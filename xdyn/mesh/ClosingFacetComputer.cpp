@@ -2,7 +2,7 @@
 #include "xdyn/exceptions/InternalErrorException.hpp"
 
 #include <ssc/macros.hpp>
-#include TR1INC(unordered_map)
+#include <unordered_map>
 
 #include <ssc/macros/SerializeMapsSetsAndVectors.hpp>
 

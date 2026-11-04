@@ -14,7 +14,7 @@
 
 #include <ssc/data_source.hpp>
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 #include <map>
 #include <string>
@@ -43,7 +43,7 @@ class ManeuveringForceModel : public ForceModel
     private:
         ManeuveringForceModel();
         std::map<std::string, maneuvering::NodePtr> m;
-        TR1(shared_ptr)<ssc::data_source::DataSource> ds;
+        std::shared_ptr<ssc::data_source::DataSource> ds;
 };
 
 #endif /* MANEUVERINGFORCEMODEL_HPP_ */

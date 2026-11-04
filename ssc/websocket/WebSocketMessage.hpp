@@ -9,8 +9,7 @@
 #ifndef WEBSOCKETMESSAGE_HPP_
 #define WEBSOCKETMESSAGE_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 
 #include "WebSocketClient.hpp"
 #include "string2vector.hpp"
@@ -42,7 +41,7 @@ namespace ssc
             }
 
             private:
-                TR1(shared_ptr)<WebSocketMessageImpl> pimpl;
+                std::shared_ptr<WebSocketMessageImpl> pimpl;
                 void send_binary_string(const std::string& s) const;
         };
     }

@@ -1,6 +1,5 @@
 #include "ssc/kinematics/Velocity.hpp"
 #include "ssc/kinematics/KinematicsException.hpp"
-#include "ssc/macros/tr1_macros.hpp"
 
 using namespace ssc::kinematics;
 

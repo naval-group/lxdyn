@@ -6,7 +6,6 @@
  */
 
 #include "ssc/data_source/PhysicalQuantity.hpp"
-#include "ssc/macros/tr1_macros.hpp"
 #include "ssc/exception_handling/Exception.hpp"
 
 using namespace ssc::data_source;

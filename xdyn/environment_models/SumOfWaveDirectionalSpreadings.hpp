@@ -10,7 +10,7 @@
 
 #include "xdyn/environment_models/WaveDirectionalSpreading.hpp"
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 
 /** \brief
@@ -35,7 +35,7 @@ class SumOfWaveDirectionalSpreadings : public WaveDirectionalSpreading
 
     private:
         SumOfWaveDirectionalSpreadings(); // Disabled
-        std::vector<TR1(shared_ptr)<WaveDirectionalSpreading> > terms;
+        std::vector<std::shared_ptr<WaveDirectionalSpreading> > terms;
 };
 
 #endif /* SUMOFWAVEDIRECTIONALSPREADINGS_HPP_ */

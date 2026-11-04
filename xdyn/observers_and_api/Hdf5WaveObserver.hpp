@@ -3,7 +3,7 @@
 
 #include <string>
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 #include "H5Cpp.h"
 #include "xdyn/core/SurfaceElevationGrid.hpp"
 
@@ -27,9 +27,9 @@ class Hdf5WaveObserver
     private:
         Hdf5WaveObserver(); // Disabled
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 };
 
-typedef TR1(shared_ptr)<Hdf5WaveObserver> Hdf5WaveObserverPtr;
+typedef std::shared_ptr<Hdf5WaveObserver> Hdf5WaveObserverPtr;
 
 #endif
