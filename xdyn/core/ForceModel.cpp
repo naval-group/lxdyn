@@ -51,7 +51,7 @@ Wrench Memoization::run_if_not_cached(const BodyStates& states, const double t, 
     {
         current_command_values.push_back(kv.second);
     }
-    if (not(is_cached(t, states.get_current_state_values(0), current_command_values)))
+    if (not(is_cached(t, states.get_current_state_values(), current_command_values)))
     {
         cached_force = callback(states, t, env, commands);
     }

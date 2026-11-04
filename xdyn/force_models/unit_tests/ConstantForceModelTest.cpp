@@ -135,7 +135,7 @@ BodyStates ConstantForceModelTest::get_states(const double phi, const double the
     states.qi.record(0, std::get<1>(angle));
     states.qj.record(0, std::get<2>(angle));
     states.qk.record(0, std::get<3>(angle));
-    body->update_kinematics(states.get_current_state_values(0), env.k);
+    body->update_kinematics(states.get_current_state_values(), env.k);
     return states;
 }
 

@@ -39,7 +39,7 @@ Wrench BasicBuoyancyForceModel::get_force(const BodyStates& states, const double
     }
     else
     {
-        const std::vector<double> x = states.get_current_state_values(0);
+        const std::vector<double> x = states.get_current_state_values();
         const std::vector<double> sea_height = env.w->get_and_check_wave_height({x[0]}, {x[1]}, t);
         if (x[2] > sea_height[0]) f = -rho*g*V;
     }
