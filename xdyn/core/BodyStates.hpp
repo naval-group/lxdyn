@@ -64,7 +64,7 @@ struct BodyStates : AbstractStates<History>
     ssc::kinematics::RotationMatrix get_rot_from_ned_to_body() const;
     ssc::kinematics::RotationMatrix get_rot_from_ned_to(const StateType& x, const size_t idx) const;
     YamlRotation convention;  //!< Rotation convention
-    std::vector<double> get_current_state_values(const size_t idx) const;
+    std::vector<double> get_current_state_values() const;
     FilteredStates get_filtered_states() const;
     StatesFilter states_filter;
 };

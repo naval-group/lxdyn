@@ -95,7 +95,7 @@ double GMForceModel::get_gz_for_shifted_states(const BodyStates& states, const d
     YamlFilteredStates y;
     BodyWithSurfaceForces body_for_gm(new_states, 0, BlockedDOF(""), y);
     body_for_gm.reset_history();
-    body_for_gm.update(env, new_states.get_current_state_values(0), t);
+    body_for_gm.update(env, new_states.get_current_state_values(), t);
     const auto hs_force = underlying_hs_force_model->get_force(body_for_gm.get_states(), t, env, {});
     const auto hs_force_in_NED = hs_force.change_point_and_frame(ssc::kinematics::Point("NED",0,0,0),"NED",env.k);
     return calculate_gz(env.k->get("NED", body_name), ssc::kinematics::Wrench(hs_force_in_NED.get_point(), hs_force_in_NED.to_vector()));
@@ -113,7 +113,7 @@ Wrench GMForceModel::get_force(const BodyStates& states, const double t, const E
     // have modified latest_force_in_body_frame (and then Kinematics object)
     // but won't be detected by ForceModel::operator()
     BodyWithSurfaceForces body(states, 0, BlockedDOF(""), YamlFilteredStates());
-    body.update_kinematics(states.get_current_state_values(0),env.k);
+    body.update_kinematics(states.get_current_state_values(),env.k);
     underlying_hs_force_model->get_force(states, t, env, {});
     return ret;
 }

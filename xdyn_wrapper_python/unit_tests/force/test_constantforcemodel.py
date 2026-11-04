@@ -64,7 +64,7 @@ def get_states(
     states.qi.record(0, quaternion[1])
     states.qj.record(0, quaternion[2])
     states.qk.record(0, quaternion[3])
-    body.update_kinematics(states.get_current_state_values(0), env.k)
+    body.update_kinematics(states.get_current_state_values(), env.k)
     return states
 
 
