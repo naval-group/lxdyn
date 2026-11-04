@@ -195,12 +195,12 @@ class SimulatorBuilder
         VectorOfVectorOfPoints get_mesh(const YamlBody& body) const;
 
         YamlSimulatorInput input;
-        TR1(shared_ptr)<BodyBuilder> builder;
+        std::shared_ptr<BodyBuilder> builder;
         std::vector<ForceParser> force_parsers;
         std::vector<SurfaceElevationBuilderPtr> surface_elevation_parsers;
-        TR1(shared_ptr)<std::vector<WaveModelBuilderPtr> > wave_parsers;
-        TR1(shared_ptr)<std::vector<DirectionalSpreadingBuilderPtr> > directional_spreading_parsers;
-        TR1(shared_ptr)<std::vector<SpectrumBuilderPtr> > spectrum_parsers;
+        std::shared_ptr<std::vector<WaveModelBuilderPtr> > wave_parsers;
+        std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> > directional_spreading_parsers;
+        std::shared_ptr<std::vector<SpectrumBuilderPtr> > spectrum_parsers;
         std::vector<WindParser> wind_model_parsers;
         std::vector<UWCurrentParser> UWCurrent_model_parsers;
         ssc::data_source::DataSource command_listener;

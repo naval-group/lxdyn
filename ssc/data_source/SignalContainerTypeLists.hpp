@@ -8,8 +8,7 @@
 #ifndef SIGNALCONTAINERTYPELISTS_HPP_
 #define SIGNALCONTAINERTYPELISTS_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(unordered_map)
+#include <unordered_map>
 
 #include <boost/any.hpp>
 #include <string>
@@ -47,21 +46,14 @@ namespace ssc
 
 namespace std
 {
-#if TR1NAMESPACE
-    namespace tr1
+    template <>
+    struct hash<ssc::data_source::TypedSignalName>
     {
-#endif
-        template <>
-        struct hash<ssc::data_source::TypedSignalName>
+        std::size_t operator() (const ssc::data_source::TypedSignalName& c) const
         {
-            std::size_t operator() (const ssc::data_source::TypedSignalName& c) const
-            {
-               return TR1(hash)<std::string>()(c.get_signal_name()+c.get_type_name());
-            }
-        };
-#if TR1NAMESPACE
-    }
-#endif
+           return std::hash<std::string>()(c.get_signal_name()+c.get_type_name());
+        }
+    };
 }
 
 namespace ssc
@@ -77,12 +69,12 @@ namespace ssc
         public:
             std::size_t operator() (const TypedSignalName& c) const
             {
-               return TR1(hash)<std::string>()(c.get_signal_name()+c.get_type_name());
+               return std::hash<std::string>()(c.get_signal_name()+c.get_type_name());
             }
         };
 
 
-        typedef TR1(unordered_map)<TypedSignalName, boost::any, OwnHash> Signals;
+        typedef std::unordered_map<TypedSignalName, boost::any, OwnHash> Signals;
         //typedef std::map<TypedSignalName, boost::any> Signals;
         typedef Signals::const_iterator ConstSignalIterator;
 

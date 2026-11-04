@@ -33,7 +33,7 @@ namespace ssc
 
             private:
                 struct Impl;
-                TR1(shared_ptr)<Impl> pimpl;
+                std::shared_ptr<Impl> pimpl;
                 Server();
         };
     }

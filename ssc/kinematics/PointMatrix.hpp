@@ -1,8 +1,7 @@
 #ifndef POINTMATRIX_HPP_
 #define POINTMATRIX_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 #include <string>
 #include <Eigen/Dense>
 
@@ -34,7 +33,7 @@ namespace ssc
         PointMatrix operator+(const Point& P, const PointMatrix& M);
 
         void swap(PointMatrix& one, PointMatrix& the_other);
-        typedef TR1(shared_ptr)<PointMatrix> PointMatrixPtr;
+        typedef std::shared_ptr<PointMatrix> PointMatrixPtr;
     }
 }
 

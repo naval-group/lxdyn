@@ -74,7 +74,7 @@ TEST_F(DiffractionForceModelTest, parser_precalr_ignores_calculation_point)
     ASSERT_EQ(0, r.calculation_point.z);
 }
 
-TR1(shared_ptr)<WaveModel> DiffractionForceModelTest::get_wave_model(const double period, const double direction, const double height)
+std::shared_ptr<WaveModel> DiffractionForceModelTest::get_wave_model(const double period, const double direction, const double height)
 {
     const double omega = 2*M_PI/period;
     YamlStretching ys;
@@ -82,7 +82,7 @@ TR1(shared_ptr)<WaveModel> DiffractionForceModelTest::get_wave_model(const doubl
     ys.delta = 1;
     const Stretching ss(ys);
     const DiscreteDirectionalWaveSpectrum A = discretize(DiracSpectralDensity(omega, 2*height), DiracDirectionalSpreading(direction), omega, omega, 1, 1, ss, false);
-    return TR1(shared_ptr)<WaveModel>(new Airy(A, 0.));
+    return std::shared_ptr<WaveModel>(new Airy(A, 0.));
 }
 
 EnvironmentAndFrames DiffractionForceModelTest::get_waves_env(const double period, const double direction, const double amplitude)

@@ -12,10 +12,9 @@
 
 #include <boost/math/tools/roots.hpp>
 
-#include <ssc/macros/tr1_macros.hpp>
 #include <ssc/interpolation.hpp>
 #include <ssc/integrate.hpp>
-typedef TR1(shared_ptr)<ssc::interpolation::Interpolator> InterpolatorPtr;
+typedef std::shared_ptr<ssc::interpolation::Interpolator> InterpolatorPtr;
 
 #define _USE_MATH_DEFINE
 #include <cmath>

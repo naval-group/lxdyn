@@ -90,7 +90,7 @@ class SurfaceForceModel : public ForceModel
         ssc::kinematics::Point g_in_NED;
 
     protected:
-        TR1(shared_ptr)<ZGCalculator> zg_calculator;
+        std::shared_ptr<ZGCalculator> zg_calculator;
 };
 
 #endif /* SURFACEFORCEMODEL_HPP_ */

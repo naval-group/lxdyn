@@ -9,7 +9,7 @@
 #define HDBPARSER_HPP_
 
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 #include "HydroDBParser.hpp"
 
@@ -79,7 +79,7 @@ class HDBParser : public HydroDBParser
     private:
         HDBParser(const std::string& data);
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 };
 
 #endif /* HDBPARSER_HPP_ */

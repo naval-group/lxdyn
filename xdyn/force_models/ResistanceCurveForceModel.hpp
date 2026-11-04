@@ -40,7 +40,7 @@ class ResistanceCurveForceModel : public ForceModel
     private:
         ResistanceCurveForceModel();
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 
 };
 

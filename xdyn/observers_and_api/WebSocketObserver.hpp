@@ -4,7 +4,7 @@
 #include "DictObserver.hpp"
 
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 #include <vector>
 #include <string>
@@ -17,7 +17,7 @@ namespace ssc
     }
 }
 
-typedef TR1(shared_ptr)<ssc::websocket::Client> WebSocketPtr;
+typedef std::shared_ptr<ssc::websocket::Client> WebSocketPtr;
 
 class WebSocketObserver : public DictObserver
 {

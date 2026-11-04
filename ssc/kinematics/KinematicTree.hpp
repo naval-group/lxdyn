@@ -8,8 +8,7 @@
 #ifndef KINEMATICTREE_HPP_
 #define KINEMATICTREE_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 
 #include <vector>
 #include <utility> // std::pair
@@ -58,7 +57,7 @@ namespace ssc
 
             private:
                 class Impl;
-                TR1(shared_ptr<Impl>) pimpl;
+                std::shared_ptr<Impl> pimpl;
         };
     }
 }

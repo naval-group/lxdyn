@@ -12,7 +12,7 @@
 
 #include <string>
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 class WaveDirectionalSpreading;
 
@@ -21,7 +21,7 @@ class DirectionalSpreadingBuilderInterface
     public:
         DirectionalSpreadingBuilderInterface() {}
         virtual ~DirectionalSpreadingBuilderInterface(){}
-        virtual boost::optional<TR1(shared_ptr)<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
+        virtual boost::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
 };
 
 template <typename T>
@@ -29,9 +29,9 @@ class DirectionalSpreadingBuilder : public DirectionalSpreadingBuilderInterface
 {
     public:
         DirectionalSpreadingBuilder() : DirectionalSpreadingBuilderInterface(){}
-        boost::optional<TR1(shared_ptr)<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const;
+        boost::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const;
 };
 
-typedef TR1(shared_ptr)<DirectionalSpreadingBuilderInterface> DirectionalSpreadingBuilderPtr;
+typedef std::shared_ptr<DirectionalSpreadingBuilderInterface> DirectionalSpreadingBuilderPtr;
 
 #endif /* DIRECTIONALSPREADINGBUILDER_HPP_ */

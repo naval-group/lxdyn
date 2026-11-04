@@ -50,8 +50,8 @@ BodyPtr get_body(const std::string& name, const VectorOfVectorOfPoints& points)
     return BodyBuilder(rot).build(name, points, 0, 0, rot, 0);
 }
 
-TR1(shared_ptr)<WaveModel> get_wave_model();
-TR1(shared_ptr)<WaveModel> get_wave_model()
+std::shared_ptr<WaveModel> get_wave_model();
+std::shared_ptr<WaveModel> get_wave_model()
 {
     const double psi0 = PI/4;
     const double Hs = 3;
@@ -67,7 +67,7 @@ TR1(shared_ptr)<WaveModel> get_wave_model()
     const Stretching ss(ys);
     const DiscreteDirectionalWaveSpectrum A = discretize(DiracSpectralDensity(omega0, Hs), DiracDirectionalSpreading(psi0), omega_min, omega_max, nfreq, ndir, ss, false);
     int random_seed = 0;
-    return TR1(shared_ptr)<WaveModel>(new Airy(A, random_seed));
+    return std::shared_ptr<WaveModel>(new Airy(A, random_seed));
 }
 
 EnvironmentAndFrames get_env();
@@ -80,7 +80,7 @@ EnvironmentAndFrames get_env()
     const ssc::kinematics::Point G("NED",0,2,2./3.);
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
-    TR1(shared_ptr)<ssc::kinematics::PointMatrix> mesh;
+    std::shared_ptr<ssc::kinematics::PointMatrix> mesh;
     //env.w = SurfaceElevationPtr(new DefaultSurfaceElevation(0, mesh));
     env.w = SurfaceElevationPtr(new SurfaceElevationFromWaves(get_wave_model()));
     return env;

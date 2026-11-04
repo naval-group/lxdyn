@@ -357,8 +357,8 @@ bool ssc::data_source::operator<(const std::pair<ssc::data_source::TypedSignalNa
 std::list<std::pair<ssc::data_source::TypedSignalName, boost::any> > ssc::data_source::DataSource::get_signals() const
 {
     std::list<std::pair<ssc::data_source::TypedSignalName, boost::any> > ret;
-    TR1(unordered_map)<ssc::data_source::TypedSignalName, boost::any, OwnHash> in = signals_.get_all_signals();
-    TR1(unordered_map)<ssc::data_source::TypedSignalName, boost::any, OwnHash>::const_iterator it = in.begin();
+    std::unordered_map<ssc::data_source::TypedSignalName, boost::any, OwnHash> in = signals_.get_all_signals();
+    std::unordered_map<ssc::data_source::TypedSignalName, boost::any, OwnHash>::const_iterator it = in.begin();
     for (;it!=in.end();++it)
     {
         ret.push_back(std::make_pair(it->first,it->second));

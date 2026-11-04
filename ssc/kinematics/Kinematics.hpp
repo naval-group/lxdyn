@@ -8,8 +8,7 @@
 #ifndef KINEMATICS_HPP_
 #define KINEMATICS_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 #include <string>
 
 namespace ssc
@@ -59,10 +58,10 @@ namespace ssc
 
             private:
                 class Impl;
-                TR1(shared_ptr)<Impl> pimpl;
+                std::shared_ptr<Impl> pimpl;
         };
 
-        typedef TR1(shared_ptr)<Kinematics> KinematicsPtr;
+        typedef std::shared_ptr<Kinematics> KinematicsPtr;
     }
 }
 

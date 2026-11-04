@@ -15,6 +15,6 @@
 
 class WaveModel;
 
-EnvironmentAndFrames get_environment_and_frames(const TR1(shared_ptr)<WaveModel>& wave_model);
+EnvironmentAndFrames get_environment_and_frames(const std::shared_ptr<WaveModel>& wave_model);
 
 #endif  /* ENV_FOR_TESTS_HPP_ */

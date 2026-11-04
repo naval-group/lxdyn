@@ -16,13 +16,13 @@
 #include "xdyn/yaml_parser/check_input_yaml.hpp"
 #include <boost/algorithm/string.hpp> // For boost::to_upper
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 void add_interpolation_table(const std::string& x_name, const std::vector<double>& x, const std::string& y_name, const std::vector<double>& y, ssc::data_source::DataSource& ds);
 void add_interpolation_table(const std::string& x_name, const std::vector<double>& x, const std::string& y_name, const std::vector<double>& y, ssc::data_source::DataSource& ds)
 {
     ds.check_in(__PRETTY_FUNCTION__);
-    TR1(shared_ptr)<ssc::interpolation::LinearInterpolationVariableStep> I(new ssc::interpolation::LinearInterpolationVariableStep(x, y));
+    std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep> I(new ssc::interpolation::LinearInterpolationVariableStep(x, y));
 
     const std::string module_name = x_name + "->" + y_name;
     InterpolationModule module(&ds, module_name, x_name, y_name, I);

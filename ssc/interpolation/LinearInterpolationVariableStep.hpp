@@ -8,8 +8,7 @@
 #ifndef LINEARINTERPOLATIONVARIABLESTEP_HPP_
 #define LINEARINTERPOLATIONVARIABLESTEP_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 #include "ssc/interpolation/ConstantStepInterpolator.hpp"
 #include <vector>
 
@@ -38,7 +37,7 @@ namespace ssc
                 double get_df(const size_t derivative_order) const;
                 void find_index_of_interval_containing(const double val);
                 class LinearInterpolationVariableStepImpl;
-                TR1(shared_ptr)<LinearInterpolationVariableStepImpl> pimpl;
+                std::shared_ptr<LinearInterpolationVariableStepImpl> pimpl;
         };
     }
 }

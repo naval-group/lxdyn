@@ -12,8 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 
 namespace ssc
 {
@@ -42,7 +41,7 @@ namespace ssc
 
             private:
                 struct Impl;
-                TR1(shared_ptr)<Impl> pimpl;
+                std::shared_ptr<Impl> pimpl;
                 void send_vector(const int id, void const * payload, const size_t nb_of_bytes);
                 void send_vector(void const * payload, const size_t nb_of_bytes);
                 template<typename T>

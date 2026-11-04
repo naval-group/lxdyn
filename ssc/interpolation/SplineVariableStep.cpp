@@ -160,14 +160,14 @@ std::vector<double> sort(std::vector<double> v)
     return v;
 }
 
-SplineVariableStep::SplineVariableStep() : VariableStepInterpolation(std::vector<double>()), pimpl(TR1(shared_ptr)<Impl>(new Impl()))
+SplineVariableStep::SplineVariableStep() : VariableStepInterpolation(std::vector<double>()), pimpl(std::shared_ptr<Impl>(new Impl()))
 {
 
 }
 
 SplineVariableStep::SplineVariableStep(const std::vector<double>& x, const std::vector<double>& y, const bool allow_queries_outside_bounds) :
         VariableStepInterpolation(sort(x), allow_queries_outside_bounds),
-        pimpl(TR1(shared_ptr)<Impl>(new Impl(x,y)))
+        pimpl(std::shared_ptr<Impl>(new Impl(x,y)))
 {
 }
 

@@ -11,8 +11,7 @@
 
 #include "ssc/interpolation/LinearInterpolationVariableStep.hpp"
 #include "ssc/exception_handling/Exception.hpp"
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 #include <vector>
 
 

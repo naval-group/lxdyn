@@ -19,7 +19,7 @@
 #include "GRPCForceModel.hpp"
 
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 class HydroDBParser;
 class ToGRPC

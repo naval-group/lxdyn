@@ -12,10 +12,9 @@
 #include "ssc/solver/EventHandler.hpp"
 #include "ssc/solver/Scheduler.hpp"
 
-#include "ssc/macros/tr1_macros.hpp"
 #include <boost/numeric/odeint/stepper/controlled_step_result.hpp>
 
-#include TR1INC(memory)
+#include <memory>
 namespace ssc
 {
     namespace solver

@@ -9,8 +9,7 @@
 #define TRAPEZOIDALINTEGRATION_HPP_
 
 #include "ssc/integrate/Integrator.hpp"
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 
 /** \author cec
  *  \brief This class was created to
@@ -36,7 +35,7 @@ namespace ssc
             private:
                 double integrate_impl(const Function& f, double a, double b, double eps=1e-6);
                 class Impl;
-                TR1(shared_ptr)<Impl> pimpl;
+                std::shared_ptr<Impl> pimpl;
         };
     }
 }

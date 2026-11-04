@@ -37,6 +37,6 @@ class KtKqForceModel : public AbstractWageningen
         static std::string model_name();
     private:
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 };
 #endif /* KTKQFORCEMODEL_HPP_ */

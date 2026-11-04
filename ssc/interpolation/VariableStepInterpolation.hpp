@@ -9,8 +9,7 @@
 #define VARIABLESTEPINTERPOLATION_HPP_
 
 #include "ssc/interpolation/Interpolator.hpp"
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 #include <vector>
 
 
@@ -43,7 +42,7 @@ namespace ssc
                 virtual void update_coefficients_if_necessary(const double x0);
 
             private:
-                TR1(shared_ptr)<IndexFinder> index;
+                std::shared_ptr<IndexFinder> index;
 
             protected:
                 int idx;

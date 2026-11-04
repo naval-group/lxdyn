@@ -26,9 +26,8 @@
 #include <Eigen/Dense>
 
 #include <ssc/kinematics.hpp>
-#include <ssc/macros/tr1_macros.hpp>
 
-#include TR1INC(memory)
+#include <memory>
 
 #include "xdyn/external_data_structures/YamlBody.hpp"
 #include "xdyn/core/StateMacros.hpp"
@@ -123,7 +122,7 @@ class BlockedDOF
 
     private:
         struct Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 };
 
 #endif /* BLOCKEDDOF_HPP_ */

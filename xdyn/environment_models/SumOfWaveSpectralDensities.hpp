@@ -9,11 +9,11 @@
 #define SUMOFWAVESPECTRALDENSITIES_HPP_
 
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 #include "xdyn/environment_models/WaveSpectralDensity.hpp"
 
-typedef TR1(shared_ptr)<WaveSpectralDensity> WaveSpectralDensityPtr;
+typedef std::shared_ptr<WaveSpectralDensity> WaveSpectralDensityPtr;
 
 /** \brief Class returned when summing two WaveSpectralDensity objects
  *  \details

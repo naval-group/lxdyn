@@ -5,7 +5,7 @@
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 
 #include <ssc/macros.hpp>
-#include TR1INC(memory)
+#include <memory>
 
 /**
  * \author gj
@@ -77,7 +77,7 @@ public:
     size_t total_number_of_nodes;                               //!< Total number of nodes used, including dynamic ones
 };
 
-typedef TR1(shared_ptr)<Mesh> MeshPtr;
-typedef TR1(shared_ptr)<const Mesh> const_MeshPtr;
+typedef std::shared_ptr<Mesh> MeshPtr;
+typedef std::shared_ptr<const Mesh> const_MeshPtr;
 
 #endif //MESH_HPP

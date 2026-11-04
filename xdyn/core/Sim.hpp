@@ -168,7 +168,7 @@ class Sim : public ssc::solver::ContinuousSystem
                                        ) const;
 
         class Impl;
-        TR1(shared_ptr)<Impl> pimpl;
+        std::shared_ptr<Impl> pimpl;
 };
 
 #endif /* SIM_HPP_ */

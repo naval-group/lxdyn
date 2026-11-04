@@ -8,8 +8,7 @@
 #ifndef SIMPSON_HPP_
 #define SIMPSON_HPP_
 
-#include "ssc/macros/tr1_macros.hpp"
-#include TR1INC(memory)
+#include <memory>
 
 #include "ssc/integrate/Integrator.hpp"
 
@@ -38,7 +37,7 @@ namespace ssc
 
             private:
                 class Impl;
-                TR1(shared_ptr)<Impl> pimpl;
+                std::shared_ptr<Impl> pimpl;
                 double integrate_impl(const Function& f, double a, double b, double eps=1e-6);
         };
     }

@@ -1,5 +1,4 @@
 #include "ssc/csv_file_reader/CSVFileReader.hpp"
-#include "ssc/macros/tr1_macros.hpp"
 
 #include <cstdlib> // For atof
 #include <fstream>

@@ -120,7 +120,7 @@ std::function<double(double)> operator-(const std::function<double(double)>& f, 
 class RadiationDampingForceModel::Impl
 {
     public:
-        Impl(const TR1(shared_ptr)<HydroDBParser>& parser_, const YamlRadiationDamping& yaml) : parser{parser_}, builder(RadiationDampingBuilder(yaml.type_of_quadrature_for_convolution, yaml.type_of_quadrature_for_cos_transform)),
+        Impl(const std::shared_ptr<HydroDBParser>& parser_, const YamlRadiationDamping& yaml) : parser{parser_}, builder(RadiationDampingBuilder(yaml.type_of_quadrature_for_convolution, yaml.type_of_quadrature_for_cos_transform)),
         A(), Ka(), Kb(), omega(parser->get_angular_frequencies()), taus(),
         n(yaml.nb_of_points_for_retardation_function_discretization), Tmin(yaml.tau_min), Tmax(yaml.tau_max),
         H0(yaml.calculation_point_in_body_frame.x,yaml.calculation_point_in_body_frame.y,yaml.calculation_point_in_body_frame.y),
@@ -349,7 +349,7 @@ class RadiationDampingForceModel::Impl
 
     private:
         Impl();
-        TR1(shared_ptr)<HydroDBParser> parser;
+        std::shared_ptr<HydroDBParser> parser;
         RadiationDampingBuilder builder;
         Eigen::Matrix<double, 6, 6> A;
         std::array<std::array<std::function<double(double)>,6>, 6> Ka;
@@ -443,7 +443,7 @@ RadiationDampingForceModel::Input RadiationDampingForceModel::parse(const std::s
     {
         if (not(input.hdb_filename.empty()))
         {
-            ret.parser = TR1(shared_ptr)<HydroDBParser>(new HDBParser(HDBParser::from_file(input.hdb_filename)));
+            ret.parser = std::shared_ptr<HydroDBParser>(new HDBParser(HDBParser::from_file(input.hdb_filename)));
         }
         else
         {
@@ -451,7 +451,7 @@ RadiationDampingForceModel::Input RadiationDampingForceModel::parse(const std::s
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, "Neither hdb nor raodb were defined: you need to define one of the keys 'hdb' or 'raodb' in the YAML file, with a non-empty string.");
             }
-            ret.parser = TR1(shared_ptr)<HydroDBParser>(new PrecalParser(PrecalParser::from_file(input.precal_r_filename)));
+            ret.parser = std::shared_ptr<HydroDBParser>(new PrecalParser(PrecalParser::from_file(input.precal_r_filename)));
         }
     }
     ret.yaml = input;
