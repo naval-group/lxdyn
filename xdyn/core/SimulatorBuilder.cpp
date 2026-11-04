@@ -162,11 +162,15 @@ ListOfForces SimulatorBuilder::forces_from(const YamlBody& body, const Environme
 void SimulatorBuilder::add(const YamlModel& model, ListOfForces& L, const std::string& name, const EnvironmentAndFrames& env) const
 {
     bool parsed = false;
-    for (auto try_to_parse:force_parsers)
+    for (const auto& try_to_parse:force_parsers)
     {
         boost::optional<ForcePtr> f = try_to_parse(model, name, env);
         if (f)
         {
+            if (parsed)
+            {
+                THROW(__PRETTY_FUNCTION__, InvalidInputException, "Two force models are both registered as '" << model.model << "'.");
+            }
             L.push_back(f.get());
             parsed = true;
         }
