@@ -1,6 +1,7 @@
 // The gRPC stubs: proto/*.proto through a host protoc, compiled into whichever module serves them.
 const std = @import("std");
 const root = @import("../build.zig");
+const deps = @import("../tools/deps/build.zig");
 
 pub const Stubs = struct {
     step: *std.Build.Step,
@@ -17,7 +18,7 @@ pub fn addStubs(b: *std.Build) Stubs {
     const protoc = b.pathJoin(&.{ bin, "protoc" });
     const gen = b.addSystemCommand(&.{protoc});
     if (std.Io.Dir.cwd().access(b.graph.io, protoc, .{})) |_|
-        root.checkStamp(b, &gen.step, host, "host-tools", null)
+        deps.checkStamp(b, &gen.step, host, "host-tools", null)
     else |_|
         std.log.warn("no protoc under '{s}': codegen will fail. Fetch it with `mise run deps:fetch " ++
             "host-tools`, or name one with -Ddeps-host=<path> or $XDYN_DEPS_HOST.", .{bin});
