@@ -12,9 +12,6 @@ package = false
 # The same interpreters locally as in CI, never the host's.
 python-preference = "only-managed"
 
-[tool.uv.workspace]
-members = ["xdyn_wrapper_python"]
-
 [dependency-groups]
 test-cli = ["h5py", "numpy"]
 test-grpc = [
@@ -26,10 +23,9 @@ test-grpc = [
     "pytest",
     "websocket-client",
 ]
-wrapper = ["numpy", "pytest", "setuptools", "wheel"]
+wrapper = ["numpy", "pytest"]
 fmu = ["fmpy", "numpy", "pytest"]
 lint = ["ruff"]
-wheelcheck = ["numpy", "pytest"]
 doc = ["sphinx", "sphinx-autopackagesummary", "myst-parser", "numpy"]
 
 [tool.ruff]

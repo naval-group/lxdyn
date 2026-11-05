@@ -8,8 +8,8 @@ PyPI distribution is called `lxdyn`.
 pip install lxdyn
 ```
 
-Linux only, and only under CPython 3.10 — the wheel is built against that interpreter's ABI, not the
-stable ABI, so `pip install` on another version fails with no matching distribution.
+Linux x86_64 (glibc 2.28 or newer), CPython 3.11 to 3.15: one wheel per Python version, each
+built against that interpreter's ABI.
 
 ```python
 import xdyn

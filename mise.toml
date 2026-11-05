@@ -251,74 +251,23 @@ cd build/scratch/python-tests
 PYTHONPATH="$SO_DIR" "$PY" -m pytest "$TESTS"
 '''
 
-[tasks."python:matrix"]
-description = "Build and test the wrapper against each supported Python (3.11 to 3.15)"
+[tasks."python:wheels"]
+description = "Build the wheels with Nix -> build/dist/, and test each in a clean venv (3.11 to 3.15)"
 run = '''
 set -e
+nix build .#lxdyn-wheels -o build/wheels
+rm -rf build/dist && mkdir -p build/dist
+cp build/wheels/*.whl build/dist/ && chmod u+w build/dist/*.whl
 TESTS=$PWD/xdyn_wrapper_python/unit_tests
-for V in ${XDYN_PYTHON_VERSIONS:-3.11 3.12 3.13 3.14 3.15}; do
-    echo "--- Python $V"
-    UV_PROJECT_ENVIRONMENT=build/venv/wrapper-$V uv sync --only-group wrapper --python "$V" --quiet
-    PY=$PWD/build/venv/wrapper-$V/bin/python
-    zig build python -Dpython="$PY" --prefix "$(sh tools/build-dir.sh)" \
-        -Dgit-version="$(git describe --abbrev=0 --tag --always | cut -f2 -dv)"
-    SO_DIR=$(sh tools/build-dir.sh)/python
+for WHL in build/dist/*.whl; do
+    V=$(basename "$WHL" | sed -E 's/.*-cp3([0-9]+)-.*/3.\1/')
+    echo "--- Python $V: $(basename "$WHL")"
+    VENV=$PWD/build/venv/wheel-$V
+    UV_PROJECT_ENVIRONMENT=$VENV uv sync --only-group wrapper --python "$V" --quiet
+    uv pip install --python "$VENV/bin/python" --quiet --reinstall "$WHL"
     mkdir -p build/scratch/python-tests
-    (cd build/scratch/python-tests && PYTHONPATH="$SO_DIR" "$PY" -m pytest -q "$TESTS")
+    (cd build/scratch/python-tests && "$VENV/bin/python" -m pytest -q "$TESTS")
 done
-'''
-
-[tasks."python:wheel"]
-description = "Package the module as a wheel and check it in a clean venv"
-depends = ["python:build"]
-run = '''
-set -e
-SO_DIR=$(sh tools/build-dir.sh)/python
-PY=$PWD/build/venv/wrapper/bin/python
-cd xdyn_wrapper_python
-DEST=$("$PY" -c "
-from setuptools import Extension
-from setuptools.dist import Distribution
-from setuptools.command.build_ext import build_ext
-cmd = build_ext(Distribution({'name': 'xdyn', 'ext_modules': [Extension('xdyn', sources=[])]}))
-cmd.initialize_options(); cmd.finalize_options()
-print(cmd.get_ext_fullpath('xdyn'))
-")
-mkdir -p "$(dirname "$DEST")"
-SO=$SO_DIR/xdyn$("$PY" -c 'import sysconfig; print(sysconfig.get_config_var("EXT_SUFFIX"))')
-cp "$SO" "$DEST"
-for s in llvm-strip strip; do
-    if command -v "$s" > /dev/null 2>&1; then "$s" --strip-debug "$DEST" && break; fi
-    [ "$s" = strip ] && echo "warning: no llvm-strip/strip on PATH -- shipping unstripped"
-done
-GLIBC_FLOOR=2.28
-REQUIRED=$(llvm-nm -D --undefined-only "$DEST" | grep -oE 'GLIBC_[0-9.]+' | sed 's/^GLIBC_//')
-MAX=$(printf '%s\n%s\n' "$REQUIRED" "$GLIBC_FLOOR" | sort -V | tail -1)
-[ "$MAX" = "$GLIBC_FLOOR" ] || {
-    echo "refusing to tag manylinux_${GLIBC_FLOOR%.*}_${GLIBC_FLOOR#*.}: needs GLIBC_$MAX" >&2
-    exit 1
-}
-if llvm-readelf -d "$DEST" | grep -qiE 'rpath|runpath'; then
-    echo "refusing to package: the module carries an RPATH/RUNPATH" >&2
-    llvm-readelf -d "$DEST" | grep -iE 'rpath|runpath' >&2
-    exit 1
-fi
-echo "manylinux_2_28: max glibc required is $(printf '%s\n' "$REQUIRED" | sort -V | tail -1), no RPATH"
-rm -rf dist
-# --no-build-isolation: the backend is this venv's locked setuptools, and the build needs no network.
-GIT_VERSION=$(git describe --abbrev=0 --tag --always | cut -f2 -dv) \
-    uv build --wheel --no-build-isolation --python "$PY" --out-dir dist --quiet
-"$PY" -m wheel tags --remove --platform-tag "manylinux_2_28_$(uname -m)" dist/*.whl
-ls -la dist/*.whl
-cd ..
-UV_PROJECT_ENVIRONMENT=build/venv/wheelcheck uv sync --only-group wheelcheck --quiet
-uv pip install --python build/venv/wheelcheck/bin/python --quiet --reinstall --no-deps \
-    xdyn_wrapper_python/dist/*.whl
-TESTS=$PWD/xdyn_wrapper_python/unit_tests
-CHECKPY=$PWD/build/venv/wheelcheck/bin/python
-mkdir -p build/scratch/python-tests
-cd build/scratch/python-tests
-"$CHECKPY" -m pytest -q "$TESTS"
 '''
 
 [tasks."python:doc"]

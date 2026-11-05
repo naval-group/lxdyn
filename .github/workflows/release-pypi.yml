@@ -1,4 +1,4 @@
-name: Release wheel
+name: Release wheels
 
 on:
   push:
@@ -29,10 +29,6 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v7
-        with:
-          # Same reason as release.yml: the version is `git describe`, and the default
-          # checkout fetches no tags at all.
-          fetch-depth: 0
       # Before anything is built: a mismatch is fixed by retagging, which a published
       # release could not be.
       - name: Tag matches build.zig.zon
@@ -40,16 +36,11 @@ jobs:
         run: sh tools/check-release-version.sh "$GITHUB_REF_NAME"
       - uses: cachix/install-nix-action@v31
 
-      - name: Host tools and dependency closure
-        run: |
-          nix develop --command mise run deps:fetch host-tools
-          nix develop --command mise run deps:fetch x86_64-linux-gnu
-
-      # Builds against the default Python and checks the wheel installs and passes in a clean venv.
-      - name: Build and check the wheel
-        run: nix develop --command mise run python:wheel
+      # One wheel per CPython, each installed and tested in a clean venv before any is published.
+      - name: Build and check the wheels
+        run: nix develop --command mise run python:wheels
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: xdyn_wrapper_python/dist
+          packages-dir: build/dist
