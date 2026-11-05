@@ -67,7 +67,7 @@ def fmu(tmp_path_factory):
     return pack(HERE / "propelled_ship.yml", tmp_path_factory.mktemp("fmu") / "propelled_ship.fmu")
 
 
-def slave(fmu, name="ship"):
+def slave(fmu, name="ship", environment=None):
     description = read_model_description(fmu)
     unzipped = Path(fmu).with_suffix("")
     if not unzipped.exists():
@@ -82,10 +82,12 @@ def slave(fmu, name="ship"):
         instanceName=name,
     )
     s.instantiate()
+    refs = {v.name: v.valueReference for v in description.modelVariables}
+    if environment is not None:
+        s.setString([refs["xdyn.environment"]], [environment])
     s.setupExperiment(startTime=0)
     s.enterInitializationMode()
     s.exitInitializationMode()
-    refs = {v.name: v.valueReference for v in description.modelVariables}
     return s, refs
 
 
@@ -94,8 +96,8 @@ def name_of(variable: ModelVariable | None) -> str:
     return variable.name
 
 
-def run(fmu, steps, rpm=RPM, h=0.5):
-    s, refs = slave(fmu)
+def run(fmu, steps, rpm=RPM, h=0.5, environment=None):
+    s, refs = slave(fmu, environment=environment)
     s.setReal([refs[RPM_INPUT], refs[P_D_INPUT]], [rpm, 1.064935])
     for k in range(steps):
         s.doStep(currentCommunicationPoint=k * h, communicationStepSize=h)
@@ -138,6 +140,55 @@ def test_the_solver_is_an_enumeration(fmu):
     assert solver.declaredType is not None and solver.start is not None
     assert [item.name for item in solver.declaredType.items] == ["euler", "rk4", "rkck"]
     assert int(solver.start) == 2
+
+
+# propelled_ship.yml's own environment models, and a current along the ship's heading: the
+# resistance curve reads the speed through the water.
+CALM = """
+- model: no waves
+  constant sea elevation in NED frame: {value: 0, unit: m}
+"""
+CURRENT = CALM + """
+- model: constant UW current
+  velocity: {value: 1, unit: m/s}
+  orientation: {value: 0, unit: deg}
+"""
+
+
+def test_the_environment_is_a_string_parameter(fmu):
+    variables = {v.name: v for v in read_model_description(fmu).modelVariables}
+    environment = variables["xdyn.environment"]
+    assert (environment.type, environment.causality, environment.variability) == (
+        "String",
+        "parameter",
+        "fixed",
+    )
+    assert environment.start == ""
+
+
+def test_the_environment_replaces_the_models(fmu):
+    u = STATES.index("u")
+    assert run(fmu, 20, environment=CALM) == run(fmu, 20)
+    assert run(fmu, 20, environment=CURRENT)[u] > run(fmu, 20)[u]
+
+
+def test_the_environment_is_fixed_after_initialization(fmu):
+    s, refs = slave(fmu, environment=CALM)
+    s.setString([refs["xdyn.environment"]], [CALM])
+    with pytest.raises(Exception):
+        s.setString([refs["xdyn.environment"]], [CURRENT])
+    s.terminate()
+    s.freeInstance()
+
+
+def test_an_environment_that_is_not_a_list_is_rejected(fmu):
+    with pytest.raises(Exception):
+        slave(fmu, environment="model: no waves")
+
+
+def test_an_unknown_environment_model_fails_the_initialization(fmu):
+    with pytest.raises(Exception):
+        slave(fmu, environment="- model: no such model")
 
 
 def test_names_become_structured_name_parts(tmp_path):

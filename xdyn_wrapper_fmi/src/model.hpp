@@ -15,6 +15,7 @@ namespace xdyn_fmu
     constexpr unsigned VR_EULER = 14;        // phi theta psi
     constexpr unsigned VR_DT = 100;          // xdyn's integration step
     constexpr unsigned VR_SOLVER = 101;      // Enumeration xdyn.Solver, read as an Integer
+    constexpr unsigned VR_ENVIRONMENT = 102; // String: "environment models" replacing the model's
     constexpr unsigned VR_RESET = 200;       // Boolean
     constexpr unsigned VR_RESET_STATE = 201; // 13 states
     constexpr unsigned VR_DERIVATIVE = 300;  // der(x) ... der(qk), with Model Exchange
@@ -62,6 +63,9 @@ namespace xdyn_fmu
     }
 
     Model read_model(const std::string& yaml, const std::string& assets_root);
+
+    // `yaml` with its "environment models" replaced by `environment`, a YAML list (xdyn.environment).
+    std::string with_environment(const std::string& yaml, const std::string& environment);
 
     std::string model_description(const Model& model, const std::string& model_name, double dt,
                                   const std::string& solver);

@@ -24,6 +24,8 @@ namespace xdyn_fmu
         std::string yaml;
         double dt = 0.1;
         std::string solver = "rk4";
+        // Empty keeps the model's own environment models.
+        std::string environment;
         std::unique_ptr<ConfBuilder> sim;
         // Why the model cannot be imported in Model Exchange, empty when it can.
         std::string no_model_exchange;
@@ -71,7 +73,8 @@ namespace xdyn_fmu
         // are parameters, set in between.
         void build_sim()
         {
-            sim.reset(with_assets_root(resources, [&] { return new ConfBuilder(yaml); }));
+            const std::string text = environment.empty() ? yaml : with_environment(yaml, environment);
+            sim.reset(with_assets_root(resources, [&] { return new ConfBuilder(text); }));
         }
 
         // Co-Simulation (co_simulation.cpp): integrates the Sim from t to t + h.

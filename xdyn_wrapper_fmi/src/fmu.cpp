@@ -311,15 +311,39 @@ extern "C"
         });
     }
 
-    fmi2Status fmi2GetString(fmi2Component c, const fmi2ValueReference[], size_t nvr, fmi2String[])
+    fmi2Status fmi2GetString(fmi2Component c, const fmi2ValueReference vr[], size_t nvr,
+                             fmi2String value[])
     {
-        return nvr == 0 and c ? fmi2OK : fmi2Error;
+        return guarded(c, "fmi2GetString", [&](Instance& i) {
+            for (size_t k = 0; k < nvr; ++k)
+            {
+                if (vr[k] != VR_ENVIRONMENT)
+                    throw std::out_of_range("no String variable with value reference "
+                                            + std::to_string(vr[k]));
+                value[k] = i.environment.c_str();
+            }
+            return fmi2OK;
+        });
     }
 
-    fmi2Status fmi2SetString(fmi2Component c, const fmi2ValueReference[], size_t nvr,
-                             const fmi2String[])
+    fmi2Status fmi2SetString(fmi2Component c, const fmi2ValueReference vr[], size_t nvr,
+                             const fmi2String value[])
     {
-        return nvr == 0 and c ? fmi2OK : fmi2Error;
+        return guarded(c, "fmi2SetString", [&](Instance& i) {
+            for (size_t k = 0; k < nvr; ++k)
+            {
+                if (vr[k] != VR_ENVIRONMENT)
+                    throw std::out_of_range("no String variable with value reference "
+                                            + std::to_string(vr[k]));
+                const std::string environment = value[k] ? value[k] : "";
+                if (i.sim and environment != i.environment)
+                    throw std::logic_error("xdyn.environment is fixed after initialization");
+                if (not(environment.empty()))
+                    with_environment(i.yaml, environment); // fails here rather than at initialization
+                i.environment = environment;
+            }
+            return fmi2OK;
+        });
     }
 
     // Declared false in modelDescription.xml (canGetAndSetFMUstate,

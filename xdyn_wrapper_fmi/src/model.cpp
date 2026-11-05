@@ -4,6 +4,8 @@
 #include "xdyn/observers_and_api/ConfBuilder.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
+#include <yaml-cpp/yaml.h>
+
 #include <algorithm>
 #include <cctype>
 #include <cstdint>
@@ -268,6 +270,8 @@ std::string xdyn_fmu::model_description(const Model& model, const std::string& m
           "Enumeration declaredType=\"xdyn.Solver\" start=\""
               + std::to_string(solver_index - solvers().begin() + 1) + '"',
           "xdyn's solver");
+    v.add("xdyn.environment", VR_ENVIRONMENT, "parameter", "fixed", "exact", "String start=\"\"",
+          "YAML list replacing the model's environment models, empty to keep them");
     v.add(body + ".reset_state", VR_RESET, "input", "discrete", "", "Boolean start=\"false\"",
           "Going from false to true makes the next step start from " + body + ".reset_x ... " + body
               + ".reset_qk instead of the current state");
@@ -354,4 +358,16 @@ std::string xdyn_fmu::model_description(const Model& model, const std::string& m
     }
     xml << "  </ModelStructure>\n</fmiModelDescription>\n";
     return xml.str();
+}
+
+std::string xdyn_fmu::with_environment(const std::string& yaml, const std::string& environment)
+{
+    const YAML::Node models = YAML::Load(environment);
+    if (not(models.IsSequence()))
+        throw std::invalid_argument("xdyn.environment is not a YAML list of environment models");
+    YAML::Node root = YAML::Load(yaml);
+    root["environment models"] = models;
+    YAML::Emitter out;
+    out << root;
+    return out.c_str();
 }
