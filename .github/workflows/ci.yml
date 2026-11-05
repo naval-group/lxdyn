@@ -62,28 +62,21 @@ jobs:
       - name: Protocol integration tests
         run: nix develop --command mise run integration:grpc
 
-  # 285 binding tests on each of 3.11 to 3.15, plus ruff and the wheel.
+  # ruff and ty, then the five wheels built by Nix, each with its 285 binding tests in a clean venv.
   python:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
 
-      - name: Host tools and dependency closure
-        run: |
-          nix develop --command mise run deps:fetch host-tools
-          nix develop --command mise run deps:fetch x86_64-linux-gnu
-
       - name: Lint
         run: nix develop --command mise run python:lint
-      - name: Binding tests on 3.11 to 3.15
-        run: nix develop --command mise run python:matrix
-      - name: Wheel
-        run: nix develop --command mise run python:wheel
+      - name: Wheels, tested on 3.11 to 3.15
+        run: nix develop --command mise run python:wheels
       - uses: actions/upload-artifact@v7
         with:
-          name: xdyn-wheel
-          path: xdyn_wrapper_python/dist/*.whl
+          name: lxdyn-wheels
+          path: build/dist/*.whl
 
   # The FMU library through FMPy, then its Windows build under wine against the Linux one.
   fmu:

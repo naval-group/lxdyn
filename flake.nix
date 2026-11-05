@@ -254,6 +254,52 @@
         ' $out/$dir.zip $dir
       '';
 
+      # One wheel per CPython upstream still supports. libxdyn compiles once; only the bindings
+      # rebuild per interpreter, against its Python.h.
+      wheelPythons = [ pkgs.python311 pkgs.python312 pkgs.python313 pkgs.python314 pkgs.python315 ];
+      # CalVer is YY.M[.P]: build.zig.zon's 26.11.0 is the release 26.11.
+      wheelVersion = let m = builtins.match "([0-9]+\\.[0-9]+)\\.0" xdyn.version;
+        in if m == null then xdyn.version else builtins.head m;
+      lxdyn-wheels = pkgs.stdenvNoCC.mkDerivation {
+        pname = "lxdyn-wheels";
+        version = wheelVersion;
+        src = xdynSource;
+        # python3 by path only: its setup hook would point every interpreter at its own sysconfig.
+        nativeBuildInputs = [ pkgs.zig pkgs.llvm ];
+        dontFixup = true;
+        buildPhase = ''
+          runHook preBuild
+          ${prepareXdyn}
+          ${pkgs.lib.concatMapStrings (py: ''
+            zig build python -Dtarget=x86_64-linux-gnu.2.28 ${zigFlags "x86_64-linux-gnu"} \
+              -Dpython=${py.interpreter} -Dpybind11=${pkgs.python3Packages.pybind11}/include \
+              -Dgit-version=${wheelVersion} --prefix $TMPDIR/prefix
+          '') wheelPythons}
+          runHook postBuild
+        '';
+        installPhase = ''
+          runHook preInstall
+          # Under its own name: a store path's basename carries the hash.
+          cp ${./LICENSE.md} LICENSE.md
+          for so in $TMPDIR/prefix/python/*.so; do
+            llvm-strip --strip-debug $so
+            # The wheel leaves Nix, so every store path goes, including the closure's build prefix HDF5 bakes in.
+            sed -i -E 's|${builtins.storeDir}/[0-9a-z]{32}|${builtins.storeDir}/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee|g' $so
+            # manylinux_2_28 is a promise about the symbols the module needs, so it is checked.
+            glibc=$(llvm-nm -D --undefined-only $so | grep -oE 'GLIBC_[0-9.]+' | sed 's/^GLIBC_//' | sort -V | tail -1)
+            [ "$(printf '%s\n2.28\n' "$glibc" | sort -V | tail -1)" = 2.28 ] \
+              || { echo "$so needs GLIBC_$glibc, above manylinux_2_28" >&2; exit 1; }
+            ! llvm-readelf -d $so | grep -qiE 'rpath|runpath' || { echo "$so carries an RPATH" >&2; exit 1; }
+            ${pkgs.python3.interpreter} xdyn_wrapper_python/make_wheel.py $so --version ${wheelVersion} --out $out \
+              --pyproject xdyn_wrapper_python/pyproject.toml \
+              --readme ${./xdyn_wrapper_python/README.md} --license LICENSE.md
+          done
+          [ "$(ls $out/*.whl | wc -l)" = ${toString (builtins.length wheelPythons)} ]
+          runHook postInstall
+        '';
+        meta.description = "the lxdyn Python wheels, one per CPython, manylinux_2_28 x86_64";
+      };
+
       # Hermetic unit suites from a cold cache: what CI trusts, too slow for the edit-test loop.
       mkUnitCheck = { triple, emulators ? [ ], test }:
         pkgs.stdenvNoCC.mkDerivation {
@@ -296,12 +342,13 @@
           test = "zig build test -Dtarget=x86_64-windows-gnu -fwine ${zigFlags "x86_64-windows-gnu"}";
         };
         fmu-x86_64-linux-gnu = xdyn-fmu;
+        inherit lxdyn-wheels;
         lint = pkgs.runCommandLocal "xdyn-lint" { src = xdynSource; } ''
           cp -r $src/. . && sh tools/lint.sh && touch $out
         '';
       };
     in {
-      packages.${system} = closures // { inherit xdyn xdyn-fmu xdyn-fmu-win64 xdyn-fmu-zip; }
+      packages.${system} = closures // { inherit xdyn xdyn-fmu xdyn-fmu-win64 xdyn-fmu-zip lxdyn-wheels; }
         // pkgs.lib.mapAttrs' (triple: drv: pkgs.lib.nameValuePair "deps-${triple}" drv) fetched;
       checks.${system} = checks;
 
