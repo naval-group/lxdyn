@@ -125,25 +125,14 @@ make -C integration_tests/json_tests
 """
 
 [tasks."deploy:stage"]
-description = "Build the static musl binaries and stage them stripped into build/scratch/deploy/"
+description = "Stage the Nix-built static musl binaries into build/scratch/deploy/"
 run = '''
 set -e
-for t in llvm-strip llvm-readelf; do
-    command -v $t > /dev/null 2>&1 || { echo "deploy:stage needs $t (pkgs.llvm)" >&2; exit 1; }
-done
-zig build -Dtarget=x86_64-linux-musl --prefix build/scratch/deploy-build
+nix build .#xdyn-deploy -o build/scratch/deploy-nix
 rm -rf build/scratch/deploy
 mkdir -p build/scratch/deploy
-for b in xdyn xdyn-for-cs xdyn-for-me gz generate_yaml_example generate_stl_examples; do
-    cp "build/scratch/deploy-build/bin/$b" build/scratch/deploy/
-    llvm-strip --strip-debug "build/scratch/deploy/$b"
-    if llvm-readelf -l -d "build/scratch/deploy/$b" | grep -qE 'INTERP|NEEDED'; then
-        echo "refusing to stage: $b is dynamically linked, and FROM scratch has no loader" >&2
-        llvm-readelf -l -d "build/scratch/deploy/$b" | grep -E 'INTERP|NEEDED' >&2
-        exit 1
-    fi
-done
-echo "six static binaries: no interpreter, no NEEDED entries"
+cp build/scratch/deploy-nix/bin/* build/scratch/deploy/
+chmod u+w build/scratch/deploy/*
 du -sh build/scratch/deploy
 '''
 
@@ -151,12 +140,11 @@ du -sh build/scratch/deploy
 description = "Build the lxdyn deploy image from the Containerfile"
 depends = ["deploy:stage"]
 run = '''
+set -e
 CONTAINER=${CONTAINER:-$(command -v podman > /dev/null 2>&1 && echo podman || echo docker)}
-# Same version idiom as python:build, so the wheel and the image agree on what a release is.
-"$CONTAINER" build -f Containerfile \
-    --build-arg VERSION="$(git describe --abbrev=0 --tag --always | cut -f2 -dv)" \
-    --build-arg REVISION="$(git rev-parse HEAD)" \
-    -t localhost/lxdyn .
+# The release and commit the flake stamped into the binaries, so the labels cannot disagree with them.
+set -- $(nix eval --raw .#xdyn-deploy --apply 'd: d.release + " " + d.revision')
+"$CONTAINER" build -f Containerfile --build-arg VERSION="$1" --build-arg REVISION="$2" -t localhost/lxdyn .
 # `images`, not `image inspect --format`: mise's Tera templating would eat the Go template.
 "$CONTAINER" images localhost/lxdyn
 '''

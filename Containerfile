@@ -1,6 +1,6 @@
-# lxdyn deploy image. Build it with `mise run deploy:image`, which stages stripped binaries
-# into build/scratch/deploy/ first — this file deliberately does no compiling, so the image ships the
-# same binaries that were tested, not a second build of them.
+# lxdyn deploy image. Build it with `mise run deploy:image`, which stages the Nix-built static
+# binaries (`nix build .#xdyn-deploy`) into build/scratch/deploy/ first — this file deliberately does
+# no compiling, so the image ships the binaries Nix built and checked, not a second build of them.
 
 FROM scratch
 
@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.description="lxdyn, the LOTUSim fork of xdyn: a t
 LABEL org.opencontainers.image.licenses=EPL-2.0
 
 # These two labels are what makes a pulled image traceable with `inspect` alone. 
-# deploy:image fills them from git; the defaults are what a plain `podman build .` gets.
+# deploy:image fills them from the flake; the defaults are what a plain `podman build .` gets.
 ARG VERSION=dev
 ARG REVISION=unknown
 LABEL org.opencontainers.image.version=$VERSION
