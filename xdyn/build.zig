@@ -2,6 +2,7 @@
 // Sources are globbed, so a new .cpp under xdyn/<module>/ or its unit_tests/ registers itself.
 const std = @import("std");
 const root = @import("../build.zig");
+const proto = @import("../proto/build.zig");
 
 const Executable = struct {
     name: []const u8,
@@ -71,7 +72,7 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
     lib.addCSourceFiles(.{ .root = b.path("xdyn/observers_and_api"), .files = &.{"demo_scripts.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-c23-extensions"}) });
     // One 253906-character string literal; ISO requires only 65536.
     lib.addCSourceFiles(.{ .root = b.path("xdyn/binary_stl_data"), .files = &.{"generate_test_ship.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-overlength-strings"}) });
-    ctx.addProtoSources(lib, &.{ "wave_types", "wave_grpc", "force", "controller" });
+    proto.addSources(ctx, lib, &.{ "wave_types", "wave_grpc", "force", "controller" });
 }
 
 pub fn addExecutables(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) void {
@@ -79,7 +80,7 @@ pub fn addExecutables(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) vo
     for (executables) |spec| {
         const m = ctx.module(.{});
         m.addCSourceFiles(.{ .root = b.path("."), .files = &.{spec.source}, .flags = ctx.cpp_flags });
-        ctx.addProtoSources(m, spec.protos);
+        proto.addSources(ctx, m, spec.protos);
         m.linkLibrary(libxdyn);
         ctx.linkDeps(m);
         const exe = b.addExecutable(.{ .name = spec.name, .root_module = m });
