@@ -325,6 +325,8 @@
           ];
           # buildInputs, so pkg-config's hook finds it. eigen_5 clears a -Werror=uninitialized.
           buildInputs = [ pkgs.eigen_5 ];
+          # Headers only, like Eigen: a path, so none of the package's Python lands in the shell.
+          XDYN_PYBIND11 = "${pkgs.python3Packages.pybind11}/include";
           shellHook = ''
             echo "xdyn devShell: $(zig version), $(uv --version)"
           '';
