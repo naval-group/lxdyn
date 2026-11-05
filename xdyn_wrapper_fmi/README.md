@@ -57,6 +57,7 @@ name, `TestShip` below; each variable's description gives xdyn's own name for it
 | 14-16 | `TestShip.phi`, `.theta`, `.psi` | output: Euler angles in the YAML's rotations convention |
 | 100 | `xdyn.dt` | parameter: xdyn's step inside a communication step |
 | 101 | `xdyn.solver` | parameter (Enumeration `xdyn.Solver`): `euler`, `rk4`, `rkck` |
+| 102 | `xdyn.environment` | parameter (String): a YAML list replacing the model's `environment models`, empty to keep them |
 | 200 | `TestShip.reset_state` | input (Boolean): going true, the next step starts from `reset_*` |
 | 201-213 | `TestShip.reset_x` … `TestShip.reset_qk` | input: the state to impose |
 | 1000+ | the model's commands, e.g. `TestShip.propeller.rpm` | input |
@@ -73,6 +74,9 @@ Everything is in SI units, with display units where they help (`deg`, `deg/s`, `
 `reset_state` is there because FMI 2.0 Co-Simulation has no other way to set a state: a master
 that teleports a vessel or switches it to another model needs one. It acts when it goes from
 false to true, as a master sets every input before each step.
+`xdyn.environment` is there for a master that sets each scenario's waves, current and wind.
+The Sim is built at `fmi2ExitInitializationMode`, so it cannot change afterwards; instances given
+the same text, wave seed included, see the same sea.
 In Model Exchange the importer sets the states itself, and `xdyn.dt`, `xdyn.solver` and
 `reset_*` play no part.
 
