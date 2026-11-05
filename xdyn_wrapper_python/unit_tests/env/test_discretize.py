@@ -37,7 +37,7 @@ class DiscretizeTest(unittest.TestCase):
     def random_increasing_vector_of_size(self, n: int) -> list[float]:
         if n <= 0:
             return []
-        ret = [0] * n
+        ret = [0.0] * n
         ret[0] = self.rng.random_double().between(-1e6, 1e6)()
         for i in range(n):
             increment = self.rng.random_double().between(0, 1e3).but_not(0)()

@@ -1,5 +1,4 @@
 """Facilitate the creation of a gRPC controllers in Python."""
-import inspect
 import logging
 import time
 from collections.abc import Callable
@@ -208,7 +207,11 @@ def clip(value: float, min_sat: float, max_sat: float) -> float:
 
 
 def saturate_command(
-    command: float, previous_command: float, dt: float, pos_sat: float = None, spd_sat: float = None
+    command: float,
+    previous_command: float,
+    dt: float,
+    pos_sat: float | None = None,
+    spd_sat: float | None = None,
 ) -> float:
     """Saturates 'command' in position (pos_sat) and/or in speed (spd_sat).
     When saturating in position, command will be within +/-pos_sat. When saturating
@@ -253,7 +256,7 @@ class AbstractControllerModel:
         'QUATERNION' -> get_commands_quaternion
         'EULER_321' -> get_commands_euler_321
         """
-        raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
+        raise NotImplementedError("get_angle_representation" + NOT_IMPLEMENTED)
 
     def get_commands_quaternion(
         self, states: StatesQuaternion, dstates_dt: StatesQuaternion
@@ -273,7 +276,7 @@ class AbstractControllerModel:
           are recognized by xdyn. It can do that by asking the user for the
           right names via the YAML.
         """
-        raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
+        raise NotImplementedError("get_commands_quaternion" + NOT_IMPLEMENTED)
 
     def get_setpoint_names(self) -> list[str]:
         """Return the name(s) of the controller inputs (setpoints).
@@ -284,7 +287,7 @@ class AbstractControllerModel:
         -------
         - setpoint_names (List[str]): names of the setpoints
         """
-        raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
+        raise NotImplementedError("get_setpoint_names" + NOT_IMPLEMENTED)
 
     def get_commands_euler_321(
         self,
@@ -306,7 +309,7 @@ class AbstractControllerModel:
         -------
         - commands (Dict[str,float]): commands used by xdyn's controlled forces
         """
-        raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
+        raise NotImplementedError("get_commands_euler_321" + NOT_IMPLEMENTED)
 
     def get_command_names(self) -> list[str]:
         """Return the name(s) of the controller outputs (commands).
@@ -320,7 +323,7 @@ class AbstractControllerModel:
         -------
         - commands (List[str]): commands computed by this controller
         """
-        raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
+        raise NotImplementedError("get_command_names" + NOT_IMPLEMENTED)
 
 
 class ControllerServicer(GrpcControllerServicer):

@@ -145,7 +145,7 @@ class AbstractWaveModel:
         """
         raise NotImplementedError("orbital_velocity " + NOT_IMPLEMENTED)
 
-    def spectrum(self, x: float, y: float, t: float):
+    def spectrum(self, x: float, y: float, t: float, /):
         """Linear spectrum that can be used by xdyn's diffraction module.
 
         Parameters
@@ -372,7 +372,7 @@ class WavesServicer(wave_grpc_pb2_grpc.WavesServicer):
         return response
 
 
-def serve(model: type[AbstractWaveModel]):
+def serve(model: AbstractWaveModel):
     """Launch the gRPC server."""
     one_day_in_seconds = 60 * 60 * 24
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

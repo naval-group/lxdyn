@@ -88,7 +88,7 @@ class ConstantForceModelTest(unittest.TestCase):
     def random_phi(self) -> float:
         return self.rng.random_double().between(-np.pi / 2, np.pi / 2)()
 
-    def random_theta(self) -> None:
+    def random_theta(self) -> float:
         return self.rng.random_double().between(-np.pi / 2 + 0.1, +np.pi / 2 - 0.1)()
 
     def random_psi(self) -> float:

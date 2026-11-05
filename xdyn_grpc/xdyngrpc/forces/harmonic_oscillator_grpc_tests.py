@@ -58,7 +58,7 @@ def test_harmonic_oscillator(address: str):
         states.phi = [0]
         states.theta = [0]
         states.psi = [0]
-        commands = {"parametric oscillator(omega)": 1}
+        commands = {"parametric oscillator(omega)": 1.0}
         res = force.force(states, commands, grpc_force_types.WaveInformation())
         eps = 1e-10
         assert abs(res.Fx - 0) < eps, f"Expecting Fx close to 0, but got Fx={res.Fx}"

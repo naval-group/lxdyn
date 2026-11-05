@@ -117,19 +117,17 @@ class AiryWaveGrpcServerTest(unittest.TestCase):
         """Check that an invalid string can not build a gRPC Waves client"""
         with grpc.insecure_channel(WAVES_SERVER_URL) as channel:
             LOGGER.info("Creating Waves instance")
-            with self.assertRaises(Exception) as pcm:
+            with self.assertRaises(grpc.RpcError) as pcm:
                 Waves(channel, "random string")
             LOGGER.info(pcm.exception)
-            LOGGER.info(pcm.exception.details)
 
     def test_00_incomplete_yaml_parameters(self):
         """Check that an input without a wave model can not build a gRPC Waves client"""
         with grpc.insecure_channel(WAVES_SERVER_URL) as channel:
             LOGGER.info("Creating Waves instance")
-            with self.assertRaises(Exception) as pcm:
+            with self.assertRaises(grpc.RpcError) as pcm:
                 Waves(channel, DATA_NO_ENV)
             LOGGER.info(pcm.exception)
-            LOGGER.info(pcm.exception.details)
 
     def test_00_invalid_requests(self):
         """Check that exceptions are raised with invalid requests"""

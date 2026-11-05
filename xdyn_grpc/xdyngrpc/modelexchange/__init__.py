@@ -1,4 +1,7 @@
 """gRPC model exchange."""
+
+from typing import Any
+
 import grpc
 
 from .._proto import model_exchange_pb2_grpc
@@ -15,7 +18,7 @@ class ModelExchangeEuler:
 
     def dx_dt(
         self, state: dict[str, float], requested_output
-    ) -> dict[str, float | dict[str, float]]:
+    ) -> dict[str, Any]:
         """Evaluate the derivative step."""
         self.request.states.t[:] = [state["t"]]
         self.request.states.x[:] = [state["x"]]
@@ -64,7 +67,7 @@ class ModelExchangeQuaternion:
 
     def dx_dt(
         self, state: dict[str, float], requested_output
-    ) -> dict[str, float | dict[str, float]]:
+    ) -> dict[str, Any]:
         """Evaluate the derivative step."""
         self.request.states.t[:] = [state["t"]]
         self.request.states.x[:] = [state["x"]]

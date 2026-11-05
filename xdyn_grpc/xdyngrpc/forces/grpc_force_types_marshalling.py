@@ -303,21 +303,12 @@ def from_grpc_results_from_potential_theory(
 
 def from_grpc_xyt_grid(xyt_grid: wave_types_pb2.XYTGrid) -> XYTGrid:
     """Convert gRPC XYTGrid to Python XYTGrid."""
-    ret = XYTGrid()
-    ret.x = xyt_grid.x
-    ret.y = xyt_grid.y
-    ret.t = xyt_grid.t
-    return ret
+    return XYTGrid(x=list(xyt_grid.x), y=list(xyt_grid.y), t=xyt_grid.t)
 
 
-def from_grpc_xyzt_grid(xyt_grid: wave_types_pb2.XYTGrid) -> XYTGrid:
-    """Convert gRPC XYTGrid to Python XYTGrid."""
-    ret = XYTGrid()
-    ret.x = xyt_grid.x
-    ret.y = xyt_grid.y
-    ret.z = xyt_grid.z
-    ret.t = xyt_grid.t
-    return ret
+def from_grpc_xyzt_grid(xyzt_grid: wave_types_pb2.XYZTGrid) -> XYZTGrid:
+    """Convert gRPC XYZTGrid to Python XYZTGrid."""
+    return XYZTGrid(x=list(xyzt_grid.x), y=list(xyzt_grid.y), z=list(xyzt_grid.z), t=xyzt_grid.t)
 
 
 def from_grpc_spectrum(spectrum: wave_types_pb2.SpectrumRequest) -> SpectrumRequest:
@@ -330,17 +321,13 @@ def from_grpc_spectrum(spectrum: wave_types_pb2.SpectrumRequest) -> SpectrumRequ
 
 
 def from_grpc_required_wave_information(
-    required_wave_information,
+    required_wave_information: force_pb2.RequiredWaveInformationResponse,
 ) -> RequiredWaveInformationResponse:
     """Convert gRPC RequiredWaveInformationResponse to Python RequiredWaveInformationResponse."""
-    ret = RequiredWaveInformationResponse()
-    ret.elevations.CopyFrom(from_grpc_xyt_grid(required_wave_information.elevations))
-    ret.dynamic_pressures.CopyFrom(from_grpc_xyzt_grid(required_wave_information.dynamic_pressures))
-    ret.orbital_velocities.CopyFrom(
-        from_grpc_xyzt_grid(required_wave_information.orbital_velocities)
+    return RequiredWaveInformationResponse(
+        elevations=from_grpc_xyt_grid(required_wave_information.elevations),
+        dynamic_pressures=from_grpc_xyzt_grid(required_wave_information.dynamic_pressures),
+        orbital_velocities=from_grpc_xyzt_grid(required_wave_information.orbital_velocities),
+        spectrum=from_grpc_spectrum(required_wave_information.spectrum),
+        need_spectrum=required_wave_information.need_spectrum,
     )
-    ret.spectrum.CopyFrom(from_grpc_spectrum(required_wave_information.spectrum))
-    ret.angular_frequencies_for_rao.CopyFrom(required_wave_information.angular_frequencies_for_rao)
-    ret.directions_for_rao.CopyFrom(ret.directions_for_rao)
-    ret.need_spectrum.CopyFrom(ret.need_spectrum)
-    return ret
