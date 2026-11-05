@@ -1,5 +1,4 @@
 """Facilitate the creation of a gRPC force model in Python."""
-import inspect
 import logging
 import time
 from concurrent import futures
@@ -79,10 +78,10 @@ class AbstractForceModel:
               'rotations convention' section of xdyn's input file.
               See xdyn's documentation for details.
         """
-        raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
+        raise NotImplementedError("get_parameters" + NOT_IMPLEMENTED)
 
     def required_wave_information(
-        self, _t: float, _x: float, _y: float, _z: float
+        self, _t: float, _x: float, _y: float, _z: float, /
     ) -> dict[str, Any]:
         """Give the list of wave data needed by this model.
 
@@ -163,6 +162,7 @@ class AbstractForceModel:
         _commands: dict[str, float],
         _wave_information: WaveInformation,
         _filtered_states: FilteredStatesAndConvention,
+        /,
     ):
         """Calculate the force & torque.
 
@@ -344,7 +344,7 @@ class AbstractForceModel:
               force or environment models.
 
         """
-        raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
+        raise NotImplementedError("force" + NOT_IMPLEMENTED)
 
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24

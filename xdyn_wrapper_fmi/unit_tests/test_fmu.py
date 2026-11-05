@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 from fmpy import read_model_description, simulate_fmu
 from fmpy.fmi2 import FMU2Model, FMU2Slave
+from fmpy.model_description import ModelVariable
 from fmpy.validation import validate_fmu
 
 HERE = Path(__file__).resolve().parent
@@ -73,6 +74,7 @@ def slave(fmu, name="ship"):
         from fmpy import extract
 
         extract(fmu, unzipdir=unzipped)
+    assert description.coSimulation is not None
     s = FMU2Slave(
         guid=description.guid,
         unzipDirectory=unzipped,
@@ -85,6 +87,11 @@ def slave(fmu, name="ship"):
     s.exitInitializationMode()
     refs = {v.name: v.valueReference for v in description.modelVariables}
     return s, refs
+
+
+def name_of(variable: ModelVariable | None) -> str:
+    assert variable is not None
+    return variable.name
 
 
 def run(fmu, steps, rpm=RPM, h=0.5):
@@ -110,9 +117,11 @@ def test_variables_come_from_the_model(fmu):
     assert variables[RPM_INPUT].description == "propeller(rpm)"
     assert variables[P_D_INPUT].causality == "input"
     assert variables["TestShip.z"].causality == "output"
-    assert float(variables["TestShip.z"].start) == 1  # the YAML's initial position
-    assert float(variables["xdyn.dt"].start) == 0.1
-    assert "[psi, theta', phi'']" in variables["TestShip.phi"].description
+    z, dt, phi = variables["TestShip.z"], variables["xdyn.dt"], variables["TestShip.phi"]
+    assert z.start is not None and dt.start is not None and phi.description is not None
+    assert float(z.start) == 1  # the YAML's initial position
+    assert float(dt.start) == 0.1
+    assert "[psi, theta', phi'']" in phi.description
 
 
 def test_variables_are_in_si_units(fmu):
@@ -126,6 +135,7 @@ def test_the_solver_is_an_enumeration(fmu):
     description = read_model_description(fmu)
     solver = next(v for v in description.modelVariables if v.name == "xdyn.solver")
     assert solver.type == "Enumeration"
+    assert solver.declaredType is not None and solver.start is not None
     assert [item.name for item in solver.declaredType.items] == ["euler", "rk4", "rkck"]
     assert int(solver.start) == 2
 
@@ -280,15 +290,14 @@ def test_model_exchange_follows_co_simulation(fmu):
 def test_model_exchange_declares_its_structure(fmu):
     description = read_model_description(fmu)
     assert description.modelExchange is not None
-    names = {v: v.name for v in description.modelVariables}
-    assert [names[d.variable] for d in description.derivatives][:2] == [
+    assert [name_of(d.variable) for d in description.derivatives][:2] == [
         "der(TestShip.x)",
         "der(TestShip.y)",
     ]
-    x = next(o for o in description.outputs if o.variable.name == "TestShip.x")
-    assert [d.name for d in x.dependencies] == ["TestShip.x"]
-    euler = next(o for o in description.outputs if o.variable.name == "TestShip.phi")
-    assert [d.name for d in euler.dependencies] == [f"TestShip.{n}" for n in STATES[9:]]
+    x = next(o for o in description.outputs if name_of(o.variable) == "TestShip.x")
+    assert [d.name for d in x.dependencies or []] == ["TestShip.x"]
+    euler = next(o for o in description.outputs if name_of(o.variable) == "TestShip.phi")
+    assert [d.name for d in euler.dependencies or []] == [f"TestShip.{n}" for n in STATES[9:]]
 
 
 def test_no_model_exchange_for_a_model_with_history(tmp_path):
@@ -332,6 +341,7 @@ def model_exchange(fmu):
         from fmpy import extract
 
         extract(fmu, unzipdir=unzipped)
+    assert description.modelExchange is not None
     m = FMU2Model(
         guid=description.guid,
         unzipDirectory=unzipped,

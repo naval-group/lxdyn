@@ -1,6 +1,7 @@
 """gRPC sample client for controllers."""
 
 import logging
+from collections.abc import Mapping
 
 import grpc
 
@@ -49,7 +50,7 @@ class Controller:
         self.angle_representation = None
         self.set_parameters(parameters, t0)
 
-    def set_parameters(self, yaml_string: str, t0: float) -> str:
+    def set_parameters(self, yaml_string: str, t0: float) -> None:
         """Set the controller's YAML parameters."""
         request = controller_pb2.SetParametersRequest(parameters=yaml_string, t0=t0)
         response = self.stub.set_parameters(request)
@@ -62,8 +63,8 @@ class Controller:
         states: StatesEuler,
         dstates_dt: StatesEuler,
         setpoints: list[float],
-    ) -> dict[str, float]:
-        """Calculates the controller outputs (the commands)."""
+    ) -> tuple[Mapping[str, float], float]:
+        """Calculates the controller outputs (the commands), and when to call it next."""
         request = controller_pb2.ControllerRequestEuler()
         grpc_states = to_grpc_states(states)
         grpc_dstates_dt = to_grpc_states(dstates_dt)

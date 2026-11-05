@@ -27,10 +27,8 @@ class Tests(unittest.TestCase):
     """All unit tests."""
 
     xdyn = ModelExchangeEuler(os.environ.get("xdyn_server_url", "localhost:9002"))
-    initial_state = {}
-
     def setUp(self):
-        self.initial_state = {
+        self.initial_state: dict[str, float] = {
             "t": 2,
             "x": 1,
             "y": 2,

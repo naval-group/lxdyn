@@ -118,6 +118,8 @@ done
 description = "Run the gRPC and JSON protocol integration tests"
 depends = ["zig:build", "integration:setup"]
 run = """
+PY=$PWD/build/venv/grpc/bin/python
+(cd xdyn_grpc && "$PY" -m pytest -q xdyngrpc/controllers/tests.py xdyngrpc/forces/test_marshalling.py)
 make -C integration_tests/grpc_tests
 make -C integration_tests/json_tests
 """

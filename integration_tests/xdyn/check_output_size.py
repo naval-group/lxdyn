@@ -10,6 +10,7 @@ python check_output_size.py hdf5 my_xdyn_result_file.hdf5
 """
 import argparse
 import json
+from collections.abc import Sequence
 
 import h5py
 import numpy as np
@@ -18,7 +19,7 @@ _EXPECTED_TIME_VECTOR = np.arange(0, 1.1, 0.1)
 _EXPECTED_NUMBER_TIME_STEPS = len(_EXPECTED_TIME_VECTOR)
 
 
-def _message_size(format: str, time_vector: np.ndarray) -> str:
+def _message_size(format: str, time_vector: Sequence[float] | np.ndarray) -> str:
     length_time_vector = len(time_vector)
     msg = f"Time vector contains {length_time_vector} elements, "
     msg += f"instead of {_EXPECTED_NUMBER_TIME_STEPS}, "
@@ -26,7 +27,7 @@ def _message_size(format: str, time_vector: np.ndarray) -> str:
     return msg
 
 
-def _message_vector(format: str, time_vector: np.ndarray) -> str:
+def _message_vector(format: str, time_vector: Sequence[float] | np.ndarray) -> str:
     return f"Error checking size for {format}: {time_vector}"
 
 
@@ -73,7 +74,7 @@ def create_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(cli: list[str] = None) -> None:
+def main(cli: list[str] | None = None) -> None:
     """
     Main entry point used when calling from command line interface
     """

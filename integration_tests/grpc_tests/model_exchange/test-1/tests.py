@@ -86,7 +86,7 @@ class Tests(unittest.TestCase):
         request.states.phi[:] = [0]
         request.states.theta[:] = [0]
         request.states.psi[:] = [0]
-        with self.assertRaises(grpc._channel._InactiveRpcError):
+        with self.assertRaises(grpc.RpcError):
             self.xdyn.xdyn_stub.dx_dt_euler_321(request)  # This is expected to fail
         request.states.v[:] = [5]
         request.states.w[:] = [6]

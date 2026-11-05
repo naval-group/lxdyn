@@ -41,7 +41,7 @@ def serve():
 class Waves:
     """This class wraps the gRPC calls for use with plain Python types."""
 
-    def __init__(self, channel, parameters: str = None):
+    def __init__(self, channel, parameters: str | None = None):
         """This constructor initializes the wave models (runs set_parameters)."""
         self.stub = wave_grpc_pb2_grpc.WavesStub(channel)
         if parameters is not None:
@@ -73,7 +73,7 @@ class Waves:
             )
         )
 
-    def dynamic_pressures(self, xyzts: dict[str, Any]) -> dict[str, float]:
+    def dynamic_pressures(self, xyzts: dict[str, Any]) -> list[dict[str, float]]:
         """Compute the wave dynamic pressure on a grid."""
         # Need to disable this Pylint warning because it doesn't play well with Protobuf
         # pylint: disable=no-member
@@ -94,7 +94,7 @@ class Waves:
             )
         )
 
-    def orbital_velocities(self, xyzts: dict[str, Any]) -> dict[str, float]:
+    def orbital_velocities(self, xyzts: dict[str, Any]) -> list[dict[str, float]]:
         """Compute the wave particles orbital velocity on a grid."""
         # Need to disable this Pylint warning because it doesn't play well with Protobuf
         # pylint: disable=no-member
