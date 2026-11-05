@@ -30,21 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          # The version is `git describe`, and the default checkout fetches no tags at all,
-          # so without this every image would be published as the fallback commit sha.
-          fetch-depth: 0
       # Before anything is built: a mismatch is fixed by retagging, which a published
       # release could not be.
       - name: Tag matches build.zig.zon
         if: github.ref_type == 'tag'
         run: sh tools/check-release-version.sh "$GITHUB_REF_NAME"
       - uses: cachix/install-nix-action@v31
-
-      - name: Host tools and dependency closure
-        run: |
-          nix develop --command mise run deps:fetch host-tools
-          nix develop --command mise run deps:fetch x86_64-linux-musl
 
       - name: Build the image
         run: nix develop --command mise run deploy:image

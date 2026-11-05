@@ -154,7 +154,15 @@
         mkdir -p $HOME $ZIG_GLOBAL_CACHE_DIR $XDG_CACHE_HOME
       '';
 
-      # The sandbox has no .git for headSha() and no pkg-config hook for the eigen probe.
+      # A flake sees no git tags, so the version comes from build.zig.zon.
+      version = builtins.head (builtins.match
+        ".*\\.version = \"([^\"]+)\".*" (builtins.readFile ./build.zig.zon));
+      # CalVer is YY.M[.P]: build.zig.zon's 26.11.0 is the release 26.11.
+      release = let m = builtins.match "([0-9]+\\.[0-9]+)\\.0" version;
+        in if m == null then version else builtins.head m;
+      revision = self.rev or self.dirtyRev or "unknown";
+
+      # The sandbox has no pkg-config hook for the eigen probe.
       zigFlags = triple: pkgs.lib.concatStringsSep " " [
         "-Ddeps=${fetched.${triple}}"
         "-Ddeps-host=${fetched.host-tools}"
@@ -162,14 +170,16 @@
         "-Dcommit=${self.shortRev or self.dirtyShortRev or "unknown"}"
       ];
 
-      # Static musl binaries for consumers such as LOTUSim: no loader or closure at runtime.
-      xdyn = pkgs.stdenvNoCC.mkDerivation {
-        pname = "xdyn";
-        # A flake sees no git tags, so the version comes from build.zig.zon.
-        version = builtins.head (builtins.match
-          ".*\\.version = \"([^\"]+)\".*" (builtins.readFile ./build.zig.zon));
+      # The wheels, the image and the binaries leave Nix, so every store path in them goes, including
+      # the closure's build prefix HDF5 bakes in.
+      scrubStore = files: "sed -i -E 's|${builtins.storeDir}/[0-9a-z]{32}|${builtins.storeDir}/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee|g' ${files}";
+
+      # Static musl binaries: no loader or closure at runtime, so they run on any Linux and FROM scratch.
+      xdynStatic = pkgs.stdenvNoCC.mkDerivation {
+        pname = "xdyn-static";
+        inherit version;
         src = xdynSource;
-        nativeBuildInputs = [ pkgs.zig pkgs.llvm pkgs.removeReferencesTo ];
+        nativeBuildInputs = [ pkgs.zig pkgs.llvm ];
         dontFixup = true;
         buildPhase = ''
           runHook preBuild
@@ -179,21 +189,44 @@
         '';
         installPhase = "runHook preInstall; runHook postInstall";
         postInstall = ''
-          # The other eleven include a `gz` that would shadow Gazebo's on a consumer's PATH.
-          find $out/bin -mindepth 1 \
-            -not -name xdyn -not -name xdyn-for-cs -not -name xdyn-for-me -delete
-          # Debug info and Boost's assert strings carry the closure's store path.
           llvm-strip --strip-debug $out/bin/* $out/lib/*.a
-          remove-references-to -t ${fetched.x86_64-linux-musl} $out/bin/* $out/lib/*.a
+          ${scrubStore "$out/bin/* $out/lib/*.a"}
+          for b in $out/bin/*; do
+            ! llvm-readelf -l -d $b | grep -qE 'INTERP|NEEDED' || { echo "$b is dynamically linked" >&2; exit 1; }
+          done
         '';
-        meta.description = "xdyn simulator binaries, libc++, static x86_64-linux-musl";
+      };
+
+      # Selections from one build, so xdyn compiles once for both.
+      pickXdyn = { pname, binaries, libraries ? false, description }:
+        pkgs.runCommandLocal "${pname}-${version}" {
+          inherit version;
+          passthru = { inherit release revision; };
+          meta.description = description;
+        } ''
+          mkdir -p $out/bin
+          ${pkgs.lib.concatMapStrings (b: "cp ${xdynStatic}/bin/${b} $out/bin/\n") binaries}
+          ${pkgs.lib.optionalString libraries "cp -r ${xdynStatic}/lib $out/"}
+        '';
+      # For consumers such as LOTUSim: the other binaries include a `gz` that would shadow Gazebo's.
+      xdyn = pickXdyn {
+        pname = "xdyn";
+        binaries = [ "xdyn" "xdyn-for-cs" "xdyn-for-me" ];
+        libraries = true;
+        description = "xdyn simulator binaries, libc++, static x86_64-linux-musl";
+      };
+      # The deploy image's: FROM scratch has no Gazebo to shadow.
+      xdyn-deploy = pickXdyn {
+        pname = "xdyn-deploy";
+        binaries = [ "xdyn" "xdyn-for-cs" "xdyn-for-me" "gz" "generate_yaml_example" "generate_stl_examples" ];
+        description = "the binaries the deploy image ships, static x86_64-linux-musl";
       };
 
       # An importer dlopens the FMU library, so it is a shared object for the importer's libc:
       # glibc on Linux, where xdyn's binaries are static musl.
       mkFmu = { pname, triple, platform, target ? triple }: pkgs.stdenvNoCC.mkDerivation {
         inherit pname;
-        inherit (xdyn) version;
+        inherit version;
         src = xdynSource;
         nativeBuildInputs = [ pkgs.zig pkgs.removeReferencesTo ];
         dontFixup = true;
@@ -239,8 +272,8 @@
       xdyn-fmu-win64 = mkFmu { pname = "xdyn-fmu-win64"; triple = "x86_64-windows-gnu"; platform = "win64"; };
 
       # The release asset, for importers without Nix: both libraries and the packer.
-      xdyn-fmu-zip = pkgs.runCommandLocal "lxdyn-fmu-${xdyn.version}" { } ''
-        dir=lxdyn-fmu-${xdyn.version}
+      xdyn-fmu-zip = pkgs.runCommandLocal "lxdyn-fmu-${version}" { } ''
+        dir=lxdyn-fmu-${version}
         mkdir -p $dir/linux64 $dir/win64 $out
         cp ${xdyn-fmu}/lib/xdyn_fmu.so $dir/linux64/
         cp ${xdyn-fmu-win64}/lib/xdyn_fmu.dll $dir/win64/
@@ -257,12 +290,9 @@
       # One wheel per CPython upstream still supports. libxdyn compiles once; only the bindings
       # rebuild per interpreter, against its Python.h.
       wheelPythons = [ pkgs.python311 pkgs.python312 pkgs.python313 pkgs.python314 pkgs.python315 ];
-      # CalVer is YY.M[.P]: build.zig.zon's 26.11.0 is the release 26.11.
-      wheelVersion = let m = builtins.match "([0-9]+\\.[0-9]+)\\.0" xdyn.version;
-        in if m == null then xdyn.version else builtins.head m;
       lxdyn-wheels = pkgs.stdenvNoCC.mkDerivation {
         pname = "lxdyn-wheels";
-        version = wheelVersion;
+        version = release;
         src = xdynSource;
         # python3 by path only: its setup hook would point every interpreter at its own sysconfig.
         nativeBuildInputs = [ pkgs.zig pkgs.llvm ];
@@ -283,14 +313,13 @@
           cp ${./LICENSE.md} LICENSE.md
           for so in $TMPDIR/prefix/python/*.so; do
             llvm-strip --strip-debug $so
-            # The wheel leaves Nix, so every store path goes, including the closure's build prefix HDF5 bakes in.
-            sed -i -E 's|${builtins.storeDir}/[0-9a-z]{32}|${builtins.storeDir}/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee|g' $so
+            ${scrubStore "$so"}
             # manylinux_2_28 is a promise about the symbols the module needs, so it is checked.
             glibc=$(llvm-nm -D --undefined-only $so | grep -oE 'GLIBC_[0-9.]+' | sed 's/^GLIBC_//' | sort -V | tail -1)
             [ "$(printf '%s\n2.28\n' "$glibc" | sort -V | tail -1)" = 2.28 ] \
               || { echo "$so needs GLIBC_$glibc, above manylinux_2_28" >&2; exit 1; }
             ! llvm-readelf -d $so | grep -qiE 'rpath|runpath' || { echo "$so carries an RPATH" >&2; exit 1; }
-            ${pkgs.python3.interpreter} xdyn_wrapper_python/make_wheel.py $so --version ${wheelVersion} --out $out \
+            ${pkgs.python3.interpreter} xdyn_wrapper_python/make_wheel.py $so --version ${release} --out $out \
               --pyproject xdyn_wrapper_python/pyproject.toml \
               --readme ${./xdyn_wrapper_python/README.md} --license LICENSE.md
           done
@@ -348,7 +377,7 @@
         '';
       };
     in {
-      packages.${system} = closures // { inherit xdyn xdyn-fmu xdyn-fmu-win64 xdyn-fmu-zip lxdyn-wheels; }
+      packages.${system} = closures // { inherit xdyn xdyn-deploy xdyn-fmu xdyn-fmu-win64 xdyn-fmu-zip lxdyn-wheels; }
         // pkgs.lib.mapAttrs' (triple: drv: pkgs.lib.nameValuePair "deps-${triple}" drv) fetched;
       checks.${system} = checks;
 
