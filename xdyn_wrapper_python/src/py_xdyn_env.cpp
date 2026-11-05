@@ -261,10 +261,11 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
     py::class_<Airy, WaveModel, std::shared_ptr<Airy>>(m_env, "Airy")
         .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/>(),
             py::arg("spectrum"))
-        .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const double /*constant_random_phase*/>(),
-            py::arg("spectrum"), py::arg("constant_random_phase"))
+        // The seed first: pybind11 >= 3.1 lets an int match a double without conversion.
         .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const int /*random_number_generator_seed*/>(),
             py::arg("spectrum"), py::arg("random_number_generator_seed"))
+        .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const double /*constant_random_phase*/>(),
+            py::arg("spectrum"), py::arg("constant_random_phase"))
         .def("evaluate_rao", &Airy::evaluate_rao,
             py::arg("x"),
             py::arg("y"),

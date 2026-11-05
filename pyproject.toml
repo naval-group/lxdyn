@@ -3,12 +3,14 @@ name = "xdyn-dev"
 version = "0"
 description = "Development environments for the xdyn repository — not a distributable package"
 
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 
 dependencies = []
 
 [tool.uv]
 package = false
+# The same interpreters locally as in CI, never the host's.
+python-preference = "only-managed"
 
 [tool.uv.workspace]
 members = ["xdyn_wrapper_python"]
@@ -22,9 +24,9 @@ test-grpc = [
     "pyyaml",
     "numpy",
     "pytest",
-    "websocket-client==0.56.0",
+    "websocket-client",
 ]
-wrapper = ["pybind11[global]>=3.0", "numpy", "pytest", "setuptools", "wheel"]
+wrapper = ["numpy", "pytest", "setuptools", "wheel"]
 fmu = ["fmpy", "numpy", "pytest"]
 lint = ["ruff"]
 wheelcheck = ["numpy", "pytest"]

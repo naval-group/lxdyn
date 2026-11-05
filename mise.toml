@@ -101,7 +101,7 @@ make -C integration_tests/xdyn PYTHON="$PWD/build/venv/cli/bin/python" all
 [tasks."integration:setup"]
 description = "Python env + protobuf stubs for the gRPC/JSON tests"
 run = '''
-UV_PROJECT_ENVIRONMENT=build/venv/grpc uv sync --only-group test-grpc --python 3.10 --quiet
+UV_PROJECT_ENVIRONMENT=build/venv/grpc uv sync --only-group test-grpc --quiet
 mkdir -p xdyn_grpc/xdyngrpc/_proto
 touch xdyn_grpc/xdyngrpc/_proto/__init__.py
 build/venv/grpc/bin/python -m grpc_tools.protoc \
@@ -198,14 +198,14 @@ depends = ["zig:build", "deploy:image", "deploy:server-image", "integration:setu
 run = "sh integration_tests/deploy/run.sh"
 
 [tasks."python:setup"]
-description = "Python env for the pybind11 wrapper (pinned pybind11 + numpy)"
-run = 'UV_PROJECT_ENVIRONMENT=build/venv/wrapper-3.10 uv sync --only-group wrapper --quiet'
+description = "Python env for the pybind11 wrapper and its tests"
+run = 'UV_PROJECT_ENVIRONMENT=build/venv/wrapper uv sync --only-group wrapper --quiet'
 
 [tasks."python:build"]
 description = "Build the pybind11 extension module -> build/<triple>/python/"
 depends = ["python:setup"]
 run = '''
-PY=$PWD/build/venv/wrapper-3.10/bin/python
+PY=$PWD/build/venv/wrapper/bin/python
 zig build python -Dpython="$PY" --prefix "$(sh tools/build-dir.sh)" \
     -Dgit-version="$(git describe --abbrev=0 --tag --always | cut -f2 -dv)"
 SO_DIR=$(sh tools/build-dir.sh)/python
@@ -245,18 +245,18 @@ depends = ["python:build"]
 run = '''
 SO_DIR=$(sh tools/build-dir.sh)/python
 TESTS=$PWD/xdyn_wrapper_python/unit_tests
-PY=$PWD/build/venv/wrapper-3.10/bin/python
+PY=$PWD/build/venv/wrapper/bin/python
 mkdir -p build/scratch/python-tests
 cd build/scratch/python-tests
 PYTHONPATH="$SO_DIR" "$PY" -m pytest "$TESTS"
 '''
 
 [tasks."python:matrix"]
-description = "Build and test the wrapper against each supported Python (3.10, 3.13, 3.15)"
+description = "Build and test the wrapper against each supported Python (3.11 to 3.15)"
 run = '''
 set -e
 TESTS=$PWD/xdyn_wrapper_python/unit_tests
-for V in ${XDYN_PYTHON_VERSIONS:-3.10 3.13 3.15}; do
+for V in ${XDYN_PYTHON_VERSIONS:-3.11 3.12 3.13 3.14 3.15}; do
     echo "--- Python $V"
     UV_PROJECT_ENVIRONMENT=build/venv/wrapper-$V uv sync --only-group wrapper --python "$V" --quiet
     PY=$PWD/build/venv/wrapper-$V/bin/python
@@ -274,7 +274,7 @@ depends = ["python:build"]
 run = '''
 set -e
 SO_DIR=$(sh tools/build-dir.sh)/python
-PY=$PWD/build/venv/wrapper-3.10/bin/python
+PY=$PWD/build/venv/wrapper/bin/python
 cd xdyn_wrapper_python
 DEST=$("$PY" -c "
 from setuptools import Extension
@@ -335,7 +335,7 @@ GIT_VERSION=$(git describe --abbrev=0 --tag --always | cut -f2 -dv)
 rm -rf "$OUT"
 mkdir -p "$OUT"
 cd "$OUT"
-"$PY" -m sphinx.cmd.quickstart --quiet --project xdyn --author Sirehna \
+"$PY" -m sphinx.cmd.quickstart --quiet --project xdyn --author "Julien Prodhon" \
     -v "$GIT_VERSION" -r "$GIT_VERSION" -l en --sep \
     --ext-autodoc --ext-doctest --ext-intersphinx --ext-todo \
     --extensions=sphinx.ext.autosummary \

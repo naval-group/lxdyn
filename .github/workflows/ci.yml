@@ -62,7 +62,7 @@ jobs:
       - name: Protocol integration tests
         run: nix develop --command mise run integration:grpc
 
-  # 285 binding tests on each of 3.10, 3.13 and 3.15, plus ruff and the wheel.
+  # 285 binding tests on each of 3.11 to 3.15, plus ruff and the wheel.
   python:
     runs-on: ubuntu-latest
     steps:
@@ -76,7 +76,7 @@ jobs:
 
       - name: Lint
         run: nix develop --command mise run python:lint
-      - name: Binding tests on 3.10, 3.13 and 3.15
+      - name: Binding tests on 3.11 to 3.15
         run: nix develop --command mise run python:matrix
       - name: Wheel
         run: nix develop --command mise run python:wheel
