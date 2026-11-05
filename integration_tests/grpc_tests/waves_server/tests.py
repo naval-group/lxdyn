@@ -1,8 +1,8 @@
 import os
 import unittest
+
 import grpc
 import numpy as np
-
 from xdyngrpc.waves.client import LOGGER, Waves
 
 # Was hardcoded to the compose service name "waves-server:50051".
@@ -138,11 +138,11 @@ class AiryWaveGrpcServerTest(unittest.TestCase):
             waves = Waves(channel, DATA_NO_WAVE)
             with self.assertRaises(KeyError):
                 waves.elevations({"points": [(1, 2), (3, 5)]})
-            with self.assertRaises(Exception):
+            with self.assertRaises(IndexError):
                 waves.elevations({"t": 10, "points": [(1, 2), (3, 5), (1,)]})
-            with self.assertRaises(Exception):
+            with self.assertRaises(IndexError):
                 waves.dynamic_pressures({"t": 5, "points": [(1, 2, 10), (3, 5,)]})
-            with self.assertRaises(Exception):
+            with self.assertRaises(IndexError):
                 waves.orbital_velocities({"t": 5, "points": [(1, 2, 10), (3, 5,)]})
 
     def test_01_no_wave(self):

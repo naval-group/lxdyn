@@ -1,8 +1,10 @@
 """Extra observation model"""
 
-from xdyngrpc.forces import force
 import logging
-from typing import Any, Dict
+from typing import Any
+
+from xdyngrpc.forces import force
+
 SERVICE_NAME = "model.py"
 
 logging.basicConfig(
@@ -20,7 +22,7 @@ class Model(force.AbstractForceModel):
     def __init__(self, _, body_name: str, __):
         self.body_name = body_name
 
-    def get_parameters(self) -> Dict[str, Any]:
+    def get_parameters(self) -> dict[str, Any]:
         """
         Return a dictionary with all parameters needed by xdyn, with keys:
 

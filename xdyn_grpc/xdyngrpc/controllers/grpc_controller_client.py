@@ -1,7 +1,6 @@
 """gRPC sample client for controllers."""
 
 import logging
-from typing import Dict, List
 
 import grpc
 
@@ -62,8 +61,8 @@ class Controller:
         self,
         states: StatesEuler,
         dstates_dt: StatesEuler,
-        setpoints: List[float],
-    ) -> Dict[str, float]:
+        setpoints: list[float],
+    ) -> dict[str, float]:
         """Calculates the controller outputs (the commands)."""
         request = controller_pb2.ControllerRequestEuler()
         grpc_states = to_grpc_states(states)

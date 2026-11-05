@@ -2,7 +2,6 @@
 Unit test for FastHydrostaticForceModel and ExactHydrostaticForceModel
 """
 import unittest
-from typing import List
 
 import numpy as np
 from xdyn.core import BodyBuilder, BodyPtr, BodyWithSurfaceForces, EnvironmentAndFrames
@@ -32,7 +31,7 @@ def get_environment_and_frames() -> EnvironmentAndFrames:
     return env
 
 
-def get_points() -> List[List[np.ndarray]]:
+def get_points() -> list[list[np.ndarray]]:
     points = [
         [
             np.array([0.0, 0.0, 0.0]),

@@ -5,7 +5,7 @@ import logging
 import math
 import time
 from concurrent import futures
-from typing import Any, Dict, List
+from typing import Any
 
 import grpc
 
@@ -54,7 +54,7 @@ class Waves:
         request = wave_types_pb2.SetParameterRequest(parameters=parameters)
         return self.stub.set_parameters(request).error_message
 
-    def elevations(self, xyts) -> List[Dict[str, float]]:
+    def elevations(self, xyts) -> list[dict[str, float]]:
         """Compute wave elevations on a grid."""
         # Need to disable this Pylint warning because it doesn't play well with Protobuf
         # pylint: disable=no-member
@@ -73,7 +73,7 @@ class Waves:
             )
         )
 
-    def dynamic_pressures(self, xyzts: Dict[str, Any]) -> Dict[str, float]:
+    def dynamic_pressures(self, xyzts: dict[str, Any]) -> dict[str, float]:
         """Compute the wave dynamic pressure on a grid."""
         # Need to disable this Pylint warning because it doesn't play well with Protobuf
         # pylint: disable=no-member
@@ -94,7 +94,7 @@ class Waves:
             )
         )
 
-    def orbital_velocities(self, xyzts: Dict[str, Any]) -> Dict[str, float]:
+    def orbital_velocities(self, xyzts: dict[str, Any]) -> dict[str, float]:
         """Compute the wave particles orbital velocity on a grid."""
         # Need to disable this Pylint warning because it doesn't play well with Protobuf
         # pylint: disable=no-member
@@ -125,7 +125,7 @@ class Waves:
             )
         )
 
-    def spectrum(self, t: float = 0.0, x: float = 0.0, y: float = 0.0) -> Dict[str, List[float]]:
+    def spectrum(self, t: float = 0.0, x: float = 0.0, y: float = 0.0) -> dict[str, list[float]]:
         """Get a linear wave spectrum at a given point in space-time.
 
         For an Airy wave server, spectrum is independent from t, x and y.

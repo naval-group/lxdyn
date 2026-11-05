@@ -30,7 +30,7 @@ class XDynTest(unittest.TestCase):
         error_outputter = ErrorReporter()
         res = run(input_data, error_outputter)
         self.assertTrue(res)
-        with open("falling_ball.csv", "r", encoding="utf-8") as fid:
+        with open("falling_ball.csv", encoding="utf-8") as fid:
             lines = fid.readlines()
         self.assertEqual(len(lines), 1 + 11)
         for extension in (".csv", ".json", ".h5"):

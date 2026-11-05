@@ -1,7 +1,6 @@
 """Simple PID controller."""
 
 import logging
-from typing import Dict, List
 
 import yaml
 
@@ -53,7 +52,7 @@ class PIDController(AbstractControllerModel):
         """
         return "EULER_321"
 
-    def get_command_names(self) -> List[str]:
+    def get_command_names(self) -> list[str]:
         """Return the name(s) of the controller outputs (commands).
 
         This will be used by the solver (e.g., xdyn) to set the value of the corresponding
@@ -68,7 +67,7 @@ class PIDController(AbstractControllerModel):
         LOGGER.info(self.command_name)
         return [self.command_name]
 
-    def get_setpoint_names(self) -> List[str]:
+    def get_setpoint_names(self) -> list[str]:
         """Return the name(s) of the controller inputs (setpoints).
 
         These setpoints are given by the simulator
@@ -101,8 +100,8 @@ class PIDController(AbstractControllerModel):
         self,
         states: StatesEuler,
         dstates_dt: StatesEuler,
-        setpoints: List[float],
-    ) -> Dict[str, float]:
+        setpoints: list[float],
+    ) -> dict[str, float]:
         """Calculate the commands using angles in Rned2body = Rz(ψ).Ry(θ).Rx(ϕ)
         rotation convention
 

@@ -10,7 +10,6 @@
 
 import csv
 
-
 with open('issue_202.csv', newline='') as csvfile:
     csv_reader = csv.DictReader(csvfile)
     read_one_line = False

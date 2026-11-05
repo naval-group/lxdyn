@@ -3,7 +3,6 @@
 import logging
 import time
 from concurrent import futures
-from typing import Dict, Type
 
 import grpc
 import yaml
@@ -104,7 +103,7 @@ class AbstractWaveModel:
         """
         raise NotImplementedError("dynamic_pressure " + NOT_IMPLEMENTED)
 
-    def orbital_velocity(self, x: float, y: float, z: float, t: float) -> Dict[str, float]:
+    def orbital_velocity(self, x: float, y: float, z: float, t: float) -> dict[str, float]:
         """Calculate the orbital velocity of the wave particles.
 
         Parameters
@@ -373,7 +372,7 @@ class WavesServicer(wave_grpc_pb2_grpc.WavesServicer):
         return response
 
 
-def serve(model: Type[AbstractWaveModel]):
+def serve(model: type[AbstractWaveModel]):
     """Launch the gRPC server."""
     one_day_in_seconds = 60 * 60 * 24
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

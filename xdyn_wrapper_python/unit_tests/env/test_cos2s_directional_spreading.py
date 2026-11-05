@@ -3,7 +3,6 @@ Unit test for Cos2sDirectionalSpreading
 """
 import unittest
 
-import numpy as np
 from numpy import cos, pi, power
 from xdyn.env.wave import Cos2sDirectionalSpreading
 from xdyn.exceptions import InvalidInputException

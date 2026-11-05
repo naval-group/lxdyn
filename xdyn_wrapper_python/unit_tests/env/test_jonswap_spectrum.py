@@ -54,7 +54,7 @@ class JonswapSpectrumTest(unittest.TestCase):
         Hs = self.rng.random_double().greater_than(0)()
         gamma = self.rng.random_double().greater_than(0)()
         S = JonswapSpectrum(Hs, Tp, gamma)
-        for i in range(10):
+        for _ in range(10):
             omega = self.rng.random_double().greater_than(0)()
             self.assertEqual(omega * omega / 9.81, S.get_wave_number(omega))
 

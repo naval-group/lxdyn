@@ -4,7 +4,7 @@ import logging
 import time
 from concurrent import futures
 from functools import partial
-from typing import Any, Dict, List, Type
+from typing import Any
 
 import grpc
 import yaml
@@ -40,7 +40,7 @@ NOT_IMPLEMENTED = " is not implemented in this model."
 class AbstractForceModel:
     """Derive from this class to implement a gRPC force model for xdyn."""
 
-    def get_parameters(self) -> Dict[str, Any]:
+    def get_parameters(self) -> dict[str, Any]:
         """
         Return a dictionary with all parameters needed by xdyn, with keys:
 
@@ -83,7 +83,7 @@ class AbstractForceModel:
 
     def required_wave_information(
         self, _t: float, _x: float, _y: float, _z: float
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Give the list of wave data needed by this model.
 
         Only called if set_parameters returns True.
@@ -160,7 +160,7 @@ class AbstractForceModel:
     def force(
         self,
         _states: States,
-        _commands: Dict[str, float],
+        _commands: dict[str, float],
         _wave_information: WaveInformation,
         _filtered_states: FilteredStatesAndConvention,
     ):
@@ -353,7 +353,7 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 class ForceServicer(GrpcForceServicer):
     """Implements the gRPC methods defined in force.proto."""
 
-    def __init__(self, model_class: Type[AbstractForceModel]):
+    def __init__(self, model_class: type[AbstractForceModel]):
         """Constructor.
 
         Parameters
@@ -363,9 +363,9 @@ class ForceServicer(GrpcForceServicer):
 
         """
         self.wave_information_required: bool = False
-        self.model_class: Type[AbstractForceModel] = model_class
-        self.model: Dict[str, AbstractForceModel] = {}
-        self.required_commands: Dict[str, List[str]] = {}
+        self.model_class: type[AbstractForceModel] = model_class
+        self.model: dict[str, AbstractForceModel] = {}
+        self.required_commands: dict[str, list[str]] = {}
 
     def set_parameters(self, request, context) -> SetForceParameterResponse:
         """Set the parameters of self.model.
@@ -447,7 +447,7 @@ class ForceServicer(GrpcForceServicer):
         return instance_name + "(" + command + ")"
 
     def get_command(
-        self, available_commands: Dict[str, float], instance_name: str, command: str
+        self, available_commands: dict[str, float], instance_name: str, command: str
     ) -> float:
         """Get command from xdyn or throw an exception."""
         formatted_command = self.to_xdyn_command_name(instance_name, command)
@@ -508,7 +508,7 @@ class ForceServicer(GrpcForceServicer):
         return response
 
 
-def serve(model: Type[AbstractForceModel]):
+def serve(model: type[AbstractForceModel]):
     """Launch the gRPC server."""
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_ForceServicer_to_server(ForceServicer(model), server)

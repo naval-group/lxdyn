@@ -109,7 +109,6 @@ class GravityForceModelTest(unittest.TestCase):
         """Check that the model evaluates successfully potential energy
         with an orientation different from (0,0,0)"""
         body = "body 1"
-        EPS = 1e-11
         cos_phi = 0.0
         cos_theta = 0.5 * np.sqrt(3)
         cos_psi = 0.5

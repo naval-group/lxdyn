@@ -2,7 +2,6 @@
 
 import logging
 from itertools import compress
-from typing import Dict, List
 
 import numpy as np
 import yaml
@@ -98,7 +97,7 @@ class StateFeedbackController(AbstractControllerModel):
         """
         return "EULER_321"
 
-    def get_command_names(self) -> List[str]:
+    def get_command_names(self) -> list[str]:
         """Return the name(s) of the controller outputs (commands).
 
         This will be used by the solver (e.g., xdyn) to set the value of the corresponding
@@ -114,7 +113,7 @@ class StateFeedbackController(AbstractControllerModel):
         LOGGER.info(self.command_names)
         return self.command_names
 
-    def get_setpoint_names(self) -> List[str]:
+    def get_setpoint_names(self) -> list[str]:
         """Return the name(s) of the controller inputs (setpoints).
 
         These setpoints are given by the simulatorcd fvd
@@ -130,7 +129,7 @@ class StateFeedbackController(AbstractControllerModel):
         """Calculates the list of states used to compute the command."""
         return np.array([states.__getattribute__(s) for s in self.input_states])
 
-    def get_state_setpoints(self, setpoints: Dict[str, float]) -> np.ndarray:
+    def get_state_setpoints(self, setpoints: dict[str, float]) -> np.ndarray:
         """Get the setpoint for each state. If input argument 'setpoints' does not contain
         a given state, its setpoint will default to zero.
 
@@ -146,8 +145,8 @@ class StateFeedbackController(AbstractControllerModel):
         self,
         states: StatesEuler,
         dstates_dt: StatesEuler,
-        setpoints: List[float],
-    ) -> Dict[str, float]:
+        setpoints: list[float],
+    ) -> dict[str, float]:
         """Calculate the commands using the state feedback formula u = -K * (x - x_desired).
         If some integral states are specified, x is augmented with the computed integral values
 

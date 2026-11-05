@@ -1,7 +1,6 @@
 """gRPC sample client for forces."""
 
 import logging
-from typing import Dict
 
 from .._proto import force_pb2, force_pb2_grpc
 from .grpc_force_types import (
@@ -77,7 +76,7 @@ class ForceModel:
         return ret
 
     def force(
-        self, states: States, commands: Dict[str, float], wave_information: WaveInformation
+        self, states: States, commands: dict[str, float], wave_information: WaveInformation
     ) -> ForceResponse:
         """Calculates the force model's outputs.
 

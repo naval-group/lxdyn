@@ -1,7 +1,7 @@
 """Force model using data from potential theory."""
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from xdyngrpc.forces import force
 
@@ -25,7 +25,7 @@ class HDBForceModel(force.AbstractForceModel):
         self.body_name = body_name
         self.pot = pot
 
-    def get_parameters(self) -> Dict[str, Any]:
+    def get_parameters(self) -> dict[str, Any]:
         """
         Return a dictionary with all parameters needed by xdyn, with keys:
 

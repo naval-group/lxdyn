@@ -2,9 +2,9 @@
 import inspect
 import logging
 import time
+from collections.abc import Callable
 from concurrent import futures
 from dataclasses import dataclass
-from typing import Callable, Dict, List
 
 import grpc
 import yaml
@@ -257,7 +257,7 @@ class AbstractControllerModel:
 
     def get_commands_quaternion(
         self, states: StatesQuaternion, dstates_dt: StatesQuaternion
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Calculate the commands using quaternions instead of angles.
 
         Parameters
@@ -275,7 +275,7 @@ class AbstractControllerModel:
         """
         raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
 
-    def get_setpoint_names(self) -> List[str]:
+    def get_setpoint_names(self) -> list[str]:
         """Return the name(s) of the controller inputs (setpoints).
 
         These setpoints are given by the simulator
@@ -290,8 +290,8 @@ class AbstractControllerModel:
         self,
         states: StatesEuler,
         dstates_dt: StatesEuler,
-        setpoints: List[float],
-    ) -> Dict[str, float]:
+        setpoints: list[float],
+    ) -> dict[str, float]:
         """Calculate the commands using angles in Rned2body = Rz(ψ).Ry(θ).Rx(ϕ)
         rotation convention
 
@@ -308,7 +308,7 @@ class AbstractControllerModel:
         """
         raise NotImplementedError(inspect.currentframe().f_code.co_name + NOT_IMPLEMENTED)
 
-    def get_command_names(self) -> List[str]:
+    def get_command_names(self) -> list[str]:
         """Return the name(s) of the controller outputs (commands).
 
         This will be used by the solver (e.g., xdyn) to set the value of the corresponding

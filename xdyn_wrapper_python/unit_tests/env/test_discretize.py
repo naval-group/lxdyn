@@ -3,7 +3,6 @@ Unit test for discretize
 """
 import re
 import unittest
-from typing import List
 
 import numpy as np
 from xdyn.env.wave import (
@@ -35,7 +34,7 @@ class DiscretizeTest(unittest.TestCase):
     def setUp(self) -> None:
         self.rng = DataGenerator(666)
 
-    def random_increasing_vector_of_size(self, n: int) -> List[float]:
+    def random_increasing_vector_of_size(self, n: int) -> list[float]:
         if n <= 0:
             return []
         ret = [0] * n
