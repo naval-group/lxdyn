@@ -6,6 +6,7 @@
 #include "py_xdyn_hdb.hpp"
 #include "py_xdyn_force.hpp"
 #include "py_pybind_additions.hpp"
+#include "xdyn/version/version.h"
 
 namespace py = pybind11;
 
@@ -27,9 +28,6 @@ PYBIND11_MODULE(xdyn, m) {
     py_add_module_xdyn_hdb(m);
     py_add_module_xdyn_force(m);
 
-#ifdef GIT_VERSION
-    m.attr("__version__") = GIT_VERSION;
-#else
-    m.attr("__version__") = "dev";
-#endif
+    m.attr("__version__") = xdyn_version();
+    m.attr("__commit__") = xdyn_commit();
 }

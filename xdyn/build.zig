@@ -50,12 +50,12 @@ const warning_flags = [_][]const u8{
 // Globbed out of their module and added back by addSources, each with a flag of its own.
 const compiled_separately = [_][]const u8{ "demo_scripts.cpp", "generate_test_ship.cpp" };
 
-// The hand-written C++ flag set, shared by every component. -Wno-date-time: h5_version.c wants
-// __DATE__. stack-exhausted stays a warning: it fires on stl_data.cpp depending on the runner's stack.
+// The hand-written C++ flag set, shared by every component. stack-exhausted stays a warning: it
+// fires on stl_data.cpp depending on the runner's stack.
 pub fn cppFlags(ctx: *const root.Ctx) []const []const u8 {
     const shim_hpp = root.fromRoot(ctx.b, "xdyn/compat/ssc_serialize_compat.hpp");
     return root.concat(ctx.b, ctx.withDebug(&.{
-        "-std=gnu++17", "-Wall",    "-Wextra", "-Werror", "-Wno-date-time", "-Wno-error=stack-exhausted",
+        "-std=gnu++17", "-Wall",    "-Wextra", "-Werror", "-Wno-error=stack-exhausted",
         "-fPIC",        "-include", shim_hpp,
     }), &warning_flags);
 }
@@ -63,16 +63,28 @@ pub fn cppFlags(ctx: *const root.Ctx) []const []const u8 {
 pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
     const b = ctx.b;
     const cpp = ctx.cpp_flags;
-    const c_flags = ctx.withDebug(&.{ "-std=gnu11", "-Wall", "-Wextra", "-Werror", "-Wno-date-time", "-fno-common", "-fPIC" });
+    const c_flags = ctx.withDebug(&.{ "-std=gnu11", "-Wall", "-Wextra", "-Werror", "-fno-common", "-fPIC" });
 
     // xdyn/<module>/*.cpp: depth 2 leaves xdyn/*/unit_tests/ to the test runner.
     lib.addCSourceFiles(.{ .root = b.path("xdyn"), .files = moduleSources(b), .flags = cpp });
-    lib.addCSourceFile(.{ .file = ctx.codegen.git_sha_c, .flags = c_flags });
+    lib.addCSourceFile(.{ .file = b.path("xdyn/version/version.c"), .flags = root.concat(b, c_flags, &.{
+        b.fmt("-DXDYN_VERSION=\"{s}\"", .{release()}),
+        b.fmt("-DXDYN_COMMIT=\"{s}\"", .{b.option([]const u8, "commit", "Commit stamped into the binaries (default: dev; the flake passes its own)") orelse "dev"}),
+    }) });
     lib.addCSourceFiles(.{ .root = b.path("xdyn/interface_hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = c_flags });
     lib.addCSourceFiles(.{ .root = b.path("xdyn/observers_and_api"), .files = &.{"demo_scripts.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-c23-extensions"}) });
     // One 253906-character string literal; ISO requires only 65536.
     lib.addCSourceFiles(.{ .root = b.path("xdyn/binary_stl_data"), .files = &.{"generate_test_ship.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-overlength-strings"}) });
     proto.addSources(ctx, lib, &.{ "wave_types", "wave_grpc", "force", "controller" });
+}
+
+// build.zig.zon's version as releases are named: 26.11.0 is 26.11, 26.11.1 stays.
+fn release() []const u8 {
+    const version = @import("../build.zig.zon").version;
+    return comptime if (std.mem.endsWith(u8, version, ".0") and std.mem.count(u8, version, ".") == 2)
+        version[0 .. version.len - 2]
+    else
+        version;
 }
 
 pub fn addExecutables(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) void {

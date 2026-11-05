@@ -159,7 +159,7 @@
         "-Ddeps=${fetched.${triple}}"
         "-Ddeps-host=${fetched.host-tools}"
         "-Deigen=${pkgs.eigen_5}/include/eigen3"
-        "-Dgit-sha=${self.rev or self.dirtyRev or "unknown"}"
+        "-Dcommit=${self.shortRev or self.dirtyShortRev or "unknown"}"
       ];
 
       # Static musl binaries for consumers such as LOTUSim: no loader or closure at runtime.
@@ -273,7 +273,7 @@
           ${pkgs.lib.concatMapStrings (py: ''
             zig build python -Dtarget=x86_64-linux-gnu.2.28 ${zigFlags "x86_64-linux-gnu"} \
               -Dpython=${py.interpreter} -Dpybind11=${pkgs.python3Packages.pybind11}/include \
-              -Dgit-version=${wheelVersion} --prefix $TMPDIR/prefix
+              --prefix $TMPDIR/prefix
           '') wheelPythons}
           runHook postBuild
         '';

@@ -17,9 +17,7 @@ pub fn add(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) void {
         return;
     };
 
-    var flags = root.concat(b, ctx.cpp_flags, &.{"-fvisibility=hidden"});
-    if (b.option([]const u8, "git-version", "Version stamped into the module's __version__ (default: dev)")) |v|
-        flags = root.concat(b, flags, &.{b.fmt("-DGIT_VERSION=\"{s}\"", .{v})});
+    const flags = root.concat(b, ctx.cpp_flags, &.{"-fvisibility=hidden"});
 
     const m = ctx.module(.{ .pic = true });
     m.addSystemIncludePath(.{ .cwd_relative = env.include });

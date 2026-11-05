@@ -1,4 +1,4 @@
-// Options: -Dtarget -Ddeps -Ddeps-host -Deigen -Ddebug -Dgit-sha (`zig build --help` lists all).
+// Options: -Dtarget -Ddeps -Ddeps-host -Deigen -Ddebug -Dcommit (`zig build --help` lists all).
 // Each component's build lives beside its sources; this file resolves what they share.
 const std = @import("std");
 const builtin = @import("builtin");
@@ -16,7 +16,7 @@ else
     .{};
 
 pub fn build(b: *std.Build) void {
-    // Configuration reads $XDYN_*, runs git, pkg-config and python: none of it is visible to the configure cache.
+    // Configuration reads $XDYN_*, runs pkg-config and python: none of it is visible to the configure cache.
     b.graph.poisonCache();
     const target = b.standardTargetOptions(.{ .default_target = native_default });
     const codegen = addCodegen(b);
@@ -105,7 +105,7 @@ pub const Ctx = struct {
 };
 
 // =============================================================================
-// Codegen: SSC's umbrella headers, the gRPC stubs, and the commit stamped into the binaries
+// Codegen: SSC's umbrella headers and the gRPC stubs
 // =============================================================================
 
 pub const Codegen = struct {
@@ -113,7 +113,6 @@ pub const Codegen = struct {
     proto_messages: std.Build.LazyPath,
     proto_services: std.Build.LazyPath,
     ssc_umbrellas: std.Build.LazyPath,
-    git_sha_c: std.Build.LazyPath,
 };
 
 fn addCodegen(b: *std.Build) Codegen {
@@ -125,30 +124,12 @@ fn addCodegen(b: *std.Build) Codegen {
     const stubs = proto.addStubs(b);
     step.dependOn(stubs.step);
 
-    const sha = b.option([]const u8, "git-sha", "Commit stamped into the binaries (default: git rev-parse HEAD)") orelse
-        headSha(b);
-    const write_sha = b.addWriteFiles();
-    const git_sha_c = write_sha.add("get_git_sha.c", b.fmt(
-        \\#include "xdyn/get_git_sha/get_git_sha.h"
-        \\const char* get_git_sha() {{ return "{s}"; }}
-        \\
-    , .{sha}));
-    step.dependOn(&write_sha.step);
-
     return .{
         .step = step,
         .proto_messages = stubs.messages,
         .proto_services = stubs.services,
         .ssc_umbrellas = umbrellas.getDirectory(),
-        .git_sha_c = git_sha_c,
     };
-}
-
-fn headSha(b: *std.Build) []const u8 {
-    var code: u8 = 0;
-    const out = b.runAllowFail(&.{ "git", "-C", fromRoot(b, "."), "rev-parse", "HEAD" }, &code, .ignore) catch return "unknown";
-    if (code != 0) return "unknown";
-    return b.dupe(std.mem.trim(u8, out, " \t\r\n"));
 }
 
 // =============================================================================

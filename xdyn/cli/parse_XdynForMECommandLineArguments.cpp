@@ -8,7 +8,6 @@
 #include <iostream>
 #include <cstdlib> // EXIT_FAILURE, EXIT_SUCCESS
 
-#include <ssc/check_ssc_version.hpp>
 
 #include "display_command_line_arguments.hpp"
 #include "parse_XdynForMECommandLineArguments.hpp"
