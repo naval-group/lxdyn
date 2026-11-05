@@ -1,6 +1,6 @@
 #include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/external_file_formats/stl_writer.hpp"
-#include "xdyn/get_git_sha/get_git_sha.h"
+#include "xdyn/version/version.h"
 #include "xdyn/mesh/mesh_manipulations.hpp"
 #include "base91x/base91.hpp"
 #include <google/protobuf/stubs/common.h>
@@ -16,7 +16,7 @@ std::string description()
        << "This is done so as to avoid putting the whole ascii file in a string (unacceptable build time)." << std::endl
        << "(c) SIREHNA 2014-2015." << std::endl
        << std::endl
-       << "ID : " << get_git_sha() << std::endl
+       << "Version : " << xdyn_version() << " (" << xdyn_commit() << ")" << std::endl
        << std::endl;
     return ss.str();
 }

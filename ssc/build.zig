@@ -78,22 +78,6 @@ pub fn addUmbrellas(b: *std.Build) *std.Build.Step.WriteFile {
         text.appendSlice(b.allocator, "\n\n#endif\n") catch @panic("OOM");
         _ = files.add(b.fmt("ssc/{s}.hpp", .{name}), text.items);
     }
-    // xdyn prints the SSC commit; the absorbed one, which `git describe` named v10.0.
-    _ = files.add("ssc/check_ssc_version.hpp",
-        \\
-        \\#ifndef SSC_SHA_CHECKER
-        \\#define SSC_SHA_CHECKER
-        \\
-        \\#include <boost/static_assert.hpp>
-        \\#define SSC_GIT_SHA 0x690f80f6
-        \\#define LONG_SSC_GIT_SHA "0x690f80f6a065dbea65d9423d03c96b3a50ebb1b5"
-        \\// Compile-time assert. Usage: CHECK_SSC_SHA(0x741957727bb3e14);
-        \\#define CHECK_SSC_SHA(expected) BOOST_STATIC_ASSERT(SSC_GIT_SHA == expected);
-        \\// Compile-time assert. Usage: CHECK_SSC_VERSION(4,5,3);
-        \\#define CHECK_SSC_VERSION(X,Y) BOOST_STATIC_ASSERT(X == 10);BOOST_STATIC_ASSERT(Y>=0);
-        \\#endif
-        \\
-    );
     return files;
 }
 

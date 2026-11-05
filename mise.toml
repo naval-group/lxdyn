@@ -208,12 +208,11 @@ description = "Build the pybind11 extension module -> build/<triple>/python/"
 depends = ["python:setup"]
 run = '''
 PY=$PWD/build/venv/wrapper/bin/python
-zig build python -Dpython="$PY" --prefix "$(sh tools/build-dir.sh)" \
-    -Dgit-version="$(git describe --abbrev=0 --tag --always | cut -f2 -dv)"
+zig build python -Dpython="$PY" --prefix "$(sh tools/build-dir.sh)"
 SO_DIR=$(sh tools/build-dir.sh)/python
 SO=$SO_DIR/xdyn$("$PY" -c 'import sysconfig; print(sysconfig.get_config_var("EXT_SUFFIX"))')
 [ -f "$SO" ] || { echo "expected $SO, got:"; ls "$SO_DIR"; exit 1; }
-PYTHONPATH="$SO_DIR" "$PY" -c "import xdyn; print('import ok, xdyn', xdyn.__version__)"
+PYTHONPATH="$SO_DIR" "$PY" -c "import xdyn; print('import ok, xdyn', xdyn.__version__, xdyn.__commit__)"
 echo "OK -> $SO"
 '''
 
@@ -282,12 +281,12 @@ SO_DIR=$(sh tools/build-dir.sh)/python
 PY=$PWD/build/venv/doc/bin/python
 DOC=$PWD/xdyn_wrapper_python/doc
 OUT=$PWD/build/doc/python
-GIT_VERSION=$(git describe --abbrev=0 --tag --always | cut -f2 -dv)
+VERSION=$(PYTHONPATH="$SO_DIR" "$PY" -c 'import xdyn; print(xdyn.__version__)')
 rm -rf "$OUT"
 mkdir -p "$OUT"
 cd "$OUT"
 "$PY" -m sphinx.cmd.quickstart --quiet --project xdyn --author "Julien Prodhon" \
-    -v "$GIT_VERSION" -r "$GIT_VERSION" -l en --sep \
+    -v "$VERSION" -r "$VERSION" -l en --sep \
     --ext-autodoc --ext-doctest --ext-intersphinx --ext-todo \
     --extensions=sphinx.ext.autosummary \
     --extensions=sphinx_autopackagesummary \

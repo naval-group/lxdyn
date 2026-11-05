@@ -6,9 +6,8 @@
  */
 
 #include "display_command_line_arguments.hpp"
-#include "xdyn/get_git_sha/get_git_sha.h"
+#include "xdyn/version/version.h"
 #include "boost_program_options_descriptions/OptionPrinter.hpp"
-#include <ssc/check_ssc_version.hpp>
 
 std::string description(const std::string& des)
 {
@@ -24,8 +23,7 @@ std::string description(const std::string& des)
        << "for the initial version." << std::endl
        << "(c) 2015-2022 SIREHNA & Naval Group for all subsequent versions." << std::endl
        << std::endl
-       << "ID: " << get_git_sha() << std::endl
-       << "SHA of the SSC used: " << LONG_SSC_GIT_SHA << std::endl
+       << "Version: " << xdyn_version() << " (" << xdyn_commit() << ")" << std::endl
        << std::endl;
     return ss.str();
 }
