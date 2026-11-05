@@ -312,10 +312,10 @@ class WaveInformation:
         spectrum (Spectrum):                          Spectrum computed for this force model
     """
 
-    elevations: XYZTGrid = XYZTGrid()
-    dynamic_pressures: DynamicPressuresResponse = DynamicPressuresResponse()
-    orbital_velocities: OrbitalVelocitiesResponse = OrbitalVelocitiesResponse()
-    spectrum: Spectrum = Spectrum()
+    elevations: XYZTGrid = field(default_factory=XYZTGrid)
+    dynamic_pressures: DynamicPressuresResponse = field(default_factory=DynamicPressuresResponse)
+    orbital_velocities: OrbitalVelocitiesResponse = field(default_factory=OrbitalVelocitiesResponse)
+    spectrum: Spectrum = field(default_factory=Spectrum)
 
 
 @dataclass
@@ -365,10 +365,10 @@ class RequiredWaveInformationResponse:
                                              This is to avoid using an optional value.
     """
 
-    elevations: XYTGrid = XYTGrid()
-    dynamic_pressures: XYZTGrid = XYZTGrid()
-    orbital_velocities: XYZTGrid = XYZTGrid()
-    spectrum: SpectrumRequest = SpectrumRequest()
+    elevations: XYTGrid = field(default_factory=XYTGrid)
+    dynamic_pressures: XYZTGrid = field(default_factory=XYZTGrid)
+    orbital_velocities: XYZTGrid = field(default_factory=XYZTGrid)
+    spectrum: SpectrumRequest = field(default_factory=SpectrumRequest)
     angular_frequencies_for_rao: bool = False
     directions_for_rao: bool = False
     need_spectrum: bool = False
@@ -394,12 +394,12 @@ class WrenchMatrices:
                          N/(m².s) for module or radians for phase).
     """
 
-    X: np.ndarray = np.empty([0, 0])
-    Y: np.ndarray = np.empty([0, 0])
-    Z: np.ndarray = np.empty([0, 0])
-    K: np.ndarray = np.empty([0, 0])
-    M: np.ndarray = np.empty([0, 0])
-    N: np.ndarray = np.empty([0, 0])
+    X: np.ndarray = field(default_factory=lambda: np.empty([0, 0]))
+    Y: np.ndarray = field(default_factory=lambda: np.empty([0, 0]))
+    Z: np.ndarray = field(default_factory=lambda: np.empty([0, 0]))
+    K: np.ndarray = field(default_factory=lambda: np.empty([0, 0]))
+    M: np.ndarray = field(default_factory=lambda: np.empty([0, 0]))
+    N: np.ndarray = field(default_factory=lambda: np.empty([0, 0]))
 
 
 @dataclass
@@ -467,23 +467,23 @@ class ResultsFromPotentialTheory:
                                                       are expressed (in rad)
     """
 
-    Ma: np.ndarray = np.zeros(shape=(6, 6))
-    diffraction_module_tables: WrenchMatrices = WrenchMatrices()
-    diffraction_phase_tables: WrenchMatrices = WrenchMatrices()
-    diffraction_module_periods: np.ndarray = np.empty(shape=0)
-    diffraction_phase_periods: np.ndarray = np.empty(shape=0)
-    diffraction_module_psis: np.ndarray = np.empty(shape=0)
-    diffraction_phase_psis: np.ndarray = np.empty(shape=0)
-    froude_krylov_module_tables: WrenchMatrices = WrenchMatrices()
-    froude_krylov_phase_tables: WrenchMatrices = WrenchMatrices()
-    froude_krylov_module_periods: np.ndarray = np.empty(shape=0)
-    froude_krylov_phase_periods: np.ndarray = np.empty(shape=0)
-    froude_krylov_module_psis: np.ndarray = np.empty(shape=0)
-    froude_krylov_phase_psis: np.ndarray = np.empty(shape=0)
-    angular_frequencies: np.ndarray = np.empty(shape=0)
+    Ma: np.ndarray = field(default_factory=lambda: np.zeros(shape=(6, 6)))
+    diffraction_module_tables: WrenchMatrices = field(default_factory=WrenchMatrices)
+    diffraction_phase_tables: WrenchMatrices = field(default_factory=WrenchMatrices)
+    diffraction_module_periods: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    diffraction_phase_periods: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    diffraction_module_psis: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    diffraction_phase_psis: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    froude_krylov_module_tables: WrenchMatrices = field(default_factory=WrenchMatrices)
+    froude_krylov_phase_tables: WrenchMatrices = field(default_factory=WrenchMatrices)
+    froude_krylov_module_periods: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    froude_krylov_phase_periods: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    froude_krylov_module_psis: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    froude_krylov_phase_psis: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    angular_frequencies: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
     forward_speed: float = np.nan
-    added_mass_coeff: np.ndarray = np.empty(shape=(6, 6, 0))
-    radiation_damping_coeff: np.ndarray = np.empty(shape=(6, 6, 0))
-    wave_drift_force_tables: WrenchMatrices = WrenchMatrices()
-    wave_drift_periods: np.ndarray = np.empty(shape=0)
-    wave_drift_psis: np.ndarray = np.empty(shape=0)
+    added_mass_coeff: np.ndarray = field(default_factory=lambda: np.empty(shape=(6, 6, 0)))
+    radiation_damping_coeff: np.ndarray = field(default_factory=lambda: np.empty(shape=(6, 6, 0)))
+    wave_drift_force_tables: WrenchMatrices = field(default_factory=WrenchMatrices)
+    wave_drift_periods: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
+    wave_drift_psis: np.ndarray = field(default_factory=lambda: np.empty(shape=0))
