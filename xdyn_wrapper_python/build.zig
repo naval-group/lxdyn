@@ -24,10 +24,11 @@ pub fn add(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) void {
     const m = ctx.module(.{ .pic = true });
     m.addSystemIncludePath(.{ .cwd_relative = env.include });
     m.addSystemIncludePath(.{ .cwd_relative = pybind11 });
-    m.addCSourceFiles(.{ .root = b.path("xdyn_wrapper_python/src"), .files = &.{
-        "main.cpp",         "py_ssc.cpp",      "py_xdyn_core.cpp",  "py_xdyn_exe.cpp",
-        "py_xdyn_data.cpp", "py_xdyn_env.cpp", "py_xdyn_force.cpp", "py_xdyn_hdb.cpp",
-    }, .flags = flags });
+    m.addCSourceFiles(.{
+        .root = b.path("xdyn_wrapper_python/src"),
+        .files = root.sourcesIn(b, "xdyn_wrapper_python/src", ".cpp", &.{}),
+        .flags = flags,
+    });
     m.linkLibrary(libxdyn);
     ctx.linkDeps(m);
 
