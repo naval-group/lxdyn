@@ -25,19 +25,50 @@ test-grpc = [
 ]
 wrapper = ["numpy", "pytest"]
 fmu = ["fmpy", "numpy", "pytest"]
-lint = ["ruff"]
+# ty resolves imports against this venv, so it holds every other group's packages.
+lint = [
+    "ruff",
+    "ty",
+    { include-group = "test-cli" },
+    { include-group = "test-grpc" },
+    { include-group = "wrapper" },
+    { include-group = "fmu" },
+]
 doc = ["sphinx", "sphinx-autopackagesummary", "myst-parser", "numpy"]
 
 [tool.ruff]
-include = ["xdyn_wrapper_python/**/*.py", "xdyn_wrapper_fmi/**/*.py"]
+# postprocessing/ waits on its cleanup (python-layout.md); external/ is vendored.
+extend-exclude = ["postprocessing", "external"]
 line-length = 100
-target-version = "py310"
+target-version = "py311"
 
 [tool.ruff.lint]
-select = ["I", "W"]
+# RUF009: a call as a dataclass default is shared between instances, and an error on 3.11+.
+select = ["I", "W", "E", "F", "UP", "B", "RUF009"]
+ignore = [
+    "E501",  # no formatter enforces the line length
+    "E731",  # named lambdas in the tests are deliberate
+    "B002",  # the -(-x) sites mirror the sign of a phase table; the "fix" corrupts reference data
+    "B905",  # zip(strict=) changes runtime behaviour, which is not a lint fix
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tools/tetrahedron.py" = ["F403", "F405", "E741"]  # a sympy derivation, in its own notation
 
 [tool.ruff.lint.isort]
 known-third-party = ["xdyn"]
+
+[tool.ty.environment]
+python = "build/venv/lint"
+extra-paths = ["xdyn_grpc"]
+
+[tool.ty.src]
+# tetrahedron.py is a one-off sympy derivation; sympy is in no environment.
+exclude = ["postprocessing", "external", "tools/tetrahedron.py"]
+
+[tool.ty.analysis]
+# Compiled or generated, with no stubs: xdyn is the pybind11 module, _proto comes from protoc.
+replace-imports-with-any = ["xdyn.**", "xdyngrpc._proto.**"]
 
 [tool.pytest.ini_options]
 testpaths = ["xdyn_wrapper_python/unit_tests"]

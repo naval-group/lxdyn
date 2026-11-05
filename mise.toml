@@ -308,14 +308,15 @@ echo "OK -> $PWD/build/doc/doxygen/html/index.html"
 '''
 
 [tasks."python:lint"]
-description = "Check the wrapper's Python with ruff"
+description = "Check every Python folder with ruff and ty"
 run = '''
 UV_PROJECT_ENVIRONMENT=build/venv/lint uv sync --only-group lint --quiet
 build/venv/lint/bin/ruff check
+build/venv/lint/bin/ty check
 '''
 
 [tasks."python:format"]
-description = "Reformat the wrapper's Python with ruff (not enforced -- see python:lint)"
+description = "Reformat the Python with ruff (not enforced -- see python:lint)"
 run = '''
 UV_PROJECT_ENVIRONMENT=build/venv/lint uv sync --only-group lint --quiet
 build/venv/lint/bin/ruff format
