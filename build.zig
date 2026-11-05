@@ -5,6 +5,7 @@ const builtin = @import("builtin");
 const xdyn = @import("xdyn/build.zig");
 const external = @import("external/build.zig");
 const ssc = @import("ssc/build.zig");
+const proto = @import("proto/build.zig");
 const python = @import("xdyn_wrapper_python/build.zig");
 const fmu = @import("xdyn_wrapper_fmi/build.zig");
 
@@ -13,10 +14,6 @@ const native_default: std.Target.Query = if (builtin.os.tag == .linux)
     .{ .abi = .gnu, .glibc_version = .{ .major = 2, .minor = 28, .patch = 0 } }
 else
     .{};
-
-const proto_files = [_][]const u8{
-    "wave_types", "wave_grpc", "force", "controller", "cosimulation", "model_exchange",
-};
 
 pub fn build(b: *std.Build) void {
     // Configuration reads $XDYN_*, runs git, pkg-config and python: none of it is visible to the configure cache.
@@ -33,8 +30,6 @@ pub fn build(b: *std.Build) void {
         .codegen = codegen,
     };
     ctx.cpp_flags = xdyn.cppFlags(&ctx);
-    // No -Werror: protoc's output is not ours to keep clean.
-    ctx.proto_flags = ctx.withDebug(&.{ "-std=gnu++17", "-fPIC" });
 
     // libxdyn: one static archive of SSC, xdyn and the generated code.
     const lib = ctx.module(.{});
@@ -61,7 +56,6 @@ pub const Ctx = struct {
     debug: bool,
     codegen: Codegen,
     cpp_flags: []const []const u8 = &.{},
-    proto_flags: []const []const u8 = &.{},
 
     pub fn isWindows(ctx: *const Ctx) bool {
         return ctx.target.result.os.tag == .windows;
@@ -108,14 +102,6 @@ pub const Ctx = struct {
         for ([_][]const u8{ "ws2_32", "mswsock", "crypt32", "bcrypt", "iphlpapi", "dbghelp", "advapi32" }) |lib|
             m.linkSystemLibrary(lib, .{});
     }
-
-    pub fn addProtoSources(ctx: *const Ctx, m: *std.Build.Module, names: []const []const u8) void {
-        const b = ctx.b;
-        for (names) |name| {
-            m.addCSourceFile(.{ .file = ctx.codegen.proto_messages.path(b, b.fmt("{s}.pb.cc", .{name})), .flags = ctx.proto_flags });
-            m.addCSourceFile(.{ .file = ctx.codegen.proto_services.path(b, b.fmt("{s}.grpc.pb.cc", .{name})), .flags = ctx.proto_flags });
-        }
-    }
 };
 
 // =============================================================================
@@ -136,28 +122,8 @@ fn addCodegen(b: *std.Build) Codegen {
     const umbrellas = ssc.addUmbrellas(b);
     step.dependOn(&umbrellas.step);
 
-    // A host protoc even when cross-compiling: the generated C++ is arch-independent.
-    const host = b.option([]const u8, "deps-host", "Host tools providing protoc (default: ./host-tools)") orelse
-        b.graph.environ_map.get("XDYN_DEPS_HOST") orelse
-        fromRoot(b, "host-tools");
-    const bin = b.pathJoin(&.{ host, "install", "bin" });
-    const protoc = b.pathJoin(&.{ bin, "protoc" });
-    if (std.Io.Dir.cwd().access(b.graph.io, protoc, .{})) |_|
-        checkStamp(b, step, host, "host-tools", null)
-    else |_|
-        std.log.warn("no protoc under '{s}': codegen will fail. Fetch it with `mise run deps:fetch " ++
-            "host-tools`, or name one with -Ddeps-host=<path> or $XDYN_DEPS_HOST.", .{bin});
-
-    const gen_proto = b.addSystemCommand(&.{protoc});
-    gen_proto.setCwd(b.path("."));
-    gen_proto.addFileInput(.{ .cwd_relative = protoc });
-    gen_proto.addPrefixedFileArg("--plugin=protoc-gen-grpc=", .{ .cwd_relative = b.pathJoin(&.{ bin, "grpc_cpp_plugin" }) });
-    const messages = gen_proto.addPrefixedOutputDirectoryArg("--cpp_out=", "proto");
-    const services = gen_proto.addPrefixedOutputDirectoryArg("--grpc_out=", "proto-grpc");
-    gen_proto.addPrefixedDirectoryArg("-I", b.path("proto"));
-    for (proto_files) |name|
-        gen_proto.addFileArg(b.path(b.fmt("proto/{s}.proto", .{name})));
-    step.dependOn(&gen_proto.step);
+    const stubs = proto.addStubs(b);
+    step.dependOn(stubs.step);
 
     const sha = b.option([]const u8, "git-sha", "Commit stamped into the binaries (default: git rev-parse HEAD)") orelse
         headSha(b);
@@ -171,8 +137,8 @@ fn addCodegen(b: *std.Build) Codegen {
 
     return .{
         .step = step,
-        .proto_messages = messages,
-        .proto_services = services,
+        .proto_messages = stubs.messages,
+        .proto_services = stubs.services,
         .ssc_umbrellas = umbrellas.getDirectory(),
         .git_sha_c = git_sha_c,
     };
@@ -220,7 +186,7 @@ fn resolveDepsRoot(b: *std.Build, target: std.Build.ResolvedTarget, codegen: *st
 // fetch.sh leaves the asset's assets.sha256 line in the tree as asset.sha256. A failing step under
 // `gen`, which every artifact depends on, so `zig build --help` still works on a stale tree.
 // Only a local build has `built_marker`: a tree without it or a stamp came from an older fetch.sh.
-fn checkStamp(b: *std.Build, codegen: *std.Build.Step, dir: []const u8, flavor: []const u8, built_marker: ?[]const u8) void {
+pub fn checkStamp(b: *std.Build, codegen: *std.Build.Step, dir: []const u8, flavor: []const u8, built_marker: ?[]const u8) void {
     const io = b.graph.io;
     const cwd = std.Io.Dir.cwd();
     const refetch = b.fmt("Move it aside and run `mise run deps:fetch {s}`.", .{flavor});
