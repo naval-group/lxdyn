@@ -10,6 +10,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from fmpy import read_model_description, simulate_fmu
+from fmpy.fmi1 import FMICallException
 from fmpy.fmi2 import FMU2Model, FMU2Slave
 from fmpy.model_description import ModelVariable
 from fmpy.validation import validate_fmu
@@ -175,19 +176,19 @@ def test_the_environment_replaces_the_models(fmu):
 def test_the_environment_is_fixed_after_initialization(fmu):
     s, refs = slave(fmu, environment=CALM)
     s.setString([refs["xdyn.environment"]], [CALM])
-    with pytest.raises(Exception):
+    with pytest.raises(FMICallException):
         s.setString([refs["xdyn.environment"]], [CURRENT])
     s.terminate()
     s.freeInstance()
 
 
 def test_an_environment_that_is_not_a_list_is_rejected(fmu):
-    with pytest.raises(Exception):
+    with pytest.raises(FMICallException):
         slave(fmu, environment="model: no waves")
 
 
 def test_an_unknown_environment_model_fails_the_initialization(fmu):
-    with pytest.raises(Exception):
+    with pytest.raises(FMICallException):
         slave(fmu, environment="- model: no such model")
 
 
