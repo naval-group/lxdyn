@@ -5,8 +5,8 @@
 # part xdyn's tests need, and grpc_tools is an ordinary pip package: `mise run integration`
 # generates them into the venv-backed work dir instead. See tools/scenario.sh.
 
-# The two lanes need different interpreters: the CLI tests need h5py, and the protocol
-# tests need Python 3.10 (xdyngrpc does not import on 3.11+). `mise run integration` and
+# The two lanes need different environments: the CLI tests need h5py, the protocol tests
+# grpcio and xdyngrpc's dependencies. `mise run integration` and
 # `mise run integration:grpc` create them; this Makefile only points at the result, so
 # running it directly on a tree that has never seen mise will fail on a missing venv.
 CLI_PYTHON  ?= $(abspath $(CURDIR)/../build/venv/bin/python)

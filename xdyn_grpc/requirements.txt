@@ -1,5 +1,4 @@
 grpcio
-nose2
 numpy
 protobuf
 pyyaml
