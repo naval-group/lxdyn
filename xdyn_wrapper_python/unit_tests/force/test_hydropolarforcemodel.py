@@ -5,7 +5,6 @@ import io
 import re
 import unittest
 from contextlib import redirect_stderr
-from typing import Optional
 
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames, make_transform
@@ -45,7 +44,7 @@ def get_input_full() -> str:
     )
 
 
-def get_states(u: Optional[float] = 0.0, v: Optional[float] = 0.0) -> BodyStates:
+def get_states(u: float | None = 0.0, v: float | None = 0.0) -> BodyStates:
     """Create a body state variable with one record"""
     states = BodyStates(0)
     states.convention = YamlRotation("angle", ["z", "y'", "x''"])

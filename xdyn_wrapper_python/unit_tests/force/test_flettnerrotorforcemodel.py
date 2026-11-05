@@ -5,7 +5,6 @@ import io
 import re
 import unittest
 from contextlib import redirect_stderr
-from typing import List, Optional
 
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames, Wrench
@@ -14,7 +13,7 @@ from xdyn.env.wind import WindMeanVelocityProfileInput
 from xdyn.force import FlettnerRotorForceModel, FlettnerRotorForceModelInput
 
 
-def get_dummy_sr() -> List[float]:
+def get_dummy_sr() -> list[float]:
     return [
         0,
         0.0606060606060606,
@@ -119,7 +118,7 @@ def get_dummy_sr() -> List[float]:
     ]
 
 
-def get_dummy_cl() -> List[float]:
+def get_dummy_cl() -> list[float]:
     return [
         0.0105739471309258,
         0.0399367265474693,
@@ -224,7 +223,7 @@ def get_dummy_cl() -> List[float]:
     ]
 
 
-def get_dummy_cd() -> List[float]:
+def get_dummy_cd() -> list[float]:
     return [
         0.707879384618923,
         0.710500577397145,
@@ -345,7 +344,7 @@ def get_data() -> str:
     """
 
 
-def get_states(forward_speed: Optional[float] = 0.0) -> BodyStates:
+def get_states(forward_speed: float | None = 0.0) -> BodyStates:
     """Create a body state variable with one record"""
     states = BodyStates(0)
     states.convention = YamlRotation("angle", ["z", "y'", "x''"])

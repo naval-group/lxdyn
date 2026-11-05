@@ -1,6 +1,5 @@
 """Converts to & from gRPC force types."""
 
-from typing import List, Tuple
 
 import numpy as np
 
@@ -75,24 +74,6 @@ def to_grpc_orbital_velocities(
     ret.vx[:] = vo.vx
     ret.vy[:] = vo.vy
     ret.vz[:] = vo.vz
-    return ret
-
-
-def to_grpc_spectrum(spectra: List[Spectrum]) -> wave_types_pb2.SpectrumResponse:
-    """Convert Python List[Spectrum] to gRPC SpectrumResponse."""
-    ret = wave_types_pb2.SpectrumResponse()
-    for s in spectra:
-        r = wave_types_pb2.Spectrum()
-        r.Si[:] = s.Si
-        r.Dj[:] = s.Dj
-        r.omega[:] = s.omega
-        r.psi[:] = s.psi
-        r.k[:] = s.k
-        for phase in s.phase:
-            p = wave_types_pb2.PhasesForEachFrequency()
-            p.phase[:] = phase
-            r.phase.append(p)
-        ret.append(r)
     return ret
 
 
@@ -175,7 +156,7 @@ def from_grpc_added_mass_matrix(added_mass_matrix: force_pb2.AddedMassMatrix) ->
     return ret
 
 
-def get_grpc_array_size(array: force_pb2.Array) -> Tuple[int, int]:
+def get_grpc_array_size(array: force_pb2.Array) -> tuple[int, int]:
     """Return the size of the gRPC Array in a form suitable for Numpy."""
     nx = len(array.line)
     ny = 0

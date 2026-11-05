@@ -1,7 +1,6 @@
 """Image of the "force" gRPC types."""
 
 from dataclasses import dataclass, field
-from typing import Dict, List
 
 import numpy as np
 
@@ -65,23 +64,23 @@ class States:
                                    Format: ["psi", "theta'", "phi''"]
     """
 
-    t: List[float] = field(default_factory=list)
-    x: List[float] = field(default_factory=list)
-    y: List[float] = field(default_factory=list)
-    z: List[float] = field(default_factory=list)
-    u: List[float] = field(default_factory=list)
-    v: List[float] = field(default_factory=list)
-    w: List[float] = field(default_factory=list)
-    p: List[float] = field(default_factory=list)
-    q: List[float] = field(default_factory=list)
-    r: List[float] = field(default_factory=list)
-    qr: List[float] = field(default_factory=list)
-    qi: List[float] = field(default_factory=list)
-    qj: List[float] = field(default_factory=list)
-    qk: List[float] = field(default_factory=list)
-    phi: List[float] = field(default_factory=list)
-    theta: List[float] = field(default_factory=list)
-    psi: List[float] = field(default_factory=list)
+    t: list[float] = field(default_factory=list)
+    x: list[float] = field(default_factory=list)
+    y: list[float] = field(default_factory=list)
+    z: list[float] = field(default_factory=list)
+    u: list[float] = field(default_factory=list)
+    v: list[float] = field(default_factory=list)
+    w: list[float] = field(default_factory=list)
+    p: list[float] = field(default_factory=list)
+    q: list[float] = field(default_factory=list)
+    r: list[float] = field(default_factory=list)
+    qr: list[float] = field(default_factory=list)
+    qi: list[float] = field(default_factory=list)
+    qj: list[float] = field(default_factory=list)
+    qk: list[float] = field(default_factory=list)
+    phi: list[float] = field(default_factory=list)
+    theta: list[float] = field(default_factory=list)
+    psi: list[float] = field(default_factory=list)
     rotation_convention: str = ""
 
 
@@ -124,7 +123,7 @@ class SetForceParameterResponse:
 
     max_history_length: float = 0
     needs_wave_outputs: bool = False
-    commands: List[str] = field(default_factory=list)
+    commands: list[str] = field(default_factory=list)
     frame: str = ""
     x: float = 0
     y: float = 0
@@ -154,9 +153,9 @@ class XYZTGrid:
 
     """
 
-    x: List[float] = field(default_factory=list)
-    y: List[float] = field(default_factory=list)
-    z: List[float] = field(default_factory=list)
+    x: list[float] = field(default_factory=list)
+    y: list[float] = field(default_factory=list)
+    z: list[float] = field(default_factory=list)
     t: float = 0
 
 
@@ -177,8 +176,8 @@ class XYTGrid:
 
     """
 
-    x: List[float] = field(default_factory=list)
-    y: List[float] = field(default_factory=list)
+    x: list[float] = field(default_factory=list)
+    y: list[float] = field(default_factory=list)
     t: float = 0
 
 
@@ -210,13 +209,13 @@ class OrbitalVelocitiesResponse:
                           In meters per second. Should be the same size as x, y, z, vx and vy.
     """
 
-    x: List[float] = field(default_factory=list)
-    y: List[float] = field(default_factory=list)
-    z: List[float] = field(default_factory=list)
+    x: list[float] = field(default_factory=list)
+    y: list[float] = field(default_factory=list)
+    z: list[float] = field(default_factory=list)
     t: float = 0
-    vx: List[float] = field(default_factory=list)
-    vy: List[float] = field(default_factory=list)
-    vz: List[float] = field(default_factory=list)
+    vx: list[float] = field(default_factory=list)
+    vy: list[float] = field(default_factory=list)
+    vz: list[float] = field(default_factory=list)
 
 
 @dataclass
@@ -231,11 +230,11 @@ class Spectrum:
         phase (List[List[float]]):            Random phases for each ray (in rad).
     """
 
-    a: List[float] = field(default_factory=list)
-    psi: List[float] = field(default_factory=list)
-    omega: List[float] = field(default_factory=list)
-    k: List[float] = field(default_factory=list)
-    phase: List[List[float]] = field(default_factory=list)
+    a: list[float] = field(default_factory=list)
+    psi: list[float] = field(default_factory=list)
+    omega: list[float] = field(default_factory=list)
+    k: list[float] = field(default_factory=list)
+    phase: list[list[float]] = field(default_factory=list)
 
 
 @dataclass
@@ -268,7 +267,7 @@ class ForceResponse:
     Mx: float = 0
     My: float = 0
     Mz: float = 0
-    extra_observations: Dict[str, float] = field(default_factory=dict)
+    extra_observations: dict[str, float] = field(default_factory=dict)
 
 
 @dataclass
@@ -292,11 +291,11 @@ class DynamicPressuresResponse:
                             the same size as x, y and z.
     """
 
-    x: List[float] = field(default_factory=list)
-    y: List[float] = field(default_factory=list)
-    z: List[float] = field(default_factory=list)
+    x: list[float] = field(default_factory=list)
+    y: list[float] = field(default_factory=list)
+    z: list[float] = field(default_factory=list)
     t: float = 0
-    pdyn: List[float] = field(default_factory=list)
+    pdyn: list[float] = field(default_factory=list)
 
 
 @dataclass

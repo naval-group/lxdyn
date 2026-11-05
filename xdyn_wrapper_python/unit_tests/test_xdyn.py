@@ -25,7 +25,7 @@ class XDynCallTest(unittest.TestCase):
 
     def test_can_parse(self):
         print(render_doc(xdyn))
-        sscki = SscKinematics()
+        SscKinematics()
 
         print(render_doc(coriolis_and_centripetal))
         ssckt = SscKinematicTree()
@@ -39,8 +39,8 @@ class XDynCallTest(unittest.TestCase):
         sscea1.phi = 666
         print(sscea1.phi)
 
-        sscpoint1 = SscPoint()
-        sscpoint2 = SscPoint("toto")
+        SscPoint()
+        SscPoint("toto")
         sscpoint3 = SscPoint("toto", 1, 2, 3)
         print(sscpoint3.get_frame())
         print(sscpoint3.v)
@@ -99,8 +99,8 @@ class XDynCallTest(unittest.TestCase):
         gfm = GravityForceModel("g", env)
         print(gfm)
 
-        h1 = History()
-        h2 = History(0.2)
+        History()
+        History(0.2)
 
         raodata = RAOData()
         print(raodata.periods)

@@ -9,15 +9,11 @@ import csv
 
 def assert_relatively_close(a, b, eps):
     div = 1 if a == 0 else abs(a)
-    assert abs(a - b) / div < eps, "a = {0}, b = {1}, (a-b)/a = {2} (should be zero)".format(
-        a, b, (a - b) / a
-    )
+    assert abs(a - b) / div < eps, f"a = {a}, b = {b}, (a-b)/a = {(a - b) / a} (should be zero)"
 
 
 def assert_far(a, b, min_dist):
-    assert abs(a - b) > min_dist, "a = {0}, b = {1}, (a-b) = {2} (should be far)".format(
-        a, b, (a - b)
-    )
+    assert abs(a - b) > min_dist, f"a = {a}, b = {b}, (a-b) = {a - b} (should be far)"
 
 
 with open("filtered_states.csv", newline="") as csvfile:

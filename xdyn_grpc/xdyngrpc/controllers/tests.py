@@ -2,6 +2,7 @@
 # pylint: disable=missing-function-docstring
 
 import numpy as np
+import pytest
 import yaml
 
 from . import controller, pid_controller, state_feedback_controller
@@ -298,47 +299,41 @@ def test_state_feedback_wrong_sizes():
     dt = 2.3
     param = get_yaml_state_feedback(dt)
     param = param.replace("- beta_1\n", "")
-    try:
+    with pytest.raises(AssertionError) as e:
         state_feedback_controller.StateFeedbackController(param, dt)
-        assert False, "An exception should have been raised."
-    except AssertionError as e:
-        np.testing.assert_equal(
-            e.args[0],
-            "The number of rows in gain matrix K is not equal to "
-            "the number of commands: K has 3 rows but there "
-            "are 2 commands.",
-        )
+    np.testing.assert_equal(
+        e.value.args[0],
+        "The number of rows in gain matrix K is not equal to "
+        "the number of commands: K has 3 rows but there "
+        "are 2 commands.",
+    )
 
     param = get_yaml_state_feedback(dt)
     param = param.replace("- phi\n", "")
-    try:
+    with pytest.raises(AssertionError) as e:
         state_feedback_controller.StateFeedbackController(param, dt)
-        assert False, "An exception should have been raised."
-    except AssertionError as e:
-        np.testing.assert_equal(
-            e.args[0],
-            "The number of columns in gain matrix K is not equal to "
-            "the number of input (and integral) states: K has 5 columns "
-            "but there are 4 states.",
-        )
+    np.testing.assert_equal(
+        e.value.args[0],
+        "The number of columns in gain matrix K is not equal to "
+        "the number of input (and integral) states: K has 5 columns "
+        "but there are 4 states.",
+    )
 
 
 def test_state_feedback_wrong_integral_state():
     dt = 2.3
     param = get_yaml_state_feedback(dt)
     param = param + "integral states with saturation:\n  gamma: null\n  delta: 0.08"
-    try:
+    with pytest.raises(AssertionError) as e:
         state_feedback_controller.StateFeedbackController(param, dt)
-        assert False, "An exception should have been raised."
-    except AssertionError as e:
-        np.testing.assert_equal(
-            e.args[0],
-            "The following states need to be integrated by the controller "
-            "(they are in 'integral states with saturation') but they couldn't "
-            "be found in 'input states': either remove them from "
-            "'integral states with saturation' or add them to 'input states':"
-            " ['gamma', 'delta']",
-        )
+    np.testing.assert_equal(
+        e.value.args[0],
+        "The following states need to be integrated by the controller "
+        "(they are in 'integral states with saturation') but they couldn't "
+        "be found in 'input states': either remove them from "
+        "'integral states with saturation' or add them to 'input states':"
+        " ['gamma', 'delta']",
+    )
 
 
 def test_state_feedback_get_plant_output():

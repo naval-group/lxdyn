@@ -4,8 +4,8 @@ Unit test for RadiationDampingForceModel
 import io
 import os
 import unittest
+from collections.abc import Callable
 from contextlib import redirect_stderr
-from typing import Callable
 
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
@@ -149,7 +149,7 @@ class RadiationDampingForceModelTest(unittest.TestCase):
         states = BodyStates(100)
         states.name = body_name
         T = 10
-        t = record_sine(states, 0, T, 10, 100)
+        record_sine(states, 0, T, 10, 100)
         g = lambda t: analytical_K(t) * np.sin(-2 * np.pi * t / T)
         Fexpected = -ClenshawCurtisCosine(g, 0).integrate_f(yaml.tau_min, yaml.tau_max)
         EPS = 7e-2

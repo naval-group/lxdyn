@@ -10,7 +10,6 @@ python check_output_size.py hdf5 my_xdyn_result_file.hdf5
 """
 import argparse
 import json
-from typing import List
 
 import h5py
 import numpy as np
@@ -56,7 +55,7 @@ def check_time_vector_size_in_output_tsv(filename: str = "res.tsv"):
 
 
 def check_time_vector_size_in_output_json(filename: str = "res.json"):
-    lines = open(filename, "r").readlines()
+    lines = open(filename).readlines()
     data = [json.loads(line) for line in lines]
     time_vector = [d["t"] for d in data]
     length_time_vector = len(time_vector)
@@ -74,7 +73,7 @@ def create_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(cli: List[str] = None) -> None:
+def main(cli: list[str] = None) -> None:
     """
     Main entry point used when calling from command line interface
     """

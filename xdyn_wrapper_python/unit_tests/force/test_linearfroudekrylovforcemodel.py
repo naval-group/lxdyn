@@ -58,7 +58,7 @@ def get_wave_model(period: float, direction: float = 0.0, height: float = 1.0) -
         ss,
         False,
     )
-    assert type(A) == DiscreteDirectionalWaveSpectrum
+    assert type(A) is DiscreteDirectionalWaveSpectrum
     return A, Airy(A, 0.0)
 
 

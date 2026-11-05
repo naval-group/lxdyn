@@ -1,6 +1,6 @@
 """Damped harmonic oscillator model."""
 
-from typing import Any, Dict
+from typing import Any
 
 import yaml
 
@@ -20,7 +20,7 @@ class HarmonicOscillator(AbstractForceModel):
         self.c = param["c"]
         self.body_name = body_name
 
-    def get_parameters(self) -> Dict[str, Any]:
+    def get_parameters(self) -> dict[str, Any]:
         """
         Return a dictionary with all parameters needed by xdyn, with keys:
 
@@ -75,7 +75,7 @@ class HarmonicOscillator(AbstractForceModel):
     def force(
         self,
         states: States,
-        commands: Dict[str, float],
+        commands: dict[str, float],
         wave_information: WaveInformation,
         filtered_states: FilteredStatesAndConvention,
     ):

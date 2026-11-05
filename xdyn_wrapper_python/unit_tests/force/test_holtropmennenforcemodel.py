@@ -2,7 +2,6 @@
 Unit test for HoltropMennenForceModel
 """
 import unittest
-from typing import Optional
 
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
@@ -21,7 +20,7 @@ def get_env() -> EnvironmentAndFrames:
     return env
 
 
-def get_steady_forward_speed_states(u: Optional[float] = 0.0) -> BodyStates:
+def get_steady_forward_speed_states(u: float | None = 0.0) -> BodyStates:
     """Create a body state variable with one record"""
     states = BodyStates()
     states.convention = YamlRotation("angle", ["z", "y'", "x''"])

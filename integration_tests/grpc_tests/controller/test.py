@@ -1,7 +1,7 @@
 import csv
 import math
 
-with open("tutorial_11.csv", mode="r", encoding="utf-8", newline="") as csvfile:
+with open("tutorial_11.csv", encoding="utf-8", newline="") as csvfile:
     csv_reader = csv.DictReader(csvfile)
     t = []
     psi = []

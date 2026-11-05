@@ -2,6 +2,7 @@
 
 import os
 import unittest
+
 import grpc
 from xdyngrpc.cosimulation import CosimulationEuler, CosimulationRequestEuler
 

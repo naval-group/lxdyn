@@ -2,7 +2,6 @@
 
 import logging
 import math
-from typing import Any, Dict, List
 
 import numpy as np
 import yaml
@@ -263,7 +262,7 @@ class Airy(AbstractWaveModel):
             )
         return self.rho * self.grav * acc
 
-    def orbital_velocity(self, x: float, y: float, z: float, t: float) -> Dict[str, float]:
+    def orbital_velocity(self, x: float, y: float, z: float, t: float) -> dict[str, float]:
         """Calculate the orbital velocity of the wave particles.
 
         Parameters
@@ -328,7 +327,7 @@ class Airy(AbstractWaveModel):
         v_z *= self.grav
         return {"vx": v_x, "vy": v_y, "vz": v_z}
 
-    def angular_frequencies_for_rao(self) -> List[List[float]]:
+    def angular_frequencies_for_rao(self) -> list[list[float]]:
         """Get angular frequencies the wave spectrum is discretized at.
 
         Returns
@@ -340,7 +339,7 @@ class Airy(AbstractWaveModel):
         """
         return [self.directional_spectrum["omega"]]
 
-    def directions_for_rao(self) -> List[List[float]]:
+    def directions_for_rao(self) -> list[list[float]]:
         """Get the incidences the directional spreading is discretized at
         in the North-East-Down reference frame.
 
@@ -355,7 +354,7 @@ class Airy(AbstractWaveModel):
         """
         return [self.directional_spectrum["psi"]]
 
-    def spectrum(self, _x: float, _y: float, _t: float) -> Dict[str, List[float]]:
+    def spectrum(self, _x: float, _y: float, _t: float) -> dict[str, list[float]]:
         """Linear spectrum that can be used by xdyn's diffraction module.
 
         Parameters

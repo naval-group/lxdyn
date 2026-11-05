@@ -1,9 +1,9 @@
 """Simple PID controller."""
 
-from typing import Dict, List
+import logging
+
 import yaml
 from xdyngrpc.controllers.controller import AbstractControllerModel, StatesEuler, serve
-import logging
 
 SERVICE_NAME = "pid-controller"
 
@@ -33,7 +33,7 @@ class PIDController(AbstractControllerModel):
         self.previous_error = 0
         self.integral = 0
         self.can_use_integrator_and_derivative = False
-        super(PIDController, self).__init__(t0, self.timestep)
+        super().__init__(t0, self.timestep)
 
     def get_angle_representation(self) -> str:
         """Which method should we call to get the commands computed by the controller?
@@ -47,7 +47,7 @@ class PIDController(AbstractControllerModel):
         """Should the solver call get_extra_observations or is there no point?"""
         return False
 
-    def get_command_names(self) -> List[str]:
+    def get_command_names(self) -> list[str]:
         """Return the name(s) of the controller outputs (commands).
 
         This will be used by the solver (e.g., xdyn) to set the value of the corresponding variables.
@@ -65,7 +65,7 @@ class PIDController(AbstractControllerModel):
         return [self.command_name, 'Ten times current time']
 
 
-    def get_setpoint_names(self) -> List[str]:
+    def get_setpoint_names(self) -> list[str]:
         """Return the name(s) of the controller inputs (setpoints).
 
         These setpoints are given by the simulator
@@ -104,8 +104,8 @@ class PIDController(AbstractControllerModel):
         self,
         states: StatesEuler,
         dstates_dt: StatesEuler,
-        setpoints: List[float],
-    ) -> Dict[str, float]:
+        setpoints: list[float],
+    ) -> dict[str, float]:
         """Calculate the commands using angles in Rned2body = Rz(ψ).Ry(θ).Rx(ϕ)
             rotation convention
 

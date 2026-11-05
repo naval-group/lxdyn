@@ -1,7 +1,7 @@
 """Force model using filtered states."""
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 import numpy as np
 from xdyngrpc.forces import force
@@ -25,7 +25,7 @@ class ForceModel(force.AbstractForceModel):
         """Initialize parameters from gRPC's set_parameters."""
         self.body_name = body_name
 
-    def get_parameters(self) -> Dict[str, Any]:
+    def get_parameters(self) -> dict[str, Any]:
         """
         Return a dictionary with all parameters needed by xdyn, with keys:
 

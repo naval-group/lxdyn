@@ -8,7 +8,7 @@ P = lambda i:Matrix([[x + l * cos(2 * i * pi / 3), y + l * sin(2 * i * pi / 3), 
 A = P(1)
 B = P(2)
 C = P(3)
-D = Matrix([[x, y, z]]);
+D = Matrix([[x, y, z]])
 n = [(A - B).norm(), (C - B).norm(), (D - B).norm(), (A - C).norm(), (A - C).norm(), (A - D).norm()]
 
 possible_z1 = solve(Eq(n[2], n[3]), z1)
