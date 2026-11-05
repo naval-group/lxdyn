@@ -13,5 +13,6 @@
         "ssc",
         "proto",
         "tools/deps/assets.sha256",
+        "tools/deps/build.zig",
     },
 }
