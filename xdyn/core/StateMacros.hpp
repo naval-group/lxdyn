@@ -8,25 +8,23 @@
 #ifndef STATEMACROS_HPP_
 #define STATEMACROS_HPP_
 
-#include <vector>
+#include "StateLayout.hpp"
 
-typedef std::vector<double> StateType;
+#define NB_OF_STATES_PER_BODY (state::N)
 
-#define NB_OF_STATES_PER_BODY (13)
-
-#define XIDX(i) (i*NB_OF_STATES_PER_BODY)
-#define YIDX(i) (i*NB_OF_STATES_PER_BODY+1)
-#define ZIDX(i) (i*NB_OF_STATES_PER_BODY+2)
-#define UIDX(i) (i*NB_OF_STATES_PER_BODY+3)
-#define VIDX(i) (i*NB_OF_STATES_PER_BODY+4)
-#define WIDX(i) (i*NB_OF_STATES_PER_BODY+5)
-#define PIDX(i) (i*NB_OF_STATES_PER_BODY+6)
-#define QIDX(i) (i*NB_OF_STATES_PER_BODY+7)
-#define RIDX(i) (i*NB_OF_STATES_PER_BODY+8)
-#define QRIDX(i) (i*NB_OF_STATES_PER_BODY+9)
-#define QIIDX(i) (i*NB_OF_STATES_PER_BODY+10)
-#define QJIDX(i) (i*NB_OF_STATES_PER_BODY+11)
-#define QKIDX(i) (i*NB_OF_STATES_PER_BODY+12)
+#define XIDX(i) (state::index((i), state::X))
+#define YIDX(i) (state::index((i), state::Y))
+#define ZIDX(i) (state::index((i), state::Z))
+#define UIDX(i) (state::index((i), state::U))
+#define VIDX(i) (state::index((i), state::V))
+#define WIDX(i) (state::index((i), state::W))
+#define PIDX(i) (state::index((i), state::P))
+#define QIDX(i) (state::index((i), state::Q))
+#define RIDX(i) (state::index((i), state::R))
+#define QRIDX(i) (state::index((i), state::QR))
+#define QIIDX(i) (state::index((i), state::QI))
+#define QJIDX(i) (state::index((i), state::QJ))
+#define QKIDX(i) (state::index((i), state::QK))
 
 #define _X(x,i) (&x[0] + XIDX(i))
 #define _Y(x,i) (&x[0] + YIDX(i))
