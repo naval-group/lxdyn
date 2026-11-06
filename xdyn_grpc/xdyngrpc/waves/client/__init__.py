@@ -3,15 +3,11 @@
 import json
 import logging
 import math
-import time
-from concurrent import futures
 from typing import Any
 
 import grpc
 
 from ..._proto import wave_grpc_pb2_grpc, wave_types_pb2
-
-_ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
 SERVICE_NAME = "waves-client"
 
@@ -23,19 +19,6 @@ logging.basicConfig(
 )
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.INFO)
-
-
-def serve():
-    """Connect to the gRPC wave server."""
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    wave_grpc_pb2_grpc.add_WavesServicer_to_server(wave_grpc_pb2_grpc.WavesServicer(), server)
-    server.add_insecure_port("[::]:50051")
-    server.start()
-    try:
-        while True:
-            time.sleep(_ONE_DAY_IN_SECONDS)
-    except KeyboardInterrupt:
-        server.stop(0)
 
 
 class Waves:

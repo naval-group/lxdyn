@@ -1,6 +1,5 @@
 """Facilitate the creation of a gRPC force model in Python."""
 import logging
-import time
 from concurrent import futures
 from functools import partial
 from typing import Any
@@ -347,9 +346,6 @@ class AbstractForceModel:
         raise NotImplementedError("force" + NOT_IMPLEMENTED)
 
 
-_ONE_DAY_IN_SECONDS = 60 * 60 * 24
-
-
 class ForceServicer(GrpcForceServicer):
     """Implements the gRPC methods defined in force.proto."""
 
@@ -508,14 +504,19 @@ class ForceServicer(GrpcForceServicer):
         return response
 
 
-def serve(model: type[AbstractForceModel]):
-    """Launch the gRPC server."""
+def start(model: type[AbstractForceModel], port: int = 9002) -> tuple[grpc.Server, int]:
+    """Start the gRPC server and return it with the port it bound, which port 0 picks."""
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_ForceServicer_to_server(ForceServicer(model), server)
-    server.add_insecure_port("[::]:9002")
+    bound_port = server.add_insecure_port(f"[::]:{port}")
     server.start()
+    return server, bound_port
+
+
+def serve(model: type[AbstractForceModel], port: int = 9002):
+    """Launch the gRPC server and block until interrupted."""
+    server, _ = start(model, port)
     try:
-        while True:
-            time.sleep(_ONE_DAY_IN_SECONDS)
+        server.wait_for_termination()
     except KeyboardInterrupt:
         server.stop(0)
