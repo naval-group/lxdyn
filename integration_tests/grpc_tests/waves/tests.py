@@ -27,6 +27,7 @@ def test_should_get_the_right_number_of_results_from_xdyn_in_cosim_mode():
     }
     requested_output = []
     res = cosim.step(state, dt, requested_output)
+    # Lengths only: tutorial_09's cube is unstable (plain xdyn gives NaN in U by t=0.2).
     assert len(res['t']) == 2
     assert len(res['x']) == 2
     assert len(res['y']) == 2

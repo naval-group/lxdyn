@@ -175,16 +175,9 @@ git diff --quiet HEAD || { echo "refusing to publish: the working tree is dirty"
 echo "pushed $REGISTRY:$VERSION and $REGISTRY:latest"
 '''
 
-[tasks."deploy:server-image"]
-description = "Build the xdyngrpc-python server image used by the deployment smoke test"
-run = '''
-CONTAINER=${CONTAINER:-$(command -v podman > /dev/null 2>&1 && echo podman || echo docker)}
-"$CONTAINER" build -f xdyn_grpc/Containerfile.python -t localhost/xdyngrpc-python xdyn_grpc
-'''
-
 [tasks."deploy:test"]
 description = "Deployment smoke test: the image starts, simulates, and serves gRPC"
-depends = ["zig:build", "deploy:image", "deploy:server-image", "integration:setup"]
+depends = ["deploy:image", "integration:setup"]
 run = "sh integration_tests/deploy/run.sh"
 
 [tasks."python:setup"]
