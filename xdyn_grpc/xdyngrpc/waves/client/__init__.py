@@ -1,11 +1,7 @@
 """gRPC sample client for wave models."""
 
-import json
 import logging
-import math
 from typing import Any
-
-import grpc
 
 from ..._proto import wave_grpc_pb2_grpc, wave_types_pb2
 
@@ -126,33 +122,3 @@ class Waves:
             "phase": list(response.phase),
         }
 
-
-def run():
-    """Launch the server & run some gRPC calls."""
-    with grpc.insecure_channel("server:50051") as channel:
-        omegas = [2 * math.pi / period for period in (8, 10, 12, 14, 16)]
-        omegas_str = json.dumps(omegas)
-        parameters = f"""
-        {{Hs: 5, Tp: 12, gamma: 1.2, waves propagating to: 0, omega: {omegas_str}}}
-        """
-        LOGGER.info("Creating Waves instance")
-        waves = Waves(channel)
-        waves.set_parameters(parameters)
-        elevations_request = {"t": 5, "points": [(1, 2), (3, 5)]}
-        LOGGER.info("Elevations for %s", json.dumps(elevations_request))
-        elevations = waves.elevations(elevations_request)
-        LOGGER.info("Got following elevations from server: %s", json.dumps(elevations))
-        orbital_velocities_request = {"t": 5, "points": [(1, 2, 10), (3, 5, 15)]}
-        orbital_velocities = waves.orbital_velocities(orbital_velocities_request)
-        LOGGER.info(
-            "Got following orbital velocities from server: %s", json.dumps(orbital_velocities)
-        )
-        dynamic_pressures_request = {"t": 5, "points": [(1, 2, 10), (3, 5, 15)]}
-        dynamic_pressures = waves.dynamic_pressures(dynamic_pressures_request)
-        LOGGER.info(
-            "Got following dynamic pressures from server: %s", json.dumps(dynamic_pressures)
-        )
-        spectrum = waves.spectrum()
-        LOGGER.info("Got following spectrum from server: %s", json.dumps(spectrum))
-        for item in spectrum.values():
-            assert len(item) == len(omegas)
