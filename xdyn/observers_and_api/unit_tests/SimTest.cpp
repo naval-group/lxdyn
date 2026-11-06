@@ -36,6 +36,14 @@
 
 const VectorOfVectorOfPoints SimTest::test_ship_stl = test_ship();
 
+namespace
+{
+    ConstBodyStateView body0(const Res& r)
+    {
+        return ConstBodyStateView(r.x, 0);
+    }
+}
+
 SimTest::SimTest() : a(ssc::random_data_generator::DataGenerator(42222))
 {
 }
@@ -64,19 +72,19 @@ TEST_F(SimTest, can_simulate_falling_ball)
         const double t = (double) i;
         ASSERT_EQ(13, res.at(i).x.size())                             << "Time step: i=" << i;
         ASSERT_DOUBLE_EQ(t,          res.at(i).t)                << "Time step: i=" << i;
-        ASSERT_NEAR(4+1.*t,          res.at(i).x[XIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(8,               res.at(i).x[YIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(12+g*t*(t-1)/2., res.at(i).x[ZIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(1,               res.at(i).x[UIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[VIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(g*t,             res.at(i).x[WIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[PIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[QIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[RIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(1,               res.at(i).x[QRIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[QIIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[QJIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[QKIDX(0)], EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(4+1.*t,          body0(res.at(i)).x(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(8,               body0(res.at(i)).y(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(12+g*t*(t-1)/2., body0(res.at(i)).z(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(1,               body0(res.at(i)).u(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).v(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(g*t,             body0(res.at(i)).w(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).p(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).q(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).r(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(1,               body0(res.at(i)).qr(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).qi(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).qj(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).qk(), EPS) << "Time step: i=" << i;
     }
 }
 
@@ -102,19 +110,19 @@ TEST_F(SimTest, LONG_can_simulate_oscillating_cube)
         const double t = (double)i*dt;
         ASSERT_EQ(13,                          res.at(i).x.size())         << "Time step: i=" << i;
         ASSERT_DOUBLE_EQ(t,                    res.at(i).t)                << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[XIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[YIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR((z0-A)*cos(omega*t)+A,     res.at(i).x[ZIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[UIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[VIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(omega*(A-z0)*sin(omega*t), res.at(i).x[WIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[PIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[QIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[RIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(1,                         res.at(i).x[QRIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[QIIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[QJIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,                         res.at(i).x[QKIDX(0)], EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).x(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).y(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR((z0-A)*cos(omega*t)+A,     body0(res.at(i)).z(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).u(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).v(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(omega*(A-z0)*sin(omega*t), body0(res.at(i)).w(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).p(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).q(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).r(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(1,                         body0(res.at(i)).qr(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).qi(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).qj(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,                         body0(res.at(i)).qk(), EPS) << "Time step: i=" << i;
     }
 }
 
@@ -137,19 +145,19 @@ TEST_F(SimTest, LONG_can_simulate_stable_cube)
         const double t = (double)i*dt;
         ASSERT_EQ(13,       res.at(i).x.size())         << "Time step: i=" << i;
         ASSERT_DOUBLE_EQ(t, res.at(i).t)                << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[XIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[YIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(z0,     res.at(i).x[ZIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[UIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[VIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[WIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[PIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[QIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[RIDX(0)], eps)  << "Time step: i=" << i;
-        ASSERT_NEAR(1,      res.at(i).x[QRIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[QIIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[QJIDX(0)], EPS) << "Time step: i=" << i;
-        ASSERT_NEAR(0,      res.at(i).x[QKIDX(0)], EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).x(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).y(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(z0,     body0(res.at(i)).z(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).u(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).v(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).w(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).p(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).q(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).r(), eps)  << "Time step: i=" << i;
+        ASSERT_NEAR(1,      body0(res.at(i)).qr(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).qi(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).qj(), EPS) << "Time step: i=" << i;
+        ASSERT_NEAR(0,      body0(res.at(i)).qk(), EPS) << "Time step: i=" << i;
     }
 }
 
@@ -166,18 +174,18 @@ TEST_F(SimTest, initial_angle_should_not_change_results_for_falling_ball)
     for (size_t i = 0 ; i < N+1 ; ++i)
     {
         const double t = (double) i;
-        const auto quaternion_norm = SQUARE(res.at(i).x[QRIDX(0)])
-                                   + SQUARE(res.at(i).x[QIIDX(0)])
-                                   + SQUARE(res.at(i).x[QJIDX(0)])
-                                   + SQUARE(res.at(i).x[QKIDX(0)]);
+        const auto quaternion_norm = SQUARE(body0(res.at(i)).qr())
+                                   + SQUARE(body0(res.at(i)).qi())
+                                   + SQUARE(body0(res.at(i)).qj())
+                                   + SQUARE(body0(res.at(i)).qk());
         ASSERT_EQ(13, res.at(i).x.size())                        << "Time step: i=" << i;
         ASSERT_DOUBLE_EQ(t,          res.at(i).t)                << "Time step: i=" << i;
-        ASSERT_NEAR(4,               res.at(i).x[XIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(8,               res.at(i).x[YIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(12+g*t*(t-1)/2., res.at(i).x[ZIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[PIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[QIDX(0)], EPS)  << "Time step: i=" << i;
-        ASSERT_NEAR(0,               res.at(i).x[RIDX(0)], EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(4,               body0(res.at(i)).x(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(8,               body0(res.at(i)).y(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(12+g*t*(t-1)/2., body0(res.at(i)).z(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).p(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).q(), EPS)  << "Time step: i=" << i;
+        ASSERT_NEAR(0,               body0(res.at(i)).r(), EPS)  << "Time step: i=" << i;
         ASSERT_NEAR(1,               quaternion_norm, EPS)       << "Time step: i=" << i;
     }
 }
@@ -188,19 +196,19 @@ TEST_F(SimTest, LONG_hydrostatic_test_on_test_ship)
     ssc::solver::Scheduler scheduler(0, 4.79, 0.479);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(11, res.size());
-    ASSERT_NEAR(0, res[0].x[XIDX(0)], EPS);
-    ASSERT_NEAR(0, res[0].x[YIDX(0)], EPS);
-    ASSERT_NEAR(-5, res[0].x[ZIDX(0)], EPS);
+    ASSERT_NEAR(0, body0(res[0]).x(), EPS);
+    ASSERT_NEAR(0, body0(res[0]).y(), EPS);
+    ASSERT_NEAR(-5, body0(res[0]).z(), EPS);
 
     for (size_t i = 0 ; i < 5 ; ++i)
     {
-        ASSERT_NEAR(res[i].x[ZIDX(0)],res[10-i].x[ZIDX(0)], 0.1) << " i = " << i;
+        ASSERT_NEAR(body0(res[i]).z(),body0(res[10-i]).z(), 0.1) << " i = " << i;
     }
-    ASSERT_NEAR(3.84, res[5].x[ZIDX(0)], 1E-2);
+    ASSERT_NEAR(3.84, body0(res[5]).z(), 1E-2);
     for (size_t i = 0 ; i < 11 ; ++i)
     {
-        ASSERT_NEAR(0, fabs(res[i].x[XIDX(0)]), 0.2) << " i = " << i;
-        ASSERT_NEAR(0, fabs(res[i].x[YIDX(0)]), 1E-2) << " i = " << i;
+        ASSERT_NEAR(0, fabs(body0(res[i]).x()), 0.2) << " i = " << i;
+        ASSERT_NEAR(0, fabs(body0(res[i]).y()), 1E-2) << " i = " << i;
     }
 }
 
@@ -280,9 +288,9 @@ TEST_F(SimTest, LONG_waves_test_on_test_ship)
     ssc::solver::Scheduler scheduler(0, 4.79, 0.479);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(11, res.size());
-    ASSERT_NEAR(0, res[0].x[XIDX(0)], EPS);
-    ASSERT_NEAR(0, res[0].x[YIDX(0)], EPS);
-    ASSERT_NEAR(-5, res[0].x[ZIDX(0)], EPS);
+    ASSERT_NEAR(0, body0(res[0]).x(), EPS);
+    ASSERT_NEAR(0, body0(res[0]).y(), EPS);
+    ASSERT_NEAR(-5, body0(res[0]).z(), EPS);
 }
 
 
@@ -299,8 +307,8 @@ TEST_F(SimTest, LONG_test_ship_damping)
     ssc::solver::Scheduler scheduler(0, 20, 1);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(21, res.size());
-    ASSERT_FALSE(std::isnan(res.back().x[ZIDX(0)]));
-    ASSERT_EQ(res.back().x[ZIDX(0)],res.back().x[ZIDX(0)]); // Check if nan
+    ASSERT_FALSE(std::isnan(body0(res.back()).z()));
+    ASSERT_EQ(body0(res.back()).z(),body0(res.back()).z()); // Check if nan
 }
 
 TEST_F(SimTest, DISABLED_LONG_bug_2655)
@@ -309,7 +317,7 @@ TEST_F(SimTest, DISABLED_LONG_bug_2655)
     ssc::solver::Scheduler scheduler(0, 1.4, 0.1);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(15, res.size());
-    ASSERT_NEAR(-0.228388, res.back().x[WIDX(0)], 1e-6);
+    ASSERT_NEAR(-0.228388, body0(res.back()).w(), 1e-6);
 }
 
 TEST_F(SimTest, LONG_propulsion_and_resistance)
@@ -328,15 +336,15 @@ TEST_F(SimTest, LONG_propulsion_and_resistance)
     for (size_t i = 0 ; i <= N ; ++i)
     {
         const double t = res.at(i).t;
-        ASSERT_LE(2.79963*(t-40), res.at(i).x[XIDX(0)]);
-        ASSERT_NEAR(0, res.at(i).x[YIDX(0)], tolerance);
-        ASSERT_NEAR(1, res.at(i).x[ZIDX(0)], tolerance);
-        ASSERT_LE(2.79963*(1-exp(-0.012*t)), res.at(i).x[UIDX(0)]) << i;
-        ASSERT_NEAR(0, res.at(i).x[VIDX(0)], tolerance);
-        ASSERT_NEAR(0, res.at(i).x[WIDX(0)], tolerance);
-        ASSERT_NEAR(-0.00109667*t, res.at(i).x[PIDX(0)], 8E-2);
-        ASSERT_NEAR(0, res.at(i).x[QIDX(0)], tolerance) << "i = " << i;
-        ASSERT_NEAR(0, res.at(i).x[RIDX(0)], tolerance) << "i = " << i;
+        ASSERT_LE(2.79963*(t-40), body0(res.at(i)).x());
+        ASSERT_NEAR(0, body0(res.at(i)).y(), tolerance);
+        ASSERT_NEAR(1, body0(res.at(i)).z(), tolerance);
+        ASSERT_LE(2.79963*(1-exp(-0.012*t)), body0(res.at(i)).u()) << i;
+        ASSERT_NEAR(0, body0(res.at(i)).v(), tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).w(), tolerance);
+        ASSERT_NEAR(-0.00109667*t, body0(res.at(i)).p(), 8E-2);
+        ASSERT_NEAR(0, body0(res.at(i)).q(), tolerance) << "i = " << i;
+        ASSERT_NEAR(0, body0(res.at(i)).r(), tolerance) << "i = " << i;
     }
 }
 
@@ -348,7 +356,7 @@ TEST_F(SimTest, DISABLED_LONG_bug_2641)
     commands.set<double>("propeller(P/D)", 0.67);
     ssc::solver::Scheduler scheduler(0, 5, 1);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler, commands);
-    ASSERT_LT(res.back().x[VIDX(0)], -0.003);
+    ASSERT_LT(body0(res.back()).v(), -0.003);
 }
 
 TEST_F(SimTest, bug_in_exact_hydrostatic)
@@ -379,15 +387,15 @@ TEST_F(SimTest, rolling_cube_with_big_mesh)
     std::vector<double> phi;
     for (auto r:res)
     {
-        ASSERT_NEAR(0, r.x[XIDX(0)], 1e-6);
-        ASSERT_NEAR(0, r.x[YIDX(0)], 1e-6);
-        ASSERT_NEAR(0, r.x[ZIDX(0)], 1e-6);
-        ASSERT_NEAR(0, r.x[UIDX(0)], 1e-6);
-        ASSERT_NEAR(0, r.x[VIDX(0)], 1e-6);
-        ASSERT_NEAR(0, r.x[WIDX(0)], 1e-6);
-        ASSERT_NEAR(0, r.x[QIDX(0)], eps);
-        ASSERT_NEAR(0, r.x[RIDX(0)], eps);
-        const auto angle = convert(r.x[QRIDX(0)],r.x[QIIDX(0)],r.x[QJIDX(0)],r.x[QKIDX(0)]);
+        ASSERT_NEAR(0, body0(r).x(), 1e-6);
+        ASSERT_NEAR(0, body0(r).y(), 1e-6);
+        ASSERT_NEAR(0, body0(r).z(), 1e-6);
+        ASSERT_NEAR(0, body0(r).u(), 1e-6);
+        ASSERT_NEAR(0, body0(r).v(), 1e-6);
+        ASSERT_NEAR(0, body0(r).w(), 1e-6);
+        ASSERT_NEAR(0, body0(r).q(), eps);
+        ASSERT_NEAR(0, body0(r).r(), eps);
+        const auto angle = convert(body0(r).qr(),body0(r).qi(),body0(r).qj(),body0(r).qk());
         ASSERT_NEAR(0, angle.theta, eps);
         ASSERT_NEAR(0, angle.psi, eps);
         phi.push_back(angle.phi);
@@ -554,9 +562,9 @@ TEST_F(SimTest, linear_hydrostatics_without_waves)
     {
         const double t = res.at(i).t;
         const double model = z(t);
-        const double simulation = res.at(i).x[ZIDX(0)];
-        ASSERT_NEAR(0, res.at(i).x[XIDX(0)], eps) << "i = " << i;
-        ASSERT_NEAR(0, res.at(i).x[YIDX(0)], eps) << "i = " << i;
+        const double simulation = body0(res.at(i)).z();
+        ASSERT_NEAR(0, body0(res.at(i)).x(), eps) << "i = " << i;
+        ASSERT_NEAR(0, body0(res.at(i)).y(), eps) << "i = " << i;
         ASSERT_NEAR(model, simulation, eps) << "i = " << i;
     }
 }
@@ -569,20 +577,20 @@ TEST_F(SimTest, LONG_linear_hydrostatics_with_waves)
     const auto res = simulate<ssc::solver::RK4Stepper>(test_data::test_ship_linear_hydrostatics_with_waves(), test_data::cube(), scheduler);
 
     const double eps = 1E-3;
-    EXPECT_NEAR(1      , res.at(0).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.0977655768203616, res.at(1).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.1908080668425538, res.at(2).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.2787602739058979, res.at(3).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.3612750909238365, res.at(4).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.4380268698370129, res.at(5).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.5087127069308661, res.at(6).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.5730536384569165, res.at(7).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.6307957418487593, res.at(8).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.6817111381931509, res.at(9).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.725598892002085, res.at(10).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.7622858047320056, res.at(11).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.7916270989098795, res.at(12).x[ZIDX(0)], eps);
-    EXPECT_NEAR(1.8135069901513805, res.at(13).x[ZIDX(0)], eps);
+    EXPECT_NEAR(1      , body0(res.at(0)).z(), eps);
+    EXPECT_NEAR(1.0977655768203616, body0(res.at(1)).z(), eps);
+    EXPECT_NEAR(1.1908080668425538, body0(res.at(2)).z(), eps);
+    EXPECT_NEAR(1.2787602739058979, body0(res.at(3)).z(), eps);
+    EXPECT_NEAR(1.3612750909238365, body0(res.at(4)).z(), eps);
+    EXPECT_NEAR(1.4380268698370129, body0(res.at(5)).z(), eps);
+    EXPECT_NEAR(1.5087127069308661, body0(res.at(6)).z(), eps);
+    EXPECT_NEAR(1.5730536384569165, body0(res.at(7)).z(), eps);
+    EXPECT_NEAR(1.6307957418487593, body0(res.at(8)).z(), eps);
+    EXPECT_NEAR(1.6817111381931509, body0(res.at(9)).z(), eps);
+    EXPECT_NEAR(1.725598892002085, body0(res.at(10)).z(), eps);
+    EXPECT_NEAR(1.7622858047320056, body0(res.at(11)).z(), eps);
+    EXPECT_NEAR(1.7916270989098795, body0(res.at(12)).z(), eps);
+    EXPECT_NEAR(1.8135069901513805, body0(res.at(13)).z(), eps);
 }
 
 TEST_F(SimTest, LONG_can_simulate_radiation_damping)
@@ -599,7 +607,7 @@ TEST_F(SimTest, LONG_can_simulate_radiation_damping)
     command_listener.check_out();
     ssc::solver::Scheduler scheduler(0, T, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(test_data::test_ship_radiation_damping(), test_data::cube(), scheduler, command_listener);
-    ASSERT_NEAR(0.64349959363750842, res.at(5).x[XIDX(0)], 1E-3);
+    ASSERT_NEAR(0.64349959363750842, body0(res.at(5)).x(), 1E-3);
 }
 
 TEST_F(SimTest, can_use_added_mass_matrix_from_precalr_file)
@@ -612,7 +620,7 @@ TEST_F(SimTest, can_use_added_mass_matrix_from_precalr_file)
     const double dt = 0.2;
     ssc::solver::Scheduler scheduler(0, T, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(test_data::added_mass_from_precal_file(), test_data::cube(), scheduler);
-    ASSERT_NEAR(0.011316202309435556, res.at(5).x[XIDX(0)], 1E-3);
+    ASSERT_NEAR(0.011316202309435556, body0(res.at(5)).x(), 1E-3);
     remove(filename.c_str());
 }
 
@@ -655,7 +663,7 @@ TEST_F(SimTest, bug_3003_crash_in_manoeuvring_model)
 
     const double eps = 1E-10;
     ASSERT_GT(res.size(), 0);
-    ASSERT_NEAR(-0.099, res.at(0).x[ZIDX(0)], eps);
+    ASSERT_NEAR(-0.099, body0(res.at(0)).z(), eps);
 }
 
 TEST_F(SimTest, bug_2984)
@@ -1047,15 +1055,15 @@ TEST_F(SimTest, LONG_can_use_controllers_to_output_commands)
     for (size_t i = 0 ; i <= N ; ++i)
     {
         const double t = res.at(i).t;
-        ASSERT_LE(2.79963*(t-40), res.at(i).x[XIDX(0)]);
-        ASSERT_NEAR(0, res.at(i).x[YIDX(0)], tolerance);
-        ASSERT_NEAR(1, res.at(i).x[ZIDX(0)], tolerance);
-        ASSERT_LE(2.79963*(1-exp(-0.012*t)), res.at(i).x[UIDX(0)]) << i;
-        ASSERT_NEAR(0, res.at(i).x[VIDX(0)], tolerance);
-        ASSERT_NEAR(0, res.at(i).x[WIDX(0)], tolerance);
-        ASSERT_NEAR(-0.00109667*t, res.at(i).x[PIDX(0)], 8E-2);
-        ASSERT_NEAR(0, res.at(i).x[QIDX(0)], tolerance) << "i = " << i;
-        ASSERT_NEAR(0, res.at(i).x[RIDX(0)], tolerance) << "i = " << i;
+        ASSERT_LE(2.79963*(t-40), body0(res.at(i)).x());
+        ASSERT_NEAR(0, body0(res.at(i)).y(), tolerance);
+        ASSERT_NEAR(1, body0(res.at(i)).z(), tolerance);
+        ASSERT_LE(2.79963*(1-exp(-0.012*t)), body0(res.at(i)).u()) << i;
+        ASSERT_NEAR(0, body0(res.at(i)).v(), tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).w(), tolerance);
+        ASSERT_NEAR(-0.00109667*t, body0(res.at(i)).p(), 8E-2);
+        ASSERT_NEAR(0, body0(res.at(i)).q(), tolerance) << "i = " << i;
+        ASSERT_NEAR(0, body0(res.at(i)).r(), tolerance) << "i = " << i;
     }
 }
 
@@ -1073,11 +1081,11 @@ TEST_F(SimTest, LONG_can_simulate_heading_keeping_using_controllers)
     for (size_t i = 400 ; i <= N ; ++i)
     {
         // forced states
-        ASSERT_NEAR(0, res.at(i).x[WIDX(0)], tolerance);
-        ASSERT_NEAR(0, res.at(i).x[PIDX(0)], tolerance);
-        ASSERT_NEAR(0, res.at(i).x[QIDX(0)], tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).w(), tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).p(), tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).q(), tolerance);
         // heading
-        const auto angle = convert(res.at(i).x[QRIDX(0)], res.at(i).x[QIIDX(0)], res.at(i).x[QJIDX(0)], res.at(i).x[QKIDX(0)]);
+        const auto angle = convert(body0(res.at(i)).qr(), body0(res.at(i)).qi(), body0(res.at(i)).qj(), body0(res.at(i)).qk());
         ASSERT_NEAR(60 * PI / 180, angle.psi, 6e-3);
     }
 }
@@ -1125,11 +1133,11 @@ TEST_F(SimTest, LONG_can_simulate_heading_with_non_constant_controllers_setpoint
     for (size_t i = 400 ; i <= N ; ++i)
     {
         // forced states
-        ASSERT_NEAR(0, res.at(i).x[WIDX(0)], tolerance);
-        ASSERT_NEAR(0, res.at(i).x[PIDX(0)], tolerance);
-        ASSERT_NEAR(0, res.at(i).x[QIDX(0)], tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).w(), tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).p(), tolerance);
+        ASSERT_NEAR(0, body0(res.at(i)).q(), tolerance);
         // heading
-        const auto angle = convert(res.at(i).x[QRIDX(0)], res.at(i).x[QIIDX(0)], res.at(i).x[QJIDX(0)], res.at(i).x[QKIDX(0)]);
+        const auto angle = convert(body0(res.at(i)).qr(), body0(res.at(i)).qi(), body0(res.at(i)).qj(), body0(res.at(i)).qk());
         ASSERT_NEAR(60 * PI / 180, angle.psi, 6e-3);
     }
 }

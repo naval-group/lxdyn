@@ -7,7 +7,7 @@
 
 
 #include "ForceTester.hpp"
-#include "xdyn/core/StateMacros.hpp"
+#include "xdyn/core/StateLayout.hpp"
 #include "xdyn/force_models/GMForceModel.hpp"
 #include "xdyn/force_models/ExactHydrostaticForceModel.hpp"
 #include "xdyn/force_models/DiffractionForceModel.hpp"
@@ -80,9 +80,9 @@ std::vector<double> get_states(const double x, const double y,
         const double z, const double phi, const double theta, const double psi)
 {
     std::vector<double> states(13, 0);
-    states[XIDX(0)] = x;
-    states[YIDX(0)] = y;
-    states[ZIDX(0)] = z;
+    states[state::index(0, state::X)] = x;
+    states[state::index(0, state::Y)] = y;
+    states[state::index(0, state::Z)] = z;
     ssc::kinematics::EulerAngles angle(phi,theta,psi);
     YamlRotation c;
     c.order_by = "angle";
@@ -90,10 +90,10 @@ std::vector<double> get_states(const double x, const double y,
     c.convention.push_back("y'");
     c.convention.push_back("x''");
     const auto quaternion = BodyStates::convert(angle, c);
-    states[QRIDX(0)] = std::get<0>(quaternion);
-    states[QIIDX(0)] = std::get<1>(quaternion);
-    states[QJIDX(0)] = std::get<2>(quaternion);
-    states[QKIDX(0)] = std::get<3>(quaternion);
+    states[state::index(0, state::QR)] = std::get<0>(quaternion);
+    states[state::index(0, state::QI)] = std::get<1>(quaternion);
+    states[state::index(0, state::QJ)] = std::get<2>(quaternion);
+    states[state::index(0, state::QK)] = std::get<3>(quaternion);
     return states;
 }
 
