@@ -9,7 +9,7 @@
 #define ENVIRONMENTANDFRAMES_HPP_
 
 #include "xdyn/core/Body.hpp"
-#include "xdyn/core/StateMacros.hpp"
+#include "xdyn/core/StateLayout.hpp"
 #include "xdyn/core/SurfaceElevationInterface.hpp"
 #include "xdyn/environment_models/WindModel.hpp"
 #include "xdyn/environment_models/UWCurrentModel.hpp"

@@ -9,7 +9,7 @@
 #define BODYSTATES_HPP_
 
 #include "StatesFilter.hpp"
-#include "StateMacros.hpp"
+#include "StateLayout.hpp"
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 #include "xdyn/external_data_structures/YamlRotation.hpp"
 #include "xdyn/external_data_structures/AbstractStates.hpp"

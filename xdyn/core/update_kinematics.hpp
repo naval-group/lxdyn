@@ -10,7 +10,7 @@
 
 #include <vector>
 
-#include "xdyn/core/StateMacros.hpp"
+#include "xdyn/core/StateLayout.hpp"
 
 struct YamlBody;
 struct YamlRotation;

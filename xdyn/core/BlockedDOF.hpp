@@ -30,7 +30,7 @@
 #include <memory>
 
 #include "xdyn/external_data_structures/YamlBody.hpp"
-#include "xdyn/core/StateMacros.hpp"
+#include "xdyn/core/StateLayout.hpp"
 
 std::ostream& operator<<(std::ostream& os, const BlockableState& s);
 

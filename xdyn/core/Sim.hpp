@@ -26,7 +26,7 @@
 #include <ssc/data_source.hpp>
 #include <ssc/kinematics.hpp>
 #include "xdyn/core/Body.hpp"
-#include "xdyn/core/StateMacros.hpp"
+#include "xdyn/core/StateLayout.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/core/SurfaceElevationGrid.hpp"
@@ -47,20 +47,20 @@ class Sim : public ssc::solver::ContinuousSystem
          * - bodies: a list of bodies
          * - forces: a list of forces applying to the bodies
          * - env: the environment object. It includes the environmental constants 
-         * - x: the states (StateType == std::vector<double>). There are 13 states per body:
-         *            _X(x,i) = x-coordinate of COG of body i in NED reference frame
-         *            _Y(x,i) = y-coordinate of COG of body i in NED reference frame
-         *            _Z(x,i) = z-coordinate of COG of body i in NED reference frame
-         *            _U(x,i) = velocity of COG of body i along x axis of body reference frame
-         *            _V(x,i) = velocity of COG of body i along y axis of body reference frame
-         *            _W(x,i) = velocity of COG of body i along z axis of body reference frame
-         *            _P(x,i) = coordinates of rotation vector of body i along x axis of body reference frame
-         *            _Q(x,i) = coordinates of rotation vector of body i along y axis of body reference frame
-         *            _R(x,i) = coordinates of rotation vector of body i along z axis of body reference frame
-         *            _QR(x,i) = r-coordinate of quaternion of body i
-         *            _QI(x,i) = i-coordinate of quaternion of body i
-         *            _QJ(x,i) = j-coordinate of quaternion of body i
-         *            _QK(x,i) = k-coordinate of quaternion of body i
+         * - x: the states (StateType == std::vector<double>). There are 13 states per body i, x[state::index(i, v)] for each v below (see StateLayout.hpp):
+         *            state::X  = x-coordinate of COG of body i in NED reference frame
+         *            state::Y  = y-coordinate of COG of body i in NED reference frame
+         *            state::Z  = z-coordinate of COG of body i in NED reference frame
+         *            state::U  = velocity of COG of body i along x axis of body reference frame
+         *            state::V  = velocity of COG of body i along y axis of body reference frame
+         *            state::W  = velocity of COG of body i along z axis of body reference frame
+         *            state::P  = coordinates of rotation vector of body i along x axis of body reference frame
+         *            state::Q  = coordinates of rotation vector of body i along y axis of body reference frame
+         *            state::R  = coordinates of rotation vector of body i along z axis of body reference frame
+         *            state::QR = r-coordinate of quaternion of body i
+         *            state::QI = i-coordinate of quaternion of body i
+         *            state::QJ = j-coordinate of quaternion of body i
+         *            state::QK = k-coordinate of quaternion of body i
          * - command_listener: the instructions
          */
         Sim(const std::vector<BodyPtr>& bodies,

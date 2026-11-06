@@ -7,7 +7,7 @@
 
 #include "BodyStates.hpp"
 #include "EnvironmentAndFrames.hpp"
-#include "StateMacros.hpp"
+#include "StateLayout.hpp"
 #include "StatesFilter.hpp"
 #include "yaml2eigen.hpp"
 #include "xdyn/external_data_structures/YamlBody.hpp"

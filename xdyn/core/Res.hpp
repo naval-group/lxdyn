@@ -10,7 +10,7 @@
 
 #include <map>
 #include <string>
-#include "xdyn/core/StateMacros.hpp"
+#include "xdyn/core/StateLayout.hpp"
 
 /** \author cady
  *  \date Jul 1, 2014, 9:28:53 AM

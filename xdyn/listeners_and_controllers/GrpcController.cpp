@@ -29,7 +29,7 @@ void GrpcController::add_controller_outputs_to_data_source(const double time, ss
     auto dx_dt = sys.get_latest_dx_dt();
     if (dx_dt.empty())
     {
-        dx_dt = std::vector<double>(13, 0);
+        dx_dt = std::vector<double>(state::N, 0);
     }
     const auto response = grpc->get_commands(time, sys.state, dx_dt, setpoints);
     const auto commands = response.commands;
