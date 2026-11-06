@@ -1,4 +1,0 @@
-grpcio
-numpy
-protobuf
-pyyaml

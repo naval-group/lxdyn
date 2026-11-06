@@ -44,9 +44,7 @@ REPO=${REPO:-$(_find_repo "$SRC")}
 BIN=${BIN:-$(sh "$REPO/tools/build-dir.sh")/bin}
 PYTHON=${PYTHON:-$REPO/build/venv/grpc/bin/python}
 
-# xdyngrpc is not installed, it is imported from xdyn_grpc/ -- exactly what the
-# xdyngrpc-python image does with `ENV PYTHONPATH=/opt`. $SRC is on the path too, so a
-# scenario's own force/wave model modules import like they did with the volume mount.
+# xdyngrpc is imported from xdyn_grpc/ rather than installed; $SRC holds a scenario's own models.
 PYTHONPATH="$REPO/xdyn_grpc:$SRC${PYTHONPATH:+:$PYTHONPATH}"
 export PYTHONPATH
 # We run scripts straight out of the source tree; don't litter it with __pycache__.
