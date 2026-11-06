@@ -208,7 +208,7 @@ TEST_F(BodyTest, forced_state_derivatives_are_taken_into_account)
     const double t = 2.1;
     body->calculate_state_derivatives(sum_of_other_forces, x, dx_dt, t, env);
 
-    ASSERT_DOUBLE_EQ(1./4.2, dx_dt[UIDX(1)]);
+    ASSERT_DOUBLE_EQ(1./4.2, dx_dt[state::index(1, state::U)]);
 }
 
 TEST_F(BodyTest, can_overwrite_history_with_single_value)

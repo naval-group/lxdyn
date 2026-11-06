@@ -183,15 +183,15 @@ TEST_F(BlockedDOFTest, piecewise_constant_should_work)
     StateType x(13);
     const BlockedDOF blocker(yaml);
     blocker.force_states(x,1);
-    ASSERT_DOUBLE_EQ(1, x[PIDX(0)]);
+    ASSERT_DOUBLE_EQ(1, x[state::index(0, state::P)]);
     blocker.force_states(x,2.6);
-    ASSERT_DOUBLE_EQ(1, x[PIDX(0)]);
+    ASSERT_DOUBLE_EQ(1, x[state::index(0, state::P)]);
     blocker.force_states(x,4.2);
-    ASSERT_DOUBLE_EQ(2, x[PIDX(0)]);
+    ASSERT_DOUBLE_EQ(2, x[state::index(0, state::P)]);
     blocker.force_states(x,4.6);
-    ASSERT_DOUBLE_EQ(2, x[PIDX(0)]);
+    ASSERT_DOUBLE_EQ(2, x[state::index(0, state::P)]);
     blocker.force_states(x,5);
-    ASSERT_DOUBLE_EQ(3, x[PIDX(0)]);
+    ASSERT_DOUBLE_EQ(3, x[state::index(0, state::P)]);
 }
 
 TEST_F(BlockedDOFTest, linear_should_work)
@@ -205,15 +205,15 @@ TEST_F(BlockedDOFTest, linear_should_work)
     StateType x(13);
     const BlockedDOF blocker(yaml);
     blocker.force_states(x,1);
-    ASSERT_DOUBLE_EQ(1, x[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(1, x[state::index(0, state::U)]);
     blocker.force_states(x,2.6);
-    ASSERT_DOUBLE_EQ(1.5, x[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(1.5, x[state::index(0, state::U)]);
     blocker.force_states(x,4.2);
-    ASSERT_DOUBLE_EQ(2, x[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(2, x[state::index(0, state::U)]);
     blocker.force_states(x,4.6);
-    ASSERT_DOUBLE_EQ(2.5, x[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(2.5, x[state::index(0, state::U)]);
     blocker.force_states(x,5);
-    ASSERT_DOUBLE_EQ(3, x[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(3, x[state::index(0, state::U)]);
 }
 
 TEST_F(BlockedDOFTest, spline_should_work)
@@ -227,15 +227,15 @@ TEST_F(BlockedDOFTest, spline_should_work)
     StateType x(13);
     const BlockedDOF blocker(yaml);
     blocker.force_states(x,1);
-    ASSERT_DOUBLE_EQ(1, x[QIDX(0)]);
+    ASSERT_DOUBLE_EQ(1, x[state::index(0, state::Q)]);
     blocker.force_states(x,2.6);
-    ASSERT_NEAR(0.9,    x[QIDX(0)], 1e-6);
+    ASSERT_NEAR(0.9,    x[state::index(0, state::Q)], 1e-6);
     blocker.force_states(x,4.2);
-    ASSERT_DOUBLE_EQ(2, x[QIDX(0)]);
+    ASSERT_DOUBLE_EQ(2, x[state::index(0, state::Q)]);
     blocker.force_states(x,4.6);
-    ASSERT_NEAR(2.4625, x[QIDX(0)], 1e-6);
+    ASSERT_NEAR(2.4625, x[state::index(0, state::Q)], 1e-6);
     blocker.force_states(x,5);
-    ASSERT_DOUBLE_EQ(3, x[QIDX(0)]);
+    ASSERT_DOUBLE_EQ(3, x[state::index(0, state::Q)]);
 }
 
 TEST_F(BlockedDOFTest, blocked_derivative_should_work)
@@ -249,15 +249,15 @@ TEST_F(BlockedDOFTest, blocked_derivative_should_work)
     StateType dx_dt(13);
     const BlockedDOF blocker(yaml);
     blocker.force_state_derivatives(dx_dt,1);
-    ASSERT_DOUBLE_EQ(1./3.2, dx_dt[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(1./3.2, dx_dt[state::index(0, state::U)]);
     blocker.force_state_derivatives(dx_dt,2.6);
-    ASSERT_DOUBLE_EQ(1./3.2, dx_dt[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(1./3.2, dx_dt[state::index(0, state::U)]);
     blocker.force_state_derivatives(dx_dt,4.2);
-    ASSERT_DOUBLE_EQ(1./0.8, dx_dt[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(1./0.8, dx_dt[state::index(0, state::U)]);
     blocker.force_state_derivatives(dx_dt,4.6);
-    ASSERT_DOUBLE_EQ(1./0.8, dx_dt[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(1./0.8, dx_dt[state::index(0, state::U)]);
     blocker.force_state_derivatives(dx_dt,5);
-    ASSERT_DOUBLE_EQ(1./0.8, dx_dt[UIDX(0)]);
+    ASSERT_DOUBLE_EQ(1./0.8, dx_dt[state::index(0, state::U)]);
 }
 
 TEST_F(BlockedDOFTest, force_delta)
