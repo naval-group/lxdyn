@@ -34,8 +34,9 @@ GZ::Resultant GZ::ResultantForceComputer::resultant(const ::GZ::State& point)
     CHECK(z);
     CHECK(phi);
     CHECK(theta);
-    std::vector<double> x(13, 0);
-    x[ZIDX(0)] = z;
+    std::vector<double> x(state::N, 0);
+    BodyStateView s(x, 0);
+    s.z() = z;
     ssc::kinematics::EulerAngles angle(phi, theta, 0);
     YamlRotation c;
     c.order_by = "angle";
@@ -43,10 +44,10 @@ GZ::Resultant GZ::ResultantForceComputer::resultant(const ::GZ::State& point)
     c.convention.push_back("y'");
     c.convention.push_back("x''");
     const auto quaternion = body->get_quaternions(angle, c);
-    x[QRIDX(0)] = std::get<0>(quaternion);
-    x[QIIDX(0)] = std::get<1>(quaternion);
-    x[QJIDX(0)] = std::get<2>(quaternion);
-    x[QKIDX(0)] = std::get<3>(quaternion);
+    s.qr() = std::get<0>(quaternion);
+    s.qi() = std::get<1>(quaternion);
+    s.qj() = std::get<2>(quaternion);
+    s.qk() = std::get<3>(quaternion);
 
     body->update(env,x,current_instant);
 
@@ -97,7 +98,8 @@ Eigen::Matrix2d GZ::ResultantForceComputer::K(const Eigen::Vector3d& X)
 
 GZ::MinMax GZ::ResultantForceComputer::get_zmin_zmax(const double phi)
 {
-    std::vector<double> x(13, 0);
+    std::vector<double> x(state::N, 0);
+    BodyStateView s(x, 0);
     ssc::kinematics::EulerAngles angle(phi, 0, 0);
     YamlRotation c;
     c.order_by = "angle";
@@ -105,10 +107,10 @@ GZ::MinMax GZ::ResultantForceComputer::get_zmin_zmax(const double phi)
     c.convention.push_back("y'");
     c.convention.push_back("x''");
     const auto quaternion = body->get_quaternions(angle, c);
-    x[QRIDX(0)] = std::get<0>(quaternion);
-    x[QIIDX(0)] = std::get<1>(quaternion);
-    x[QJIDX(0)] = std::get<2>(quaternion);
-    x[QKIDX(0)] = std::get<3>(quaternion);
+    s.qr() = std::get<0>(quaternion);
+    s.qi() = std::get<1>(quaternion);
+    s.qj() = std::get<2>(quaternion);
+    s.qk() = std::get<3>(quaternion);
 
     body->update(env,x,current_instant);
 
