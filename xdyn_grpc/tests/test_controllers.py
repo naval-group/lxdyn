@@ -1,11 +1,10 @@
-"""Integration tests for gRPC wave models."""
+"""The SDK's controllers, called directly rather than over gRPC."""
 # pylint: disable=missing-function-docstring
 
 import numpy as np
 import pytest
 import yaml
-
-from . import controller, pid_controller, state_feedback_controller
+from xdyngrpc.controllers import controller, pid_controller, state_feedback_controller
 
 
 def get_yaml_pid(dt: float) -> str:

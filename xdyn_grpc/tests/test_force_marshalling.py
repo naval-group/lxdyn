@@ -1,7 +1,7 @@
 """Conversions between the gRPC messages and the Python dataclasses."""
 
-from .._proto import force_pb2
-from .grpc_force_types_marshalling import from_grpc_required_wave_information
+from xdyngrpc._proto import force_pb2
+from xdyngrpc.forces.grpc_force_types_marshalling import from_grpc_required_wave_information
 
 
 def test_required_wave_information_carries_every_field():
