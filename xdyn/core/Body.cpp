@@ -63,9 +63,10 @@ BodyStates Body::get_states() const
 
 ssc::kinematics::Point Body::get_origin(const StateType& x) const
 {
-    return ssc::kinematics::Point("NED", *_X(x,idx),
-                                         *_Y(x,idx),
-                                         *_Z(x,idx));
+    ConstBodyStateView s(x, idx);
+    return ssc::kinematics::Point("NED", s.x(),
+                                         s.y(),
+                                         s.z());
 }
 
 ssc::kinematics::Point Body::get_position_of_body_relative_to_mesh() const
@@ -106,23 +107,25 @@ StateType Body::block_states_if_necessary(StateType x, const double t) const
 void Body::update_body_states(StateType x, const double t)
 {
     force_states(x,t);
-    states.x.record(t, *_X(x,idx));
-    states.y.record(t, *_Y(x,idx));
-    states.z.record(t, *_Z(x,idx));
-    states.u.record(t, *_U(x,idx));
-    states.v.record(t, *_V(x,idx));
-    states.w.record(t, *_W(x,idx));
-    states.p.record(t, *_P(x,idx));
-    states.q.record(t, *_Q(x,idx));
-    states.r.record(t, *_R(x,idx));
-    states.qr.record(t, *_QR(x,idx));
-    states.qi.record(t, *_QI(x,idx));
-    states.qj.record(t, *_QJ(x,idx));
-    states.qk.record(t, *_QK(x,idx));
+    ConstBodyStateView s(x, idx);
+    states.x.record(t, s.x());
+    states.y.record(t, s.y());
+    states.z.record(t, s.z());
+    states.u.record(t, s.u());
+    states.v.record(t, s.v());
+    states.w.record(t, s.w());
+    states.p.record(t, s.p());
+    states.q.record(t, s.q());
+    states.r.record(t, s.r());
+    states.qr.record(t, s.qr());
+    states.qi.record(t, s.qi());
+    states.qj.record(t, s.qj());
+    states.qk.record(t, s.qk());
 }
 
 void Body::force_states(StateType& x, const double t) const
 {
+    BodyStateView s(x, idx);
     // Forcing matrices (forced DoFs) at current time
     Eigen::Matrix<double,6,6> delta_x = blocked_states.get_delta_x(t);
     Eigen::Matrix<double,6,6> delta_v = blocked_states.get_delta_v(t);
@@ -140,11 +143,11 @@ void Body::force_states(StateType& x, const double t) const
         ssc::kinematics::EulerAngles rot(get_angles(x, states.convention));
         // Vector of forced motions
         Eigen::Matrix<double,6,1> x_f;
-        x_f << *_X(x,idx), *_Y(x,idx), *_Z(x,idx), rot.phi, rot.theta, rot.psi ; // Initialize forced rotations vector
+        x_f << s.x(), s.y(), s.z(), rot.phi, rot.theta, rot.psi ; // Initialize forced rotations vector
         blocked_states.get_forced_x_k(t, x_f, 0); // Get the forced motions
-        if (delta_x(0,0) == 1) {*_X(x,idx) = x_f(0);} // Update x if forced
-        if (delta_x(1,1) == 1) {*_Y(x,idx) = x_f(1);} // Update y if forced
-        if (delta_x(2,2) == 1) {*_Z(x,idx) = x_f(2);} // Update z if forced
+        if (delta_x(0,0) == 1) {s.x() = x_f(0);} // Update x if forced
+        if (delta_x(1,1) == 1) {s.y() = x_f(1);} // Update y if forced
+        if (delta_x(2,2) == 1) {s.z() = x_f(2);} // Update z if forced
         if (delta_x(3,3) == 1) {rot.phi = x_f(3);} // Update phi if forced
         if (delta_x(4,4) == 1) {rot.theta = x_f(4);} // Update theta if forced
         if (delta_x(5,5) == 1) {rot.psi = x_f(5);} // Update psi if forced
@@ -154,10 +157,10 @@ void Body::force_states(StateType& x, const double t) const
             // Update quaternion with forced motion
             Eigen::Quaternion<double> q_temp(ssc::kinematics::rotation_matrix<ssc::kinematics::INTRINSIC, ssc::kinematics::CHANGING_ANGLE_ORDER, 3, 2, 1>(rot));
             q1=q_temp;
-            *_QR(x,idx)=q1.w();
-            *_QI(x,idx)=q1.x();
-            *_QJ(x,idx)=q1.y();
-            *_QK(x,idx)=q1.z();
+            s.qr()=q1.w();
+            s.qi()=q1.x();
+            s.qj()=q1.y();
+            s.qk()=q1.z();
         }
         else
         {
@@ -169,10 +172,10 @@ void Body::force_states(StateType& x, const double t) const
         // Calculate the derivatives of the angles of rotations without forcing but with forced quaternions
         ssc::kinematics::EulerAngles drot; // Initialization : drot = [0, 0, 0]
         Eigen::Quaternion<double> dq1; // Define dq1 for convenience
-        dq1.w()=0.5*(-*_P(x,idx)*q1.x()-*_Q(x,idx)*q1.y()-*_R(x,idx)*q1.z());
-        dq1.x()=0.5*(*_P(x,idx)*q1.w()-*_Q(x,idx)*q1.z()+*_R(x,idx)*q1.y());
-        dq1.y()=0.5*(*_Q(x,idx)*q1.w()-*_R(x,idx)*q1.x()+*_P(x,idx)*q1.z());
-        dq1.z()=0.5*(*_R(x,idx)*q1.w()-*_P(x,idx)*q1.y()+*_Q(x,idx)*q1.x());
+        dq1.w()=0.5*(-s.p()*q1.x()-s.q()*q1.y()-s.r()*q1.z());
+        dq1.x()=0.5*(s.p()*q1.w()-s.q()*q1.z()+s.r()*q1.y());
+        dq1.y()=0.5*(s.q()*q1.w()-s.r()*q1.x()+s.p()*q1.z());
+        dq1.z()=0.5*(s.r()*q1.w()-s.p()*q1.y()+s.q()*q1.x());
         if ((states.convention.order_by == "angle") && (match(states.convention.convention, "z", "y'", "x''")))
         {
             const double eps = 1e-13;
@@ -300,19 +303,20 @@ void Body::update_projection_of_z_in_mesh_frame(const double g,
 #define CHECK(x,y,t) if (std::isnan(x)) {THROW(__PRETTY_FUNCTION__,NumericalErrorException,"NaN detected in state " << y << ", at t = " << t);}
 void Body::update(const EnvironmentAndFrames& env, const StateType& x, const double t)
 {
-    CHECK(*_X(x,idx),"X",t);
-    CHECK(*_Y(x,idx),"Y",t);
-    CHECK(*_Z(x,idx),"Z",t);
-    CHECK(*_U(x,idx),"U",t);
-    CHECK(*_V(x,idx),"V",t);
-    CHECK(*_W(x,idx),"W",t);
-    CHECK(*_P(x,idx),"P",t);
-    CHECK(*_Q(x,idx),"Q",t);
-    CHECK(*_R(x,idx),"R",t);
-    CHECK(*_QR(x,idx),"QR",t);
-    CHECK(*_QI(x,idx),"QI",t);
-    CHECK(*_QJ(x,idx),"QJ",t);
-    CHECK(*_QK(x,idx),"QK",t);
+    ConstBodyStateView s(x, idx);
+    CHECK(s.x(),"X",t);
+    CHECK(s.y(),"Y",t);
+    CHECK(s.z(),"Z",t);
+    CHECK(s.u(),"U",t);
+    CHECK(s.v(),"V",t);
+    CHECK(s.w(),"W",t);
+    CHECK(s.p(),"P",t);
+    CHECK(s.q(),"Q",t);
+    CHECK(s.r(),"R",t);
+    CHECK(s.qr(),"QR",t);
+    CHECK(s.qi(),"QI",t);
+    CHECK(s.qj(),"QJ",t);
+    CHECK(s.qk(),"QK",t);
     update_kinematics(x,env.k);
     update_body_states(x, t);
     update_intersection_with_free_surface(env, t);
@@ -336,34 +340,36 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
                                          const double t,
                                          const EnvironmentAndFrames& env) const
 {
+    ConstBodyStateView s(x, idx);
+    BodyStateView ds(dx_dt, idx);
     // 1. First, calculate the state derivatives without forcing
     // du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt
-    Eigen::Map<Eigen::Matrix<double,6,1> > dXdt(_U(dx_dt,idx)); // &dXdt = &dx_dt[13*idx+3]
+    Eigen::Map<Eigen::Matrix<double,6,1> > dXdt(ds.ptr(state::U));
     dXdt = states.inverse_of_the_total_inertia * sum_of_forces.to_vector(); // As &dXdt = &dx_dt[13*idx+3], the components of dx_dt corresponding to [du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt] are updated after that.
 
     // dx/dt, dy/dt, dz/dt
     const ssc::kinematics::RotationMatrix& R = env.k->get("NED", states.name).get_rot(); // R_{NED,body}
-    const Eigen::Map<const Eigen::Vector3d> uvw(_U(x,idx));
-    const Eigen::Map<const Eigen::Vector3d> pqr(_P(x,idx));
+    const Eigen::Map<const Eigen::Vector3d> uvw(s.ptr(state::U));
+    const Eigen::Map<const Eigen::Vector3d> pqr(s.ptr(state::P));
     const Eigen::Vector3d XpYpZp(R*uvw);
     // The water the body moves through is itself moving: the current advects the hull. Both terms
     // are already in NED, so the current needs no rotation here.
-    const Eigen::Vector3d current_in_ned = env.get_UWCurrent(Eigen::Vector3d(*_X(x,idx), *_Y(x,idx), *_Z(x,idx)), t);
-    *_X(dx_dt,idx) = XpYpZp(0) + current_in_ned(0);
-    *_Y(dx_dt,idx) = XpYpZp(1) + current_in_ned(1);
-    *_Z(dx_dt,idx) = XpYpZp(2) + current_in_ned(2);
+    const Eigen::Vector3d current_in_ned = env.get_UWCurrent(Eigen::Vector3d(s.x(), s.y(), s.z()), t);
+    ds.x() = XpYpZp(0) + current_in_ned(0);
+    ds.y() = XpYpZp(1) + current_in_ned(1);
+    ds.z() = XpYpZp(2) + current_in_ned(2);
 
     // dqr/dt, dqi/dt, dqj/dt, dqk/dt
-    const Eigen::Quaternion<double> q1(*_QR(x,idx),
-                                       *_QI(x,idx),
-                                       *_QJ(x,idx),
-                                       *_QK(x,idx)); // q1 = [qr, qi, qj, qk]
-    const Eigen::Quaternion<double> q2(0,*_P(x,idx),*_Q(x,idx),*_R(x,idx)); // q12= [0, p, q, r]
+    const Eigen::Quaternion<double> q1(s.qr(),
+                                       s.qi(),
+                                       s.qj(),
+                                       s.qk()); // q1 = [qr, qi, qj, qk]
+    const Eigen::Quaternion<double> q2(0,s.p(),s.q(),s.r()); // q12= [0, p, q, r]
     const Eigen::Quaternion<double>& dq_dt = q1*q2; //
-    *_QR(dx_dt,idx) = 0.5*(double)dq_dt.w(); // dx_dt[13*idx+10] = dqr/dt
-    *_QI(dx_dt,idx) = 0.5*(double)dq_dt.x(); // dx_dt[13*idx+11] = dqi/dt
-    *_QJ(dx_dt,idx) = 0.5*(double)dq_dt.y(); // dx_dt[13*idx+12] = dqj/dt
-    *_QK(dx_dt,idx) = 0.5*(double)dq_dt.z(); // dx_dt[13*idx+13] = dqk/dt
+    ds.qr() = 0.5*(double)dq_dt.w();
+    ds.qi() = 0.5*(double)dq_dt.x();
+    ds.qj() = 0.5*(double)dq_dt.y();
+    ds.qk() = 0.5*(double)dq_dt.z();
 
     // 2. Second, calculate the state derivatives with forcing
     // 2.0 Forcing matrices (forced DoFs) at current time
@@ -373,7 +379,7 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
     if (delta_x.maxCoeff() > 0)
     {
         // Define dq1 for convenience
-        const Eigen::Quaternion<double> dq1(*_QR(dx_dt,idx),*_QI(dx_dt,idx),*_QJ(dx_dt,idx),*_QK(dx_dt,idx));
+        const Eigen::Quaternion<double> dq1(ds.qr(),ds.qi(),ds.qj(),ds.qk());
         // Get the angles of rotations
         ssc::kinematics::EulerAngles rot(states.get_angles());
         // Calculate the derivatives of the angles of rotations
@@ -544,12 +550,12 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
 
 Eigen::Vector3d Body::get_uvw(const StateType& x) const
 {
-    return Eigen::Vector3d::Map(_U(x,idx));
+    return Eigen::Vector3d::Map(ConstBodyStateView(x, idx).ptr(state::U));
 }
 
 Eigen::Vector3d Body::get_pqr(const StateType& x) const
 {
-    return Eigen::Vector3d::Map(_P(x,idx));
+    return Eigen::Vector3d::Map(ConstBodyStateView(x, idx).ptr(state::P));
 }
 
 ssc::kinematics::Wrench Body::get_delta_F(const StateType& dx_dt, const ssc::kinematics::Wrench& sum_of_other_forces) const
@@ -571,19 +577,20 @@ ssc::kinematics::Wrench Body::get_delta_F(const StateType& dx_dt, const ssc::kin
 
 void Body::feed(const StateType& x, Observer& observer, const YamlRotation& c) const
 {
-    observer.write_after_solver_step(*_X(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"X"},std::string("x(")+states.name+")"));
-    observer.write_after_solver_step(*_Y(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"Y"},std::string("y(")+states.name+")"));
-    observer.write_after_solver_step(*_Z(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"Z"},std::string("z(")+states.name+")"));
-    observer.write_after_solver_step(*_U(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"U"},std::string("u(")+states.name+")"));
-    observer.write_after_solver_step(*_V(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"V"},std::string("v(")+states.name+")"));
-    observer.write_after_solver_step(*_W(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"W"},std::string("w(")+states.name+")"));
-    observer.write_after_solver_step(*_P(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"P"},std::string("p(")+states.name+")"));
-    observer.write_after_solver_step(*_Q(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"Q"},std::string("q(")+states.name+")"));
-    observer.write_after_solver_step(*_R(x,idx), DataAddressing(std::vector<std::string>{"states",states.name,"R"},std::string("r(")+states.name+")"));
-    observer.write_after_solver_step(*_QR(x,idx),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qr"},std::string("qr(")+states.name+")"));
-    observer.write_after_solver_step(*_QI(x,idx),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qi"},std::string("qi(")+states.name+")"));
-    observer.write_after_solver_step(*_QJ(x,idx),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qj"},std::string("qj(")+states.name+")"));
-    observer.write_after_solver_step(*_QK(x,idx),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qk"},std::string("qk(")+states.name+")"));
+    ConstBodyStateView s(x, idx);
+    observer.write_after_solver_step(s.x(), DataAddressing(std::vector<std::string>{"states",states.name,"X"},std::string("x(")+states.name+")"));
+    observer.write_after_solver_step(s.y(), DataAddressing(std::vector<std::string>{"states",states.name,"Y"},std::string("y(")+states.name+")"));
+    observer.write_after_solver_step(s.z(), DataAddressing(std::vector<std::string>{"states",states.name,"Z"},std::string("z(")+states.name+")"));
+    observer.write_after_solver_step(s.u(), DataAddressing(std::vector<std::string>{"states",states.name,"U"},std::string("u(")+states.name+")"));
+    observer.write_after_solver_step(s.v(), DataAddressing(std::vector<std::string>{"states",states.name,"V"},std::string("v(")+states.name+")"));
+    observer.write_after_solver_step(s.w(), DataAddressing(std::vector<std::string>{"states",states.name,"W"},std::string("w(")+states.name+")"));
+    observer.write_after_solver_step(s.p(), DataAddressing(std::vector<std::string>{"states",states.name,"P"},std::string("p(")+states.name+")"));
+    observer.write_after_solver_step(s.q(), DataAddressing(std::vector<std::string>{"states",states.name,"Q"},std::string("q(")+states.name+")"));
+    observer.write_after_solver_step(s.r(), DataAddressing(std::vector<std::string>{"states",states.name,"R"},std::string("r(")+states.name+")"));
+    observer.write_after_solver_step(s.qr(),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qr"},std::string("qr(")+states.name+")"));
+    observer.write_after_solver_step(s.qi(),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qi"},std::string("qi(")+states.name+")"));
+    observer.write_after_solver_step(s.qj(),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qj"},std::string("qj(")+states.name+")"));
+    observer.write_after_solver_step(s.qk(),DataAddressing(std::vector<std::string>{"states",states.name,"Quat","Qk"},std::string("qk(")+states.name+")"));
     const auto angles = get_angles(x, c);
     observer.write_after_solver_step(angles.phi, DataAddressing(std::vector<std::string>{"states",states.name,"PHI"},std::string("phi(")+states.name+")"));
     observer.write_after_solver_step(angles.theta, DataAddressing(std::vector<std::string>{"states",states.name,"THETA"},std::string("theta(")+states.name+")"));
@@ -653,19 +660,20 @@ FilteredStates Body::get_filtered_states() const
 
 FilteredStates Body::get_filtered_states(AbstractStates<History> state_history, const StateType& x) const
 {
+    ConstBodyStateView s(x, idx);
     const double t = state_history.x.get_current_time();
-    state_history.x.record(t, *_X(x,idx));
-    state_history.y.record(t, *_Y(x,idx));
-    state_history.z.record(t, *_Z(x,idx));
-    state_history.u.record(t, *_U(x,idx));
-    state_history.v.record(t, *_V(x,idx));
-    state_history.w.record(t, *_W(x,idx));
-    state_history.p.record(t, *_P(x,idx));
-    state_history.q.record(t, *_Q(x,idx));
-    state_history.r.record(t, *_R(x,idx));
-    state_history.qr.record(t, *_QR(x,idx));
-    state_history.qi.record(t, *_QI(x,idx));
-    state_history.qj.record(t, *_QJ(x,idx));
-    state_history.qk.record(t, *_QK(x,idx));
+    state_history.x.record(t, s.x());
+    state_history.y.record(t, s.y());
+    state_history.z.record(t, s.z());
+    state_history.u.record(t, s.u());
+    state_history.v.record(t, s.v());
+    state_history.w.record(t, s.w());
+    state_history.p.record(t, s.p());
+    state_history.q.record(t, s.q());
+    state_history.r.record(t, s.r());
+    state_history.qr.record(t, s.qr());
+    state_history.qi.record(t, s.qi());
+    state_history.qj.record(t, s.qj());
+    state_history.qk.record(t, s.qk());
     return FilteredStates(states_filter, state_history, states.convention);
 }

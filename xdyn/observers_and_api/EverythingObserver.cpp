@@ -7,7 +7,7 @@
 
 #include "EverythingObserver.hpp"
 #include "xdyn/core/Sim.hpp"
-#include "xdyn/core/StateMacros.hpp"
+#include "xdyn/core/StateLayout.hpp"
 
 EverythingObserver::EverythingObserver() : MapObserver(std::vector<std::string>({})), res()
 {
@@ -58,7 +58,7 @@ void EverythingObserver::observe_after_solver_step(const Sim& sys, const double 
 std::function<void(Res&, const double)> get_state_inserter(const size_t idx);
 std::function<void(Res&, const double)> get_state_inserter(const size_t idx)
 {
-    return [idx](Res& res, const double value){res.x.resize(13);res.x[idx] = value;};
+    return [idx](Res& res, const double value){res.x.resize(state::N);res.x[idx] = value;};
 }
 
 std::function<void(Res&, const double)> EverythingObserver::get_inserter(const std::string& body_name, const std::string& var_name) const
@@ -69,55 +69,55 @@ std::function<void(Res&, const double)> EverythingObserver::get_inserter(const s
     }
     if (var_name == std::string("x(") + body_name + ")")
     {
-        return get_state_inserter(XIDX(0));
+        return get_state_inserter(state::index(0, state::X));
     }
     if (var_name == std::string("y(") + body_name + ")")
     {
-        return get_state_inserter(YIDX(0));
+        return get_state_inserter(state::index(0, state::Y));
     }
     if (var_name == std::string("z(") + body_name + ")")
     {
-        return get_state_inserter(ZIDX(0));
+        return get_state_inserter(state::index(0, state::Z));
     }
     if (var_name == std::string("u(") + body_name + ")")
     {
-        return get_state_inserter(UIDX(0));
+        return get_state_inserter(state::index(0, state::U));
     }
     if (var_name == std::string("v(") + body_name + ")")
     {
-        return get_state_inserter(VIDX(0));
+        return get_state_inserter(state::index(0, state::V));
     }
     if (var_name == std::string("w(") + body_name + ")")
     {
-        return get_state_inserter(WIDX(0));
+        return get_state_inserter(state::index(0, state::W));
     }
     if (var_name == std::string("p(") + body_name + ")")
     {
-        return get_state_inserter(PIDX(0));
+        return get_state_inserter(state::index(0, state::P));
     }
     if (var_name == std::string("q(") + body_name + ")")
     {
-        return get_state_inserter(QIDX(0));
+        return get_state_inserter(state::index(0, state::Q));
     }
     if (var_name == std::string("r(") + body_name + ")")
     {
-        return get_state_inserter(RIDX(0));
+        return get_state_inserter(state::index(0, state::R));
     }
     if (var_name == std::string("qr(") + body_name + ")")
     {
-        return get_state_inserter(QRIDX(0));
+        return get_state_inserter(state::index(0, state::QR));
     }
     if (var_name == std::string("qi(") + body_name + ")")
     {
-        return get_state_inserter(QIIDX(0));
+        return get_state_inserter(state::index(0, state::QI));
     }
     if (var_name == std::string("qj(") + body_name + ")")
     {
-        return get_state_inserter(QJIDX(0));
+        return get_state_inserter(state::index(0, state::QJ));
     }
     if (var_name == std::string("qk(") + body_name + ")")
     {
-        return get_state_inserter(QKIDX(0));
+        return get_state_inserter(state::index(0, state::QK));
     }
     return [var_name](Res& res, const double value){res.extra_observations[var_name] = value;};
 }

@@ -139,13 +139,14 @@ StateType Sim::normalize_quaternions(const StateType& all_states
     StateType normalized = all_states;
     for (size_t i = 0 ; i < pimpl->bodies.size() ; ++i)
     {
-        const auto norm = std::hypot(std::hypot(std::hypot(*_QR(normalized,i),*_QI(normalized,i)),*_QJ(normalized,i)),*_QK(normalized,i));
+        BodyStateView s(normalized, i);
+        const auto norm = std::hypot(std::hypot(std::hypot(s.qr(),s.qi()),s.qj()),s.qk());
         if (not almost_equal(norm,1.0))
         {
-            *_QR(normalized,i) /= norm;
-            *_QI(normalized,i) /= norm;
-            *_QJ(normalized,i) /= norm;
-            *_QK(normalized,i) /= norm;
+            s.qr() /= norm;
+            s.qi() /= norm;
+            s.qj() /= norm;
+            s.qk() /= norm;
         }
     }
     return normalized;

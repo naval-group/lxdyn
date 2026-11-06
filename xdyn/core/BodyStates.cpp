@@ -145,25 +145,27 @@ ssc::kinematics::RotationMatrix BodyStates::get_rot_from_ned_to_body() const
 
 ssc::kinematics::RotationMatrix BodyStates::get_rot_from_ned_to(const StateType& x, const size_t idx) const
 {
-    return Eigen::Quaternion<double>(*_QR(x,idx),*_QI(x,idx),*_QJ(x,idx),*_QK(x,idx)).matrix();
+    ConstBodyStateView s(x, idx);
+    return Eigen::Quaternion<double>(s.qr(),s.qi(),s.qj(),s.qk()).matrix();
 }
 
 std::vector<double> BodyStates::get_current_state_values() const
 {
-    std::vector<double> s(NB_OF_STATES_PER_BODY, 0);
-    s[XIDX(0)] = x();
-    s[YIDX(0)] = y();
-    s[ZIDX(0)] = z();
-    s[UIDX(0)] = u();
-    s[VIDX(0)] = v();
-    s[WIDX(0)] = w();
-    s[PIDX(0)] = p();
-    s[QIDX(0)] = q();
-    s[RIDX(0)] = r();
-    s[QRIDX(0)] = qr();
-    s[QIIDX(0)] = qi();
-    s[QJIDX(0)] = qj();
-    s[QKIDX(0)] = qk();
+    std::vector<double> s(state::N, 0);
+    BodyStateView body(s, 0);
+    body.x() = x();
+    body.y() = y();
+    body.z() = z();
+    body.u() = u();
+    body.v() = v();
+    body.w() = w();
+    body.p() = p();
+    body.q() = q();
+    body.r() = r();
+    body.qr() = qr();
+    body.qi() = qi();
+    body.qj() = qj();
+    body.qk() = qk();
     return s;
 }
 

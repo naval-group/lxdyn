@@ -364,40 +364,40 @@ struct BlockedDOF::Impl
         switch (s)
         {
             case BlockableState::X:
-                return XIDX(body_idx);
+                return state::index(body_idx, state::X);
                 break;
             case BlockableState::Y:
-                return YIDX(body_idx);
+                return state::index(body_idx, state::Y);
                 break;
             case BlockableState::Z:
-                return ZIDX(body_idx);
+                return state::index(body_idx, state::Z);
                 break;
             case BlockableState::U:
-                return UIDX(body_idx);
+                return state::index(body_idx, state::U);
                 break;
             case BlockableState::V:
-                return VIDX(body_idx);
+                return state::index(body_idx, state::V);
                 break;
             case BlockableState::W:
-                return WIDX(body_idx);
+                return state::index(body_idx, state::W);
                 break;
             case BlockableState::P:
-                return PIDX(body_idx);
+                return state::index(body_idx, state::P);
                 break;
             case BlockableState::Q:
-                return QIDX(body_idx);
+                return state::index(body_idx, state::Q);
                 break;
             case BlockableState::R:
-                return RIDX(body_idx);
+                return state::index(body_idx, state::R);
                 break;
             case BlockableState::PHI:
-                return QIIDX(body_idx);
+                return state::index(body_idx, state::QI);
                 break;
             case BlockableState::THETA:
-                return QJIDX(body_idx);
+                return state::index(body_idx, state::QJ);
                 break;
             case BlockableState::PSI:
-                return QKIDX(body_idx);
+                return state::index(body_idx, state::QK);
                 break;
             default:
                 break;
@@ -468,12 +468,12 @@ BlockedDOF::Vector BlockedDOF::get_delta_F(const StateType& dx_dt_, const Eigen:
     if (pimpl->blocked_dof.empty()) return Vector::Zero();
     BlockedDOF::Vector delta_F;
     BlockedDOF::Vector dx_dt;
-    dx_dt(0) = dx_dt_.at(UIDX(pimpl->body_idx));
-    dx_dt(1) = dx_dt_.at(VIDX(pimpl->body_idx));
-    dx_dt(2) = dx_dt_.at(WIDX(pimpl->body_idx));
-    dx_dt(3) = dx_dt_.at(PIDX(pimpl->body_idx));
-    dx_dt(4) = dx_dt_.at(QIDX(pimpl->body_idx));
-    dx_dt(5) = dx_dt_.at(RIDX(pimpl->body_idx));
+    dx_dt(0) = dx_dt_.at(state::index(pimpl->body_idx, state::U));
+    dx_dt(1) = dx_dt_.at(state::index(pimpl->body_idx, state::V));
+    dx_dt(2) = dx_dt_.at(state::index(pimpl->body_idx, state::W));
+    dx_dt(3) = dx_dt_.at(state::index(pimpl->body_idx, state::P));
+    dx_dt(4) = dx_dt_.at(state::index(pimpl->body_idx, state::Q));
+    dx_dt(5) = dx_dt_.at(state::index(pimpl->body_idx, state::R));
     BlockedDOF::Vector F;
     F(0) = sum_of_other_forces.X();
     F(1) = sum_of_other_forces.Y();
