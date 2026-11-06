@@ -7,7 +7,7 @@
 #include "update_kinematics.hpp"
 #include "Body.hpp"
 #include "BodyBuilder.hpp"
-#include "StateMacros.hpp"
+#include "StateLayout.hpp"
 #include "yaml2eigen.hpp"
 #include "xdyn/external_data_structures/YamlAngle.hpp"
 #include "xdyn/external_data_structures/YamlBody.hpp"

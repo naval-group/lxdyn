@@ -21,7 +21,7 @@
 #include "BlockedDOF.hpp"
 #include "BodyStates.hpp"
 #include "StatesFilter.hpp"
-#include "StateMacros.hpp"
+#include "StateLayout.hpp"
 #include "State.hpp"
 
 #include <ssc/kinematics.hpp>

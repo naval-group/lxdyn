@@ -51,7 +51,7 @@ YamlState XdynForME::handle(const SimServerInputs& request)
     builder.sim.set_bodystates(request.state_history_except_last_point);
     builder.sim.set_command_listener(request.commands);
 
-    StateType dx_dt(13, 0);
+    StateType dx_dt(state::N, 0);
     // Here we use a CoSimulationObserver, but only for the requested extra observations.
     SimulationServerObserver observer(request.requested_output);
     builder.sim.dx_dt(request.state_at_t, dx_dt, t);
