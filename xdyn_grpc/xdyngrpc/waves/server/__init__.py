@@ -372,12 +372,12 @@ class WavesServicer(wave_grpc_pb2_grpc.WavesServicer):
         return response
 
 
-def serve(model: AbstractWaveModel):
+def serve(model: AbstractWaveModel, port: int = 50051):
     """Launch the gRPC server."""
     one_day_in_seconds = 60 * 60 * 24
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     wave_grpc_pb2_grpc.add_WavesServicer_to_server(WavesServicer(model), server)
-    server.add_insecure_port("[::]:50051")
+    server.add_insecure_port(f"[::]:{port}")
     server.start()
     try:
         while True:

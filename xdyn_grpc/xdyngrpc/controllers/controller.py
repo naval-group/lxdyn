@@ -1,6 +1,5 @@
 """Facilitate the creation of a gRPC controllers in Python."""
 import logging
-import time
 from collections.abc import Callable
 from concurrent import futures
 from dataclasses import dataclass
@@ -415,17 +414,19 @@ class ControllerServicer(GrpcControllerServicer):
         return response
 
 
-_ONE_DAY_IN_SECONDS = 60 * 60 * 24
-
-
-def serve(controller):
-    """Launch the gRPC server."""
+def start(controller, port: int = 9002) -> tuple[grpc.Server, int]:
+    """Start the gRPC server and return it with the port it bound, which port 0 picks."""
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     add_ControllerServicer_to_server(ControllerServicer(controller), server)
-    server.add_insecure_port("[::]:9002")
+    bound_port = server.add_insecure_port(f"[::]:{port}")
     server.start()
+    return server, bound_port
+
+
+def serve(controller, port: int = 9002):
+    """Launch the gRPC server and block until interrupted."""
+    server, _ = start(controller, port)
     try:
-        while True:
-            time.sleep(_ONE_DAY_IN_SECONDS)
+        server.wait_for_termination()
     except KeyboardInterrupt:
         server.stop(0)
