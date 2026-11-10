@@ -399,6 +399,8 @@
             pkgs.zstd
             pkgs.hdf5.bin       # h5dump only; pkgs.hdf5 is a C++ library
           ];
+          # mise.toml requires it: every task runs on these tools, never the host's.
+          LXDYN_DEVSHELL = "1";
           # buildInputs, so pkg-config's hook finds it. eigen_5 clears a -Werror=uninitialized.
           buildInputs = [ pkgs.eigen_5 ];
           # Headers only, like Eigen: a path, so none of the package's Python lands in the shell.

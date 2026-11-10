@@ -1,3 +1,7 @@
+# Every task runs on the devShell's pinned tools, never the host's: `nix develop`, or direnv.
+[env]
+LXDYN_DEVSHELL = { required = "enter the lxdyn devShell first: `nix develop`, or `direnv allow` once" }
+
 [tasks.bootstrap]
 description = "First-time setup for a fresh clone: the host tools and a closure"
 run = '''
