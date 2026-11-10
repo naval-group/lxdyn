@@ -1,0 +1,44 @@
+# Footguns, not style. Every finding fails the gate, so a check joins in the commit that fixes its sites.
+Checks:
+  - '-*'
+  - 'bugprone-*'
+  - 'performance-*'
+
+  # Off for good.
+  - '-bugprone-easily-swappable-parameters'  # an API-design opinion, and noisy
+  - '-bugprone-switch-missing-default-case'  # a default: silences -Wswitch on a new enumerator
+  - '-performance-avoid-endl'                # the flush is sometimes wanted, and the cost is noise
+  - '-performance-enum-size'                 # bytes saved per enum, not a defect
+
+  # Off until their sites are fixed, each by the commit that turns it on.
+  - '-bugprone-branch-clone'
+  - '-bugprone-derived-method-shadowing-base-method'
+  - '-bugprone-empty-catch'
+  - '-bugprone-exception-copy-constructor-throws'
+  - '-bugprone-exception-escape'
+  - '-bugprone-float-loop-counter'
+  - '-bugprone-forward-declaration-namespace'
+  - '-bugprone-macro-parentheses'
+  - '-bugprone-narrowing-conversions'
+  - '-bugprone-reserved-identifier'
+  - '-bugprone-signed-char-misuse'
+  - '-bugprone-suspicious-include'
+  - '-bugprone-suspicious-string-compare'
+  - '-bugprone-throwing-static-initialization'
+  - '-bugprone-unchecked-string-to-number-conversion'
+  - '-bugprone-unhandled-self-assignment'
+  - '-bugprone-unused-local-non-trivial-variable'
+  - '-bugprone-unused-raii'
+  - '-performance-faster-string-find'
+  - '-performance-for-range-copy'
+  - '-performance-inefficient-string-concatenation'
+  - '-performance-inefficient-vector-operation'
+  - '-performance-noexcept-move-constructor'
+  - '-performance-noexcept-swap'
+  - '-performance-unnecessary-copy-initialization'
+  - '-performance-unnecessary-value-param'
+
+WarningsAsErrors: '*'
+# Third-party headers arrive through -isystem and stay quiet; these are the rest that are not ours.
+HeaderFilterRegex: '.*'
+ExcludeHeaderFilterRegex: '(/\.zig-cache/|/external/|/ssc/f2c/|/ssc/json/rapidjson/|/xdyn_wrapper_fmi/fmi2/)'

@@ -197,6 +197,19 @@
         '';
       };
 
+      # clang-tidy is the clang zig was built with: one major off, it fails on zig's intrinsic headers.
+      zigClang = pkgs.lib.findFirst (p: (p.pname or "") == "clang") (throw "zig has no clang input") pkgs.zig.buildInputs;
+      clangTools = pkgs."llvmPackages_${pkgs.lib.versions.major zigClang.version}".clang-tools;
+      # Unwrapped: the wrappers put nixpkgs' glibc and libstdc++ headers on CPLUS_INCLUDE_PATH.
+      clangTidy = assert clangTools.version == zigClang.version;
+        pkgs.runCommandLocal "clang-tidy-${clangTools.version}" { } ''
+          mkdir -p $out/bin
+          for tool in clang-tidy clang-apply-replacements clangd; do
+            ln -s ${clangTools}/bin/$tool-unwrapped $out/bin/$tool
+          done
+          ln -s ${clangTools}/bin/run-clang-tidy $out/bin/run-clang-tidy
+        '';
+
       # Selections from one build, so xdyn compiles once for both.
       pickXdyn = { pname, binaries, libraries ? false, description }:
         pkgs.runCommandLocal "${pname}-${version}" {
@@ -330,11 +343,11 @@
       };
 
       # Hermetic unit suites from a cold cache: what CI trusts, too slow for the edit-test loop.
-      mkUnitCheck = { triple, emulators ? [ ], test }:
+      mkUnitCheck = { name ? "xdyn-unit-${triple}", triple, tools ? [ ], test }:
         pkgs.stdenvNoCC.mkDerivation {
-          name = "xdyn-unit-${triple}";
+          inherit name;
           src = xdynSource;
-          nativeBuildInputs = [ pkgs.zig ] ++ emulators;
+          nativeBuildInputs = [ pkgs.zig ] ++ tools;
           dontFixup = true;
           buildPhase = ''
             runHook preBuild
@@ -362,13 +375,24 @@
         # -fqemu/-fwine, or the host's binfmt_misc would run the suite without either.
         unit-aarch64-linux-musl = mkUnitCheck {
           triple = "aarch64-linux-musl";
-          emulators = [ pkgs.qemu ];
+          tools = [ pkgs.qemu ];
           test = "zig build test -Dtarget=aarch64-linux-musl -fqemu ${zigFlags "aarch64-linux-musl"}";
         };
         unit-x86_64-windows-gnu = mkUnitCheck {
           triple = "x86_64-windows-gnu";
-          emulators = [ pkgs.wine64 ];
+          tools = [ pkgs.wine64 ];
           test = "zig build test -Dtarget=x86_64-windows-gnu -fwine ${zigFlags "x86_64-windows-gnu"}";
+        };
+        # The pybind11 wrapper is linted too, so the database needs a Python's headers.
+        tidy = mkUnitCheck {
+          name = "xdyn-tidy";
+          triple = "x86_64-linux-gnu";
+          tools = [ clangTidy ];
+          test = ''
+            zig build tidy ${zigFlags "x86_64-linux-gnu"} \
+              -Dpython=${pkgs.python3.interpreter} -Dpybind11=${pkgs.python3Packages.pybind11}/include
+            sh tools/tidy/run.sh
+          '';
         };
         fmu-x86_64-linux-gnu = xdyn-fmu;
         inherit lxdyn-wheels;
@@ -398,6 +422,7 @@
             pkgs.llvm           # llvm-nm/llvm-strip read every target, unlike binutils
             pkgs.zstd
             pkgs.hdf5.bin       # h5dump only; pkgs.hdf5 is a C++ library
+            clangTidy           # clang-tidy, run-clang-tidy and clangd, at zig's clang version
           ];
           # mise.toml requires it: every task runs on these tools, never the host's.
           LXDYN_DEVSHELL = "1";

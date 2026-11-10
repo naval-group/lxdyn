@@ -59,10 +59,20 @@ description = "gdb a debug-built exe: mise run gdb -- run_all_tests --gtest_filt
 depends = ["zig:debug"]
 run = "sh tools/gdb.sh"
 
+# Runs tidy too, so clangd's compile_commands.json follows every .proto edit and cache clean.
 [tasks."zig:build"]
-description = "Build xdyn and the test runner -> build/<target>/bin"
+description = "Build xdyn and the test runner -> build/<target>/bin, and compile_commands.json"
+depends = ["python:setup"]
 run = """
-zig build --prefix "$(sh tools/build-dir.sh)"
+zig build install tidy --prefix "$(sh tools/build-dir.sh)"
+"""
+
+[tasks.tidy]
+description = "clang-tidy over the first-party C++: mise run tidy -- -fix, or -- -checks=-*,<check>"
+depends = ["python:setup"]
+run = """
+zig build tidy
+sh tools/tidy/run.sh
 """
 
 [tasks."zig:debug"]
