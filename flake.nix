@@ -396,7 +396,7 @@
         };
         fmu-x86_64-linux-gnu = xdyn-fmu;
         inherit lxdyn-wheels;
-        lint = pkgs.runCommandLocal "xdyn-lint" { src = xdynSource; } ''
+        lint = pkgs.runCommandLocal "xdyn-lint" { src = xdynSource; nativeBuildInputs = [ pkgs.zig ]; } ''
           cp -r $src/. . && sh tools/lint.sh && touch $out
         '';
       };

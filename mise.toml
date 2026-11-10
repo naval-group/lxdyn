@@ -323,5 +323,5 @@ description = "Remove build/ — artifacts, venvs, task scratch and generated do
 run = "rm -rf build"
 
 [tasks.lint]
-description = "Check for tabs in source files"
+description = "Check for tabs in the C and C++, and zig fmt the build files"
 run = "sh tools/lint.sh"
