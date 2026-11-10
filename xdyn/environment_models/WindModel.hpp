@@ -18,8 +18,8 @@
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
 class WindModel;
-typedef std::shared_ptr<WindModel> WindModelPtr;
-typedef std::function<boost::optional<WindModelPtr>(const YamlModel&)> WindParser;
+using WindModelPtr = std::shared_ptr<WindModel>;
+using WindParser = std::function<boost::optional<WindModelPtr>(const YamlModel&)>;
 
 class WindModel
 {

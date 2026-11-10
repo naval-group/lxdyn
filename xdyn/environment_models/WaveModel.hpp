@@ -132,6 +132,6 @@ class WaveModel
         FlatDiscreteDirectionalWaveSpectrum flat_spectrum;
 };
 
-typedef std::shared_ptr<WaveModel> WaveModelPtr;
+using WaveModelPtr = std::shared_ptr<WaveModel>;
 
 #endif /* WAVEMODEL_HPP_ */

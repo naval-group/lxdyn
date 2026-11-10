@@ -15,7 +15,7 @@ namespace ssc
     namespace kinematics
     {
         class Transform;
-        typedef Eigen::Matrix<double, 6, 1> Vector6d;
+        using Vector6d = Eigen::Matrix<double, 6, 1>;
         /** \author cec
          *  \date 24 avr. 2014, 12:35:30
          *  \brief Stores a force & a torque, projected in a given reference frame.

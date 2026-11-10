@@ -30,8 +30,8 @@ void DiscreteSystemsTests::SetUp() {}
 
 void DiscreteSystemsTests::TearDown() {}
 
-typedef boost::numeric::odeint::euler<StateType> EulerStepper;
-typedef boost::numeric::odeint::runge_kutta4<StateType> RungeKuttaStepper;
+using EulerStepper = boost::numeric::odeint::euler<StateType>;
+using RungeKuttaStepper = boost::numeric::odeint::runge_kutta4<StateType>;
 
 struct ContinuousSystem : public ssc::solver::ContinuousSystem
 {

@@ -9,7 +9,7 @@ namespace ssc
 {
     namespace kinematics
     {
-        typedef Eigen::Matrix<double,3,Eigen::Dynamic> Matrix3Xd;
+        using Matrix3Xd = Eigen::Matrix<double,3,Eigen::Dynamic>;
 
         class Point;
         class PointMatrix
@@ -33,7 +33,7 @@ namespace ssc
         PointMatrix operator+(const Point& P, const PointMatrix& M);
 
         void swap(PointMatrix& one, PointMatrix& the_other);
-        typedef std::shared_ptr<PointMatrix> PointMatrixPtr;
+        using PointMatrixPtr = std::shared_ptr<PointMatrix>;
     }
 }
 

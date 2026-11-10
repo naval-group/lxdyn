@@ -58,14 +58,14 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 namespace hdb
 {
-    typedef boost::variant<
+    using Ast = boost::variant<
                          hdb::Key<std::string>
                         ,hdb::Key<double>
                         ,hdb::VectorSection
                         ,hdb::MatrixSection
                         ,hdb::ListOfMatrixSections
                         ,hdb::ListOfMatrixSectionsWithId
-                 > Ast;
+                 >;
 }
 
 namespace boost { namespace spirit { namespace traits {
@@ -74,7 +74,7 @@ namespace boost { namespace spirit { namespace traits {
         struct is_container<hdb::AST, void> : mpl::true_ { };
     template<>
         struct container_value<hdb::AST, void> {
-             typedef hdb::Ast type;
+             using type = hdb::Ast;
         };
 
     template <>

@@ -16,8 +16,8 @@
 
 namespace GZ
 {
-    typedef std::function<Resultant(const ::GZ::State&)> FType;
-    typedef std::function<Eigen::Matrix2d(const Eigen::Vector3d&)> KComputer;
+    using FType = std::function<Resultant(const ::GZ::State&)>;
+    using KComputer = std::function<Eigen::Matrix2d(const Eigen::Vector3d&)>;
 
     ::GZ::State newton_raphson(const ::GZ::State& X0, //!< Initial value (in particular, phi=X0(1) is imposed)
                                const FType& f,        //!< Function calculating the sum of forces

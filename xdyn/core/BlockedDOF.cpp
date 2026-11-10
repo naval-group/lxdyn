@@ -20,7 +20,7 @@
 #include <ssc/interpolation.hpp>
 #include <ssc/text_file_reader.hpp>
 
-typedef YamlDOF<std::vector<double> > Table;
+using Table = YamlDOF<std::vector<double> >;
 
 // std::ostream& operator<<(std::ostream& os, const BlockableState& s);
 std::ostream& operator<<(std::ostream& os, const BlockableState& s)
@@ -69,7 +69,7 @@ std::ostream& operator<<(std::ostream& os, const BlockableState& s)
     return os;
 }
 
-typedef std::shared_ptr<ssc::interpolation::Interpolator> Interpolator;
+using Interpolator = std::shared_ptr<ssc::interpolation::Interpolator>;
 
 class Builder
 {

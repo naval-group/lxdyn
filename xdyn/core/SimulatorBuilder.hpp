@@ -33,7 +33,7 @@
 #include <map>
 
 class BodyBuilder;
-typedef std::map<std::string, VectorOfVectorOfPoints> MeshMap;
+using MeshMap = std::map<std::string, VectorOfVectorOfPoints>;
 
 /*  \brief Builds a Sim object which can be used with quicksolve
  *  \details This class is used to configure the Sim object for simulation.

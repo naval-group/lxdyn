@@ -32,6 +32,6 @@ class DirectionalSpreadingBuilder : public DirectionalSpreadingBuilderInterface
         boost::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const;
 };
 
-typedef std::shared_ptr<DirectionalSpreadingBuilderInterface> DirectionalSpreadingBuilderPtr;
+using DirectionalSpreadingBuilderPtr = std::shared_ptr<DirectionalSpreadingBuilderInterface>;
 
 #endif /* DIRECTIONALSPREADINGBUILDER_HPP_ */

@@ -25,7 +25,7 @@ struct Server::Impl
 
 
 
-typedef std::function<void(WSServer* , websocketpp::connection_hdl, message_ptr )> InternalMessageHandler;
+using InternalMessageHandler = std::function<void(WSServer* , websocketpp::connection_hdl, message_ptr )>;
 
 using std::placeholders::_1;
 using std::placeholders::_2;

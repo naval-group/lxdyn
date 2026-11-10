@@ -30,6 +30,6 @@ class Hdf5WaveObserver
         std::shared_ptr<Impl> pimpl;
 };
 
-typedef std::shared_ptr<Hdf5WaveObserver> Hdf5WaveObserverPtr;
+using Hdf5WaveObserverPtr = std::shared_ptr<Hdf5WaveObserver>;
 
 #endif

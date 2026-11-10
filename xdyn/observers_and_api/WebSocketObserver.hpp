@@ -17,7 +17,7 @@ namespace ssc
     }
 }
 
-typedef std::shared_ptr<ssc::websocket::Client> WebSocketPtr;
+using WebSocketPtr = std::shared_ptr<ssc::websocket::Client>;
 
 class WebSocketObserver : public DictObserver
 {

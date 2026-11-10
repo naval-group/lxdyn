@@ -5,8 +5,8 @@
  * \author cec
  */
 
-typedef long int integer;
-typedef double doublereal;
+using integer = long int;
+using doublereal = double;
 
 #if defined(_MSC_VER)
 #define __PRETTY_FUNCTION__ __FUNCSIG__

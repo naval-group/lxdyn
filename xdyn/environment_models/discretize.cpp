@@ -123,7 +123,7 @@ DiscreteDirectionalWaveSpectrum discretize(
     return ret;
 }
 
-typedef std::pair<double,size_t> ValIdx;
+using ValIdx = std::pair<double,size_t>;
 bool comparator ( const ValIdx& l, const ValIdx& r);
 bool comparator ( const ValIdx& l, const ValIdx& r)
    { return l.first > r.first; }

@@ -19,7 +19,7 @@
 
 namespace maneuvering
 {
-    typedef ascii::blank_type SpaceType;
+    using SpaceType = ascii::blank_type;
 
     struct Nil
     {
@@ -27,19 +27,18 @@ namespace maneuvering
 
     struct FunctionCall;
 
-    typedef std::string Identifier;
+    using Identifier = std::string;
 
-    typedef boost::variant<
+    using Atom = boost::variant<
                     Nil
                   , double
                   , Identifier
                   , boost::recursive_wrapper<FunctionCall>
-                >
-            Atom;
+                >;
 
     struct Expr;
 
-    typedef boost::variant<
+    using Base = boost::variant<
                     Nil
                   , boost::recursive_wrapper<Expr>
 #if BOOST_VERSION<=106200
@@ -47,8 +46,7 @@ namespace maneuvering
 #else
                   , Atom
 #endif
-                >
-            Base;
+                >;
 
     struct Factor
     {

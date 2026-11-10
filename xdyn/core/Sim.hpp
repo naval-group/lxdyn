@@ -34,8 +34,8 @@
 #include <ssc/solver/ContinuousSystem.hpp>
 #include <ssc/solver/DiscreteSystem.hpp>
 
-typedef std::map<std::string, std::map< std::string,ssc::kinematics::Vector6d > > OuputtedForces;
-typedef std::vector<std::pair<std::string,std::vector<std::string> > > VectorOfStringModelForEachBody;
+using OuputtedForces = std::map<std::string, std::map< std::string,ssc::kinematics::Vector6d > >;
+using VectorOfStringModelForEachBody = std::vector<std::pair<std::string,std::vector<std::string> > >;
 
 class Observer;
 

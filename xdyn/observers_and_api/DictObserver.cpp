@@ -3,7 +3,7 @@
 #include <iostream>
 #include <utility>
 
-typedef std::pair<std::string,std::string> DictMapKeyVar;
+using DictMapKeyVar = std::pair<std::string,std::string>;
 DictMapKeyVar extractKeyVarFromString(const std::string& s);
 DictMapKeyVar extractKeyVarFromString(const std::string& s)
 {

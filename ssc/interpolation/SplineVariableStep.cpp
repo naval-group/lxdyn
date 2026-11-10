@@ -14,9 +14,9 @@
 
 using namespace ssc::interpolation;
 
-typedef long int integer;
-typedef float real;
-typedef double doublereal;
+using integer = long int;
+using real = float;
+using doublereal = double;
 
 extern "C"
 {

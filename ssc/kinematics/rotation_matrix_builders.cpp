@@ -4,7 +4,7 @@
 
 using namespace ssc::kinematics;
 
-typedef Eigen::Matrix<double, 3, 1> Vector;
+using Vector = Eigen::Matrix<double, 3, 1>;
 
 #define SQUARE(x) (x*x)
 

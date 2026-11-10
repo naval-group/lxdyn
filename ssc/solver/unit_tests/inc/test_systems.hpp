@@ -10,7 +10,7 @@
 
 #include "ssc/solver/ContinuousSystem.hpp"
 
-typedef std::vector<double> StateType;
+using StateType = std::vector<double>;
 
 struct SimpleODE : public ssc::solver::ContinuousSystem
 {

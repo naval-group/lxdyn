@@ -37,9 +37,9 @@ void ODEintTests::TearDown()
 {
 }
 
-typedef boost::numeric::odeint::euler<StateType> EulerStepper;
-typedef boost::numeric::odeint::runge_kutta4<StateType> RK4Stepper;
-typedef boost::numeric::odeint::runge_kutta_cash_karp54<StateType> RKCK;
+using EulerStepper = boost::numeric::odeint::euler<StateType>;
+using RK4Stepper = boost::numeric::odeint::runge_kutta4<StateType>;
+using RKCK = boost::numeric::odeint::runge_kutta_cash_karp54<StateType>;
 
 TEST_F(ODEintTests, linear)
 {

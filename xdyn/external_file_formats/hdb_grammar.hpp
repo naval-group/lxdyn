@@ -15,7 +15,7 @@
 // error: 'hdb::hdb_grammar<>::ast' should be initialized in the member initialization list [-Werror=effc++]
 #pragma GCC diagnostic ignored "-Weffc++"
 
-typedef ascii::blank_type SpaceType;
+using SpaceType = ascii::blank_type;
 
 namespace hdb
 {
@@ -55,7 +55,7 @@ namespace hdb
         qi::rule<Iterator, hdb::Values(), SpaceType>                     values;
     };
 
-    typedef hdb_grammar<std::string::const_iterator> grammar;
+    using grammar = hdb_grammar<std::string::const_iterator>;
 }
 
 #endif /* HDB_GRAMMAR_HPP_ */

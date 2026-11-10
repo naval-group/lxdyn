@@ -26,8 +26,8 @@ namespace ssc
          *  \snippet kinematics/unit_tests/src/rotation_matrix_buildersTest.cpp rotation_matrix_buildersTest expected output
          */
 
-        typedef enum {EXTRINSIC, INTRINSIC} IntrinsicOrExtrinsic;
-        typedef enum {CHANGING_ANGLE_ORDER, CHANGING_AXIS_ORDER} OrderConvention;
+        using IntrinsicOrExtrinsic = enum {EXTRINSIC, INTRINSIC};
+        using OrderConvention = enum {CHANGING_ANGLE_ORDER, CHANGING_AXIS_ORDER};
         template <IntrinsicOrExtrinsic,
                   OrderConvention,
                   int I,

@@ -113,6 +113,6 @@ class Observer
         std::map<std::string, std::function<void()> > initialize;
 };
 
-typedef std::shared_ptr<Observer> ObserverPtr;
+using ObserverPtr = std::shared_ptr<Observer>;
 
 #endif  /* OBSERVER_HPP_ */

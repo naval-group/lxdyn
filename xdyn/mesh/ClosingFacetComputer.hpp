@@ -39,8 +39,8 @@ class ClosingFacetComputer
             std::vector<bool> reversed;
         };
 
-        typedef std::pair<size_t,size_t> Edge;
-        typedef std::vector<Edge> ListOfEdges;
+        using Edge = std::pair<size_t,size_t>;
+        using ListOfEdges = std::vector<Edge>;
         ClosingFacetComputer(const Eigen::Matrix3Xd& mesh, const ListOfEdges& edges, std::vector<size_t> index_of_relevant_edges=std::vector<size_t>());
 
         /**  \brief Takes a list of edges on the surface & groups connected ones together

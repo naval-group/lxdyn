@@ -15,21 +15,21 @@
 
 using namespace ssc::kinematics;
 
-typedef float Weight;
-typedef boost::property<boost::edge_weight_t, Weight> WeightProperty;
-typedef boost::property<boost::vertex_name_t, std::string> NameProperty;
+using Weight = float;
+using WeightProperty = boost::property<boost::edge_weight_t, Weight>;
+using NameProperty = boost::property<boost::vertex_name_t, std::string>;
 
-typedef boost::adjacency_list < boost::listS, boost::vecS, boost::undirectedS,
-NameProperty, WeightProperty > Graph;
+using Graph = boost::adjacency_list < boost::listS, boost::vecS, boost::undirectedS,
+NameProperty, WeightProperty >;
 
-typedef boost::graph_traits < Graph >::vertex_descriptor Vertex;
+using Vertex = boost::graph_traits < Graph >::vertex_descriptor;
 
-typedef boost::property_map < Graph, boost::vertex_index_t >::type IndexMap;
-typedef boost::property_map < Graph, boost::vertex_name_t >::type NameMap;
+using IndexMap = boost::property_map < Graph, boost::vertex_index_t >::type;
+using NameMap = boost::property_map < Graph, boost::vertex_name_t >::type;
 
-typedef boost::iterator_property_map < Vertex*, IndexMap, Vertex, Vertex& > PredecessorMap;
-typedef boost::iterator_property_map < Weight*, IndexMap, Weight, Weight& > DistanceMap;
-typedef std::map<std::string,Vertex>::const_iterator VertexMapIter;
+using PredecessorMap = boost::iterator_property_map < Vertex*, IndexMap, Vertex, Vertex& >;
+using DistanceMap = boost::iterator_property_map < Weight*, IndexMap, Weight, Weight& >;
+using VertexMapIter = std::map<std::string,Vertex>::const_iterator;
 
 class KinematicTree::Impl
 {

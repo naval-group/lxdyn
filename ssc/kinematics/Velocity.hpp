@@ -14,8 +14,8 @@ namespace ssc
 {
     namespace kinematics
     {
-        typedef Point AngularVelocityVector;
-        typedef Point TranslationVelocityVector;
+        using AngularVelocityVector = Point;
+        using TranslationVelocityVector = Point;
 
 
         /** \author cec

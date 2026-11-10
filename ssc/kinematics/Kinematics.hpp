@@ -61,7 +61,7 @@ namespace ssc
                 std::shared_ptr<Impl> pimpl;
         };
 
-        typedef std::shared_ptr<Kinematics> KinematicsPtr;
+        using KinematicsPtr = std::shared_ptr<Kinematics>;
     }
 }
 

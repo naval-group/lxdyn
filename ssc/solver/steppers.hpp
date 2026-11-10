@@ -17,9 +17,9 @@ namespace ssc
 {
     namespace solver
     {
-        typedef ::boost::numeric::odeint::euler<std::vector<double> > EulerStepper;
-        typedef ::boost::numeric::odeint::runge_kutta4<std::vector<double> > RK4Stepper;
-        typedef ::boost::numeric::odeint::runge_kutta_cash_karp54<std::vector<double> > RKCK;
+        using EulerStepper = ::boost::numeric::odeint::euler<std::vector<double> >;
+        using RK4Stepper = ::boost::numeric::odeint::runge_kutta4<std::vector<double> >;
+        using RKCK = ::boost::numeric::odeint::runge_kutta_cash_karp54<std::vector<double> >;
     }
 }
 

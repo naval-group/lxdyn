@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <vector>
 
-typedef std::vector<double> StateType;
+using StateType = std::vector<double>;
 
 namespace state
 {

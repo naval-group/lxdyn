@@ -179,7 +179,7 @@ struct Client::Impl
         return metadata_it->second;
     }
 
-    typedef std::map<int,ConnectionMetadata::ptr> IdToConnexionMap;
+    using IdToConnexionMap = std::map<int,ConnectionMetadata::ptr>;
     client endpoint;
     websocketpp::lib::shared_ptr<websocketpp::lib::thread> websocket_thread;
     IdToConnexionMap id_to_connection;

@@ -13,10 +13,10 @@
 
 namespace hdb
 {
-    typedef std::string        Header;
-    typedef double             Value;
-    typedef std::vector<Value> Values;
-    typedef std::vector<Values> ListOfValues;
+    using Header = std::string;
+    using Value = double;
+    using Values = std::vector<Value>;
+    using ListOfValues = std::vector<Values>;
 
     template <typename T> struct Key
     {

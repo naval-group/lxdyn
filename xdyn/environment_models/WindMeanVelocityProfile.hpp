@@ -16,8 +16,8 @@
 #include "xdyn/environment_models/WindModel.hpp"
 
 class WindMeanVelocityProfile;
-typedef std::shared_ptr<WindMeanVelocityProfile> WindMeanVelocityProfilePtr;
-typedef std::function<boost::optional<WindMeanVelocityProfilePtr>(const YamlModel& yaml)> WindMeanVelocityProfileParser;
+using WindMeanVelocityProfilePtr = std::shared_ptr<WindMeanVelocityProfile>;
+using WindMeanVelocityProfileParser = std::function<boost::optional<WindMeanVelocityProfilePtr>(const YamlModel& yaml)>;
 
 class WindMeanVelocityProfile : public WindModel
 {

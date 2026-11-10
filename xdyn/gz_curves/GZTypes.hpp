@@ -12,7 +12,7 @@
 
 namespace GZ
 {
-    typedef Eigen::Vector3d State;
+    using State = Eigen::Vector3d;
 
     struct Resultant
     {

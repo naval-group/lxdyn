@@ -82,7 +82,7 @@ void write_binary_stl(const VectorOfVectorOfPoints& stl, std::ostream& os)
     const unsigned int nFaces = (unsigned int)stl.size();
     os.write(reinterpret_cast<const char*>(&nFaces), sizeof(nFaces));
 
-    typedef unsigned short uint16;
+    using uint16 = unsigned short;
     const uint16 spacer = 0;
     // Every Face is 50 Bytes: Normal(3*float), Vertices(9*float), 2 Bytes Spacer
     for (size_t i=0; i<nFaces; ++i)
