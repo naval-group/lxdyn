@@ -15,6 +15,7 @@
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 
+#include <memory>
 #include <ssc/solver/steppers.hpp>
 #include <ssc/websocket.hpp>
 
@@ -57,7 +58,7 @@ TEST_F(ObserverTests, can_observe_using_a_websocket)
 {
 //! [ObserverTests example]
     ListOfStringMessages handler;
-    std::shared_ptr<ssc::websocket::Server> w(new ssc::websocket::Server(handler, WEBSOCKET_PORT));
+    std::shared_ptr<ssc::websocket::Server> w = std::make_shared<ssc::websocket::Server>(handler, WEBSOCKET_PORT);
     {
         const auto yaml = test_data::oscillating_cube_example();
         const auto mesh = test_data::cube();

@@ -14,6 +14,7 @@
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #define _USE_MATH_DEFINE
 #include <cmath>
+#include <memory>
 #define PI M_PI
 #define EPS (1E-10)
 
@@ -120,7 +121,7 @@ TEST_F(BodyTest, can_get_transform_from_NED_to_body_from_states)
 
 TEST_F(BodyTest, can_update_Kinematics_object_from_states)
 {
-    ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics());
+    ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     const StateType x = {1,2,3,4,5,6,7,8,9,10,11,12,13,1,2,3,4,5,6,7,8,9,3,5,7,13};
     BodyPtr b(body);
     b->update_kinematics(x, k);
@@ -147,7 +148,7 @@ TEST_F(BodyTest, can_update_Kinematics_object_from_states)
 
 TEST_F(BodyTest, can_compute_transform_from_ned_to_local_ned)
 {
-    ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics());
+    ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     const StateType x = {1,2,3,4,5,6,7,8,9,10,11,12,13,1,2,3,4,5,6,7,8,9,3,5,7,13};
     BodyPtr b(body);
     b->update_kinematics(x, k);

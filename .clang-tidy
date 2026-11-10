@@ -3,6 +3,7 @@ Checks:
   - '-*'
   - 'bugprone-*'
   - 'performance-*'
+  - 'modernize-make-shared'
   - 'modernize-use-nullptr'
   - 'modernize-use-using'
 

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <memory>
 #include <thread>
 // For handling Ctrl+C
 #include <unistd.h>
@@ -51,7 +52,7 @@ class JSONWebSocketServer
         void start(const std::string& address, const short unsigned int port, const bool debug)
         {
             std::cout << "Starting websocket server on " << address << ":" << port << " (press Ctrl+C to terminate)" << std::endl;
-            std::shared_ptr<ssc::websocket::Server> w(new ssc::websocket::Server(handler, port, debug));
+            std::shared_ptr<ssc::websocket::Server> w = std::make_shared<ssc::websocket::Server>(handler, port, debug);
             signal(SIGINT, stop_simulation);
             while(!stop)
             {

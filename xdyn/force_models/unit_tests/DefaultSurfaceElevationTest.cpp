@@ -7,6 +7,7 @@
 
 #include "DefaultSurfaceElevationTest.hpp"
 #include "xdyn/core/DefaultSurfaceElevation.hpp"
+#include <memory>
 #include <ssc/kinematics.hpp>
 
 DefaultSurfaceElevationTest::DefaultSurfaceElevationTest() : a(ssc::random_data_generator::DataGenerator(5466123))
@@ -28,7 +29,7 @@ void DefaultSurfaceElevationTest::TearDown()
 TEST_F(DefaultSurfaceElevationTest, example)
 {
 //! [DefaultWaveModelTest example]
-    std::shared_ptr<ssc::kinematics::Kinematics> k(new ssc::kinematics::Kinematics());
+    std::shared_ptr<ssc::kinematics::Kinematics> k = std::make_shared<ssc::kinematics::Kinematics>();
     const ssc::kinematics::Point P("NED", 0, 0, -20);
     ssc::kinematics::PointMatrixPtr mesh(new ssc::kinematics::PointMatrix(P.v,"NED"));
     DefaultSurfaceElevation w(10, mesh);
@@ -41,7 +42,7 @@ TEST_F(DefaultSurfaceElevationTest, example)
 
 TEST_F(DefaultSurfaceElevationTest, more_interesting_example)
 {
-    std::shared_ptr<ssc::kinematics::Kinematics> k(new ssc::kinematics::Kinematics());
+    std::shared_ptr<ssc::kinematics::Kinematics> k = std::make_shared<ssc::kinematics::Kinematics>();
     const ssc::kinematics::Point P("NED", 7, -100, 1795);
     ssc::kinematics::PointMatrixPtr mesh(new ssc::kinematics::PointMatrix(P.v,"NED"));
     DefaultSurfaceElevation w(7, mesh);
@@ -54,7 +55,7 @@ TEST_F(DefaultSurfaceElevationTest, more_interesting_example)
 
 TEST_F(DefaultSurfaceElevationTest, more_interesting_example_with_rotation_180p_around_Y)
 {
-    std::shared_ptr<ssc::kinematics::Kinematics> k(new ssc::kinematics::Kinematics());
+    std::shared_ptr<ssc::kinematics::Kinematics> k = std::make_shared<ssc::kinematics::Kinematics>();
     const ssc::kinematics::Point P("body", 0, 0, 1);
     const ssc::kinematics::Point Q("NED", 7, -100, 1795);
     ssc::kinematics::PointMatrixPtr mesh(new ssc::kinematics::PointMatrix(Q.v,"NED"));
@@ -77,7 +78,7 @@ TEST_F(DefaultSurfaceElevationTest, more_interesting_example_with_rotation_180p_
 
 TEST_F(DefaultSurfaceElevationTest, more_interesting_example_with_rotation_with_rotation_090p_around_Y)
 {
-    std::shared_ptr<ssc::kinematics::Kinematics> k(new ssc::kinematics::Kinematics());
+    std::shared_ptr<ssc::kinematics::Kinematics> k = std::make_shared<ssc::kinematics::Kinematics>();
     const ssc::kinematics::Point Q("NED", 7, -100, 1795);
     ssc::kinematics::PointMatrixPtr mesh(new ssc::kinematics::PointMatrix(Q.v,"NED"));
     DefaultSurfaceElevation w(7, mesh);
@@ -99,7 +100,7 @@ TEST_F(DefaultSurfaceElevationTest, more_interesting_example_with_rotation_with_
 
 TEST_F(DefaultSurfaceElevationTest, more_interesting_example_with_rotation)
 {
-    std::shared_ptr<ssc::kinematics::Kinematics> k(new ssc::kinematics::Kinematics());
+    std::shared_ptr<ssc::kinematics::Kinematics> k = std::make_shared<ssc::kinematics::Kinematics>();
     const ssc::kinematics::Point Q("NED", 7, -100, 1795);
     ssc::kinematics::PointMatrixPtr mesh(new ssc::kinematics::PointMatrix(Q.v,"NED"));
     DefaultSurfaceElevation w(7, mesh);
@@ -139,12 +140,12 @@ TEST_F(DefaultSurfaceElevationTest, can_compute_relative_wave_height_for_PointMa
     M.m(1,4) = -81;
     M.m(2,4) = -91;
 
-    std::shared_ptr<ssc::kinematics::Kinematics> k(new ssc::kinematics::Kinematics());
+    std::shared_ptr<ssc::kinematics::Kinematics> k = std::make_shared<ssc::kinematics::Kinematics>();
     std::shared_ptr<ssc::kinematics::PointMatrix> mesh;
     DefaultSurfaceElevation w(888, mesh);
     const ssc::kinematics::Transform T(ssc::kinematics::Point("NED", 1, 20, 300), "body");
     k->add(T);
-    ssc::kinematics::PointMatrixPtr Mptr(new ssc::kinematics::PointMatrix(M));
+    ssc::kinematics::PointMatrixPtr Mptr = std::make_shared<ssc::kinematics::PointMatrix>(M);
     w.update_surface_elevation(Mptr, k, a.random<double>());
     const std::vector<double> delta = w.get_relative_wave_height();
     //! [DefaultWaveModelTest example]

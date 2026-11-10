@@ -12,6 +12,7 @@
 
 #include <boost/math/tools/roots.hpp>
 
+#include <memory>
 #include <ssc/interpolation.hpp>
 #include <ssc/integrate.hpp>
 using InterpolatorPtr = std::shared_ptr<ssc::interpolation::Interpolator>;
@@ -31,7 +32,7 @@ std::function<double(double)> RadiationDampingBuilder::build_interpolator(const 
 {
     InterpolatorPtr i;
     const bool allow_queries_outside_bounds = true;
-    i.reset(new ssc::interpolation::SplineVariableStep(x, y, allow_queries_outside_bounds));
+    i = std::make_shared<ssc::interpolation::SplineVariableStep>(x, y, allow_queries_outside_bounds);
     std::function<double(double)> ret = [i](const double x){return i->f(x);};
     return ret;
 }

@@ -6,6 +6,8 @@
  */
 
 #include "SurfaceElevationBuilder.hpp"
+
+#include <memory>
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 
 SurfaceElevationBuilderInterface::~SurfaceElevationBuilderInterface()
@@ -36,7 +38,7 @@ ssc::kinematics::PointMatrixPtr SurfaceElevationBuilderInterface::make_wave_mesh
     const double dy = dxdy.second;
     const size_t nx = (dx==0 and output.nx) ? 1 : output.nx;
     const size_t ny = (dy==0 and output.ny) ? 1 : output.ny;
-    PointMatrixPtr M = PointMatrixPtr(new PointMatrix(output.frame_of_reference, nx*ny));
+    PointMatrixPtr M = std::make_shared<PointMatrix>(output.frame_of_reference, nx*ny);
     int k = 0;
     for (size_t j = 0 ; j < ny ; ++j)
     {

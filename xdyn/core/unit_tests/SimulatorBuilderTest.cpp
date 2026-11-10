@@ -18,6 +18,7 @@
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include <memory>
 #include <ssc/kinematics.hpp>
 #include <cmath>
 
@@ -89,7 +90,7 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_body_to_mesh_transform)
     builder.can_parse<DefaultWindModel>();
     const auto bodies = get_body_vector(a.random<std::string>());
 
-    ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics());
+    ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     builder.add_initial_transforms(bodies,k);
     ASSERT_TRUE(k.get() != nullptr);
     for (auto that_body = bodies.begin() ; that_body != bodies.end() ; ++that_body)
@@ -103,7 +104,7 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_ned_to_body_transform)
     builder.can_parse<DefaultSurfaceElevation>();
     builder.can_parse<DefaultWindModel>();
     const auto bodies = get_body_vector(a.random<std::string>());
-    ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics());
+    ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     builder.add_initial_transforms(bodies,k);
     ASSERT_TRUE(k.get() != nullptr);
     for (auto that_body = bodies.begin() ; that_body != bodies.end() ; ++that_body)

@@ -17,6 +17,7 @@ using ::testing::ElementsAreArray;
 
 #define _USE_MATH_DEFINE
 #include <cmath>
+#include <memory>
 #define PI M_PI
 
 #define DEG2RAD (atan(1)/45.)
@@ -70,7 +71,7 @@ TEST_F(KtKqForceModelTest, force)
     EnvironmentAndFrames env;
     env.rho = 1024;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     // Create body
@@ -105,7 +106,7 @@ TEST_F(KtKqForceModelTest, clarify_exception_message_for_Kt_Kq_interpolation_err
     EnvironmentAndFrames env;
     env.rho = 1024;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     // Create body

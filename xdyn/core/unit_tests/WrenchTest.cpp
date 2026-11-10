@@ -5,6 +5,7 @@
 #include "xdyn/external_data_structures/YamlPosition.hpp"
 #include "xdyn/external_data_structures/YamlRotation.hpp"
 #include <cmath>
+#include <memory>
 
 WrenchTest::WrenchTest(): a(ssc::random_data_generator::DataGenerator(267953))
 {
@@ -56,7 +57,7 @@ TEST_F(WrenchTest, can_change_frame)
     R_force = force.dot(Rz).dot(Ry).dot(Rx)
     R_torque = torque.dot(Rz).dot(Ry).dot(Rx)
     */
-    const ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics);
+    const ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     const YamlAngle angles(12 * M_PI / 180, 47 * M_PI / 180, 31 * M_PI / 180);
     const YamlPosition position(YamlCoordinates(a.random<double>(), a.random<double>(), a.random<double>()), angles, "frame2");
     YamlRotation rotation_convention("angle", { "z", "y'", "x''" });
@@ -94,7 +95,7 @@ TEST_F(WrenchTest, can_change_point_in_same_frame)
 
     torque_B =  torque + np.cross(A - B, force)
      */
-    const ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics);
+    const ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     const ssc::kinematics::Point A("frame1", 1, 2, 3);
     const ssc::kinematics::Point B("frame1", 6, 5, 4);
     Eigen::Vector3d force;
@@ -114,7 +115,7 @@ TEST_F(WrenchTest, can_change_point_in_same_frame)
 
 TEST_F(WrenchTest, can_change_point_in_different_frame)
 {
-    const ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics);
+    const ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     const YamlPosition position(YamlCoordinates(a.random<double>(),a.random<double>(),a.random<double>()),
                                 YamlAngle(a.random<double>(), a.random<double>(), a.random<double>()),
                                 "frame1");
@@ -178,7 +179,7 @@ TEST_F(WrenchTest, addition_operator_throws_if_different_point_or_frame)
 
 TEST_F(WrenchTest, can_add_wrenches_in_different_frames_and_point_using_method_add_instead_of_plus_operator)
 {
-    const ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics);
+    const ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     const YamlPosition position(YamlCoordinates(10,0,0), YamlAngle(0, 0, 90*M_PI/180), "frame1");
     YamlRotation rotation_convention("angle", { "z", "y'", "x''" });
     auto T_from_1_to_2 = make_transform(position, "frame2", rotation_convention);

@@ -12,16 +12,17 @@
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 
+#include <memory>
 #include <ssc/text_file_reader.hpp>
 
 SimulatorBuilder::SimulatorBuilder(const YamlSimulatorInput& input_, const double t0_, const ssc::data_source::DataSource& command_listener_) :
         input(input_),
-        builder(std::shared_ptr<BodyBuilder>(new BodyBuilder(input.rotations))),
+        builder(std::make_shared<BodyBuilder>(input.rotations)),
         force_parsers(),
         surface_elevation_parsers(),
-        wave_parsers(std::shared_ptr<std::vector<WaveModelBuilderPtr> >(new std::vector<WaveModelBuilderPtr>())),
-        directional_spreading_parsers(std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >(new std::vector<DirectionalSpreadingBuilderPtr>())),
-        spectrum_parsers(std::shared_ptr<std::vector<SpectrumBuilderPtr> >(new std::vector<SpectrumBuilderPtr>())),
+        wave_parsers(std::make_shared<std::vector<WaveModelBuilderPtr> >()),
+        directional_spreading_parsers(std::make_shared<std::vector<DirectionalSpreadingBuilderPtr> >()),
+        spectrum_parsers(std::make_shared<std::vector<SpectrumBuilderPtr> >()),
         wind_model_parsers(),
         UWCurrent_model_parsers(),
         command_listener(command_listener_),
@@ -67,7 +68,7 @@ EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
     if(input.environmental_constants.rho_air) env.set_rho_air(input.environmental_constants.rho_air.get());
     env.nu = input.environmental_constants.nu;
     env.rot = input.rotations;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
 
     if (surface_elevation_parsers.empty())
     {

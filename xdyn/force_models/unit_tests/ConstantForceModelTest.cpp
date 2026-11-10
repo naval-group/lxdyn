@@ -12,6 +12,7 @@
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include <memory>
 #include <ssc/kinematics.hpp>
 #include <ssc/data_source.hpp>
 
@@ -145,7 +146,7 @@ EnvironmentAndFrames ConstantForceModelTest::get_env() const
     env.rot.convention = {"z", "y'", "x''"};
     env.rot.order_by = "angle";
     env.rho = 1024;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     return env;
 }
