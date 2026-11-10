@@ -4,6 +4,7 @@ Checks:
   - 'bugprone-*'
   - 'performance-*'
   - 'modernize-make-shared'
+  - 'modernize-make-unique'
   - 'modernize-use-nullptr'
   - 'modernize-use-using'
 

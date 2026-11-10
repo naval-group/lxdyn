@@ -24,6 +24,7 @@
 #include "xdyn/environment_models/WindMeanVelocityProfile.hpp"
 #include "xdyn/external_data_structures/YamlModel.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
+#include <memory>
 #include <vector>
 
 namespace py = pybind11;
@@ -291,7 +292,7 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             YamlStretching ys;
             ys.delta = delta;
             ys.h = h;
-            return std::unique_ptr<Stretching>(new Stretching(ys));
+            return std::make_unique<Stretching>(ys);
             }),
             py::arg("delta") = 0.0,
             py::arg("h") = 0.0

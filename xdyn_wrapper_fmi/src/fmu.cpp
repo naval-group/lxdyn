@@ -124,7 +124,7 @@ extern "C"
                                   const fmi2CallbackFunctions* functions, fmi2Boolean,
                                   fmi2Boolean loggingOn)
     {
-        std::unique_ptr<Instance> i(new Instance);
+        std::unique_ptr<Instance> i = std::make_unique<Instance>();
         i->name = instanceName ? instanceName : "xdyn";
         if (functions)
             i->callbacks = *functions;
