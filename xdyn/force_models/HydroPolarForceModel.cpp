@@ -3,6 +3,7 @@
 #include "xdyn/yaml_parser/yaml_compat.h"
 #include <iostream>
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
+#include <memory>
 #include <ssc/kinematics.hpp>
 #include <algorithm>
 #include <cmath>
@@ -76,15 +77,15 @@ HydroPolarForceModel::HydroPolarForceModel(const Input& input, const std::string
         std::cerr << "WARNING: In hydrodynamic polar force model '" << name << "', you provided a minimum angle of attack lower than -180deg. All values under -180deg will be ignored." << std::endl;
         symmetry = false;
     }
-    Cl.reset(new ssc::interpolation::SplineVariableStep(input.angle_of_attack, input.lift_coefficient));
-    Cd.reset(new ssc::interpolation::SplineVariableStep(input.angle_of_attack, input.drag_coefficient));
+    Cl = std::make_unique<ssc::interpolation::SplineVariableStep>(input.angle_of_attack, input.lift_coefficient);
+    Cd = std::make_unique<ssc::interpolation::SplineVariableStep>(input.angle_of_attack, input.drag_coefficient);
     if (input.moment_coefficient.is_initialized())
     {
         if (input.moment_coefficient.get().size()!=input.angle_of_attack.size())
         {
             THROW(__PRETTY_FUNCTION__, InvalidInputException, "Angle of attack and moment coefficient must have the same size.")
         }
-        Cm.reset(new ssc::interpolation::SplineVariableStep(input.angle_of_attack, input.moment_coefficient.get()));
+        Cm = std::make_unique<ssc::interpolation::SplineVariableStep>(input.angle_of_attack, input.moment_coefficient.get());
     }
     if (use_waves_velocity && env.w.use_count()==0)
     {

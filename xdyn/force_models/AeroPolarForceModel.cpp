@@ -1,6 +1,7 @@
 #include "AeroPolarForceModel.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
+#include <memory>
 #include <ssc/kinematics.hpp>
 #include "xdyn/yaml_parser/yaml_compat.h"
 #include <iostream>
@@ -60,8 +61,8 @@ AeroPolarForceModel::AeroPolarForceModel(const Input input, const std::string bo
         std::cerr << "WARNING: In an aerodynamic polar force model '" << name << "', you provided a maximum apparent wind higher than 360deg. All values over 360deg will be ignored." << std::endl;
         symmetry = false;
     }
-    Cl.reset(new ssc::interpolation::SplineVariableStep(input.apparent_wind_angle, input.lift_coefficient));
-    Cd.reset(new ssc::interpolation::SplineVariableStep(input.apparent_wind_angle, input.drag_coefficient));
+    Cl = std::make_unique<ssc::interpolation::SplineVariableStep>(input.apparent_wind_angle, input.lift_coefficient);
+    Cd = std::make_unique<ssc::interpolation::SplineVariableStep>(input.apparent_wind_angle, input.drag_coefficient);
 }
 
 AeroPolarForceModel::Input AeroPolarForceModel::parse(const std::string& yaml)
