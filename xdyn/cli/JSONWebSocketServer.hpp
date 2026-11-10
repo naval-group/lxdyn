@@ -30,7 +30,7 @@ static volatile sig_atomic_t stop;
 std::string current_date_time();
 std::string current_date_time()
 {
-    time_t     now = time(0);
+    time_t     now = time(nullptr);
     struct tm  tstruct;
     char       buf[80];
     tstruct = *localtime(&now);

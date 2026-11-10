@@ -76,13 +76,13 @@ VectorOfVectorOfPoints read_ascii_stl(
     VectorOfVectorOfPoints result;
     //Start by storing the current locale. This is retrieved by passing NULL to
     // setlocale
-    std::string locale = setlocale(LC_ALL, NULL);
+    std::string locale = setlocale(LC_ALL, nullptr);
     setlocale(LC_ALL, "C");
     double r1 = 0.0, r2 = 0.0, r3 = 0.0, r4 = 0.0;
     bool endReached = false;
     char token[LINE_MAX_LENGTH];
     int  width = 0;
-    char *next = NULL;
+    char *next = nullptr;
     char input[LINE_MAX_LENGTH];
     state.get_line(input);
     Eigen::Vector3d normal;

@@ -40,7 +40,7 @@ struct HasParse
     typedef char no [2];
     template<typename U> static yes &check(decltype(&U::parse));
     template<typename U> static no &check(...);
-    static const bool value = sizeof(check<T>(0)) == sizeof(yes);
+    static const bool value = sizeof(check<T>(nullptr)) == sizeof(yes);
 };
 
 
