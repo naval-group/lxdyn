@@ -36,6 +36,7 @@
 #include "ssc/data_source/DataSource.hpp"
 #include "ssc/kinematics/Point.hpp"
 #include "ssc/kinematics/Wrench.hpp"
+#include <memory>
 #include <string>
 #include <memory>
 
@@ -739,7 +740,7 @@ void py_add_module_xdyn_force(py::module& m0)
                 const std::vector<double>& Br,
                 const bool only_diagonal_terms)
             {
-                a.parser.reset(new HDBParserForTests(omega, Ma, Br, only_diagonal_terms));
+                a.parser = std::make_shared<HDBParserForTests>(omega, Ma, Br, only_diagonal_terms);
             },
             py::arg("omega"),
             py::arg("Ma"),

@@ -19,6 +19,7 @@
 #include "xdyn/test_data_generator/precal_test_data.hpp"
 
 #include <fstream>
+#include <memory>
 
 #define BODY_NAME "TestShip"
 
@@ -91,7 +92,7 @@ EnvironmentAndFrames DiffractionForceModelTest::get_waves_env(const double perio
     env.g = 9.81;
     env.rho = 1000;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY_NAME));
     env.w = SurfaceElevationPtr(new SurfaceElevationFromWaves(get_wave_model(period, direction, amplitude)));
     return env;

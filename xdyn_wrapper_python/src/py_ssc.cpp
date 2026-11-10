@@ -28,6 +28,7 @@
 #include "ssc/solver/ContinuousSystem.hpp"
 #include "ssc/solver/Scheduler.hpp"
 #include "ssc/solver/steppers.hpp"
+#include <memory>
 #include <sstream>
 
 namespace py = pybind11;
@@ -232,7 +233,7 @@ void py_add_module_ssc_kinematics(py::module& m_ssc)
 
     py::class_<ssc::kinematics::PointMatrixPtr>(m_ssc_kinematics, "PointMatrixPtr")
         .def(py::init([]() {
-            return ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix());
+            return std::make_shared<ssc::kinematics::PointMatrix>();
             })
         )
         ;

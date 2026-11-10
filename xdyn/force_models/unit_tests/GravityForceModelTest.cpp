@@ -9,6 +9,7 @@
 #include "GravityForceModel.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
+#include <memory>
 #include <ssc/kinematics.hpp>
 
 #define BODY "body 1"
@@ -38,7 +39,7 @@ TEST_F(GravityForceModelTest, example)
 //! [GravityForceModelTest example]
     EnvironmentAndFrames env;
     env.g = 9.81;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     GravityForceModel F(BODY, env);
     ASSERT_EQ("gravity", F.model_name());
@@ -92,7 +93,7 @@ TEST_F(GravityForceModelTest, example_with_an_orientation)
            -sinTheta,       sinPhi*cosTheta,                      cosPhi*cosTheta;
     EnvironmentAndFrames env;
     env.g = 9.81;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(Transform(rot, "NED", BODY));
     GravityForceModel F(BODY, env);
     BodyStates states = get_body(BODY)->get_states();
@@ -124,7 +125,7 @@ TEST_F(GravityForceModelTest, potential_energy)
            -sinTheta,       sinPhi*cosTheta,                      cosPhi*cosTheta;
     EnvironmentAndFrames env;
     env.g = 9.81;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     GravityForceModel F(BODY, env);
     BodyStates states = get_body(BODY)->get_states();

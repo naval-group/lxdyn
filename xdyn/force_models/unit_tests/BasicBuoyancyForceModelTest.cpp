@@ -7,6 +7,7 @@
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
+#include <memory>
 #include <ssc/kinematics.hpp>
 #include <cmath>
 
@@ -34,7 +35,7 @@ TEST_F(BasicBuoyancyForceModelTest, example)
     EnvironmentAndFrames env;
     env.g = 9.81;
     env.rho = 1000;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     const auto input = BasicBuoyancyForceModel::parse(test_data::basic_buoyancy_force());
     BasicBuoyancyForceModel F(input, BODY, env);
@@ -70,7 +71,7 @@ TEST_F(BasicBuoyancyForceModelTest, example_with_an_orientation)
     EnvironmentAndFrames env;
     env.g = 9.81;
     env.rho = 1000;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(Transform(rot, "NED", BODY));
     const auto input = BasicBuoyancyForceModel::parse(test_data::basic_buoyancy_force());
     BasicBuoyancyForceModel F(input, BODY, env);
@@ -92,7 +93,7 @@ TEST_F(BasicBuoyancyForceModelTest, potential_energy)
     EnvironmentAndFrames env;
     env.g = 9.81;
     env.rho = 1000;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     const auto input = BasicBuoyancyForceModel::parse(test_data::basic_buoyancy_force());
     BasicBuoyancyForceModel F(input, BODY, env);

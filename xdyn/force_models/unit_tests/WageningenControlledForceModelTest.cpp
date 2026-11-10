@@ -16,6 +16,7 @@
 
 #define _USE_MATH_DEFINE
 #include <cmath>
+#include <memory>
 #define PI M_PI
 
 #define DEG2RAD (PI/180.)
@@ -28,7 +29,7 @@ EnvironmentAndFrames get_env()
     EnvironmentAndFrames env;
     env.rho = 1024;
     env.rot = YamlRotation("angle", {"z","y'","x''"});
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     return env;

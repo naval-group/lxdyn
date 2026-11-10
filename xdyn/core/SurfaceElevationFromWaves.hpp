@@ -12,6 +12,7 @@
 #include "xdyn/core/Observer.hpp"
 #include "xdyn/environment_models/WaveModel.hpp"
 
+#include <memory>
 #include <ssc/kinematics.hpp>
 
 /** \brief Multiple (directional spreading+spectrum) pairs
@@ -29,11 +30,11 @@ class SurfaceElevationFromWaves: public SurfaceElevationInterface
         SurfaceElevationFromWaves(
             const std::vector<WaveModelPtr>& models,
             const std::pair<std::size_t,std::size_t> output_mesh_size = std::make_pair((std::size_t)0,(std::size_t)0),
-            const ssc::kinematics::PointMatrixPtr& output_mesh = ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix("NED", 0)));
+            const ssc::kinematics::PointMatrixPtr& output_mesh = std::make_shared<ssc::kinematics::PointMatrix>("NED", 0));
         SurfaceElevationFromWaves(
             const WaveModelPtr& model,
             const std::pair<std::size_t,std::size_t> output_mesh_size = std::make_pair((std::size_t)0,(std::size_t)0),
-            const ssc::kinematics::PointMatrixPtr& output_mesh = ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix("NED", 0)));
+            const ssc::kinematics::PointMatrixPtr& output_mesh = std::make_shared<ssc::kinematics::PointMatrix>("NED", 0));
 
         std::vector<WaveModelPtr> get_models() const {return directional_spectra;}
 

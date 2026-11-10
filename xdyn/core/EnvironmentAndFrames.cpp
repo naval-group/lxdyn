@@ -10,12 +10,13 @@
 #include "Observer.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
+#include <memory>
 #include <ssc/kinematics.hpp>
 using namespace ssc::kinematics;
 
 EnvironmentAndFrames::EnvironmentAndFrames() : w(),
                                                wind(),
-                                               k(KinematicsPtr(new Kinematics())),
+                                               k(std::make_shared<Kinematics>()),
                                                rho(0),
                                                nu(0),
                                                g(0),

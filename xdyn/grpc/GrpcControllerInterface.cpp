@@ -4,6 +4,7 @@
 #include <grpcpp/grpcpp.h>
 #include "controller.pb.h"
 #include "controller.grpc.pb.h"
+#include <memory>
 #include <ssc/kinematics.hpp>
 #include "grpc_error_outputter.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
@@ -224,7 +225,7 @@ std::vector<std::string> GrpcControllerInterface::get_command_names() const
 
 std::shared_ptr<GrpcControllerInterface> GrpcControllerInterface::build(const GrpcControllerInterface::Input& input, const double t0)
 {
-    std::shared_ptr<GrpcControllerInterface::Impl> pimpl(new GrpcControllerInterface::Impl(input));
+    std::shared_ptr<GrpcControllerInterface::Impl> pimpl = std::make_shared<GrpcControllerInterface::Impl>(input);
     const GrpcSetParametersResponse res = pimpl->set_parameters(t0);
     switch(res.angle_representation)
     {

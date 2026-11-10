@@ -1,4 +1,6 @@
 #include "py_xdyn_core.hpp"
+
+#include <memory>
 #include "py_pybind_additions.hpp"
 #include "xdyn/core/BlockedDOF.hpp"
 #include "xdyn/core/Body.hpp"
@@ -247,7 +249,7 @@ void py_add_module_xdyn_core(py::module& m0)
         .def("get_rho_air", &EnvironmentAndFrames::get_rho_air)
         .def("set_wind_model",
             [](EnvironmentAndFrames &a, const UniformWindVelocityProfile::Input& wind_data) {
-                a.wind.reset(new UniformWindVelocityProfile(wind_data));
+                a.wind = std::make_shared<UniformWindVelocityProfile>(wind_data);
             },
             py::arg("wind_data"),
             "Set wind model from a uniform wind velocity profile"
@@ -257,7 +259,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 a.w = SurfaceElevationPtr(new DefaultSurfaceElevation(wave_height, mesh));
             },
             py::arg("wave_height") = 0.0,
-            py::arg("mesh") = ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix("NED", 0))
+            py::arg("mesh") = std::make_shared<ssc::kinematics::PointMatrix>("NED", 0)
         )
         .def("set_w_from_discrete_directional_wave_spectrum",
             [](EnvironmentAndFrames &a, const DiscreteDirectionalWaveSpectrum& dsp, const int random_number_generator_seed) {
@@ -801,7 +803,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 >(),
                 py::arg("models"),
                 py::arg("output_mesh_size") = std::make_pair((std::size_t)0,(std::size_t)0),
-                py::arg("output_mesh") = ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix("NED", 0)))
+                py::arg("output_mesh") = std::make_shared<ssc::kinematics::PointMatrix>("NED", 0))
         .def(py::init<
                 const WaveModelPtr& /*model*/,
                 const std::pair<std::size_t,std::size_t> /*output_mesh_size*/,
@@ -809,7 +811,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 >(),
                 py::arg("model"),
                 py::arg("output_mesh_size") = std::make_pair((std::size_t)0,(std::size_t)0),
-                py::arg("output_mesh") = ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix("NED", 0)))
+                py::arg("output_mesh") = std::make_shared<ssc::kinematics::PointMatrix>("NED", 0))
         .def("get_models", &SurfaceElevationFromWaves::get_models)
         ;
 

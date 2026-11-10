@@ -17,6 +17,7 @@
 #include "xdyn/hdb_interpolators/PrecalParser.hpp"
 #include "xdyn/mesh/MeshBuilder.hpp"
 
+#include <memory>
 #include <ssc/kinematics.hpp>
 #include <Eigen/Dense>
 
@@ -55,7 +56,7 @@ void BodyBuilder::change_mesh_ref_frame(BodyStates& states, const VectorOfVector
 {
     const ssc::kinematics::Point translation(states.name, states.x_relative_to_mesh, states.y_relative_to_mesh, states.z_relative_to_mesh);
     const ssc::kinematics::Transform transform(translation, states.mesh_to_body, "mesh("+states.name+")");
-    states.mesh = MeshPtr(new Mesh(MeshBuilder(mesh).build()));
+    states.mesh = std::make_shared<Mesh>(MeshBuilder(mesh).build());
     const auto T = transform.inverse();
     states.mesh->nodes = (T*ssc::kinematics::PointMatrix(states.mesh->nodes, "mesh("+states.name+")")).m;
     states.mesh->all_nodes = (T*ssc::kinematics::PointMatrix(states.mesh->all_nodes, "mesh("+states.name+")")).m;
@@ -64,7 +65,7 @@ void BodyBuilder::change_mesh_ref_frame(BodyStates& states, const VectorOfVector
         states.mesh->facets[i].centre_of_gravity = T*states.mesh->facets[i].centre_of_gravity;
         states.mesh->facets[i].unit_normal = T.get_rot()*states.mesh->facets[i].unit_normal;
     }
-    states.M = ssc::kinematics::PointMatrixPtr(new ssc::kinematics::PointMatrix(states.mesh->nodes, states.name));
+    states.M = std::make_shared<ssc::kinematics::PointMatrix>(states.mesh->nodes, states.name);
 }
 
 BodyPtr BodyBuilder::build(const YamlBody& input, const VectorOfVectorOfPoints& mesh, const size_t idx, const double t0, const YamlRotation& convention, const double Tmax, const bool has_surface_forces) const
@@ -88,13 +89,13 @@ BodyPtr BodyBuilder::build(const YamlBody& input, const VectorOfVectorOfPoints& 
     states.p.record(t0, input.initial_velocity_of_body_frame_relative_to_NED_projected_in_body.p);
     states.q.record(t0, input.initial_velocity_of_body_frame_relative_to_NED_projected_in_body.q);
     states.r.record(t0, input.initial_velocity_of_body_frame_relative_to_NED_projected_in_body.r);
-    states.intersector = MeshIntersectorPtr(new MeshIntersector(states.mesh));
+    states.intersector = std::make_shared<MeshIntersector>(states.mesh);
     states.convention = convention;
 
     BodyPtr ret;
     const BlockedDOF blocked_states(input.blocked_dof,idx);
-    if (has_surface_forces) ret.reset(new BodyWithSurfaceForces(states,idx,blocked_states, states_filter));
-    else                    ret.reset(new BodyWithoutSurfaceForces(states,idx,blocked_states, states_filter));
+    if (has_surface_forces) ret = std::make_shared<BodyWithSurfaceForces>(states,idx,blocked_states, states_filter);
+    else                    ret = std::make_shared<BodyWithoutSurfaceForces>(states,idx,blocked_states, states_filter);
     return ret;
 }
 

@@ -22,6 +22,7 @@
 #include "xdyn/environment_models/discretize.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include <google/protobuf/stubs/common.h>
+#include <memory>
 #include <ssc/kinematics.hpp>
 
 #define BODY "body 1"
@@ -76,7 +77,7 @@ EnvironmentAndFrames get_env()
     EnvironmentAndFrames env;
     env.g = 9.81;
     env.rho = 1024;
-    env.k = ssc::kinematics::KinematicsPtr(new ssc::kinematics::Kinematics());
+    env.k = std::make_shared<ssc::kinematics::Kinematics>();
     const ssc::kinematics::Point G("NED",0,2,2./3.);
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));

@@ -2,6 +2,7 @@
 #include "FlettnerRotorForceModel.hpp"
 #include "xdyn/environment_models/UniformWindVelocityProfile.hpp"
 #include <cmath>
+#include <memory>
 
 FlettnerRotorForceModelTest::FlettnerRotorForceModelTest()
 {
@@ -103,78 +104,78 @@ TEST_F(FlettnerRotorForceModelTest, example)
     double rpm = 80*2*M_PI/60.; // 80 rpm
 
     wind_input.direction = 0*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(7361.1764011673276, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(18075.777282637151, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 45*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-36787.49720659107, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(15437.791488833873, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 90*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-39956.556862188991, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-13927.940130287869, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 135*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-30206.149589655892, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-32236.318966192313, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 180*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-12583.849591836341, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-43440.368957916231, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 225*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(10452.554605245305, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-42922.439769275981, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 270*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(31092.444520695881, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-28701.460699443058, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 315*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(39709.160968113858, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-3850.7001942607922, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 355*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(11295.30237797498, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(16484.557927518184, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
 
     rpm = -80*2*M_PI/60.; // -80 rpm
 
     wind_input.direction = 0*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(7361.1764011673313, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-18075.777282637151, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 45*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(39709.160968113865, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(3850.7001942607767, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 90*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(31092.444520695884, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(28701.460699443051, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 135*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(10452.554605245312, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(42922.439769275981, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 180*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-12583.849591836333, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(43440.368957916231, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 225*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-30206.149589655892, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(32236.31896619231, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 270*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-39956.556862188991, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(13927.940130287881, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 315*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(-36787.497206591077, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-15437.791488833853, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
     wind_input.direction = 355*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     EXPECT_NEAR(3334.7095751087259, force_model.get_force(states, 0, env, {{"rpm", rpm}}).X(), eps);
     EXPECT_NEAR(-19702.898718850181, force_model.get_force(states, 0, env, {{"rpm", rpm}}).Y(), eps);
 }
@@ -202,7 +203,7 @@ TEST_F(FlettnerRotorForceModelTest, should_issue_a_warning_when_spin_ratio_out_o
     UniformWindVelocityProfile::Input wind_input;
     wind_input.velocity = 10;
     wind_input.direction = 0*M_PI/180;
-    env.wind.reset(new UniformWindVelocityProfile(wind_input));
+    env.wind = std::make_shared<UniformWindVelocityProfile>(wind_input);
     // U = 4 m/s
 
     std::stringstream debug;

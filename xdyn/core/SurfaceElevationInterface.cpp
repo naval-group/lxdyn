@@ -7,6 +7,7 @@
 
 #include "SurfaceElevationInterface.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
+#include <memory>
 #include <ssc/exception_handling.hpp>
 #include <string>
 
@@ -203,7 +204,7 @@ ssc::kinematics::PointMatrixPtr SurfaceElevationInterface::get_output_mesh_in_NE
     ) const
 {
     using namespace ssc::kinematics;
-    return PointMatrixPtr(new PointMatrix(compute_position_in_NED_frame(*output_mesh,k)));
+    return std::make_shared<PointMatrix>(compute_position_in_NED_frame(*output_mesh,k));
 }
 
 ssc::kinematics::PointMatrix SurfaceElevationInterface::get_waves_on_mesh(
