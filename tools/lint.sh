@@ -1,5 +1,5 @@
 #!/bin/sh
-# The no-tabs check over xdyn's own C and C++: `mise run lint`, and the flake's `lint` check.
+# `mise run lint` and the flake's `lint` check: no tabs in xdyn's C and C++, zig fmt over the build files.
 set -eu
 cd "$(dirname "$0")/.."
 
@@ -10,3 +10,10 @@ if grep --recursive --include='*.cpp' --include='*.c' --include='*.hpp' --includ
     exit 1
 fi
 echo "Repo passed no-tabs check."
+
+# ast-check adds what AstGen rejects to what fmt parses, such as an unused local.
+zig_files=$(find . \( -name .zig-cache -o -name zig-out -o -name build -o -name 'libcxx-*' -o -name host-tools \) -prune \
+    -o -name '*.zig' -print)
+zig fmt --check build.zig.zon $zig_files
+for file in $zig_files; do zig ast-check "$file" > /dev/null; done
+echo "Zig build files passed zig fmt and ast-check."
