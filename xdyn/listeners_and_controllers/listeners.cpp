@@ -112,7 +112,7 @@ Controller* build_controller(const double tstart, const YamlController& yaml_con
         return new CSVController(tstart, yaml_controller.name, yaml_controller.rest_of_the_yaml);
     }
     THROW(__PRETTY_FUNCTION__, InvalidInputException, "Controller type '" << yaml_controller.type << "' is unknown. Known controller types are: PID, GRPC, CSV");
-    return NULL;
+    return nullptr;
 }
 
 void check_no_controller_outputs_are_defined_in_a_command(

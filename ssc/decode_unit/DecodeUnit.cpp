@@ -107,7 +107,7 @@ std::string ssc::decode_unit::UnitDecoder::RightParToken::description() {return 
 ssc::decode_unit::UnitDecoder::UnitDecoder(std::string unit)
 :    m_stream(unit) ,
     m_next_char(0),
-    m_token(NULL),
+    m_token(nullptr),
     m_char_table(get_char_table()) ,
     m_known_units(get_known_units())
 {
@@ -116,7 +116,7 @@ ssc::decode_unit::UnitDecoder::UnitDecoder(std::string unit)
 ssc::decode_unit::UnitDecoder::UnitDecoder(std::string unit , std::map<std::string,double> &known_units)
 :    m_stream(unit) ,
     m_next_char(0),
-    m_token(NULL),
+    m_token(nullptr),
     m_char_table(get_char_table()) ,
     m_known_units(known_units)
 {
@@ -129,8 +129,8 @@ ssc::decode_unit::UnitDecoder::~UnitDecoder()
 
 void ssc::decode_unit::UnitDecoder::clear_token()
 {
-    if (m_token != NULL) delete m_token;
-    m_token = NULL;
+    if (m_token != nullptr) delete m_token;
+    m_token = nullptr;
 }
 
 // advance one character
@@ -175,7 +175,7 @@ ssc::decode_unit::UnitDecoder::Token *ssc::decode_unit::UnitDecoder::scan()
             break;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 ssc::decode_unit::UnitDecoder::LeftParToken *ssc::decode_unit::UnitDecoder::scan_leftParenthesis()
@@ -303,7 +303,7 @@ double ssc::decode_unit::UnitDecoder::decode_expression()
     // 1) accumulate tokens
     std::vector<Token *> tokens;
     try {
-        while( m_token != NULL && m_token->type() != k_rightparenthesis) {
+        while( m_token != nullptr && m_token->type() != k_rightparenthesis) {
             switch( m_token->type() ) {
             case k_operation:
             case k_integer:
@@ -318,7 +318,7 @@ double ssc::decode_unit::UnitDecoder::decode_expression()
                 } else if(isWordToken(m_token,"cubic")) {
                     clear_token();
                     m_token = scan();
-                    if(m_token != NULL && isWordToken(m_token)) {
+                    if(m_token != nullptr && isWordToken(m_token)) {
                         double val = decode_word(m_token);
                         clear_token();
                         m_token = scan();
@@ -329,7 +329,7 @@ double ssc::decode_unit::UnitDecoder::decode_expression()
                 } else if(isWordToken(m_token,"square")) {
                     clear_token();
                     m_token = scan();
-                    if(m_token != NULL && isWordToken(m_token)) {
+                    if(m_token != nullptr && isWordToken(m_token)) {
                         double val = decode_word(m_token);
                         clear_token();
                         m_token = scan();
@@ -382,14 +382,14 @@ double ssc::decode_unit::UnitDecoder::decode_expression()
         // 3) delete tokens
         for(size_t i=0;i<tokens.size();i++) {
             delete tokens[i];
-            tokens[i]=NULL;
+            tokens[i]=nullptr;
         }
 
     } catch( const std::string mess ) {
         // delete tokens
         for(size_t i=0;i<tokens.size();i++) {
             delete tokens[i];
-            tokens[i]=NULL;
+            tokens[i]=nullptr;
         }
         // rethrow
         throw;

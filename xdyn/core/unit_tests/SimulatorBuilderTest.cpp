@@ -91,7 +91,7 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_body_to_mesh_transform)
 
     ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics());
     builder.add_initial_transforms(bodies,k);
-    ASSERT_TRUE(k.get() != NULL);
+    ASSERT_TRUE(k.get() != nullptr);
     for (auto that_body = bodies.begin() ; that_body != bodies.end() ; ++that_body)
     {
         ASSERT_NO_THROW(k->get((*that_body)->get_name(), customize((*that_body)->get_name(), "mesh")));
@@ -105,7 +105,7 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_ned_to_body_transform)
     const auto bodies = get_body_vector(a.random<std::string>());
     ssc::kinematics::KinematicsPtr k(new ssc::kinematics::Kinematics());
     builder.add_initial_transforms(bodies,k);
-    ASSERT_TRUE(k.get() != NULL);
+    ASSERT_TRUE(k.get() != nullptr);
     for (auto that_body = bodies.begin() ; that_body != bodies.end() ; ++that_body)
     {
         ASSERT_NO_THROW(k->get("NED", (*that_body)->get_name()));

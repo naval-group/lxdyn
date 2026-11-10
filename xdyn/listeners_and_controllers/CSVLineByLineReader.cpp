@@ -189,13 +189,13 @@ CSVLineByLineReader::DateValues CSVLineByLineReader::read_next_line()
         const auto it = column_name_to_command_name.find(headers[i]);
         if (it != column_name_to_command_name.end())
         {
-            const double value = strtod(buffer.c_str(), NULL);
+            const double value = strtod(buffer.c_str(), nullptr);
             ret.values[it->second] = value;
             has_more_values = true;
         }
         if (headers[i] == yaml.time_column)
         {
-            ret.date = strtod(buffer.c_str(), NULL);
+            ret.date = strtod(buffer.c_str(), nullptr);
             if (date2position.find(ret.date)==date2position.end())
             {
                 if (max_date_so_far>=ret.date)

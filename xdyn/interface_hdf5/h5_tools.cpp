@@ -483,7 +483,7 @@ void H5_Tools::read(
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 1 or 2 rank data, not" << rank);
     }
     hsize_t dims_out[2];
-    const int ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
+    const int ndims = dataspace.getSimpleExtentDims(dims_out, nullptr);
     if (!((ndims==1)||(ndims==2)))
     {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 1 or 2 rank data, not" << ndims);
@@ -524,7 +524,7 @@ void H5_Tools::read(
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 1 or 2 rank data, not" << rank);
     }
     hsize_t dims_out[2];
-    const int ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
+    const int ndims = dataspace.getSimpleExtentDims(dims_out, nullptr);
     if (!((ndims==1)||(ndims==2)))
     {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 1 or 2 rank data, not" << ndims);
@@ -568,7 +568,7 @@ void H5_Tools::read(
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 2 rank data, not" << rank);
     }
     hsize_t dims_out[2];
-    const int ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
+    const int ndims = dataspace.getSimpleExtentDims(dims_out, nullptr);
     if (ndims!=2)
     {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 2 rank data, not" << ndims);
@@ -615,7 +615,7 @@ void H5_Tools::read(
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 3 rank data, not" << rank);
     }
     hsize_t dims_out[3];
-    const int ndims = dataspace.getSimpleExtentDims(dims_out, NULL);
+    const int ndims = dataspace.getSimpleExtentDims(dims_out, nullptr);
     if (ndims!=3)
     {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "One expects 3 rank data, not" << ndims);
