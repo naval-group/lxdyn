@@ -14,7 +14,7 @@ namespace ssc
 {
     namespace kinematics
     {
-        typedef Eigen::Matrix<double, 3, 3> RotationMatrix;
+        using RotationMatrix = Eigen::Matrix<double, 3, 3>;
     }
 }
 

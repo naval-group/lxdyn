@@ -14,7 +14,7 @@
 
 #include <ssc/interpolation.hpp>
 #include <ssc/integrate.hpp>
-typedef std::shared_ptr<ssc::interpolation::Interpolator> InterpolatorPtr;
+using InterpolatorPtr = std::shared_ptr<ssc::interpolation::Interpolator>;
 
 #define _USE_MATH_DEFINE
 #include <cmath>

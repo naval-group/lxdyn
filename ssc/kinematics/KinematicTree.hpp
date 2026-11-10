@@ -19,7 +19,7 @@ namespace ssc
 {
     namespace kinematics
     {
-        typedef std::vector<std::pair<std::string,std::string> > PathType;
+        using PathType = std::vector<std::pair<std::string,std::string> >;
 
         /** \author cec
          *  \date 23 avr. 2014, 14:50:11

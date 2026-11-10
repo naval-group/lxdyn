@@ -25,8 +25,8 @@
 #include <tuple>
 
 class Mesh;
-typedef std::shared_ptr<Mesh> MeshPtr;
-typedef Eigen::Matrix<double,6,6> Matrix66;
+using MeshPtr = std::shared_ptr<Mesh>;
+using Matrix66 = Eigen::Matrix<double,6,6>;
 
 struct BodyStates : AbstractStates<History>
 {

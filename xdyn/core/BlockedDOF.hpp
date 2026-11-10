@@ -76,7 +76,7 @@ class BlockedDOF
          *  \param sum_of_other_forces sum of forces excluding the forcing force
          *  \returns The forcing force (6 components, at COG, in body reference frame)
         */
-        typedef Eigen::Matrix<double,6,1> Vector;
+        using Vector = Eigen::Matrix<double,6,1>;
         Vector get_delta_F(const StateType& dx_dt, const Eigen::Matrix<double,6,6>& total_inertia, const ssc::kinematics::Wrench& sum_of_other_forces) const;
 
         /** \brief Get the k derivative of forced positions at current time

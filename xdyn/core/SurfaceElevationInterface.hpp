@@ -210,6 +210,6 @@ class SurfaceElevationInterface
         std::vector<double> surface_elevation_for_each_point_in_mesh;
 };
 
-typedef std::shared_ptr<SurfaceElevationInterface> SurfaceElevationPtr;
+using SurfaceElevationPtr = std::shared_ptr<SurfaceElevationInterface>;
 
 #endif /* SURFACELEVATIONINTERFACE_HPP_ */

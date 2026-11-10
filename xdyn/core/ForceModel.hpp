@@ -26,9 +26,9 @@ struct BodyStates;
 struct YamlRotation;
 
 class ForceModel;
-typedef std::shared_ptr<ForceModel> ForcePtr;
-typedef std::vector<ForcePtr> ListOfForces;
-typedef std::function<boost::optional<ForcePtr>(const YamlModel&, const std::string&, const EnvironmentAndFrames&)> ForceParser;
+using ForcePtr = std::shared_ptr<ForceModel>;
+using ListOfForces = std::vector<ForcePtr>;
+using ForceParser = std::function<boost::optional<ForcePtr>(const YamlModel&, const std::string&, const EnvironmentAndFrames&)>;
 
 class Observer;
 
@@ -36,8 +36,8 @@ class Observer;
 template<typename T>
 struct HasParse
 {
-    typedef char yes[1];
-    typedef char no [2];
+    using yes = char[1];
+    using no = char[2];
     template<typename U> static yes &check(decltype(&U::parse));
     template<typename U> static no &check(...);
     static const bool value = sizeof(check<T>(nullptr)) == sizeof(yes);

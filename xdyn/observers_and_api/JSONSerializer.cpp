@@ -83,7 +83,7 @@ YamlSimServerInputs deserialize(const std::string& input)
     return infos;
 }
 
-typedef rapidjson::Writer<rapidjson::StringBuffer, rapidjson::UTF8<>, rapidjson::UTF8<>, rapidjson::CrtAllocator, rapidjson::kWriteNanAndInfFlag> InfNaNWriter;
+using InfNaNWriter = rapidjson::Writer<rapidjson::StringBuffer, rapidjson::UTF8<>, rapidjson::UTF8<>, rapidjson::CrtAllocator, rapidjson::kWriteNanAndInfFlag>;
 
 void write(InfNaNWriter& writer, const std::map<std::string, double>& m);
 void write(InfNaNWriter& writer, const std::map<std::string, double>& m)

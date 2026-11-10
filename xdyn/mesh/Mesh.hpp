@@ -77,7 +77,7 @@ public:
     size_t total_number_of_nodes;                               //!< Total number of nodes used, including dynamic ones
 };
 
-typedef std::shared_ptr<Mesh> MeshPtr;
-typedef std::shared_ptr<const Mesh> const_MeshPtr;
+using MeshPtr = std::shared_ptr<Mesh>;
+using const_MeshPtr = std::shared_ptr<const Mesh>;
 
 #endif //MESH_HPP

@@ -196,7 +196,7 @@ class Body
 
 };
 
-typedef std::shared_ptr<Body> BodyPtr;
+using BodyPtr = std::shared_ptr<Body>;
 
 #endif /* BODY_HPP_ */
 

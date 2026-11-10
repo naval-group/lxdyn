@@ -20,9 +20,9 @@
 #include "xdyn/environment_models/JonswapSpectrum.hpp"
 #include "xdyn/environment_models/PiersonMoskowitzSpectrum.hpp"
 
-typedef std::shared_ptr<SurfaceElevationInterface> SurfaceElevationInterfacePtr;
-typedef std::shared_ptr<WaveSpectralDensity> WaveSpectralDensityPtr;
-typedef std::shared_ptr<WaveDirectionalSpreading> WaveDirectionalSpreadingPtr;
+using SurfaceElevationInterfacePtr = std::shared_ptr<SurfaceElevationInterface>;
+using WaveSpectralDensityPtr = std::shared_ptr<WaveSpectralDensity>;
+using WaveDirectionalSpreadingPtr = std::shared_ptr<WaveDirectionalSpreading>;
 
 // The constructors below must accept exactly what SimulatorBuilder::can_parse<T>() passes
 // (same signature as the primary templates) and be defined inline: these specializations

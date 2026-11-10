@@ -81,7 +81,7 @@ std::vector<std::vector<size_t> > convert_sets_to_vectors(const std::vector<std:
 ClosingFacetComputer::ConnectedComponents ClosingFacetComputer::get_connected_components(const ListOfEdges& edges_)
 {
     using namespace boost;
-    typedef adjacency_list <vecS, vecS, undirectedS> Graph;
+    using Graph = adjacency_list <vecS, vecS, undirectedS>;
     Graph G;
     std::map<size_t,size_t> idx_in_mesh_to_node_idx;
     std::map<size_t,size_t> node_idx_to_idx_in_mesh;

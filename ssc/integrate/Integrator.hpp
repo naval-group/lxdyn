@@ -9,7 +9,7 @@
 #define INTEGRATOR_HPP_
 #include <functional>
 
-typedef std::function<double (const double&)> Function;
+using Function = std::function<double (const double&)>;
 /** \author cec
  *  \ingroup MODULE_NAME
  *  \brief Responsibility

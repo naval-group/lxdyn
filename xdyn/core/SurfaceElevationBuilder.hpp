@@ -63,8 +63,8 @@ class SurfaceElevationBuilder : public SurfaceElevationBuilderInterface
 };
 
 
-typedef std::shared_ptr<SurfaceElevationBuilderInterface> SurfaceElevationBuilderPtr;
-typedef std::shared_ptr<SurfaceElevationInterface> SurfaceElevationPtr;
+using SurfaceElevationBuilderPtr = std::shared_ptr<SurfaceElevationBuilderInterface>;
+using SurfaceElevationPtr = std::shared_ptr<SurfaceElevationInterface>;
 
 
 #endif /* SURFACEELEVATIONBUILDER_HPP_ */

@@ -52,6 +52,6 @@ template <typename T> class WaveModelBuilder : public WaveModelBuilderInterface
         boost::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const;
 };
 
-typedef std::shared_ptr<WaveModelBuilderInterface> WaveModelBuilderPtr;
+using WaveModelBuilderPtr = std::shared_ptr<WaveModelBuilderInterface>;
 
 #endif /* WAVEMODELBUILDER_HPP_ */

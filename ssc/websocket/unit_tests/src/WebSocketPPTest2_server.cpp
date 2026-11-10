@@ -14,8 +14,8 @@ class WebSocketPPTest2_server : public ::testing::Test
         virtual void TearDown(){}
 };
 
-typedef websocketpp::server<websocketpp::config::core> server;
-typedef websocketpp::config::core::message_type::ptr message_ptr;
+using server = websocketpp::server<websocketpp::config::core>;
+using message_ptr = websocketpp::config::core::message_type::ptr;
 
 using websocketpp::lib::placeholders::_1;
 using websocketpp::lib::placeholders::_2;

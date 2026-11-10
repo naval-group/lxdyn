@@ -12,10 +12,10 @@
 #include <utility> // std::pair
 #include <vector>
 
-typedef std::array<double,6> line;
-typedef std::array<line,6> Matrix;
-typedef std::pair<double,Matrix> TimestampedMatrix;
-typedef std::vector<TimestampedMatrix> TimestampedMatrices;
+using line = std::array<double,6>;
+using Matrix = std::array<line,6>;
+using TimestampedMatrix = std::pair<double,Matrix>;
+using TimestampedMatrices = std::vector<TimestampedMatrix>;
 
 struct RAOData
 {

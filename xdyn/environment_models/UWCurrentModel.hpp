@@ -17,8 +17,8 @@
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
 class UWCurrentModel;
-typedef std::shared_ptr<UWCurrentModel> UWCurrentModelPtr;
-typedef std::function<boost::optional<UWCurrentModelPtr>(const YamlModel&)> UWCurrentParser;
+using UWCurrentModelPtr = std::shared_ptr<UWCurrentModel>;
+using UWCurrentParser = std::function<boost::optional<UWCurrentModelPtr>(const YamlModel&)>;
 
 class UWCurrentModel
 {

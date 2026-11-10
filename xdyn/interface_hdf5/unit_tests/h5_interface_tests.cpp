@@ -25,12 +25,12 @@ TEST_F(H5InterfaceTest, writeFileDescription)
 
 #define MAX_NAME_LENGTH 32
 
-typedef struct {
+using PersonalInformation = struct {
     int age;
     char sex;
     char name[MAX_NAME_LENGTH];
     float height;
-} PersonalInformation;
+};
 
 template <> H5::CompType H5_Interface<PersonalInformation>::createId()
 {

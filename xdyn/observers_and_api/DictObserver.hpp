@@ -8,8 +8,8 @@
 #include <utility>
 #include <map>
 
-typedef std::map<std::string, double> DictMap1;
-typedef std::map<std::string, std::map<std::string, double> > DictMap2;
+using DictMap1 = std::map<std::string, double>;
+using DictMap2 = std::map<std::string, std::map<std::string, double> >;
 
 class DictObserver : public Observer
 {

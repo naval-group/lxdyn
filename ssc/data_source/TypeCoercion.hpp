@@ -22,7 +22,7 @@ namespace ssc
         struct enable_if {};
 
         template<class T>
-        struct enable_if<true, T> { typedef T type; };
+        struct enable_if<true, T> { using type = T; };
 
         template<class T> struct is_arithmetic { const static bool value = false; };
         #define DECLARE_ARITHMETIC_TYPE(t) template<> struct is_arithmetic<t> { const static bool value = true; }

@@ -21,7 +21,7 @@ namespace ssc
         class Scheduler
         {
           public:
-            typedef std::function<void(Scheduler &scheduler, ContinuousSystem& system)> Callback;
+            using Callback = std::function<void(Scheduler &scheduler, ContinuousSystem& system)>;
             Scheduler(const double tstart, const double tend_, const double dt)
                 : current_time(tstart)
                 , scheduled_time_events()

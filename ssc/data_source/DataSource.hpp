@@ -39,13 +39,13 @@ namespace ssc
 {
     namespace data_source
     {
-        typedef std::shared_ptr<const DataSourceModule> ModulePtr;
+        using ModulePtr = std::shared_ptr<const DataSourceModule>;
 
         #if USE_HASH_MAPS
-            typedef std::unordered_map<TypedModuleName,ModulePtr > FromName2Module;
-            typedef std::unordered_map<TypedSignalName,TypedModuleName> FromSignal2Module;
-            typedef std::unordered_map<TypedModuleName,std::set<TypedModuleName> > DependantModules;
-            typedef std::unordered_map<TypedModuleName,bool > UpdateState;
+            using FromName2Module = std::unordered_map<TypedModuleName,ModulePtr >;
+            using FromSignal2Module = std::unordered_map<TypedSignalName,TypedModuleName>;
+            using DependantModules = std::unordered_map<TypedModuleName,std::set<TypedModuleName> >;
+            using UpdateState = std::unordered_map<TypedModuleName,bool >;
         #else
             typedef std::map<TypedModuleName,ModulePtr > FromName2Module;
             typedef std::map<TypedSignalName,TypedModuleName> FromSignal2Module;

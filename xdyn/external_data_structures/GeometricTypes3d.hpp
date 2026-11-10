@@ -6,12 +6,12 @@
 
 #include <Eigen/Dense>
 
-typedef Eigen::Vector3d EPoint;
-typedef std::vector<EPoint> VectorOfPoints;
-typedef std::vector<VectorOfPoints> VectorOfVectorOfPoints;
-typedef Eigen::Matrix<double,3,Eigen::Dynamic> Matrix3x;
+using EPoint = Eigen::Vector3d;
+using VectorOfPoints = std::vector<EPoint>;
+using VectorOfVectorOfPoints = std::vector<VectorOfPoints>;
+using Matrix3x = Eigen::Matrix<double,3,Eigen::Dynamic>;
 
-typedef std::array<std::vector<size_t>,2> ArrayOfEdges;
+using ArrayOfEdges = std::array<std::vector<size_t>,2>;
 
 /**
  * \details Holds the indices of the vertices in the mesh rather than duplicating the coordinates
@@ -31,6 +31,6 @@ struct Facet
     double area;
 };
 
-typedef std::vector<Facet> VectorOfFacet;
+using VectorOfFacet = std::vector<Facet>;
 
 #endif

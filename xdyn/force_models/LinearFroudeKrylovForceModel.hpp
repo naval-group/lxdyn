@@ -20,7 +20,7 @@
 class LinearFroudeKrylovForceModel : public AbstractRaoForceModel
 {
     public:
-        typedef YamlRAO Input;
+        using Input = YamlRAO;
         LinearFroudeKrylovForceModel(const Input& data, const std::string& body_name, const EnvironmentAndFrames& env);
         LinearFroudeKrylovForceModel(const Input& data, const std::string& body_name, const EnvironmentAndFrames& env, const std::string& hdb_file_contents);
         static Input parse(const std::string& yaml);

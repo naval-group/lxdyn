@@ -17,7 +17,7 @@
 class AbstractRaoForceModel : public ForceModel
 {
     public:
-        typedef YamlRAO Input;
+        using Input = YamlRAO;
         AbstractRaoForceModel(const Input& data, const std::string& body_name, const EnvironmentAndFrames& env);
         AbstractRaoForceModel(const Input& data, const std::string& body_name, const EnvironmentAndFrames& env, const std::string& hdb_file_contents);
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;

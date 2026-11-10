@@ -11,8 +11,8 @@
 
 #include <websocketpp/server.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
-typedef websocketpp::server<websocketpp::config::asio> WSServer;
-typedef WSServer::message_ptr message_ptr;
+using WSServer = websocketpp::server<websocketpp::config::asio>;
+using message_ptr = WSServer::message_ptr;
 
 struct WebSocketMessageImpl
 {

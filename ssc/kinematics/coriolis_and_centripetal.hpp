@@ -12,8 +12,8 @@
 
 #include "ssc/kinematics/Wrench.hpp"
 
-typedef Eigen::Matrix<double,6,6> Matrix6x6;
-typedef Eigen::Matrix<double,3,3> Matrix3x3;
+using Matrix6x6 = Eigen::Matrix<double,6,6>;
+using Matrix3x3 = Eigen::Matrix<double,3,3>;
 
 
 namespace ssc

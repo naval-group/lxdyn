@@ -32,6 +32,6 @@ class SpectrumBuilder : public SpectrumBuilderInterface
         boost::optional<std::shared_ptr<WaveSpectralDensity> > try_to_parse(const std::string& model, const std::string& yaml) const;
 };
 
-typedef std::shared_ptr<SpectrumBuilderInterface> SpectrumBuilderPtr;
+using SpectrumBuilderPtr = std::shared_ptr<SpectrumBuilderInterface>;
 
 #endif /* SPECTRUMBUILDER_HPP_ */

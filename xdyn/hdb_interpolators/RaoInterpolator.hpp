@@ -6,7 +6,7 @@
 #include <Eigen/Dense>
 #include <vector>
 
-typedef ssc::interpolation::TwoDimensionalInterpolationVariableStep Interpolator;
+using Interpolator = ssc::interpolation::TwoDimensionalInterpolationVariableStep;
 class HydroDBParser;
 
 

@@ -19,7 +19,7 @@ namespace ssc
 {
     namespace solver
     {
-        typedef std::shared_ptr<DiscreteSystem> DiscreteSystemPtr;
+        using DiscreteSystemPtr = std::shared_ptr<DiscreteSystem>;
         template <typename StepperType, typename SystemType, typename ObserverType>
         void solve_for_constant_step(SystemType &sys, ObserverType &observer, StepperType &stepper,
                                      Scheduler &scheduler, EventHandler &event_handler, const std::vector<DiscreteSystemPtr>& discrete_systems)

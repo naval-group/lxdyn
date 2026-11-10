@@ -4,6 +4,7 @@ Checks:
   - 'bugprone-*'
   - 'performance-*'
   - 'modernize-use-nullptr'
+  - 'modernize-use-using'
 
   # Off for good.
   - '-bugprone-easily-swappable-parameters'  # an API-design opinion, and noisy

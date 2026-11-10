@@ -21,8 +21,8 @@ namespace ssc
 {
     namespace data_source
     {
-        typedef std::string SignalName;
-        typedef std::string TypeName;
+        using SignalName = std::string;
+        using TypeName = std::string;
         class PhysicalQuantity;
 
         class TypedSignalName
@@ -62,7 +62,7 @@ namespace ssc
     {
         ::std::ostream& operator<<(::std::ostream& os, const TypedSignalName& s);
 
-        typedef TypedSignalName TypedModuleName;
+        using TypedModuleName = TypedSignalName;
 
         class OwnHash
         {
@@ -74,9 +74,9 @@ namespace ssc
         };
 
 
-        typedef std::unordered_map<TypedSignalName, boost::any, OwnHash> Signals;
+        using Signals = std::unordered_map<TypedSignalName, boost::any, OwnHash>;
         //typedef std::map<TypedSignalName, boost::any> Signals;
-        typedef Signals::const_iterator ConstSignalIterator;
+        using ConstSignalIterator = Signals::const_iterator;
 
         #define DECLARE_TYPE_ACCESSORS(t) template <> ConvertibleTypesIterator begin<t>(const ConvertibleTypes& l);\
                                           template <> ConvertibleTypesIterator end<t>(const ConvertibleTypes& l);
@@ -119,7 +119,7 @@ namespace ssc
             std::list<ConstSignalIterator> bin;
         };
 
-        typedef std::list<ConstSignalIterator>::const_iterator ConvertibleTypesIterator;
+        using ConvertibleTypesIterator = std::list<ConstSignalIterator>::const_iterator;
 
         template <typename T> ConvertibleTypesIterator begin(const ConvertibleTypes& l)
         {

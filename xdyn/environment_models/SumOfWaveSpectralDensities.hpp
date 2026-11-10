@@ -13,7 +13,7 @@
 
 #include "xdyn/environment_models/WaveSpectralDensity.hpp"
 
-typedef std::shared_ptr<WaveSpectralDensity> WaveSpectralDensityPtr;
+using WaveSpectralDensityPtr = std::shared_ptr<WaveSpectralDensity>;
 
 /** \brief Class returned when summing two WaveSpectralDensity objects
  *  \details
