@@ -4,6 +4,7 @@ install
 /zig-out/
 
 /demos/
+/compile_commands.json
 
 *.o
 *.obj

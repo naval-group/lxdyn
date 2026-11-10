@@ -9,6 +9,7 @@ const proto = @import("proto/build.zig");
 const deps = @import("tools/deps/build.zig");
 const python = @import("xdyn_wrapper_python/build.zig");
 const fmu = @import("xdyn_wrapper_fmi/build.zig");
+const tidy = @import("tools/tidy/build.zig");
 
 // gnu at the 2.28 floor, so a native build links on the oldest glibc still in service.
 const native_default: std.Target.Query = if (builtin.os.tag == .linux)
@@ -45,6 +46,7 @@ pub fn build(b: *std.Build) void {
     ssc.addTests(&ctx, libxdyn, xdyn.addTests(&ctx, libxdyn));
     python.add(&ctx, libxdyn); // opt-in: zig build python
     fmu.add(&ctx, libxdyn); // opt-in: zig build fmu
+    tidy.add(&ctx); // last: it lists what every other step compiles
 }
 
 // What every component shares: the target, the closure, the codegen and the flag sets.
