@@ -1,6 +1,6 @@
 #include "parse_address.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include <cstdlib> // std::atoi
+#include <charconv>
 #include <iostream>
 #include <boost/regex.hpp>
 
@@ -28,10 +28,10 @@ WebsocketURLElements::WebsocketURLElements(const std::string& url) :
     {
         protocol = std::string(what[1].first, what[1].second);
         domain = std::string(what[2].first, what[2].second);
-        port = std::atoi(std::string(what[3].first, what[3].second).c_str());
-        if ( port <= 0 || port > 65535 )
+        const auto parsed = std::from_chars(what[3].first, what[3].second, port);
+        if ( parsed.ec != std::errc() || parsed.ptr != what[3].second || port <= 0 || port > 65535 )
         {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Port: " << port << " is not valid. It should be between 0 and 65535");
+            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Port: " << std::string(what[3].first, what[3].second) << " is not valid. It should be between 0 and 65535");
         }
         if (protocol!="ws")
         {

@@ -8,6 +8,7 @@
 #include <ssc/kinematics.hpp>
 #include <iostream>
 #include <cmath>
+#include <string>
 #define PI M_PI
 
 constexpr double RAD2DEG = 180./PI;
@@ -29,10 +30,10 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    const double qr = std::atof(argv[1]);
-    const double qi = std::atof(argv[2]);
-    const double qj = std::atof(argv[3]);
-    const double qk = std::atof(argv[4]);
+    const double qr = std::stod(argv[1]);
+    const double qi = std::stod(argv[2]);
+    const double qj = std::stod(argv[3]);
+    const double qk = std::stod(argv[4]);
 
     const ssc::kinematics::EulerAngles angles = convert(qr, qi, qj, qk);
 
