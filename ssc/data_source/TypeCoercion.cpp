@@ -9,6 +9,14 @@
 
 using namespace ssc::data_source;
 
+void ssc::data_source::coerce(std::list<double>& ret, const std::vector<bool>& thing_to_convert)
+{
+    for (const bool b : thing_to_convert)
+    {
+        coerce(ret, b);
+    }
+}
+
 void ssc::data_source::decoerce(std::list<double>& ret, bool& thing_to_convert)
 {
     if (ret.empty())

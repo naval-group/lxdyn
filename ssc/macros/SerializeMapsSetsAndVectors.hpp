@@ -5,10 +5,15 @@
  * \author cec
  */
 
-#ifdef _GLIBCXX_VECTOR
-#ifndef SERIALIZEVECTORS_HPP_
-#define SERIALIZEVECTORS_HPP_
+#ifndef SERIALIZEMAPSSETSANDVECTORS_HPP_
+#define SERIALIZEMAPSSETSANDVECTORS_HPP_
+
+#include <map>
 #include <ostream>
+#include <set>
+#include <utility>
+#include <vector>
+
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& m)
 {
@@ -21,13 +26,7 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& m)
     os << "]";
     return os;
 }
-#endif
-#endif
 
-#ifdef _GLIBCXX_MAP
-#ifndef SERIALIZEMAPS_HPP_
-#define SERIALIZEMAPS_HPP_
-#include <ostream>
 template <typename T, typename U>
 std::ostream& operator<<(std::ostream& os, const std::map<T,U>& m)
 {
@@ -40,26 +39,14 @@ std::ostream& operator<<(std::ostream& os, const std::map<T,U>& m)
     os << "}";
     return os;
 }
-#endif
-#endif
 
-#ifdef _STL_PAIR_H
-#ifndef SERIALIZEPAIRS_HPP_
-#define SERIALIZEPAIRS_HPP_
-#include <ostream>
 template <typename T, typename U>
 std::ostream& operator<<(std::ostream& os, const std::pair<T,U>& m)
 {
     os << "(" << m.first << "," << m.second << ")";
     return os;
 }
-#endif
-#endif
 
-#ifdef _GLIBCXX_SET
-#ifndef SERIALIZESET_HPP_
-#define SERIALIZESET_HPP_
-#include <ostream>
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const std::set<T>& m)
 {
@@ -72,6 +59,5 @@ std::ostream& operator<<(std::ostream& os, const std::set<T>& m)
     os << "}";
     return os;
 }
-#endif
-#endif
 
+#endif

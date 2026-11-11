@@ -53,10 +53,9 @@ const compiled_separately = [_][]const u8{ "demo_scripts.cpp", "generate_test_sh
 // The hand-written C++ flag set, shared by every component. stack-exhausted stays a warning: it
 // fires on stl_data.cpp depending on the runner's stack.
 pub fn cppFlags(ctx: *const root.Ctx) []const []const u8 {
-    const shim_hpp = root.fromRoot(ctx.b, "xdyn/compat/ssc_serialize_compat.hpp");
     return root.concat(ctx.b, ctx.withDebug(&.{
-        "-std=gnu++17", "-Wall",    "-Wextra", "-Werror", "-Wno-error=stack-exhausted",
-        "-fPIC",        "-include", shim_hpp,
+        "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-Wno-error=stack-exhausted",
+        "-fPIC",
     }), &warning_flags);
 }
 
