@@ -48,7 +48,7 @@ EPoint read_vertex(char *line, ParserState& state)
     int width;
     char token[20] = "";
     /*int res = */sscanf(line, "%s%n", token, &width);
-    if (strcmp(token, TOKEN_vertex))
+    if (strcmp(token, TOKEN_vertex) != 0)
     {
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_vertex));
     }
@@ -64,7 +64,7 @@ void read_normal(char *line, Eigen::Vector3d& vertices, ParserState& state){
     int width;
     char token[20];
     /*int res = */sscanf(line, "%s%n", token, &width);
-    if (strcmp(token, TOKEN_normal)){
+    if (strcmp(token, TOKEN_normal) != 0){
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_normal));
     }
     std::istringstream coordinates(line+width);
