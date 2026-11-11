@@ -53,6 +53,8 @@ namespace ssc
             ret.push_back((double)thing_to_convert);
         }
 
+        void coerce(std::list<double>& ret, const std::vector<bool>& thing_to_convert);
+
         template <typename T> void coerce(std::list<double>& ret, const std::vector<T>& thing_to_convert)
         {
             for (typename std::vector<T>::const_iterator it = thing_to_convert.begin() ; it != thing_to_convert.end() ; ++it)
