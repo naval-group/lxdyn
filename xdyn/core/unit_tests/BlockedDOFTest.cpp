@@ -21,11 +21,10 @@
 #include "xdyn/environment_models/DefaultWindModel.hpp"
 #include "xdyn/listeners_and_controllers/builders.hpp"
 
-// Third Party
-#include <boost/filesystem.hpp> // For boost::filesystem::unique_path
-
 //STL
+#include <filesystem>
 #include <fstream>
+#include <random>
 
 
 
@@ -127,13 +126,13 @@ TEST_F(BlockedDOFTest, should_throw_if_CSV_file_does_not_exist)
 
 struct TmpFile
 {
-    TmpFile() : path(boost::filesystem::unique_path())
+    TmpFile() : path(std::filesystem::temp_directory_path() / ("xdyn-" + std::to_string(std::random_device()())))
     {
     }
 
     ~TmpFile()
     {
-        if (boost::filesystem::exists(path)) boost::filesystem::remove(path);
+        if (std::filesystem::exists(path)) std::filesystem::remove(path);
     }
 
     TmpFile& operator<<(const std::string& s)
@@ -152,7 +151,7 @@ struct TmpFile
     private:
         TmpFile(const TmpFile& rhs);
         TmpFile& operator=(const TmpFile& rhs);
-        boost::filesystem::path path;
+        std::filesystem::path path;
 };
 
 

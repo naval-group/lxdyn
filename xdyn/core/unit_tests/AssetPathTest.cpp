@@ -5,7 +5,7 @@
 #include "AssetPathTest.hpp"
 #include "xdyn/core/AssetPath.hpp"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 AssetPathTest::AssetPathTest()
 {}
@@ -36,7 +36,7 @@ TEST_F(AssetPathTest, an_empty_path_stays_empty)
 TEST_F(AssetPathTest, a_relative_path_is_joined_to_the_root)
 {
     xdyn::set_assets_root("models");
-    const boost::filesystem::path resolved(xdyn::resolve_asset("hull.stl"));
+    const std::filesystem::path resolved(xdyn::resolve_asset("hull.stl"));
     ASSERT_EQ("models", resolved.parent_path().string());
     ASSERT_EQ("hull.stl", resolved.filename().string());
 }
@@ -49,7 +49,7 @@ TEST_F(AssetPathTest, a_root_without_a_trailing_separator_still_yields_a_separat
 
 TEST_F(AssetPathTest, an_absolute_path_ignores_the_root)
 {
-    const std::string absolute = boost::filesystem::absolute("hull.stl").string();
+    const std::string absolute = std::filesystem::absolute("hull.stl").string();
     xdyn::set_assets_root("models");
     ASSERT_EQ(absolute, xdyn::resolve_asset(absolute));
 }

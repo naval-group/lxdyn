@@ -4,8 +4,8 @@
 
 #include "AssetPath.hpp"
 
-#include <boost/filesystem.hpp>
 #include <cstdlib>
+#include <filesystem>
 
 namespace
 {
@@ -31,7 +31,7 @@ std::string xdyn::assets_root(const std::string& from_command_line,
     if (not(from_command_line.empty())) return from_command_line;
     if (not(from_environment.empty()))  return from_environment;
     if (yaml_filenames.empty())         return "";
-    return boost::filesystem::path(yaml_filenames.front()).parent_path().string();
+    return std::filesystem::path(yaml_filenames.front()).parent_path().string();
 }
 
 void xdyn::set_assets_root(const std::string& root)
@@ -42,7 +42,7 @@ void xdyn::set_assets_root(const std::string& root)
 std::string xdyn::resolve_asset(const std::string& path)
 {
     if (assets_root_storage().empty() or path.empty()) return path;
-    const boost::filesystem::path relative_or_absolute(path);
+    const std::filesystem::path relative_or_absolute(path);
     if (relative_or_absolute.is_absolute()) return path;
-    return (boost::filesystem::path(assets_root_storage()) / relative_or_absolute).string();
+    return (std::filesystem::path(assets_root_storage()) / relative_or_absolute).string();
 }
