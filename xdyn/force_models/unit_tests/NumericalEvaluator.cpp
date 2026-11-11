@@ -27,6 +27,7 @@ template <> double NumericalEvaluator::operator()(const maneuvering::Factor& d) 
 {
     const double b = this->operator ()(d.base);
     std::vector<double> exponents;
+    exponents.reserve(d.exponents.size());
     for (const auto& e:d.exponents) exponents.push_back(this->operator()(e));
     double ret = b;
     for (auto e:exponents) ret = std::pow(ret, e);

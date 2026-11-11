@@ -54,6 +54,8 @@ std::shared_ptr<HDBParser> RadiationDampingForceModelTest::get_hdb_data(const Ya
     const size_t N = 460;
     const double A = 1000;
     const auto omegas = RadiationDampingBuilder(TypeOfQuadrature::FILON,TypeOfQuadrature::GAUSS_KRONROD).build_exponential_intervals(omega_min, omega_max, N);
+    Br.reserve(omegas.size());
+    Ma.reserve(omegas.size());
     for (auto omega:omegas) Br.push_back(test_data::analytical_Br(omega));
     for (auto omega:omegas) Ma.push_back(compute_Ma_from_K(omega, A, test_data::analytical_K, yaml.tau_min, yaml.tau_max));
     return std::shared_ptr<HDBParser>(new HDBParserForTests(omegas, Ma, Br, only_diagonal_terms));

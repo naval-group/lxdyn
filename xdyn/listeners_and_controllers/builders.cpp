@@ -177,6 +177,7 @@ std::optional<SurfaceElevationInterfacePtr> SurfaceElevationBuilder<SurfaceEleva
         const YamlWaveModel input = parse_waves(yaml);
         const auto output_mesh = make_wave_mesh(input.output);
         std::vector<WaveModelPtr> models;
+        models.reserve(input.spectra.size());
         for (const auto& spectrum: input.spectra) models.push_back(parse_wave_model(input.discretization, spectrum));
         for (const auto& spectrum: input.spectra_from_rays) models.push_back(parse_wave_model(spectrum));
         ret = SurfaceElevationInterfacePtr(new SurfaceElevationFromWaves(models,get_wave_mesh_size(input.output), output_mesh));

@@ -40,6 +40,7 @@ namespace maneuvering
             {
                 const std::string b = this->operator ()(d.base);
                 std::vector<std::string> exponents;
+                exponents.reserve(d.exponents.size());
                 for (const auto& e:d.exponents) exponents.push_back(this->operator()(e));
                 std::string ret = b;
                 for (const auto& e:exponents) ret = std::string("(") + ret + ")^(" + e + ")";
@@ -100,6 +101,7 @@ namespace maneuvering
             {
                 const NodePtr b = this->operator ()(d.base);
                 std::vector<NodePtr> exponents;
+                exponents.reserve(d.exponents.size());
                 for (const auto& e:d.exponents) exponents.push_back(this->operator()(e));
                 NodePtr ret = b;
                 for (const auto& e:exponents) ret = make_pow(ret, e);

@@ -67,6 +67,7 @@ TEST_F(TwoDimensionalSplinesTest, should_throw_if_all_elements_in_M_arent_the_sa
     std::vector<std::vector<double> > M;
 
     const size_t n = a.random<size_t>().no().greater_than(20);
+    M.reserve(n);
     for (size_t i = 0 ; i < n ; ++i)
     {
         M.push_back(a.random_vector_of<double>());
@@ -87,6 +88,7 @@ TEST_F(TwoDimensionalSplinesTest, should_throw_if_any_element_in_M_has_one_eleme
     std::vector<std::vector<double> > M;
 
     const size_t n = a.random<size_t>().no().greater_than(20);
+    M.reserve(n);
     for (size_t i = 0 ; i < n ; ++i)
     {
         M.push_back(std::vector<double>(1,a.random<double>()));
@@ -99,6 +101,7 @@ TEST_F(TwoDimensionalSplinesTest, should_throw_if_any_element_in_M_is_empty)
     std::vector<std::vector<double> > M;
 
     const size_t n = a.random<size_t>().no().greater_than(20);
+    M.reserve(n);
     for (size_t i = 0 ; i < n ; ++i)
     {
         M.push_back(std::vector<double>());

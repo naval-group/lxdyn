@@ -31,7 +31,6 @@ Checks:
   - '-bugprone-unused-local-non-trivial-variable'
   - '-bugprone-unused-raii'
   - '-performance-inefficient-string-concatenation'
-  - '-performance-inefficient-vector-operation'
 
 WarningsAsErrors: '*'
 # Third-party headers arrive through -isystem and stay quiet; these are the rest that are not ours.

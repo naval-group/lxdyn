@@ -26,6 +26,7 @@ std::function<double(double)> get_interpolated_Br()
     auto omegas = builder.build_exponential_intervals_reversed(omega_min, omega_med, (size_t)std::floor((double)N*r+0.5));
     const auto omegas2 = builder.build_exponential_intervals(omega_med, omega_max, (size_t)std::floor((double)N*(1-r)+0.5));
     omegas.insert(omegas.end(), omegas2.begin()+1,omegas2.end());
+    vBr.reserve(omegas.size());
     for (auto omega:omegas) vBr.push_back(test_data::analytical_Br(omega));
     return builder.build_interpolator(omegas,vBr);
 }

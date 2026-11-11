@@ -165,6 +165,7 @@ void Observer::initialize_serialization_of_requested_variables(const std::vector
             if (initialize_stuff == initialize.end())
             {
                 std::vector<std::string> available_variables;
+                available_variables.reserve(initialize.size());
                 for(const auto& s: initialize) available_variables.push_back(s.first);
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, "In the 'outputs' section of the YAML file, you asked for '" << stuff << "', but it is not computed: maybe it is misspelt or the corresponding model is not in the YAML. " << helpful_error_message_on_missing_requested_serialization(stuff, available_variables));
             }

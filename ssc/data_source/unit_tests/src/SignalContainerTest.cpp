@@ -206,8 +206,7 @@ TEST_F(SignalContainerTest, should_be_able_to_set_all_coercible_types_using_a_li
     signals.set("signal12",vs);
 
     const std::vector<float> ref_ = a.random_vector_of<float>().of_size(4*(2+n));
-    std::vector<double> ref;
-    for (size_t i = 0 ; i < ref_.size() ; ++i) ref.push_back(ref_.at(i));
+    std::vector<double> ref(ref_.begin(), ref_.end());
     const std::list<double> l(ref.begin(), ref.end());
 
     signals.from_doubles(l);
@@ -255,8 +254,7 @@ TEST_F(SignalContainerTest, float_coercion_bug)
 
 
     const std::vector<float> ref_f = a.random_vector_of<float>().of_size(2);
-    std::vector<double> ref;
-    for (size_t i = 0 ; i < ref_f.size() ; ++i) ref.push_back(ref_f.at(i));
+    std::vector<double> ref(ref_f.begin(), ref_f.end());
     const std::list<double> l(ref.begin(), ref.end());
 
     signals.from_doubles(l);

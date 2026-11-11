@@ -73,6 +73,7 @@ std::function<double(double)> RadiationDampingBuilder::build_retardation_functio
 {
     omega_max = find_integration_bound(Br, omega_min, omega_max, eps);
     std::vector<double> y;
+    y.reserve(taus.size());
     for (auto tau:taus)
     {
         y.push_back(cos_transform(Br, omega_min, omega_max, tau));

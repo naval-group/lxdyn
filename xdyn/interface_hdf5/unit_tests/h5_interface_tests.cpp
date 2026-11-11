@@ -442,6 +442,7 @@ TEST_F(H5InterfaceTest, should_be_able_to_write_a_vector_vector_vector_of_double
     std::vector<std::vector<double> >aa;
     aa.push_back(std::vector<double>{1.0, 2.0, 3.0});
     aa.push_back(std::vector<double>{4.0, 5.0, 6.0});
+    aaa.reserve(n0);
     for (size_t i=0;i<n0;++i) aaa.push_back(aa);
     H5_Tools::write(filename, datasetname, aaa);
     H5_Tools::read(filename, datasetname, res);
