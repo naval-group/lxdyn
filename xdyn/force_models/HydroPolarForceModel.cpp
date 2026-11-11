@@ -42,18 +42,18 @@ HydroPolarForceModel::HydroPolarForceModel(const Input& input, const std::string
 {
     if (input.lift_coefficient.size()==0)
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "An empty vector was provided for the angle of attack, which must be provided from either -180° or 0deg (symmetry) to 180deg.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "An empty vector was provided for the angle of attack, which must be provided from either -180° or 0deg (symmetry) to 180deg.");
     }
     const double min_alpha = *std::min_element(input.angle_of_attack.begin(),input.angle_of_attack.end());
     const double max_alpha = *std::max_element(input.angle_of_attack.begin(),input.angle_of_attack.end());
     const double eps = 0.1*M_PI/180;
     if (input.lift_coefficient.size()!=input.angle_of_attack.size() || input.drag_coefficient.size()!=input.angle_of_attack.size())
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Angle of attack, lift coefficient and drag coefficient must all have the same size.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Angle of attack, lift coefficient and drag coefficient must all have the same size.");
     }
     if(min_alpha > eps || max_alpha < M_PI-eps)
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Angle of attack must be provided from either -180° or 0deg (symmetry) to 180deg.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Angle of attack must be provided from either -180° or 0deg (symmetry) to 180deg.");
     }
     if (max_alpha > M_PI+eps)
     {
@@ -83,13 +83,13 @@ HydroPolarForceModel::HydroPolarForceModel(const Input& input, const std::string
     {
         if (input.moment_coefficient.get().size()!=input.angle_of_attack.size())
         {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Angle of attack and moment coefficient must have the same size.")
+            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Angle of attack and moment coefficient must have the same size.");
         }
         Cm = std::make_unique<ssc::interpolation::SplineVariableStep>(input.angle_of_attack, input.moment_coefficient.get());
     }
     if (use_waves_velocity && env.w.use_count()==0)
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "In order to take into account the orbital velocity of waves, a wave model must be defined in the 'environment models' section.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "In order to take into account the orbital velocity of waves, a wave model must be defined in the 'environment models' section.");
     }
 }
 

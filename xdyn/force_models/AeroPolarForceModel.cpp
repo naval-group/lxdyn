@@ -37,11 +37,11 @@ AeroPolarForceModel::AeroPolarForceModel(const Input input, const std::string bo
     const double eps = 0.1*M_PI/180;
     if (input.lift_coefficient.size()!=input.apparent_wind_angle.size() || input.drag_coefficient.size()!=input.apparent_wind_angle.size())
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Apparent wind angle, lift coefficient and drag coefficient must all have the same size.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Apparent wind angle, lift coefficient and drag coefficient must all have the same size.");
     }
     if(min_beta > eps || max_beta < M_PI-eps)
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Apparent wind angle must be provided from 0deg to either 180deg (symmetry) or 360deg.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Apparent wind angle must be provided from 0deg to either 180deg (symmetry) or 360deg.");
     }
     if (max_beta < M_PI+eps) // max_beta is close to pi
     {

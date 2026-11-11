@@ -385,7 +385,7 @@ double ssc::decode_unit::UnitDecoder::decode_expression()
             tokens[i]=nullptr;
         }
 
-    } catch( const std::string mess ) {
+    } catch( const std::string& ) {
         // delete tokens
         for(size_t i=0;i<tokens.size();i++) {
             delete tokens[i];

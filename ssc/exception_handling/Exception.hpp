@@ -31,10 +31,11 @@ namespace ssc
 
 #define QUOTEME_(x) #x
 #define QUOTEME(x) QUOTEME_(x)
-#define THROW(function,exception, message)\
-    std::stringstream __ss;\
-    __ss << message;\
-    exception exc(__ss.str(), __FILE__, function, __LINE__);\
-    throw exc;
+#define THROW(function, exception, message)\
+    do {\
+        std::stringstream ssc_throw_message;\
+        ssc_throw_message << message;\
+        throw exception(ssc_throw_message.str(), __FILE__, function, __LINE__);\
+    } while (false)
 #endif
 
