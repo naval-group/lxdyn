@@ -21,7 +21,7 @@ TEST_F(Hdf5ObserverTest, should_be_able_to_create_an_observer)
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (auto output:yaml)
+    for (const auto& output:yaml)
     {
         if (output.format == "hdf5")
         {
@@ -41,7 +41,7 @@ TEST_F(Hdf5ObserverTest, LONG_should_be_able_to_create_an_observer_with_wave_out
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (auto output:yaml)
+    for (const auto& output:yaml)
     {
         if (output.format == "hdf5")
         {

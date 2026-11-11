@@ -30,7 +30,7 @@ template <> void StringEvaluator::operator()(const maneuvering::Base& d)
 template <> void StringEvaluator::operator()(const maneuvering::Factor& d)
 {
     this->operator ()(d.base);
-    for (auto e:d.exponents)
+    for (const auto& e:d.exponents)
     {
         os << "^(";
         this->operator ()(e);
@@ -40,7 +40,7 @@ template <> void StringEvaluator::operator()(const maneuvering::Factor& d)
 template <> void StringEvaluator::operator()(const maneuvering::Term& d)
 {
     this->operator ()(d.first);
-    for (auto op:d.rest)
+    for (const auto& op:d.rest)
     {
         os << op.operator_ << "(";
         this->operator()(op.factor);
@@ -51,7 +51,7 @@ template <> void StringEvaluator::operator()(const maneuvering::Term& d)
 template <> void StringEvaluator::operator()(const maneuvering::Expr& d)
 {
     this->operator ()(d.first);
-    for (auto op:d.rest)
+    for (const auto& op:d.rest)
     {
         os << op.operator_;
         this->operator()(op.term);

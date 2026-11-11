@@ -125,7 +125,7 @@ std::vector<std::vector<size_t> > convert_to_original_indexes(const std::vector<
 std::vector<std::vector<size_t> > convert_to_original_indexes(const std::vector<std::vector<size_t> >& idx_to_convert, const std::vector<size_t>& idx_of_relevant_edges)
 {
     std::vector<std::vector<size_t> > ret;
-    for (auto v:idx_to_convert)
+    for (const auto& v:idx_to_convert)
     {
         std::vector<size_t> l;
         for (auto idx:v)

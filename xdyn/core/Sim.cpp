@@ -36,7 +36,7 @@ class Sim::Impl
                  sum_of_forces_in_NED_frame(), fictitious_forces_in_body_frame(), fictitious_forces_in_NED_frame()
         {
             size_t i = 0;
-            for (auto body:bodies)
+            for (const auto& body:bodies)
             {
                 forces[body->get_name()] = forces_.at(i++);
                 name2bodyptr[body->get_name()] = body;
@@ -106,13 +106,13 @@ EnvironmentAndFrames Sim::get_env() const
 std::vector<std::string> Sim::get_command_names() const
 {
     std::vector<std::string> ret;
-    for (auto forces:pimpl->forces)
+    for (const auto& forces:pimpl->forces)
     {
-        for (auto force:forces.second)
+        for (const auto& force:forces.second)
         {
             const auto command_names = force->get_command_names();
             const auto force_name = force->get_name();
-            for (auto command_name:command_names)
+            for (const auto& command_name:command_names)
             {
                 if (not(command_name.empty()))
                 {
@@ -154,7 +154,7 @@ StateType Sim::normalize_quaternions(const StateType& all_states
 
 void Sim::force_states(StateType& x, const double t) const
 {
-    for (auto body: pimpl->bodies)
+    for (const auto& body: pimpl->bodies)
     {
         body->force_states(x, t);
     }
@@ -162,7 +162,7 @@ void Sim::force_states(StateType& x, const double t) const
 
 void Sim::dx_dt(const StateType& x, StateType& dxdt, const double t)
 {
-    for (auto body: pimpl->bodies)
+    for (const auto& body: pimpl->bodies)
     {
         body->update(pimpl->env,x,t);
         const auto Fext = sum_of_forces(x, body, t);
@@ -186,7 +186,7 @@ ssc::kinematics::UnsafeWrench Sim::sum_of_forces(const StateType& x, const BodyP
     pimpl->fictitious_forces_in_body_frame[body->get_name()] = ssc::kinematics::UnsafeWrench(coriolis_and_centripetal(states.G,states.solid_body_inertia,uvw, pqr));
     pimpl->sum_of_forces_in_body_frame[body->get_name()] = pimpl->fictitious_forces_in_body_frame[body->get_name()];
     const auto forces = pimpl->forces[body->get_name()];
-    for (auto force:forces)
+    for (const auto& force:forces)
     {
         const ssc::kinematics::Wrench tau = force->operator()(states, t, pimpl->env, pimpl->command_listener);
         pimpl->sum_of_forces_in_body_frame[body->get_name()] += tau;
@@ -232,14 +232,14 @@ void Sim::output(const StateType& x, Observer& obs, const double t, const std::v
 {
     obs.write_before_solver_step(t, DataAddressing(std::vector<std::string>(1,"t"), "t"));
     StateType x_with_forced_states;
-    for (auto body: pimpl->bodies)
+    for (const auto& body: pimpl->bodies)
     {
         x_with_forced_states = body->block_states_if_necessary(x,t);
     }
     const auto normalized_x = normalize_quaternions(x_with_forced_states);
-    for (auto forces:pimpl->forces)
+    for (const auto& forces:pimpl->forces)
     {
-        for (auto force:forces.second)
+        for (const auto& force:forces.second)
         {
             const auto body_name = forces.first;
             const auto body = pimpl->name2bodyptr[body_name];
@@ -248,7 +248,7 @@ void Sim::output(const StateType& x, Observer& obs, const double t, const std::v
             force->extra_observations(obs);
         }
     }
-    for (auto body:pimpl->bodies)
+    for (const auto& body:pimpl->bodies)
     {
         body->feed(normalized_x, obs, pimpl->env.rot);
         ssc::kinematics::Wrench WdF = body->get_delta_F(pimpl->_dx_dt,pimpl->sum_of_forces_in_body_frame[body->get_name()]);
@@ -261,7 +261,7 @@ void Sim::output(const StateType& x, Observer& obs, const double t, const std::v
         obs.write_before_solver_step(dF(5),DataAddressing(std::vector<std::string>{"efforts",body->get_name(),"blocked states",body->get_name(),"Mz"},std::string("Mz(blocked states,")+body->get_name()+","+body->get_name()+")"));
     }
     pimpl->env.feed(obs, t, pimpl->bodies, normalized_x);
-    for (auto body:pimpl->bodies)
+    for (const auto& body:pimpl->bodies)
     {
         pimpl->feed_sum_of_forces(obs, body->get_name());
         pimpl->feed_fictitious_forces(obs, body->get_name());
@@ -347,7 +347,7 @@ double Sim::get_state_value(const std::string &name) const
 
 void Sim::reset_history()
 {
-    for (auto body:pimpl->bodies)
+    for (const auto& body:pimpl->bodies)
     {
         body->reset_history();
     }

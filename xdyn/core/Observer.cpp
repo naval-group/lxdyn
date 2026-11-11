@@ -182,7 +182,7 @@ void Observer::serialize_requested_variables(const std::vector<std::string>& var
     const size_t n = variables_to_serialize.size();
     size_t i = 0;
     before_write();
-    for (auto variable_name:variables_to_serialize)
+    for (const auto& variable_name:variables_to_serialize)
     {
         auto serialization_functor = serialize.find(variable_name);
         if (serialization_functor != serialize.end())

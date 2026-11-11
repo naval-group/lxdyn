@@ -45,7 +45,7 @@ TEST_F(ResultantForceComputerTest, sim_only_contains_gravity_and_hydrostatic_for
 
     std::map<std::string,std::vector<ForcePtr> > forces = s.get_forces();
     std::set<std::string> force_models;
-    for (auto force:forces["cube"])
+    for (const auto& force:forces["cube"])
     {
         force_models.insert(force->get_name());
     }
