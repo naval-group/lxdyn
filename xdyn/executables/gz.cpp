@@ -15,7 +15,6 @@
 #include "boost_program_options_descriptions/OptionPrinter.hpp"
 #include <google/protobuf/stubs/common.h>
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

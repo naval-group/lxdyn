@@ -1,5 +1,5 @@
-#ifndef _RAOINTERPOLATORHPP_
-#define _RAOINTERPOLATORHPP_
+#ifndef RAOINTERPOLATOR_HPP_
+#define RAOINTERPOLATOR_HPP_
 
 #include "xdyn/external_data_structures/YamlRAO.hpp"
 #include <ssc/interpolation.hpp>

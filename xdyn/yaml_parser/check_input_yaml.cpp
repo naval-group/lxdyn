@@ -141,8 +141,8 @@ void check_for_duplicated_controller_names(const std::vector<YamlController>& co
 }
 
 
-void _raise_invalid_input_exception(const std::string& model_name, const std::string& model_name_requesting_mesh);
-void _raise_invalid_input_exception(const std::string& model_name, const std::string& model_name_requesting_mesh)
+void raise_invalid_input_exception(const std::string& model_name, const std::string& model_name_requesting_mesh);
+void raise_invalid_input_exception(const std::string& model_name, const std::string& model_name_requesting_mesh)
 {
     if (model_name == model_name_requesting_mesh)
     {
@@ -160,9 +160,9 @@ void check_for_mesh_declaration_if_needed_by_force_models(const std::vector<Yaml
         {
             for (const auto& external_force: body.external_forces)
             {
-                _raise_invalid_input_exception(external_force.model, "non-linear hydrostatic (fast)");
-                _raise_invalid_input_exception(external_force.model, "non-linear hydrostatic (exact)");
-                _raise_invalid_input_exception(external_force.model, "non-linear Froude-Krylov");
+                raise_invalid_input_exception(external_force.model, "non-linear hydrostatic (fast)");
+                raise_invalid_input_exception(external_force.model, "non-linear hydrostatic (exact)");
+                raise_invalid_input_exception(external_force.model, "non-linear Froude-Krylov");
             }
         }
     }

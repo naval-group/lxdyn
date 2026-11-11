@@ -15,7 +15,6 @@
 
 constexpr double EPS = 1E-6;
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

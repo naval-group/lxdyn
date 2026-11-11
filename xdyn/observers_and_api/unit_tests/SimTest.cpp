@@ -25,7 +25,6 @@
 #include <ssc/solver/steppers.hpp>
 #include <boost/algorithm/string.hpp> // replace in string
 #include <fstream>
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 #include <math.h> // isnan

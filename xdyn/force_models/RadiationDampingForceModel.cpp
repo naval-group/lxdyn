@@ -29,7 +29,6 @@
 #include <array>
 #include <functional>
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

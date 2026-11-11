@@ -17,7 +17,6 @@
 #include <ssc/integrate.hpp>
 using InterpolatorPtr = std::shared_ptr<ssc::interpolation::Interpolator>;
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

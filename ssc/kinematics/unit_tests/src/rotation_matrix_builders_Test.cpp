@@ -10,7 +10,6 @@
 #include "ssc/kinematics/rotation_matrix_builders.hpp"
 #include "ssc/kinematics/EulerAngles.hpp"
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 #ifndef M_PI
 #define M_PI (4*atan(1.))

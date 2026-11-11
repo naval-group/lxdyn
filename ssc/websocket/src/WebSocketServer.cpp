@@ -27,9 +27,6 @@ struct Server::Impl
 
 using InternalMessageHandler = std::function<void(WSServer* , websocketpp::connection_hdl, message_ptr )>;
 
-using std::placeholders::_1;
-using std::placeholders::_2;
-
 void create_server(WSServer& server, const short unsigned int port, const InternalMessageHandler& message_handler, const bool verbose);
 
 InternalMessageHandler get_lambda(MessageHandler& message_handler);
@@ -83,7 +80,7 @@ void create_server(WSServer& server, const short unsigned int port, const Intern
         // Initialize ASIO
         server.init_asio();
         // Register our message handler
-        server.set_message_handler(std::bind(message_handler,&server,::_1,::_2));
+        server.set_message_handler(std::bind(message_handler,&server,std::placeholders::_1,std::placeholders::_2));
         // Listen on port
         server.listen(port);
         // Start the server accept loop

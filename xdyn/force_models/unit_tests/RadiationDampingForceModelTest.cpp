@@ -16,7 +16,6 @@
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
 #include <ssc/integrate.hpp>
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 #include <fstream>

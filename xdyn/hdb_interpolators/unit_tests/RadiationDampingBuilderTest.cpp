@@ -14,7 +14,6 @@
 #include <ssc/integrate.hpp>
 #include <ssc/macros.hpp>
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

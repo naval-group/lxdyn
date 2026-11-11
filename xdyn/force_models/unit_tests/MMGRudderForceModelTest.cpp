@@ -10,7 +10,6 @@
 #include "xdyn/force_models/MMGRudderForceModel.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #include <memory>
 #define PI M_PI

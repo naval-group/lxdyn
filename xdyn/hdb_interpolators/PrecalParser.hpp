@@ -5,8 +5,8 @@
  *      Author: cady
  */
 
-#ifndef __PRECALPARSERHPP__
-#define __PRECALPARSERHPP__
+#ifndef PRECALPARSER_HPP_
+#define PRECALPARSER_HPP_
 
 #include <boost/variant.hpp>
 #include "HydroDBParser.hpp"

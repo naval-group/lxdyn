@@ -18,7 +18,6 @@
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include <memory>
 #include <ssc/kinematics.hpp>
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

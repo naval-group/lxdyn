@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 constexpr double EPS = 1E-10;

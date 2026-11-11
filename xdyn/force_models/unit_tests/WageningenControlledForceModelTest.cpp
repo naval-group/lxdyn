@@ -14,7 +14,6 @@
 constexpr double EPS = 1E-2;
 constexpr int NB_TRIALS = 100;
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #include <memory>
 #define PI M_PI
