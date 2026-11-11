@@ -24,7 +24,7 @@ std::string AeroPolarForceModel::model_name()
 }
 
 AeroPolarForceModel::AeroPolarForceModel(const Input input, const std::string body_name_, const EnvironmentAndFrames& env):
-        ForceModel(input.name, input.angle_command ? std::vector<std::string>({input.angle_command.get()}) : std::vector<std::string>(), body_name_, env),
+        ForceModel(input.name, input.angle_command ? std::vector<std::string>({input.angle_command.value()}) : std::vector<std::string>(), body_name_, env),
         Cl(),
         Cd(),
         reference_area(input.reference_area),
@@ -95,7 +95,7 @@ Wrench AeroPolarForceModel::get_force(const BodyStates& states, const double t, 
     double alpha = beta; // Angle of attack
     if (angle_command)
     {
-        alpha -= commands.at(angle_command.get());
+        alpha -= commands.at(angle_command.value());
     }
     alpha = remainder(alpha, 2*M_PI); // Putting alpha in [-pi,pi]
     if (alpha<0)

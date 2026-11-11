@@ -10,7 +10,7 @@
 #include <Eigen/Dense>
 #include <memory>
 #include <ssc/macros.hpp>
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include "yaml-cpp/exceptions.h"
 
 #include "xdyn/external_data_structures/YamlModel.hpp"
@@ -18,7 +18,7 @@
 
 class UWCurrentModel;
 using UWCurrentModelPtr = std::shared_ptr<UWCurrentModel>;
-using UWCurrentParser = std::function<boost::optional<UWCurrentModelPtr>(const YamlModel&)>;
+using UWCurrentParser = std::function<std::optional<UWCurrentModelPtr>(const YamlModel&)>;
 
 class UWCurrentModel
 {
@@ -32,15 +32,15 @@ public:
     template <typename UWCurrentType>
     static UWCurrentParser build_parser()
     {
-        auto parser = [](const YamlModel& yaml) -> boost::optional<UWCurrentModelPtr>
+        auto parser = [](const YamlModel& yaml) -> std::optional<UWCurrentModelPtr>
         {
-            boost::optional<UWCurrentModelPtr> ret;
+            std::optional<UWCurrentModelPtr> ret;
             if (yaml.model == UWCurrentType::model_name())
             {
                 std::string context = "Invalid input data for model '" + UWCurrentType::model_name() + "'.";
                 try
                 {
-                    ret.reset(UWCurrentModelPtr(new UWCurrentType(UWCurrentType::parse(yaml.yaml))));
+                    ret = UWCurrentModelPtr(new UWCurrentType(UWCurrentType::parse(yaml.yaml)));
                 }
                 catch (const InvalidInputException& exception)
                 {

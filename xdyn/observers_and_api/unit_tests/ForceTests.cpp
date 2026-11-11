@@ -7,6 +7,7 @@
 
 #include "ForceTests.hpp"
 #include "ForceTester.hpp"
+#include "gmock/gmock.h"
 #include "xdyn/binary_stl_data/generate_test_ship.hpp"
 #include "xdyn/external_file_formats/stl_writer.hpp"
 #include "xdyn/force_models/ExactHydrostaticForceModel.hpp"
@@ -23,8 +24,6 @@
 #include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 #include <ssc/macros.hpp>
-
-#include <boost/optional/optional_io.hpp>
 
 #define EPS (1E-8)
 
@@ -389,8 +388,7 @@ TEST_F(ForceTests, bug_3004)
                            "name of hydrostatic force model: non-linear hydrostatic (fast)\n"
                            "roll step: {value: 1, unit: degree}");
     const auto gm = test.gm(0,0,-5e-07,0,0,0);
-    ASSERT_TRUE(gm.is_initialized());
-    ASSERT_FALSE(std::isnan(gm.get()));
+    ASSERT_THAT(gm, testing::Optional(testing::Not(testing::IsNan())));
 }
 
 EnvironmentAndFrames ForceTests::get_env(const YamlModel& waves, const std::string& body_name) const

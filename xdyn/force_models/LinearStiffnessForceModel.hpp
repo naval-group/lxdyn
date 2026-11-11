@@ -2,7 +2,7 @@
 #define LINEARSTIFFNESSFORCEMODEL_HPP_
 
 #include <Eigen/Dense>
-#include <boost/optional.hpp>
+#include <optional>
 #include "xdyn/core/ForceModel.hpp"
 
 class LinearStiffnessForceModel : public ForceModel
@@ -13,7 +13,7 @@ class LinearStiffnessForceModel : public ForceModel
             Input();
             std::string name;
             Eigen::Matrix<double,6,6> K;
-            boost::optional<YamlPosition> equilibrium_position;
+            std::optional<YamlPosition> equilibrium_position;
         };
 
         LinearStiffnessForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
@@ -24,7 +24,7 @@ class LinearStiffnessForceModel : public ForceModel
 
     private:
         Eigen::Matrix<double,6,6> K; //!< 6x6 linear stiffness matrix expressed in the body frame
-        boost::optional<YamlPosition> equilibrium_position;
+        std::optional<YamlPosition> equilibrium_position;
 };
 
 #endif /* LINEARSTIFFNESSFORCEMODEL_HPP_ */

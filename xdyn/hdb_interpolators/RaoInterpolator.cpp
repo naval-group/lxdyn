@@ -84,9 +84,9 @@ RaoInterpolator::RaoInterpolator(
         module.at(i) = Interpolator(rao.module_periods, rao.module_incidence, rao.module_tables.at(i));
         phase.at(i) = Interpolator(rao.phase_periods, rao.phase_incidence, rao.phase_tables.at(i));
     }
-    if (yaml_rao.use_encounter_period.is_initialized())
+    if (yaml_rao.use_encounter_period.has_value())
     {
-        use_encounter_period = yaml_rao.use_encounter_period.get();
+        use_encounter_period = yaml_rao.use_encounter_period.value();
     }
 }
 

@@ -78,13 +78,14 @@ TEST_F(LinearStiffnessForceModelTest, can_parse_optional)
                              "            psi: {value: 6, unit: rad}\n";
     const LinearStiffnessForceModel::Input input = LinearStiffnessForceModel::parse(yaml);
     ASSERT_TRUE(input.equilibrium_position);
-    ASSERT_EQ(input.equilibrium_position.get().frame, "body");
-    ASSERT_DOUBLE_EQ(input.equilibrium_position.get().coordinates.x, 1);
-    ASSERT_DOUBLE_EQ(input.equilibrium_position.get().coordinates.y, 2);
-    ASSERT_DOUBLE_EQ(input.equilibrium_position.get().coordinates.z, 3);
-    ASSERT_DOUBLE_EQ(input.equilibrium_position.get().angle.phi, 4);
-    ASSERT_DOUBLE_EQ(input.equilibrium_position.get().angle.theta, 5);
-    ASSERT_DOUBLE_EQ(input.equilibrium_position.get().angle.psi, 6);
+    const YamlPosition equilibrium_position = input.equilibrium_position.value_or(YamlPosition());
+    ASSERT_EQ(equilibrium_position.frame, "body");
+    ASSERT_DOUBLE_EQ(equilibrium_position.coordinates.x, 1);
+    ASSERT_DOUBLE_EQ(equilibrium_position.coordinates.y, 2);
+    ASSERT_DOUBLE_EQ(equilibrium_position.coordinates.z, 3);
+    ASSERT_DOUBLE_EQ(equilibrium_position.angle.phi, 4);
+    ASSERT_DOUBLE_EQ(equilibrium_position.angle.theta, 5);
+    ASSERT_DOUBLE_EQ(equilibrium_position.angle.psi, 6);
 }
 
 BodyStates get_position_states(const double x, const double y, const double z, const double phi, const double theta, const double psi);

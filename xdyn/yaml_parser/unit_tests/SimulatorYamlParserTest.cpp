@@ -66,8 +66,7 @@ TEST_F(SimulatorYamlParserTest, can_parse_environmental_constants)
     ASSERT_DOUBLE_EQ(9.81, yaml.environmental_constants.g);
     ASSERT_DOUBLE_EQ(1000, yaml.environmental_constants.rho);
     ASSERT_DOUBLE_EQ(1.18e-6, yaml.environmental_constants.nu);
-    ASSERT_TRUE(yaml.environmental_constants.rho_air.is_initialized());
-    ASSERT_DOUBLE_EQ(1.225, yaml.environmental_constants.rho_air.get());
+    ASSERT_THAT(yaml.environmental_constants.rho_air, Optional(DoubleEq(1.225)));
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_external_forces)

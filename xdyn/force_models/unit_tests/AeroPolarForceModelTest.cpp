@@ -1,6 +1,7 @@
 #include "AeroPolarForceModelTest.hpp"
 #include "AeroPolarForceModel.hpp"
 #include "xdyn/environment_models/UniformWindVelocityProfile.hpp"
+#include "gmock/gmock.h"
 #include <cmath>
 #include <memory>
 
@@ -39,8 +40,7 @@ TEST_F(AeroPolarForceModelTest, can_parse)
         ASSERT_DOUBLE_EQ(input.lift_coefficient.at(i), Cl.at(i));
         ASSERT_DOUBLE_EQ(input.drag_coefficient.at(i), Cd.at(i));
     }
-    ASSERT_TRUE(input.angle_command);
-    ASSERT_EQ(input.angle_command.get(), "beta");
+    ASSERT_THAT(input.angle_command, testing::Optional(std::string("beta")));
 }
 
 namespace {

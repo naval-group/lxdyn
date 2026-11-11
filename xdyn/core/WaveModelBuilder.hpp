@@ -10,7 +10,7 @@
 
 #include <ssc/macros.hpp>
 #include <memory>
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -34,8 +34,8 @@ class WaveModelBuilderInterface
                 spectrum_parsers(spectrum_parsers_)
                 {}
         virtual ~WaveModelBuilderInterface() {}
-        virtual boost::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const DiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const = 0;
-        virtual boost::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const = 0;
+        virtual std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const DiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const = 0;
+        virtual std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const = 0;
 
     protected:
         std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> > directional_spreading_parsers;
@@ -48,8 +48,8 @@ template <typename T> class WaveModelBuilder : public WaveModelBuilderInterface
         WaveModelBuilder(const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >& directional_spreading_parsers_,
                          const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) : WaveModelBuilderInterface(directional_spreading_parsers_,spectrum_parsers_) {}
         ~WaveModelBuilder() override {}
-        boost::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const DiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
-        boost::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
+        std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const DiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
+        std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
 };
 
 using WaveModelBuilderPtr = std::shared_ptr<WaveModelBuilderInterface>;

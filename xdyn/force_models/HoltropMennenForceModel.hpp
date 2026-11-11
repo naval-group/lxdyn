@@ -2,7 +2,7 @@
 #define FORCE_MODELS_INC_HOLTROPMENNENFORCEMODEL_HPP_
 
 #include <functional>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
@@ -20,16 +20,16 @@ class HoltropMennenForceModel : public ForceModel
             double Tf;
             double Vol;
             double lcb;
-            boost::optional<double> S;
+            std::optional<double> S;
             double Abt;
             double hb;
             double Cm;
             double Cwp;
-            boost::optional<double> iE; // WARNING: iE must be in degrees
+            std::optional<double> iE; // WARNING: iE must be in degrees
             double At;
             double Sapp;
             double Cstern;
-            boost::optional<double> hull_form_coeff;
+            std::optional<double> hull_form_coeff;
             double app_form_coeff;
             bool apply_on_ship_speed_direction; // This parameter is used to apply the force on the ship's speed direction rather than the X-axis.
         };

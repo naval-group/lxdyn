@@ -65,7 +65,7 @@ EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
     EnvironmentAndFrames env;
     env.g = input.environmental_constants.g;
     env.rho = input.environmental_constants.rho;
-    if(input.environmental_constants.rho_air) env.set_rho_air(input.environmental_constants.rho_air.get());
+    if(input.environmental_constants.rho_air) env.set_rho_air(input.environmental_constants.rho_air.value());
     env.nu = input.environmental_constants.nu;
     env.rot = input.rotations;
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
@@ -83,40 +83,40 @@ EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
         bool env_model_successfully_parsed = false;
         for (auto that_parser=surface_elevation_parsers.begin() ; that_parser != surface_elevation_parsers.end() ; ++that_parser)
         {
-            boost::optional<SurfaceElevationPtr> w = (*that_parser)->try_to_parse(that_model->model, that_model->yaml);
+            std::optional<SurfaceElevationPtr> w = (*that_parser)->try_to_parse(that_model->model, that_model->yaml);
             if (w)
             {
                 if (env.w)
                 {
                     THROW(__PRETTY_FUNCTION__, InternalErrorException, "More than one wave model was defined.");
                 }
-                env.w = w.get();
+                env.w = w.value();
                 env_model_successfully_parsed = true;
             }
         }
         for(const auto& parser:wind_model_parsers)
         {
-            boost::optional<WindModelPtr> w = parser(*that_model);
+            std::optional<WindModelPtr> w = parser(*that_model);
             if (w)
             {
                 if(env.wind)
                 {
                     THROW(__PRETTY_FUNCTION__, InternalErrorException, "More than one wind model was defined.");
                 }
-                env.wind = w.get();
+                env.wind = w.value();
                 env_model_successfully_parsed = true;
             }
         }
         for(const auto& parser:UWCurrent_model_parsers)
         {
-            boost::optional<UWCurrentModelPtr> c = parser(*that_model);
+            std::optional<UWCurrentModelPtr> c = parser(*that_model);
             if (c)
             {
                 if(env.UWCurrent)
                 {
                     THROW(__PRETTY_FUNCTION__, InternalErrorException, "More than one underwater current model was defined.");
                 }
-                env.UWCurrent = c.get();
+                env.UWCurrent = c.value();
                 env_model_successfully_parsed = true;
             }
         }
@@ -165,14 +165,14 @@ void SimulatorBuilder::add(const YamlModel& model, ListOfForces& L, const std::s
     bool parsed = false;
     for (const auto& try_to_parse:force_parsers)
     {
-        boost::optional<ForcePtr> f = try_to_parse(model, name, env);
+        std::optional<ForcePtr> f = try_to_parse(model, name, env);
         if (f)
         {
             if (parsed)
             {
                 THROW(__PRETTY_FUNCTION__, InvalidInputException, "Two force models are both registered as '" << model.model << "'.");
             }
-            L.push_back(f.get());
+            L.push_back(f.value());
             parsed = true;
         }
     }

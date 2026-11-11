@@ -21,12 +21,12 @@ Wrench LinearStiffnessForceModel::get_force(const BodyStates& states, const doub
     ssc::kinematics::EulerAngles angles = states.get_angles();
     if (equilibrium_position)
     {
-        X <<states.x() - equilibrium_position.get().coordinates.x,
-            states.y() - equilibrium_position.get().coordinates.y,
-            states.z() - equilibrium_position.get().coordinates.z,
-            angles.phi - equilibrium_position.get().angle.phi,
-            angles.theta - equilibrium_position.get().angle.theta,
-            angles.psi - equilibrium_position.get().angle.psi;
+        X <<states.x() - equilibrium_position.value().coordinates.x,
+            states.y() - equilibrium_position.value().coordinates.y,
+            states.z() - equilibrium_position.value().coordinates.z,
+            angles.phi - equilibrium_position.value().angle.phi,
+            angles.theta - equilibrium_position.value().angle.theta,
+            angles.psi - equilibrium_position.value().angle.psi;
     }
     else
     {

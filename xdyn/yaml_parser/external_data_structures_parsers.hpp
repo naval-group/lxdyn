@@ -14,7 +14,7 @@
 // the templates are defined.
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include <yaml-cpp/yaml.h>
 
 size_t try_to_parse_positive_integer(const YAML::Node& node, const std::string& key);
@@ -43,7 +43,7 @@ void try_to_parse(const YAML::Node& node, const std::string& key, T& value)
 }
 
 template <typename T>
-void parse_optional(const YAML::Node& node, const std::string& key, boost::optional<T>& opt)
+void parse_optional(const YAML::Node& node, const std::string& key, std::optional<T>& opt)
 {
     if (node[key])
     {

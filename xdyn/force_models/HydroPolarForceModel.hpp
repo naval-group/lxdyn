@@ -4,7 +4,7 @@
 #include <memory>
 #include <ssc/interpolation.hpp>
 #include <Eigen/Dense>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "xdyn/core/ForceModel.hpp"
 
@@ -19,11 +19,11 @@ class HydroPolarForceModel : public ForceModel
             std::vector<double> angle_of_attack;
             std::vector<double> lift_coefficient;
             std::vector<double> drag_coefficient;
-            boost::optional<std::vector<double>> moment_coefficient;
+            std::optional<std::vector<double>> moment_coefficient;
             double reference_area;
-            boost::optional<double> chord_length;
+            std::optional<double> chord_length;
             bool use_waves_velocity;
-            boost::optional<std::string> angle_command;
+            std::optional<std::string> angle_command;
         };
 
         HydroPolarForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
@@ -43,10 +43,10 @@ class HydroPolarForceModel : public ForceModel
         std::unique_ptr<ssc::interpolation::SplineVariableStep> Cd; //!< Drag coefficient as a function of the apparent flow angle beta
         std::unique_ptr<ssc::interpolation::SplineVariableStep> Cm; //!< Moment coefficient as a function of the apparent flow angle beta (optional)
         const double reference_area; //!< Reference area (in square metres) of the wing, for lift and drag normalization
-        boost::optional<double> chord_length; //!< Chord length (in m), used (optionally) for moment normalization
+        std::optional<double> chord_length; //!< Chord length (in m), used (optionally) for moment normalization
         bool symmetry; //!< If true, then lift and drag coefficients from -180° to 0° angle of attack are the same as the coefficients from 0° to 180° (they are symmetric with respect to the foil's x0 axis in the (x0,y0) plane). Otherwise, the coefficients are assumed to have been given for angle of attack from -180° to 180°.
         bool use_waves_velocity; //!< If true, the waves orbital velocity is added to the flow velocity acting on the foil
-        boost::optional<std::string> angle_command; //!< Optional command for the angle (in rad)
+        std::optional<std::string> angle_command; //!< Optional command for the angle (in rad)
 
         // These variables are computed at each time step and stored for outputting
         const std::unique_ptr<double> relative_velocity; //!< Relative flow velocity at the origin of internal frame (m/s) = U
