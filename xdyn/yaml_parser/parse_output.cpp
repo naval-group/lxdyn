@@ -38,12 +38,9 @@ std::vector<YamlOutput> parse_output(const std::string& yaml)
 {
     std::vector<YamlOutput> ret;
     YAML::Node node = YAML::Load(yaml);
-    try
+    if (node["output"])
     {
         node["output"] >> ret;
-    }
-    catch(std::exception& ) // Nothing to do: 'output' section is not mandatory
-    {
     }
     return ret;
 }

@@ -30,12 +30,9 @@ YamlDefaultWaveModel parse_default_wave_model(const std::string& yaml)
     YamlDefaultWaveModel ret;
     YAML::Node node = YAML::Load(yaml);
     xdyn::yaml_parser::parse_uv(node["constant sea elevation in NED frame"], ret.zwave);
-    try
+    if (node["output"])
     {
-        node["output"]         >> ret.output;
-    }
-    catch(std::exception& ) // Nothing to do: 'output' section is not mandatory
-    {
+        node["output"] >> ret.output;
     }
     return ret;
 }
@@ -133,12 +130,9 @@ void operator >> (const YAML::Node& node, YamlDiscretization& g)
     xdyn::yaml_parser::parse_uv(node["omega min"], g.omega_min);
     xdyn::yaml_parser::parse_uv(node["omega max"], g.omega_max);
     node["energy fraction"] >> g.energy_fraction;
-    try
+    if (node["equal energy bins"])
     {
-        node["equal energy bins"]         >> g.equal_energy_bins;
-    }
-    catch(std::exception& ) // Nothing to do: 'equal energy bins' section is not mandatory
-    {
+        node["equal energy bins"] >> g.equal_energy_bins;
     }
     if (node["periodic"])
     {
@@ -516,12 +510,9 @@ void operator >> (const YAML::Node& node, YamlGRPC& f);
 void operator >> (const YAML::Node& node, YamlGRPC& f)
 {
     node["url"] >> f.url;
-    try
+    if (node["output"])
     {
         node["output"] >> f.output;
-    }
-    catch(std::exception& ) // Nothing to do: 'output' section is not mandatory
-    {
     }
 
 }

@@ -258,13 +258,10 @@ class Parser
                 }
                 else if (parsing_vector_key_value)
                 {
-                    try
+                    double value = 0;
+                    if (boost::conversion::try_lexical_convert(previous_token, value))
                     {
-                        append_value_to_current_vector_value(
-                            boost::lexical_cast<double>(previous_token));
-                    }
-                    catch (const std::exception&)
-                    {
+                        append_value_to_current_vector_value(value);
                     }
                 }
                 previous_token = "";
@@ -304,12 +301,10 @@ class Parser
             {
                 if (parsing_vector_key_value)
                 {
-                    try
+                    double value = 0;
+                    if (boost::conversion::try_lexical_convert(token, value))
                     {
-                        append_value_to_current_vector_value(boost::lexical_cast<double>(token));
-                    }
-                    catch (const std::exception&)
-                    {
+                        append_value_to_current_vector_value(value);
                     }
                 }
                 else

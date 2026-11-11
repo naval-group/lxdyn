@@ -143,24 +143,19 @@ void ForceModel::can_find_internal_frame(const ssc::kinematics::KinematicsPtr& k
 {
     if (has_internal_frame)
     {
-        bool reference_frame_exists = false;
-        try
+        const auto transform_exists = [&](const std::string& from_frame)
         {
-            k->get(body_name, known_reference_frame);
-            reference_frame_exists = true;
-        }
-        catch (const ssc::kinematics::KinematicsException& e)
-        {
-        }
-        try
-        {
-            k->get("NED", known_reference_frame);
-            reference_frame_exists = true;
-        }
-        catch (const ssc::kinematics::KinematicsException& e)
-        {
-        }
-        if (not(reference_frame_exists))
+            try
+            {
+                k->get(from_frame, known_reference_frame);
+                return true;
+            }
+            catch (const ssc::kinematics::KinematicsException&)
+            {
+                return false;
+            }
+        };
+        if (not(transform_exists(body_name) or transform_exists("NED")))
         {
             THROW(__PRETTY_FUNCTION__, InvalidInputException, "When computing force model '" << name << "' we were unable to find frame '" << known_reference_frame << "' used as base frame of the frame in which the forces are expressed. Use 'NED' or '" << body_name << "' in the 'frame' section perhaps?");
         }

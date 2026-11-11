@@ -128,9 +128,8 @@ namespace ssc
                     {
                         throw;
                     }
-                    catch(...)
+                    catch(...) // NOLINT(bugprone-empty-catch): m->update() may throw here, as only its dependencies are wanted
                     {
-                        // It's OK for m->update() to throw at this stage because we just want to retrieve its dependencies
                     }
                     modules.push_back(typify<T>(module.get_name()));
                     readonly = read_only_bak;
