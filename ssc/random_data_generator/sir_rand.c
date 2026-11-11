@@ -91,7 +91,7 @@ static unsigned int sir_rand_default_seed[] = {
 };
 */
 
-#define SIR_RAND_SIZE sizeof(sir_rand_seed)/sizeof(sir_rand_seed[0])
+#define SIR_RAND_SIZE (sizeof(sir_rand_seed)/sizeof(sir_rand_seed[0]))
 
 static unsigned int * const sir_rand_seed_1 = sir_rand_seed;
 static unsigned int * const sir_rand_seed_2 = sir_rand_seed + 4;

@@ -300,7 +300,7 @@ void Body::update_projection_of_z_in_mesh_frame(const double g,
     states.g_in_mesh_frame = ned2mesh*g_in_NED.v;
 }
 
-#define CHECK(x,y,t) if (std::isnan(x)) {THROW(__PRETTY_FUNCTION__,NumericalErrorException,"NaN detected in state " << y << ", at t = " << t);}
+#define CHECK(x,y,t) if (std::isnan(x)) {THROW(__PRETTY_FUNCTION__,NumericalErrorException,"NaN detected in state " << (y) << ", at t = " << (t));}
 void Body::update(const EnvironmentAndFrames& env, const StateType& x, const double t)
 {
     ConstBodyStateView s(x, idx);

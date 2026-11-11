@@ -11,8 +11,6 @@
 #include "xdyn/force_models/calculate_gz.hpp"
 #include "xdyn/force_models/GravityForceModel.hpp"
 
-#define NORM(f) (sqrt(f.X()*f.X()+f.Y()*f.Y()+f.Z()*f.Z()))
-
 GZ::ResultantForceComputer::ResultantForceComputer(const Sim& s, const double dz_, const double dtheta_) :
     body(s.get_bodies().front()),
     env(s.get_env()),

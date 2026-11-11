@@ -97,8 +97,8 @@ void write(InfNaNWriter& writer, const std::map<std::string, double>& m)
     writer.EndObject();
 }
 
-#define ADD_ARRAY(key, doc) doc.AddMember(key,rapidjson::Value(rapidjson::kArrayType).Move(), doc.GetAllocator())
-#define PUSH_BACK(array, value, doc) array.PushBack(value, doc.GetAllocator())
+#define ADD_ARRAY(key, doc) (doc).AddMember(key,rapidjson::Value(rapidjson::kArrayType).Move(), (doc).GetAllocator())
+#define PUSH_BACK(array, value, doc) (array).PushBack(value, (doc).GetAllocator())
 
 std::string serialize(const std::vector<YamlState>& states)
 {

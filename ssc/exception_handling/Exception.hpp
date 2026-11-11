@@ -34,7 +34,7 @@ namespace ssc
 #define THROW(function, exception, message)\
     do {\
         std::stringstream ssc_throw_message;\
-        ssc_throw_message << message;\
+        ssc_throw_message << message; /* NOLINT(bugprone-macro-parentheses): message is a << chain */\
         throw exception(ssc_throw_message.str(), __FILE__, function, __LINE__);\
     } while (false)
 #endif

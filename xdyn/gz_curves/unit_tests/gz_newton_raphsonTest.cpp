@@ -9,8 +9,8 @@
 #include "gz_newton_raphsonTest.hpp"
 #include "gz_newton_raphson.hpp"
 
-#define SQ(X) (X*X)
-#define CB(X) (X*X*X)
+#define SQ(X) ((X)*(X))
+#define CB(X) ((X)*(X)*(X))
 
 constexpr double EPS = 1E-15;
 

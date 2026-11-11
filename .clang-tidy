@@ -24,7 +24,6 @@ Checks:
   - '-bugprone-exception-escape'
   - '-bugprone-float-loop-counter'
   - '-bugprone-forward-declaration-namespace'
-  - '-bugprone-macro-parentheses'
   - '-bugprone-narrowing-conversions'
   - '-bugprone-signed-char-misuse'
   - '-bugprone-suspicious-include'
