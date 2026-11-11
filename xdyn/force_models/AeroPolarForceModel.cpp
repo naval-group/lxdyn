@@ -23,7 +23,7 @@ std::string AeroPolarForceModel::model_name()
     return "aerodynamic polar";
 }
 
-AeroPolarForceModel::AeroPolarForceModel(const Input input, const std::string body_name_, const EnvironmentAndFrames& env):
+AeroPolarForceModel::AeroPolarForceModel(const Input& input, const std::string& body_name_, const EnvironmentAndFrames& env):
         ForceModel(input.name, input.angle_command ? std::vector<std::string>({input.angle_command.value()}) : std::vector<std::string>(), body_name_, env),
         Cl(),
         Cd(),

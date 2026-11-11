@@ -23,7 +23,7 @@ class AeroPolarForceModel : public ForceModel
             std::optional<std::string> angle_command;
         };
 
-        AeroPolarForceModel(const Input input, const std::string body_name, const EnvironmentAndFrames& env);
+        AeroPolarForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
         AeroPolarForceModel() = delete;
         ~AeroPolarForceModel() override = default;
 

@@ -95,7 +95,7 @@ void Wrench::transport_to(const ssc::kinematics::Point& P, const ssc::kinematics
     }
 }
 
-void Wrench::change_point_and_frame(const ssc::kinematics::Point& P, const std::string new_frame, const ssc::kinematics::KinematicsPtr& k)
+void Wrench::change_point_and_frame(const ssc::kinematics::Point& P, const std::string& new_frame, const ssc::kinematics::KinematicsPtr& k)
 {
     transport_to(P, k);
     change_frame(new_frame, k);
@@ -122,7 +122,7 @@ Wrench Wrench::transport_to(const ssc::kinematics::Point& P, const ssc::kinemati
     return ret;
 }
 
-Wrench Wrench::change_point_and_frame(const ssc::kinematics::Point& P, const std::string new_frame, const ssc::kinematics::KinematicsPtr& k) const
+Wrench Wrench::change_point_and_frame(const ssc::kinematics::Point& P, const std::string& new_frame, const ssc::kinematics::KinematicsPtr& k) const
 {
     Wrench ret(*this);
     ret.change_point_and_frame(P, new_frame, k);

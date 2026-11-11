@@ -31,7 +31,7 @@ double MMGRudderForceModel::RudderModel::get_angle_of_attack(
 }
 
 double MMGRudderForceModel::RudderModel::get_fluid_angle(
-    const ssc::kinematics::Point
+    const ssc::kinematics::Point&
         Vs //!< Inflow velocity relative to the ship in body frame (m/s)
 ) const
 {
@@ -387,7 +387,7 @@ ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_force(
 
 ssc::kinematics::Vector6d MMGRudderForceModel::RudderModel::get_wrench(
     const double rudder_angle,       //!< Rudder angle (in radian): positive if rudder on port side
-    const ssc::kinematics::Point Vs, //!< Mean inflow velocity (body frame) relative to the ship at the
+    const ssc::kinematics::Point& Vs, //!< Mean inflow velocity (body frame) relative to the ship at the
                                      //!< rudder location in m/s
     const double area                //!< Rudder area in m^2
 ) const

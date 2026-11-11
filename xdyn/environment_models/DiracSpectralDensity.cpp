@@ -47,7 +47,7 @@ std::vector<double> DiracSpectralDensity::get_angular_frequencies(const double,
                                                                   const size_t,
                                                                   const bool,
                                                                   const bool,
-                                                                  const std::vector<double>
+                                                                  const std::vector<double>&
                                                                   ) const
 {
     return std::vector<double>(1, omega0);

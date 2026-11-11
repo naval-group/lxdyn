@@ -236,7 +236,7 @@ void Observer::write_before_simulation(const std::vector<FlatDiscreteDirectional
     remove_variable("spectra");
 }
 
-void Observer::write_before_simulation(const MeshPtr, const DataAddressing&)
+void Observer::write_before_simulation(const MeshPtr&, const DataAddressing&)
 {
     remove_variable("mesh");
 }

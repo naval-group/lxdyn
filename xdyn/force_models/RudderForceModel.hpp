@@ -107,7 +107,7 @@ class RudderForceModel : public ForceModel
              *   \details Expressed in body frame at the rudder location
               */
             ssc::kinematics::Vector6d get_wrench(const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-                                                 ssc::kinematics::Point Vs,           //!< Speed of the ship relative to the fluid (in m/s)
+                                                 const ssc::kinematics::Point& Vs,           //!< Speed of the ship relative to the fluid (in m/s)
                                                  const double area          //!< Rudder area (in or outside wake) in m^2
                                                              ) const;
 
@@ -131,7 +131,7 @@ class RudderForceModel : public ForceModel
             /**  \brief Calculates the angle of incidence of the fluid at the rudder location
               *  \returns Angle in radian
               */
-            double get_fluid_angle(    const ssc::kinematics::Point Vs   //!< Ship speed relative to the fluid, inside & outside wake
+            double get_fluid_angle(    const ssc::kinematics::Point& Vs   //!< Ship speed relative to the fluid, inside & outside wake
     ) const;
 
             /**  \brief Returns propeller diameter

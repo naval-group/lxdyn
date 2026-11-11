@@ -30,12 +30,12 @@ RaoInterpolator::RAO RaoInterpolator::RAO::for_froude_krylov(const HydroDBParser
                parser.get_froude_krylov_phase_psis());
 }
 
-RaoInterpolator::RAO::RAO(const std::array<std::vector<std::vector<double> >,6 > module_tables_,
-    const std::array<std::vector<std::vector<double> >,6 > phase_tables_,
-    const std::vector<double> module_periods_,
-    const std::vector<double> phase_periods_,
-    const std::vector<double> module_incidence_,
-    const std::vector<double> phase_incidence_)
+RaoInterpolator::RAO::RAO(const std::array<std::vector<std::vector<double> >,6 >& module_tables_,
+    const std::array<std::vector<std::vector<double> >,6 >& phase_tables_,
+    const std::vector<double>& module_periods_,
+    const std::vector<double>& phase_periods_,
+    const std::vector<double>& module_incidence_,
+    const std::vector<double>& phase_incidence_)
     : module_tables(module_tables_)
     , phase_tables(phase_tables_)
     , module_periods(module_periods_)

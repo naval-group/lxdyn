@@ -5,6 +5,7 @@
 #include "EkmanUWCurrentModel.hpp"
 
 #include <cmath>
+#include <utility>
 #include "xdyn/yaml_parser/yaml_compat.h"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
@@ -131,7 +132,7 @@ EkmanUWCurrentModel::Input::Input() :
 }
 
 EkmanUWCurrentModel::Input::Input(Seabed seabed_input) :
-    seabed(seabed_input),
+    seabed(std::move(seabed_input)),
     top_ekman_depth(),
     bottom_ekman_depth(),
     middle_velocity(),

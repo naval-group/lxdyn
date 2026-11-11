@@ -32,7 +32,6 @@ Checks:
   - '-bugprone-unused-raii'
   - '-performance-inefficient-string-concatenation'
   - '-performance-inefficient-vector-operation'
-  - '-performance-unnecessary-value-param'
 
 WarningsAsErrors: '*'
 # Third-party headers arrive through -isystem and stay quiet; these are the rest that are not ours.

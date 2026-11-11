@@ -55,6 +55,6 @@ struct PrecalFile
 
 PrecalFile parse_precal_from_string(const std::string& file_contents);
 PrecalFile parse_precal_from_file(const std::string& filename);
-RAOAttributes parse_rao_attributes(const std::string rao_attributes);
+RAOAttributes parse_rao_attributes(const std::string& rao_attributes);
 
 #endif // PRECALPARSERHELPER_HPP_

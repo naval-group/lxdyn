@@ -171,7 +171,7 @@ void Hdf5Observer::write_python_script_before_simulation()
     }
 }
 
-void Hdf5Observer::write_before_simulation(const MeshPtr mesh, const DataAddressing& address)
+void Hdf5Observer::write_before_simulation(const MeshPtr& mesh, const DataAddressing& address)
 {
     if (should_serialize("mesh"))
     {

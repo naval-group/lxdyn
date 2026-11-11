@@ -385,7 +385,7 @@ ResultsFromPotentialTheory* get_results_from_potential_theory(const std::shared_
     return pot;
 }
 
-SetForceParameterRequest ToGRPC::from_yaml(const std::string& yaml, const std::string body_name, const std::string& instance_name, const std::shared_ptr<HydroDBParser>& hydro_db_parser) const
+SetForceParameterRequest ToGRPC::from_yaml(const std::string& yaml, const std::string& body_name, const std::string& instance_name, const std::shared_ptr<HydroDBParser>& hydro_db_parser) const
 {
     SetForceParameterRequest request;
     request.set_parameters(yaml);

@@ -1,6 +1,7 @@
 #include "py_xdyn_core.hpp"
 
 #include <memory>
+#include <utility>
 #include "py_pybind_additions.hpp"
 #include "xdyn/core/BlockedDOF.hpp"
 #include "xdyn/core/Body.hpp"
@@ -450,7 +451,7 @@ void py_add_module_xdyn_core(py::module& m0)
         )
         .def("update_body_states",
            [](const BodyPtr &a, StateType x, const double t) {
-               return a->update_body_states(x, t);
+               return a->update_body_states(std::move(x), t);
             }
         )
         .def("force_states",
