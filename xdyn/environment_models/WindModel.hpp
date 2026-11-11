@@ -11,7 +11,7 @@
 #include <Eigen/Dense>
 #include <memory>
 #include <ssc/macros.hpp>
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include "yaml-cpp/exceptions.h"
 
 #include "xdyn/external_data_structures/YamlModel.hpp"
@@ -19,7 +19,7 @@
 
 class WindModel;
 using WindModelPtr = std::shared_ptr<WindModel>;
-using WindParser = std::function<boost::optional<WindModelPtr>(const YamlModel&)>;
+using WindParser = std::function<std::optional<WindModelPtr>(const YamlModel&)>;
 
 class WindModel
 {
@@ -31,15 +31,15 @@ public:
     template <typename WindType>
     static WindParser build_parser()
     {
-        auto parser = [](const YamlModel& yaml) -> boost::optional<WindModelPtr>
+        auto parser = [](const YamlModel& yaml) -> std::optional<WindModelPtr>
         {
-            boost::optional<WindModelPtr> ret;
+            std::optional<WindModelPtr> ret;
             if (yaml.model == WindType::model_name())
             {
                 std::string context = "Invalid input data for model '" + WindType::model_name() + "'.";
                 try
                 {
-                    ret.reset(WindModelPtr(new WindType(WindType::parse(yaml.yaml))));
+                    ret = WindModelPtr(new WindType(WindType::parse(yaml.yaml)));
                 }
                 catch (const InvalidInputException& exception)
                 {

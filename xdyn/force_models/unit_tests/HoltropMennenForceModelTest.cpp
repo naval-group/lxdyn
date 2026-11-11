@@ -2,6 +2,7 @@
 #include "HoltropMennenForceModel.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/BodyStates.hpp"
+#include "gmock/gmock.h"
 
 #include <cmath>
 #include <string>
@@ -152,21 +153,18 @@ TEST_F(HoltropMennenForceModelTest, can_parse)
     ASSERT_DOUBLE_EQ(input.Cstern, 0);
     ASSERT_DOUBLE_EQ(input.app_form_coeff, 2);
     ASSERT_TRUE(input.apply_on_ship_speed_direction);
-    ASSERT_TRUE(input.S.is_initialized());
-    ASSERT_DOUBLE_EQ(input.S.get(), 27194);
-    ASSERT_TRUE(input.iE.is_initialized());
-    ASSERT_DOUBLE_EQ(input.iE.get(), 25);
-    ASSERT_TRUE(input.hull_form_coeff.is_initialized());
-    ASSERT_DOUBLE_EQ(input.hull_form_coeff.get(), 1.5);
+    ASSERT_THAT(input.S, testing::Optional(testing::DoubleEq(27194)));
+    ASSERT_THAT(input.iE, testing::Optional(testing::DoubleEq(25)));
+    ASSERT_THAT(input.hull_form_coeff, testing::Optional(testing::DoubleEq(1.5)));
 }
 
 TEST_F(HoltropMennenForceModelTest, can_ignore_optional_inputs)
 {
     const HoltropMennenForceModel::Input input = HoltropMennenForceModel::parse(get_yaml_input_without_optional());
     ASSERT_FALSE(input.apply_on_ship_speed_direction);
-    ASSERT_FALSE(input.S.is_initialized());
-    ASSERT_FALSE(input.iE.is_initialized());
-    ASSERT_FALSE(input.hull_form_coeff.is_initialized());
+    ASSERT_FALSE(input.S.has_value());
+    ASSERT_FALSE(input.iE.has_value());
+    ASSERT_FALSE(input.hull_form_coeff.has_value());
 }
 
 TEST_F(HoltropMennenForceModelTest, no_resistance_at_zero_speed)

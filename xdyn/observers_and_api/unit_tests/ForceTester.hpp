@@ -73,7 +73,7 @@ class ForceTester
                                                const double theta,
                                                const double psi);
 
-        boost::optional<double> gm(const double x,
+        std::optional<double> gm(const double x,
                                    const double y,
                                    const double z,
                                    const double phi,

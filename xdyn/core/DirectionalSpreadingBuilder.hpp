@@ -8,7 +8,7 @@
 #ifndef DIRECTIONALSPREADINGBUILDER_HPP_
 #define DIRECTIONALSPREADINGBUILDER_HPP_
 
-#include <boost/optional/optional.hpp>
+#include <optional>
 
 #include <string>
 #include <ssc/macros.hpp>
@@ -21,7 +21,7 @@ class DirectionalSpreadingBuilderInterface
     public:
         DirectionalSpreadingBuilderInterface() {}
         virtual ~DirectionalSpreadingBuilderInterface(){}
-        virtual boost::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
+        virtual std::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
 };
 
 template <typename T>
@@ -29,7 +29,7 @@ class DirectionalSpreadingBuilder : public DirectionalSpreadingBuilderInterface
 {
     public:
         DirectionalSpreadingBuilder() : DirectionalSpreadingBuilderInterface(){}
-        boost::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const override;
+        std::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
 using DirectionalSpreadingBuilderPtr = std::shared_ptr<DirectionalSpreadingBuilderInterface>;

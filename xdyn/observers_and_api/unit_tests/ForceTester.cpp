@@ -203,7 +203,7 @@ EPoint ForceTester::center_of_buoyancy_in_ned_frame(const double x,
     return EPoint(std::nan(""),std::nan(""),std::nan(""));
 }
 
-boost::optional<double> ForceTester::gm(const double x,
+std::optional<double> ForceTester::gm(const double x,
                        const double y,
                        const double z,
                        const double phi,
@@ -211,7 +211,7 @@ boost::optional<double> ForceTester::gm(const double x,
                        const double psi)
 {
     std::vector<double> states = set_states(x, y, z, phi, theta, psi);
-    boost::optional<double> ret;
+    std::optional<double> ret;
     for (const auto& force:forces)
     {
         if (force->get_name() == "GM")

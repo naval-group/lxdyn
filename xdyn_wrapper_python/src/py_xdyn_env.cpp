@@ -483,9 +483,9 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
            const size_t ndir,                 //!< Number of directions in discrete spectrum
            const Stretching& stretching,      //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
            const bool equal_energy_bins,      //!< Choose omegas so the integral of S between two successive omegas is constant
-           boost::optional<double> h          //!< Water depth (in meters)
+           std::optional<double> h          //!< Water depth (in meters)
            ){
-            if (h.is_initialized()) {
+            if (h.has_value()) {
                 return discretize(
                     S,                  //!< Frequency spectrum
                     D,                  //!< Spatial spectrum
@@ -493,7 +493,7 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
                     omega_max,          //!< Upper bound of the angular frequency range (in rad/s)
                     (size_t)nfreq,      //!< Number of frequencies in discrete spectrum
                     (size_t)ndir,       //!< Number of directions in discrete spectrum
-                    h.get(),            //!< Water depth (in meters)
+                    h.value(),          //!< Water depth (in meters)
                     stretching,         //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
                     equal_energy_bins   //!< Choose omegas so the integral of S between two successive omegas is constant
                     );
@@ -541,13 +541,13 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
            const double z,               //!< z-position in the NED frame (in meters)
            const double eta,             //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
            const Stretching& stretching, //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
-           boost::optional<double> h     //!< Water depth (in meters)
+           std::optional<double> h     //!< Water depth (in meters)
            ){
-            if (h.is_initialized()) {
+            if (h.has_value()) {
                 return dynamic_pressure_factor(
                     k,         //!< Wave number (in 1/m)
                     z,         //!< z-position in the NED frame (in meters)
-                    h.get(),   //!< Average water depth (in meters)
+                    h.value(), //!< Average water depth (in meters)
                     eta,       //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
                     stretching //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
                     );

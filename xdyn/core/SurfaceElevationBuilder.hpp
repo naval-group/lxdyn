@@ -15,7 +15,7 @@
 #include <ssc/kinematics.hpp>
 #include <ssc/macros.hpp>
 
-#include <boost/optional/optional.hpp>
+#include <optional>
 #include <vector>
 
 #include <memory>
@@ -37,7 +37,7 @@ class SurfaceElevationBuilderInterface
         virtual ~SurfaceElevationBuilderInterface();
         static ssc::kinematics::PointMatrixPtr make_wave_mesh(const YamlWaveOutput& output);
         std::pair<std::size_t,std::size_t> get_wave_mesh_size(const YamlWaveOutput& output) const;
-        virtual boost::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
+        virtual std::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
 
     protected:
         SurfaceElevationBuilderInterface();
@@ -56,7 +56,7 @@ class SurfaceElevationBuilder : public SurfaceElevationBuilderInterface
             const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) :
                 SurfaceElevationBuilderInterface(wave_parsers_, directional_spreading_parsers_, spectrum_parsers_)
         {}
-        boost::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const override;
+        std::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const override;
 
     private:
         SurfaceElevationBuilder(); // Disabled

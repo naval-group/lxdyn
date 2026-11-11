@@ -401,9 +401,9 @@ YamlCos2s            parse_cos2s(const std::string& yaml)
     return ret;
 }
 
-boost::optional<int> parse_seed_of_random_number_generator(const std::string& yaml)
+std::optional<int> parse_seed_of_random_number_generator(const std::string& yaml)
 {
-    boost::optional<int> ret;
+    std::optional<int> ret;
     try
     {
         YAML::Node node = YAML::Load(yaml);

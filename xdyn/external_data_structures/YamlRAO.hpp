@@ -7,7 +7,7 @@
 #define YAMLRAO_HPP_
 
 #include <string>
-#include <boost/optional.hpp>
+#include <optional>
 
 #include "xdyn/external_data_structures/YamlCoordinates.hpp"
 /*
@@ -27,7 +27,7 @@ struct YamlRAO
     std::string           precal_filename;
     YamlCoordinates       calculation_point;
     bool                  mirror;
-    boost::optional<bool> use_encounter_period;
+    std::optional<bool> use_encounter_period;
     TypeOfRao             type_of_rao;
 };
 

@@ -9,8 +9,9 @@
 #define FORCEMODEL_HPP_
 
 #include <map>
+#include <optional>
 
-#include <boost/optional/optional.hpp>
+#include <boost/utility/enable_if.hpp>
 
 #include <ssc/kinematics.hpp>
 
@@ -28,7 +29,7 @@ struct YamlRotation;
 class ForceModel;
 using ForcePtr = std::shared_ptr<ForceModel>;
 using ListOfForces = std::vector<ForcePtr>;
-using ForceParser = std::function<boost::optional<ForcePtr>(const YamlModel&, const std::string&, const EnvironmentAndFrames&)>;
+using ForceParser = std::function<std::optional<ForcePtr>(const YamlModel&, const std::string&, const EnvironmentAndFrames&)>;
 
 class Observer;
 
@@ -94,15 +95,15 @@ class ForceModel
             auto parser = [](
                 const YamlModel& yaml,
                 const std::string& body_name,
-                const EnvironmentAndFrames& env) -> boost::optional<ForcePtr>
+                const EnvironmentAndFrames& env) -> std::optional<ForcePtr>
                 {
-                    boost::optional<ForcePtr> ret;
+                    std::optional<ForcePtr> ret;
                     if (yaml.model == ForceType::model_name())
                     {
                         std::string context = "Invalid input data for model '" + ForceType::model_name() + "'.";
                         try
                         {
-                            ret.reset(ForcePtr(new ForceType(ForceType::parse(yaml.yaml), body_name, env)));
+                            ret = ForcePtr(new ForceType(ForceType::parse(yaml.yaml), body_name, env));
                         }
                         catch (const InvalidInputException& exception)
                         {
@@ -124,12 +125,12 @@ class ForceModel
         template <typename ForceType>
         static typename boost::disable_if<HasParse<ForceType>, ForceParser>::type build_parser()
         {
-            auto parser = [](const YamlModel& yaml, const std::string& body, const EnvironmentAndFrames& env) -> boost::optional<ForcePtr>
+            auto parser = [](const YamlModel& yaml, const std::string& body, const EnvironmentAndFrames& env) -> std::optional<ForcePtr>
             {
-                boost::optional<ForcePtr> ret;
+                std::optional<ForcePtr> ret;
                 if (yaml.model == ForceType::model_name())
                 {
-                    ret.reset(ForcePtr(new ForceType(body, env)));
+                    ret = ForcePtr(new ForceType(body, env));
                 }
                 return ret;
             };
