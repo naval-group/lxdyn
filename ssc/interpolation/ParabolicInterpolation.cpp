@@ -10,8 +10,6 @@
 #include "ssc/interpolation/ParabolicInterpolationException.hpp"
 
 #include <cmath>
-#define min(a,b) (a)>(b)?b:a
-#define max(a,b) (a)>(b)?a:b
 
 using namespace ssc::interpolation;
 

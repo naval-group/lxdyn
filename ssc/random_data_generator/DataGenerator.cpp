@@ -7,9 +7,6 @@
 
 constexpr int MAX_RAND_INT = 2147483647;
 
-#define MIN(a,b) (a<b) ? a : b;
-#define MAX(a,b) (a>b) ? a : b;
-
 #if defined(_MSC_VER)
     /* Microsoft Visual Studio. --------------------------------- */
     #include <float.h> // _isnan

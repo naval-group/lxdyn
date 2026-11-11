@@ -116,7 +116,7 @@ namespace ssc
         };
 
         // This macro is meant to simplify the creation of modules: only the update() method needs to be defined to have a functional module
-        #define DECLARE_MODULE(name__) class name__ : public ssc::data_source::DataSourceModule\
+        #define DECLARE_MODULE(name__) class name__ : public ssc::data_source::DataSourceModule /* NOLINT(bugprone-macro-parentheses): a class name */\
                                             {\
                                                 public:\
                                                     name__(ssc::data_source::DataSource* const data_source, const std::string& module_name) : ssc::data_source::DataSourceModule(data_source, module_name)\
@@ -140,7 +140,7 @@ namespace ssc
                                                     void update() const;\
                                             };
 
-        #define MODULE(name__,code) class name__ : public ssc::data_source::DataSourceModule\
+        #define MODULE(name__,code) class name__ : public ssc::data_source::DataSourceModule /* NOLINT(bugprone-macro-parentheses): a class name */\
                                           {\
                                               public:\
                                                   name__(ssc::data_source::DataSource* const data_source, const std::string& module_name) : ssc::data_source::DataSourceModule(data_source, module_name)\

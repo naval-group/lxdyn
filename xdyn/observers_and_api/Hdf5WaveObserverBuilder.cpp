@@ -3,7 +3,7 @@
 #include "xdyn/interface_hdf5/h5_interface.hpp"
 
 /** \def MIN(i1,i2) Define minimum of two scalar*/
-#define MIN(i1,i2) (i1 < i2 ? i1 : i2)
+#define MIN(i1,i2) ((i1) < (i2) ? (i1) : (i2))
 
 /** \def CHUNK_SIZE Hdf5 chunk parameter used to buffer data before writing*/
 constexpr hsize_t CHUNK_SIZE = 10;

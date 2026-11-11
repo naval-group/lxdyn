@@ -19,7 +19,7 @@ SimulatorYamlParser::SimulatorYamlParser(const std::string& data) : contents(dat
 #define PARSE_OPTIONAL_KEY(key, dest) \
 if(node[key])\
     {\
-        node[key] >> dest;\
+        node[key] >> (dest);\
     }
 
 
@@ -27,7 +27,7 @@ if(node[key])\
     if (!node[key]) \
     { \
         THROW(__PRETTY_FUNCTION__, InvalidInputException, \
-            std::string("YAML node \"") + key + \
+            std::string("YAML node \"") + (key) + \
             std::string("\" is missing in the input data. Please add this node. See xdyn help!")); \
     }
 
