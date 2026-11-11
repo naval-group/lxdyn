@@ -21,7 +21,7 @@ void remove_carriage_return(std::string& line)
 std::string remove_file_extension(const std::string& filename);
 std::string remove_file_extension(const std::string& filename)
 {
-    size_t lastdot = filename.find_last_of(".");
+    size_t lastdot = filename.find_last_of('.');
     if (lastdot == std::string::npos) return filename;
     return filename.substr(0, lastdot);
 }
