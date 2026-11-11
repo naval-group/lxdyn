@@ -21,7 +21,7 @@ struct InterpolationWeights
 class Seabed
 {
     public:
-        Seabed(const std::string sea_bed_file);
+        Seabed(const std::string& sea_bed_file);
         Seabed(const double depth);
         double get_height(const double, const double) const;
         Eigen::Vector2d get_gradient(const double, const double) const;

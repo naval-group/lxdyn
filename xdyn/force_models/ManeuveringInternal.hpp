@@ -78,7 +78,7 @@ namespace maneuvering
     class Unary : public Node
     {
         public:
-            Unary(const NodePtr operand);
+            Unary(const NodePtr& operand);
 
             NodePtr get_operand() const;
     };

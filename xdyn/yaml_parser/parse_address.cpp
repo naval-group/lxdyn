@@ -17,7 +17,7 @@ bool is_a_websocket_url(const std::string& url)
     return regex_match(url.c_str(), what, ex);
 }
 
-WebsocketURLElements::WebsocketURLElements(const std::string url) :
+WebsocketURLElements::WebsocketURLElements(const std::string& url) :
     protocol(),
     domain(),
     port()

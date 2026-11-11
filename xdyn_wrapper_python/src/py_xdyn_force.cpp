@@ -662,7 +662,7 @@ void py_add_module_xdyn_force(py::module& m0)
         .def("get_wrench",
             static_cast<ssc::kinematics::Vector6d (RudderForceModel::RudderModel::*)(
                 const double /*rudder_angle*/,  //!< Rudder angle (in radian): positive if rudder on port side
-                ssc::kinematics::Point /*Vs*/,  //!< Speed of the ship relative to the fluid (in m/s)
+                const ssc::kinematics::Point& /*Vs*/,  //!< Speed of the ship relative to the fluid (in m/s)
                 const double /*area*/           //!< Rudder area (in or outside wake) in m^2
                 ) const>(&RudderForceModel::RudderModel::get_wrench),
             py::arg("rudder_angle"),

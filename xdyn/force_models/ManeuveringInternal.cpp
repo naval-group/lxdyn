@@ -58,7 +58,7 @@ double Constant::get_min() const
     return val;
 }
 
-Unary::Unary(const NodePtr operand) : Node({operand})
+Unary::Unary(const NodePtr& operand) : Node({operand})
 {
 }
 

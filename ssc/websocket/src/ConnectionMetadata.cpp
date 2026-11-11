@@ -8,10 +8,12 @@
 
 #include "ConnectionMetadata.hpp"
 
+#include <utility>
+
 ConnectionMetadata::ConnectionMetadata(
         int id, websocketpp::connection_hdl hdl, const std::string& uri)
           : m_id(id)
-          , hdl(hdl)
+          , hdl(std::move(hdl))
           , status("Connecting...")
           , uri(uri)
           , server("N/A")
@@ -21,14 +23,14 @@ ConnectionMetadata::ConnectionMetadata(
 void ConnectionMetadata::on_open(client * c, websocketpp::connection_hdl hdl)
 {
     status = "Open";
-    client::connection_ptr con = c->get_con_from_hdl(hdl);
+    client::connection_ptr con = c->get_con_from_hdl(std::move(hdl));
     server = con->get_response_header("Server");
 }
 
 void ConnectionMetadata::on_fail(client * c, websocketpp::connection_hdl hdl)
 {
     status = "Failed";
-    client::connection_ptr con = c->get_con_from_hdl(hdl);
+    client::connection_ptr con = c->get_con_from_hdl(std::move(hdl));
     server = con->get_response_header("Server");
     error_reason = con->get_ec().message();
 }
@@ -36,7 +38,7 @@ void ConnectionMetadata::on_fail(client * c, websocketpp::connection_hdl hdl)
 void ConnectionMetadata::on_close(client * c, websocketpp::connection_hdl hdl)
 {
     status = "Closed";
-    client::connection_ptr con = c->get_con_from_hdl(hdl);
+    client::connection_ptr con = c->get_con_from_hdl(std::move(hdl));
     std::stringstream s;
     s << "close code: " << con->get_remote_close_code() << " ("
       << websocketpp::close::status::get_string(con->get_remote_close_code())
@@ -45,7 +47,7 @@ void ConnectionMetadata::on_close(client * c, websocketpp::connection_hdl hdl)
 }
 
 void ConnectionMetadata::on_message(
-        websocketpp::connection_hdl, client::message_ptr msg)
+        const websocketpp::connection_hdl&, const client::message_ptr& msg)
 {
     if (msg->get_opcode() == websocketpp::frame::opcode::text)
     {

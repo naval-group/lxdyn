@@ -34,7 +34,7 @@ namespace ssc
                  *            on purpose
                  */
                 template<typename T>
-                void send_binary(const std::vector<T> vector)
+                void send_binary(const std::vector<T>& vector)
                 {
                     send_vector(&vector[0], sizeof(T)*vector.size());
                 }

@@ -29,7 +29,7 @@ MeshIntersector::MeshIntersector(const VectorOfVectorOfPoints& mesh_, const bool
 ,need_to_update_closing_facet(true)
 {}
 
-MeshIntersector::MeshIntersector(const MeshPtr mesh_)
+MeshIntersector::MeshIntersector(const MeshPtr& mesh_)
         :mesh(mesh_)
         ,all_relative_immersions()
         ,all_absolute_wave_elevations()

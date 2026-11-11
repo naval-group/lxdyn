@@ -2,7 +2,7 @@
 #include <grpcpp/grpcpp.h>
 #include <sstream>
 
-gRPCProtoBufServer::gRPCProtoBufServer(const std::shared_ptr<grpc::Service> handler_):
+gRPCProtoBufServer::gRPCProtoBufServer(const std::shared_ptr<grpc::Service>& handler_):
         handler(handler_)
 {
 }

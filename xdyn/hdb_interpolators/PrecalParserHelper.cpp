@@ -436,8 +436,8 @@ RAOAttributes::RAOAttributes()
 {
 }
 
-std::vector<std::string> rao_lexer(const std::string rao_attributes);
-std::vector<std::string> rao_lexer(const std::string rao_attributes)
+std::vector<std::string> rao_lexer(const std::string& rao_attributes);
+std::vector<std::string> rao_lexer(const std::string& rao_attributes)
 {
     std::vector<std::string> tokens;
     std::string buffer;
@@ -517,7 +517,7 @@ struct UnitValue
     }
 
   private:
-    UnitValue(const std::string& name_, const double value_, const std::string unit_)
+    UnitValue(const std::string& name_, const double value_, const std::string& unit_)
         : name(name_)
         , unit(unit_)
         , value(value_)
@@ -610,7 +610,7 @@ RAOAttributes analyze_rao_tokens(const std::vector<std::string>& tokens)
     return ret;
 }
 
-RAOAttributes parse_rao_attributes(const std::string rao_attributes)
+RAOAttributes parse_rao_attributes(const std::string& rao_attributes)
 {
     const std::vector<std::string> tokens = rao_lexer(rao_attributes);
     return analyze_rao_tokens(tokens);

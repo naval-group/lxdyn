@@ -38,8 +38,8 @@ void RadiationDampingForceModelTest::TearDown()
 {
 }
 
-double compute_Ma_from_K(const double omega, const double A, std::function<double(double)> K, const double tau_min, const double tau_max);
-double compute_Ma_from_K(const double omega, const double A, std::function<double(double)> K, const double tau_min, const double tau_max)
+double compute_Ma_from_K(const double omega, const double A, const std::function<double(double)>& K, const double tau_min, const double tau_max);
+double compute_Ma_from_K(const double omega, const double A, const std::function<double(double)>& K, const double tau_min, const double tau_max)
 {
     const std::function<double(double)> g = [omega, K](double tau){return K(tau)*sin(omega*tau);};
     return A - (1/omega)*ssc::integrate::Simpson(g).integrate_f(tau_min, tau_max, 1e-2);

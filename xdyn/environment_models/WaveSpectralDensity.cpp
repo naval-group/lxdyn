@@ -33,7 +33,7 @@ std::vector<double> WaveSpectralDensity::get_angular_frequencies(const double om
                                                                  const size_t n,         //!< Number of angular frequencies to return
                                                                  const bool equal_energy_bins,      //!< Choose omegas so the integral of S between two successive omegas is constant
                                                                  const bool periodic,               //!< Pick frequencies whose wavelength divides the repetition size
-                                                                 const std::vector<double> sizes    //!< Repetition sizes in metres, largest first
+                                                                 const std::vector<double>& sizes    //!< Repetition sizes in metres, largest first
                                                                 ) const
 {
     if (std::isinf(omega_min))

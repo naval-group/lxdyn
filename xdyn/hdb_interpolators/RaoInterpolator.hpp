@@ -55,12 +55,12 @@ class RaoInterpolator
             private:
                 static RAO for_diffraction(const HydroDBParser& parser);
                 static RAO for_froude_krylov(const HydroDBParser& parser);
-                RAO(const std::array<std::vector<std::vector<double> >,6 > module_tables_,
-                    const std::array<std::vector<std::vector<double> >,6 > phase_tables_,
-                    const std::vector<double> module_periods_,
-                    const std::vector<double> phase_periods_,
-                    const std::vector<double> module_incidence_,
-                    const std::vector<double> phase_incidence_);
+                RAO(const std::array<std::vector<std::vector<double> >,6 >& module_tables_,
+                    const std::array<std::vector<std::vector<double> >,6 >& phase_tables_,
+                    const std::vector<double>& module_periods_,
+                    const std::vector<double>& phase_periods_,
+                    const std::vector<double>& module_incidence_,
+                    const std::vector<double>& phase_incidence_);
         };
 
     public:

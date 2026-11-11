@@ -208,23 +208,23 @@ namespace ssc
                 static std::map<std::string,double> get_base_units_for_bootstrapping();
                 static std::vector<e_char_type> get_char_table();
                 static std::map<std::string,double> get_known_units();
-                static void extend_with_short_metric_prefix(std::map<std::string,double> &units, std::string unit );
-                static void extend_with_long_metric_prefix(std::map<std::string,double> &units, std::string unit );
-                static void extend_with_short_metric_prefix(std::map<std::string,double> &units, std::string unit , double value );
-                static void extend_with_long_metric_prefix(std::map<std::string,double> &units, std::string unit , double value );
+                static void extend_with_short_metric_prefix(std::map<std::string,double> &units, const std::string& unit );
+                static void extend_with_long_metric_prefix(std::map<std::string,double> &units, const std::string& unit );
+                static void extend_with_short_metric_prefix(std::map<std::string,double> &units, const std::string& unit , double value );
+                static void extend_with_long_metric_prefix(std::map<std::string,double> &units, const std::string& unit , double value );
                 UnitDecoder();
                 UnitDecoder(const UnitDecoder& rhs);
                 UnitDecoder& operator=(const UnitDecoder& rhs);
             public :
-                UnitDecoder(std::string unit);
-                UnitDecoder(std::string unit , std::map<std::string,double> &known_units);
+                UnitDecoder(const std::string& unit);
+                UnitDecoder(const std::string& unit , std::map<std::string,double> &known_units);
                 ~UnitDecoder();
                 double decode();
         };
 
         // main function to decode units
-        double decodeUnit( std::string unit );
-        double decodeUnit( std::string unit , std::map<std::string,double> &known_units );
+        double decodeUnit( const std::string& unit );
+        double decodeUnit( const std::string& unit , std::map<std::string,double> &known_units );
 
     }
 }

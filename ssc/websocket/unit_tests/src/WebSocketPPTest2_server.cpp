@@ -1,5 +1,6 @@
 // Test Environment:
 // server, no TLS, no locks, iostream based transport
+#include <utility>
 #include <websocketpp/config/core.hpp>
 #include <websocketpp/server.hpp>
 #include <iostream>
@@ -20,8 +21,8 @@ using message_ptr = websocketpp::config::core::message_type::ptr;
 using websocketpp::lib::bind;
 
 /* Run server and return output test rig */
-std::string run_server_test(server& s, std::string input);
-std::string run_server_test(server& s, std::string input)
+std::string run_server_test(server& s, const std::string& input);
+std::string run_server_test(server& s, const std::string& input)
 {
     server::connection_ptr con;
     std::stringstream output;
@@ -42,18 +43,18 @@ std::string run_server_test(server& s, std::string input)
 }
 
 /* handler library*/
-void echo_func(server* s, websocketpp::connection_hdl hdl, message_ptr msg);
-void echo_func(server* s, websocketpp::connection_hdl hdl, message_ptr msg)
+void echo_func(server* s, websocketpp::connection_hdl hdl, const message_ptr& msg);
+void echo_func(server* s, websocketpp::connection_hdl hdl, const message_ptr& msg)
 {
-    s->send(hdl, msg->get_payload(), msg->get_opcode());
+    s->send(std::move(hdl), msg->get_payload(), msg->get_opcode());
 }
 
-bool validate_func_subprotocol(server* s, std::string* out, std::string accept,
+bool validate_func_subprotocol(server* s, std::string* out, const std::string& accept,
     websocketpp::connection_hdl hdl);
-bool validate_func_subprotocol(server* s, std::string* out, std::string accept,
+bool validate_func_subprotocol(server* s, std::string* out, const std::string& accept,
     websocketpp::connection_hdl hdl)
 {
-    server::connection_ptr con = s->get_con_from_hdl(hdl);
+    server::connection_ptr con = s->get_con_from_hdl(std::move(hdl));
 
     std::stringstream o;
 
@@ -76,7 +77,7 @@ bool validate_func_subprotocol(server* s, std::string* out, std::string accept,
 void open_func_subprotocol(server* s, std::string* out, websocketpp::connection_hdl hdl);
 void open_func_subprotocol(server* s, std::string* out, websocketpp::connection_hdl hdl)
 {
-    server::connection_ptr con = s->get_con_from_hdl(hdl);
+    server::connection_ptr con = s->get_con_from_hdl(std::move(hdl));
 
     *out = con->get_subprotocol();
 }

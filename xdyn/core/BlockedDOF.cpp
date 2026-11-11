@@ -228,7 +228,7 @@ class Builder
 
 struct BlockedDOF::Impl
 {
-    Impl(Builder builder, const size_t body_idx_)
+    Impl(const Builder& builder, const size_t body_idx_)
             : blocked_dof(builder.get_forced_states())
             , body_idx(body_idx_)
             , tmin(builder.get_tmin())

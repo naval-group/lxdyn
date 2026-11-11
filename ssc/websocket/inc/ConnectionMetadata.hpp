@@ -23,7 +23,7 @@ class ConnectionMetadata
         void on_open(client * c, websocketpp::connection_hdl hdl);
         void on_fail(client * c, websocketpp::connection_hdl hdl);
         void on_close(client * c, websocketpp::connection_hdl hdl);
-        void on_message(websocketpp::connection_hdl, client::message_ptr msg);
+        void on_message(const websocketpp::connection_hdl&, const client::message_ptr& msg);
         websocketpp::connection_hdl get_hdl() const;
         int get_id() const;
         std::string get_status() const;

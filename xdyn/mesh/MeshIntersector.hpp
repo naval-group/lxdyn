@@ -49,7 +49,7 @@ class MeshIntersector
     public:
         MeshIntersector(const VectorOfVectorOfPoints& mesh, const bool check_orientation=true);
         MeshIntersector(
-                const MeshPtr mesh_                  //!< the mesh to intersect
+                const MeshPtr& mesh_                  //!< the mesh to intersect
                 );
 
         /**
