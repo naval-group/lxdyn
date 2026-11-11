@@ -124,9 +124,9 @@ namespace ssc
                         in_module = in_module_back;
                         check_out();
                     }
-                    catch(DataSourceException& e)
+                    catch(const DataSourceException&)
                     {
-                        throw(e);
+                        throw;
                     }
                     catch(...)
                     {
