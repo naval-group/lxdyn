@@ -16,7 +16,6 @@
 #include <ssc/solver/Scheduler.hpp>
 #include <ssc/solver/DiscreteSystem.hpp>
 
-#define EPS (1E-14)
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI

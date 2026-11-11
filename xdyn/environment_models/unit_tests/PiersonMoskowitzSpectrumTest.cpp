@@ -13,7 +13,7 @@
 #include "PiersonMoskowitzSpectrum.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
-#define NB_TRIALS 10
+constexpr int NB_TRIALS = 10;
 
 PiersonMoskowitzSpectrumTest::PiersonMoskowitzSpectrumTest() : a(ssc::random_data_generator::DataGenerator(84212))
 {

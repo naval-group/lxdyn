@@ -12,7 +12,7 @@
 
 #include <cmath> // For atan
 
-#define PI (4.*atan(1.))
+const double PI = 4.*atan(1.);
 
 using namespace ssc::kinematics;
 

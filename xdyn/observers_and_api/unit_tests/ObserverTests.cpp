@@ -23,7 +23,7 @@
 
 #define ADDRESS "127.0.0.1"
 #define WEBSOCKET_ADDRESS "ws://" ADDRESS
-#define WEBSOCKET_PORT    1234
+constexpr int WEBSOCKET_PORT = 1234;
 
 struct ListOfStringMessages : public ssc::websocket::MessageHandler
 {

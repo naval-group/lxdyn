@@ -14,7 +14,7 @@
 #include <cmath>
 #define PI M_PI
 
-#define EPS 1E-14
+constexpr double EPS = 1E-14;
 
 SimpleStationKeepingControllerTest::SimpleStationKeepingControllerTest() : a(ssc::random_data_generator::DataGenerator(85552))
 {

@@ -6,7 +6,7 @@
 #define MIN(i1,i2) (i1 < i2 ? i1 : i2)
 
 /** \def CHUNK_SIZE Hdf5 chunk parameter used to buffer data before writing*/
-#define CHUNK_SIZE (hsize_t)10
+constexpr hsize_t CHUNK_SIZE = 10;
 
 Hdf5WaveObserverBuilder::Hdf5WaveObserverBuilder(
     const std::string& fileName,

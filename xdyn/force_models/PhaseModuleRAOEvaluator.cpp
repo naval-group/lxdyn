@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <iomanip>
 
-#define TWOPI 6.283185307179586232
+constexpr double TWOPI = 6.283185307179586232;
 
 ssc::kinematics::Vector6d express_aquaplus_wrench_in_xdyn_coordinates(ssc::kinematics::Vector6d v);
 ssc::kinematics::Vector6d express_aquaplus_wrench_in_xdyn_coordinates(ssc::kinematics::Vector6d v)

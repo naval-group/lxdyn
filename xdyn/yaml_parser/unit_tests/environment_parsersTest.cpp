@@ -16,7 +16,7 @@
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
-#define DEG (180./PI)
+constexpr double DEG = 180./PI;
 
 #include <fstream>
 #include <sstream>

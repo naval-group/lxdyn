@@ -22,8 +22,6 @@
 #include <cmath>
 #define PI M_PI
 
-#define DEG (PI/180.)
-
 ConstantForceModelTest::ConstantForceModelTest() : a(ssc::random_data_generator::DataGenerator(45454))
 {
 }

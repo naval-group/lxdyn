@@ -22,7 +22,7 @@
 
 using namespace ssc::data_source;
 
-#define NB_OF_TRIALS 100
+constexpr int NB_OF_TRIALS = 100;
 
 static ssc::random_data_generator::DataGenerator a_(21);
 static DataSource* ds_;

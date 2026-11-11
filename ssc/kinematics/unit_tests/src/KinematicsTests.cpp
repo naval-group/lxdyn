@@ -12,7 +12,7 @@
 #include "ssc/kinematics/rotation_matrix_builders.hpp"
 #include "transform_double_equal.hpp"
 
-#define EPS 1E-13
+constexpr double EPS = 1E-13;
 
 using namespace ssc::kinematics;
 

@@ -32,7 +32,7 @@
                     : __isnanl (x))
 #endif
 
-#define NB_OF_TRIALS 100
+constexpr int NB_OF_TRIALS = 100;
 
 using namespace ssc::random_data_generator;
 

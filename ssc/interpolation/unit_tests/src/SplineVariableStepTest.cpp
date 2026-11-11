@@ -9,7 +9,7 @@
 #include "ssc/interpolation/SplineVariableStep.hpp"
 #include "ssc/interpolation/IndexFinder.hpp"
 
-#define EPS 1E-10
+constexpr double EPS = 1E-10;
 
 using namespace ssc::interpolation;
 

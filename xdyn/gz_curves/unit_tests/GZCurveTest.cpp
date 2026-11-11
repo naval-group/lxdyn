@@ -21,7 +21,7 @@
 
 Sim GZCurveTest::sim = GZ::make_sim(test_data::test_ship_hydrostatic_test("non-linear hydrostatic (exact)"), test_data::cube());
 
-#define EPS 1E-10
+constexpr double EPS = 1E-10;
 
 GZCurveTest::GZCurveTest() : a(ssc::random_data_generator::DataGenerator(54522))
 {

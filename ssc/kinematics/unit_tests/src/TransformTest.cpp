@@ -11,9 +11,9 @@
 #include "random_kinematics.hpp"
 #include "ssc/kinematics/rotation_matrix_builders.hpp"
 
-#define PI (3.141592653589793238462643383279502884)
+constexpr double PI = 3.141592653589793238462643383279502884;
 
-#define EPS 1E-13
+constexpr double EPS = 1E-13;
 
 using namespace ssc::kinematics;
 

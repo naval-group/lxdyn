@@ -30,9 +30,9 @@
 #define PI M_PI
 #include <math.h> // isnan
 
-#define EPS (1E-10)
+constexpr double EPS = 1E-10;
 #define SQUARE(x) ((x)*(x))
-#define DEG (atan(1.)/45.)
+const double DEG = atan(1.)/45.;
 
 const VectorOfVectorOfPoints SimTest::test_ship_stl = test_ship();
 

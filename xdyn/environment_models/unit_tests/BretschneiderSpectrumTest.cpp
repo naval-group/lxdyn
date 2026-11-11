@@ -9,7 +9,7 @@
 #include "BretschneiderSpectrum.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
-#define NB_TRIALS 10
+constexpr int NB_TRIALS = 10;
 
 BretschneiderSpectrumTest::BretschneiderSpectrumTest() : a(ssc::random_data_generator::DataGenerator(7779))
 {

@@ -11,7 +11,7 @@
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
-#define EPS 1E-6
+constexpr double EPS = 1E-6;
 
 ResistanceCurveForceModelTest::ResistanceCurveForceModelTest() : a(ssc::random_data_generator::DataGenerator(89451))
 {

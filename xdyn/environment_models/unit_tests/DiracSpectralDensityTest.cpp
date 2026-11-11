@@ -9,7 +9,7 @@
 #include "DiracSpectralDensity.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
-#define NB_TRIALS 10
+constexpr int NB_TRIALS = 10;
 
 DiracSpectralDensityTest::DiracSpectralDensityTest() : a(ssc::random_data_generator::DataGenerator(2))
 {

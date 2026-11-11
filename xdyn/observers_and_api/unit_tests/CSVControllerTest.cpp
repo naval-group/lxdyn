@@ -13,7 +13,6 @@
 #include <boost/algorithm/string.hpp>
 #include <ssc/solver/Scheduler.hpp>
 #include <cstdio> // For remove
-#define EPS (1E-14)
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI

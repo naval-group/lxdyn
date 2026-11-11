@@ -14,7 +14,7 @@
 #include "ssc/macros/extra_test_assertions.hpp"
 #include "ssc/interpolation/IndexFinder.hpp"
 
-#define EPS 3e-3
+constexpr double EPS = 3e-3;
 
 using namespace ssc::interpolation;
 

@@ -20,8 +20,8 @@ using ::testing::ElementsAreArray;
 #include <memory>
 #define PI M_PI
 
-#define DEG2RAD (atan(1)/45.)
-#define EPS 1E-6
+const double DEG2RAD = atan(1)/45.;
+constexpr double EPS = 1E-6;
 
 #define BODY "body 1"
 

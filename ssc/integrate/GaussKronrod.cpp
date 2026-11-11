@@ -7,10 +7,8 @@
 
 #include "GaussKronrod.hpp"
 
-#define LIMIT 2500
-#define LENW 16010
-#define LENIW 500
-#define MAXP1 21
+constexpr int LIMIT = 2500;
+constexpr int LENW = 16010;
 
 #include <iostream>
 #include <cassert>

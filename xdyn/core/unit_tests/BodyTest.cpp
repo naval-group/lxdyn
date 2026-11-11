@@ -16,7 +16,6 @@
 #include <cmath>
 #include <memory>
 #define PI M_PI
-#define EPS (1E-10)
 
 BodyTest::BodyTest() : a(ssc::random_data_generator::DataGenerator(21212))
 {

@@ -36,8 +36,8 @@ void AiryTest::TearDown()
 {
 }
 
-#define EPS 1E-10
-#define BIG_EPS 1E-4
+constexpr double EPS = 1E-10;
+constexpr double BIG_EPS = 1E-4;
 
 
 TEST_F(AiryTest, single_frequency_single_direction_at_one_point)

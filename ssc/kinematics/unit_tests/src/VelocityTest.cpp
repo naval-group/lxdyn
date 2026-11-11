@@ -10,8 +10,6 @@
 #include "ssc/macros/extra_test_assertions.hpp"
 #include "ssc/kinematics/KinematicsException.hpp"
 
-#define EPS 1E-13
-
 using namespace ssc::kinematics;
 
 VelocityTest::VelocityTest() : a(ssc::random_data_generator::DataGenerator(7779))

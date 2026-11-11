@@ -14,8 +14,8 @@
 
 #include <cmath>
 
-#define PI (4.*atan(1.))
-#define EPS 1E-13
+const double PI = 4.*atan(1.);
+constexpr double EPS = 1E-13;
 
 using namespace ssc::kinematics;
 
