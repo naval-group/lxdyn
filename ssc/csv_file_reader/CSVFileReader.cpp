@@ -1,6 +1,6 @@
 #include "ssc/csv_file_reader/CSVFileReader.hpp"
 
-#include <cstdlib> // For atof
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
@@ -63,7 +63,7 @@ const std::vector<double> CSVFileReader::convert_line_to_vector_of_doubles(const
     const std::vector<std::string> values = convert_line_to_vector_of_strings(line, separator);
     std::vector<double> ret;
     std::vector<std::string>::const_iterator it = values.begin();
-    for (;it!=values.end() ; ++it) ret.push_back(atof(it->c_str()));
+    for (;it!=values.end() ; ++it) ret.push_back(std::stod(*it));
     return ret;
 }
 

@@ -52,7 +52,11 @@ EPoint read_vertex(char *line, ParserState& state)
     {
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_vertex));
     }
-    sscanf(line+width,"%lf %lf %lf",&ret(0),&ret(1),&ret(2));
+    std::istringstream coordinates(line+width);
+    if (not(coordinates >> ret(0) >> ret(1) >> ret(2)))
+    {
+        THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_vertex));
+    }
     return ret;
 }
 
@@ -63,7 +67,10 @@ void read_normal(char *line, Eigen::Vector3d& vertices, ParserState& state){
     if (strcmp(token, TOKEN_normal)){
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_normal));
     }
-    sscanf(line+width,"%lf %lf %lf",&vertices(0),&vertices(1),&vertices(2));
+    std::istringstream coordinates(line+width);
+    if (not(coordinates >> vertices(0) >> vertices(1) >> vertices(2))){
+        THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_normal));
+    }
 }
 
 /**
@@ -74,11 +81,6 @@ VectorOfVectorOfPoints read_ascii_stl(
     ParserState &state)
 {
     VectorOfVectorOfPoints result;
-    //Start by storing the current locale. This is retrieved by passing NULL to
-    // setlocale
-    std::string locale = setlocale(LC_ALL, nullptr);
-    setlocale(LC_ALL, "C");
-    double r1 = 0.0, r2 = 0.0, r3 = 0.0, r4 = 0.0;
     bool endReached = false;
     char token[LINE_MAX_LENGTH];
     int  width = 0;
@@ -125,14 +127,10 @@ VectorOfVectorOfPoints read_ascii_stl(
             state.get_line(input);
             //
             result.push_back(facet);
-        } else if (!strcmp(token, "color")) { // COLOR
-            sscanf(next, "%*s %lf %lf %lf %lf", &r1, &r2, &r3, &r4);
-        } else if (!strcmp(token, "solid")) { // SOLID
-            // object_num = object_num + 1;
+        } else if (!strcmp(token, "color") || !strcmp(token, "solid")) { // the colour and the object name are unused
         } else if (!strcmp(token, "endsolid")){ // ENDSOLID
             endReached = true;
         } else { // Unexpected or unrecognized.
-            setlocale(LC_ALL, locale.c_str());
             THROW(__PRETTY_FUNCTION__, MeshException, state.error_unknown_string(token));
         }
     }
@@ -142,7 +140,6 @@ VectorOfVectorOfPoints read_ascii_stl(
                  "The file may be damaged or is a binary STL format. "
                  "A binary STL file must not have 'solid' keyword in header.");
     }
-    setlocale(LC_ALL, locale.c_str());
     return result;
 }
 

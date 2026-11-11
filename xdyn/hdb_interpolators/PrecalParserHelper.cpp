@@ -144,15 +144,7 @@ class Parser
                         {
                             double left = 0;
                             double right = 0;
-                            boost::trim(current_line);
-                            if (current_line.find(' ') != std::string::npos)
-                            {
-                                sscanf(current_line.c_str(), "%lf   %lf", &left, &right);
-                            }
-                            else
-                            {
-                                sscanf(current_line.c_str(), "%lf", &left);
-                            }
+                            std::istringstream(current_line) >> left >> right;
                             current_rao.left_column.push_back(left);
                             current_rao.right_column.push_back(right);
                         }

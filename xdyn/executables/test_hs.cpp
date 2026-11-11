@@ -23,6 +23,7 @@
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include <google/protobuf/stubs/common.h>
 #include <memory>
+#include <string>
 #include <ssc/kinematics.hpp>
 
 #define BODY "body 1"
@@ -97,7 +98,7 @@ void test(ForceModel& F, const EnvironmentAndFrames& env, const size_t n)
 
 int main(int argc, char* argv[])
 {
-    const size_t n = argc>1 ? (size_t)atoi(argv[1]) : N;
+    const size_t n = argc>1 ? std::stoul(argv[1]) : N;
     auto env = get_env();
     auto F = FroudeKrylovForceModel(BODY, env);
     test(F, env, n);
