@@ -268,7 +268,6 @@ class HDBParser::Impl
                     }
                 }
             }
-            std::stringstream error_msg;
             if (not(found_relevant_rao_section))
             {
                 return std::string("Unable to find section '") + section_name + "' in the RAO file.";

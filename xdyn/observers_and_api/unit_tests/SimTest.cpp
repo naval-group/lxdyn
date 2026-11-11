@@ -799,8 +799,6 @@ TEST_F(SimTest, bug_3227_wave_angle_mirroing_problem_for_diffraction_LONG)
     ssc::data_source::DataSource command_listener;
     auto input = SimulatorYamlParser(yaml).parse();
 
-    const auto original_yaml = input.environment.at(0).yaml;
-
     // Results for 30 deg
     auto sys = get_system(input,test_ship_stl,0,command_listener);
     ssc::solver::Scheduler scheduler(t0, T, dt);
