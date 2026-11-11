@@ -8,9 +8,9 @@ class SimulatorYamlParserTest : public ::testing::Test
 {
     protected:
         SimulatorYamlParserTest();
-        virtual ~SimulatorYamlParserTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SimulatorYamlParserTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         static const YamlSimulatorInput yaml;
         static const YamlSimulatorInput old_yaml;

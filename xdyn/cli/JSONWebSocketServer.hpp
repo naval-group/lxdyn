@@ -73,11 +73,11 @@ class JSONWebSocketServer
                 JSONHandler(const ServiceT& simserver, const bool verbose_) : sim_server(simserver), verbose(verbose_), error_outputter()
                 {
                 }
-                virtual ~JSONHandler()
+                ~JSONHandler() override
                 {
                 }
 
-                void operator()(const ssc::websocket::Message& msg)
+                void operator()(const ssc::websocket::Message& msg) override
                 {
                     const std::string input_json = msg.get_payload();
                     if(verbose)

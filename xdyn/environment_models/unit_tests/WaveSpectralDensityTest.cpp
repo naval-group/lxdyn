@@ -28,11 +28,11 @@ void WaveSpectralDensityTest::TearDown()
 class DummyWaveSpectralDensity : public WaveSpectralDensity
 {
     public:
-        double operator()(const double omega) const
+        double operator()(const double omega) const override
         {
             return omega;
         }
-        WaveSpectralDensity* clone() const
+        WaveSpectralDensity* clone() const override
         {
             return new DummyWaveSpectralDensity(*this);
         }

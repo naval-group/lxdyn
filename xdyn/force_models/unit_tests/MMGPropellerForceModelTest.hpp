@@ -16,9 +16,9 @@ class MMGPropellerForceModelTest : public ::testing::Test
 {
     protected:
         MMGPropellerForceModelTest();
-        virtual ~MMGPropellerForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~MMGPropellerForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         EnvironmentAndFrames get_env();
 };

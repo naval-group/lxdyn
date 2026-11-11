@@ -20,9 +20,9 @@ class FroudeKrylovForceModelTest : public ::testing::Test
 {
     protected:
         FroudeKrylovForceModelTest();
-        virtual ~FroudeKrylovForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~FroudeKrylovForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         VectorOfVectorOfPoints get_points() const;
         std::shared_ptr<WaveModel> get_wave_model() const;
         ssc::random_data_generator::DataGenerator a;

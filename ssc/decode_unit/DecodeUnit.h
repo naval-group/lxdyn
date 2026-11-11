@@ -112,10 +112,10 @@ namespace ssc
                     std::string m_word;
                     public :
                         WordToken(std::string word);
-                        virtual ~WordToken();
-                        virtual e_token_type type();
-                        virtual std::string description();
-                        virtual std::string string_value();
+                        ~WordToken() override;
+                        e_token_type type() override;
+                        std::string description() override;
+                        std::string string_value() override;
                 };
 
                 class IntToken : public Token
@@ -123,20 +123,20 @@ namespace ssc
                     int m_num;
                     public :
                         IntToken(int num);
-                        virtual ~IntToken();
-                        virtual e_token_type type();
-                        virtual std::string description();
-                        virtual int    int_value();
-                        virtual double double_value();
+                        ~IntToken() override;
+                        e_token_type type() override;
+                        std::string description() override;
+                        int    int_value() override;
+                        double double_value() override;
                 };
                 class DoubleToken : public Token {
                     double m_num;
                 public :
                     DoubleToken(double num);
-                    virtual ~DoubleToken();
-                    virtual e_token_type type();
-                    virtual std::string description();
-                    virtual double double_value();
+                    ~DoubleToken() override;
+                    e_token_type type() override;
+                    std::string description() override;
+                    double double_value() override;
                 };
 
                 class OperationToken : public Token
@@ -144,28 +144,28 @@ namespace ssc
                     int m_op;
                     public :
                         OperationToken(char op);
-                        virtual ~OperationToken();
-                        virtual e_token_type type();
-                        virtual std::string description();
-                        virtual int int_value();
+                        ~OperationToken() override;
+                        e_token_type type() override;
+                        std::string description() override;
+                        int int_value() override;
                 };
 
                 class LeftParToken : public Token
                 {
                     public :
                         LeftParToken();
-                        virtual ~LeftParToken();
-                        virtual e_token_type type();
-                        virtual std::string description();
+                        ~LeftParToken() override;
+                        e_token_type type() override;
+                        std::string description() override;
                 };
 
                 class RightParToken : public Token
                 {
                     public :
                         RightParToken();
-                        virtual ~RightParToken();
-                        virtual e_token_type type();
-                        virtual std::string description();
+                        ~RightParToken() override;
+                        e_token_type type() override;
+                        std::string description() override;
                 };
 
             private :

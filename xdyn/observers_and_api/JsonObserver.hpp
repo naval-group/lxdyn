@@ -12,10 +12,10 @@ class JsonObserver : public DictObserver
     public:
         JsonObserver(const std::string& filename);
         JsonObserver(const std::string& filename, const std::vector<std::string>& d);
-        ~JsonObserver();
+        ~JsonObserver() override;
 
     private:
-        void flush_after_write();
+        void flush_after_write() override;
 
         bool output_to_file;
         std::ostream& os;

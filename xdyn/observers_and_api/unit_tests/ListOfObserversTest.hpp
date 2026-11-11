@@ -7,9 +7,9 @@ class ListOfObserversTest : public ::testing::Test
 {
     protected:
         ListOfObserversTest(){}
-        virtual ~ListOfObserversTest(){}
-        virtual void SetUp(){}
-        virtual void TearDown(){}
+        ~ListOfObserversTest() override{}
+        void SetUp() override{}
+        void TearDown() override{}
 };
 
 #endif

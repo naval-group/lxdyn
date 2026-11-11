@@ -16,9 +16,9 @@ class TextFileReaderTest : public ::testing::Test
 {
     protected:
         TextFileReaderTest();
-        virtual ~TextFileReaderTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~TextFileReaderTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

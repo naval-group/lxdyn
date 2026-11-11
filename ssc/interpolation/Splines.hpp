@@ -48,7 +48,7 @@ namespace ssc
         {
             public:
                 Splines();
-                virtual ~Splines() {}
+                ~Splines() override {}
                 Splines(const double xmin_, const double xmax_, const std::vector<double>& y);
                 std::vector<ParabolicCoefficients> get_parabolic_coefficients();
                 std::pair<double,double> find_position_and_value_of_minimum();
@@ -62,10 +62,10 @@ namespace ssc
             private:
                 CubicCoefficients compute_cubic_coeff_for_x0(const double& x0);
                 CubicCoefficients get_cubic_coefficients(const double& M1, const double& M2, const double& y1, const double& y2) const;
-                double get_f() const;
-                double get_df(const size_t derivative_order) const;
-                void compute_coefficients_for_ith_interval(const double x0, const size_t i);
-                void find_index_of_interval_containing(const double val);
+                double get_f() const override;
+                double get_df(const size_t derivative_order) const override;
+                void compute_coefficients_for_ith_interval(const double x0, const size_t i) override;
+                void find_index_of_interval_containing(const double val) override;
                 std::pair<double,double> find_position_and_value_of_minimum(const size_t i);//const ParabolicCoefficients& c, const double x0, const double x1);
 
             protected:

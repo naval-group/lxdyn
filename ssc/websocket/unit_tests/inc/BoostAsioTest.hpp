@@ -8,9 +8,9 @@ class BoostAsioTest : public ::testing::Test
 {
     protected:
         BoostAsioTest();
-        virtual ~BoostAsioTest(){}
-        virtual void SetUp(){}
-        virtual void TearDown(){}
+        ~BoostAsioTest() override{}
+        void SetUp() override{}
+        void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
 };
 

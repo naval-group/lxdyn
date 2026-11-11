@@ -16,21 +16,21 @@ class DictObserver : public Observer
     public:
         DictObserver();
         DictObserver(const std::vector<std::string>& d);
-        ~DictObserver();
+        ~DictObserver() override;
 
     protected:
-        virtual void flush_after_initialization(){}
-        virtual void flush_value_during_write(){}
-        virtual void flush_after_write();
+        void flush_after_initialization() override{}
+        void flush_value_during_write() override{}
+        void flush_after_write() override;
 
         using Observer::get_serializer;
         using Observer::get_initializer;
 
-        std::function<void()> get_serializer(const double val, const DataAddressing& address);
-        std::function<void()> get_initializer(const double val, const DataAddressing& address);
+        std::function<void()> get_serializer(const double val, const DataAddressing& address) override;
+        std::function<void()> get_initializer(const double val, const DataAddressing& address) override;
 
-        std::function<void()> get_serializer(const SurfaceElevationGrid& val, const DataAddressing& address);
-        std::function<void()> get_initializer(const SurfaceElevationGrid& val, const DataAddressing& address);
+        std::function<void()> get_serializer(const SurfaceElevationGrid& val, const DataAddressing& address) override;
+        std::function<void()> get_initializer(const SurfaceElevationGrid& val, const DataAddressing& address) override;
 
         std::stringstream ss;
     private:

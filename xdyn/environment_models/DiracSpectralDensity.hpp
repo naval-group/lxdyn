@@ -34,16 +34,16 @@ class DiracSpectralDensity : public WaveSpectralDensity
           *  \snippet environment_models/unit_tests/DiracSpectralDensityTest.cpp DiracSpectralDensityTest get_example
           */
         double operator()(const double omega //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
-                          ) const;
+                          ) const override;
 
         /**  \author cady
           *  \date Jul 31, 2014, 2:41:16 PM
           *  \brief A vector containing only omega0 (in rad/s)
           *  \snippet environment_models/unit_tests/DiracSpectralDensityTest.cpp DiracSpectralDensityTest get_omega0_example
           */
-        std::vector<double> get_angular_frequencies(const double omega_min, const double omega_max, const size_t n, const bool constant_energy_bins, const bool periodic = false, const std::vector<double> sizes = {}) const;
+        std::vector<double> get_angular_frequencies(const double omega_min, const double omega_max, const size_t n, const bool constant_energy_bins, const bool periodic = false, const std::vector<double> sizes = {}) const override;
 
-        WaveSpectralDensity* clone() const;
+        WaveSpectralDensity* clone() const override;
 
     private:
         double omega0;

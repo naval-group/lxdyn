@@ -10,9 +10,9 @@ class XdynForCSTest : public ::testing::Test
 {
     protected:
         XdynForCSTest();
-        virtual ~XdynForCSTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~XdynForCSTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

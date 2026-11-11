@@ -15,9 +15,9 @@ class PiecewiseConstantTest : public ::testing::Test
 {
     protected:
         PiecewiseConstantTest();
-        virtual ~PiecewiseConstantTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~PiecewiseConstantTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -16,7 +16,7 @@ class GrpcController : public Controller
     static GrpcController *build (const double tstart,
                                   const std::string& name,
                                   const std::string &yaml, ssc::solver::ContinuousSystem& sys);
-    std::vector<std::string> get_command_names () const;
+    std::vector<std::string> get_command_names () const override;
 
   private:
     GrpcController () = delete;
@@ -34,7 +34,7 @@ class GrpcController : public Controller
      * states.
      */
     void update_discrete_states (const double time,
-                                 ssc::solver::ContinuousSystem& system);
+                                 ssc::solver::ContinuousSystem& system) override;
     void add_controller_outputs_to_data_source (
         const double time, ssc::solver::ContinuousSystem& sys,
         const std::vector<double> &setpoints);

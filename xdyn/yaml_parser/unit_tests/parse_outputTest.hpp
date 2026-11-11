@@ -16,9 +16,9 @@ class parse_outputTest : public ::testing::Test
 {
     protected:
         parse_outputTest();
-        virtual ~parse_outputTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~parse_outputTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

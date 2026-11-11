@@ -16,9 +16,9 @@ class BurcherTest : public ::testing::Test
 {
     protected:
         BurcherTest();
-        virtual ~BurcherTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~BurcherTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

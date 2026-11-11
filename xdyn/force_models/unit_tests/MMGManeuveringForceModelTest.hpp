@@ -6,7 +6,7 @@ class MMGManeuveringForceModelTest : public ::testing::Test
 {
     protected:
         MMGManeuveringForceModelTest();
-        virtual ~MMGManeuveringForceModelTest();
+        ~MMGManeuveringForceModelTest() override;
 };
 
 #endif  /* MMGMANEUVERINGFORCEMODELTEST_HPP_ */

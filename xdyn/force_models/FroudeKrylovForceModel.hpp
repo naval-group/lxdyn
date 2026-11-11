@@ -33,12 +33,12 @@ class FroudeKrylovForceModel : public ImmersedSurfaceForceModel
                                   const EnvironmentAndFrames& env,
                                   const BodyStates& states,
                                   const double t
-                                 ) const;
+                                 ) const override;
         static std::string model_name();
 
     private:
         FroudeKrylovForceModel();
-        double pe(const BodyStates& states, const std::vector<double>& x, const EnvironmentAndFrames& env) const;
+        double pe(const BodyStates& states, const std::vector<double>& x, const EnvironmentAndFrames& env) const override;
 };
 
 #endif /* FROUDEKRYLOVFORCEMODEL_HPP_ */

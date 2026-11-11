@@ -24,7 +24,7 @@ class FastHydrostaticForceModel : public ImmersedSurfaceForceModel
                                   const EnvironmentAndFrames& env,
                                   const BodyStates& states,
                                   const double t
-                                 ) const;
+                                 ) const override;
         std::string get_name() const;
         static std::string model_name();
         ssc::kinematics::Point get_centre_of_buoyancy() const;
@@ -34,10 +34,10 @@ class FastHydrostaticForceModel : public ImmersedSurfaceForceModel
 
     private:
         FastHydrostaticForceModel();
-        void calculations_after_surface_integration(const BodyStates& states) const;
+        void calculations_after_surface_integration(const BodyStates& states) const override;
         //void extra_observations(Observer& observer) const;
         virtual EPoint get_application_point(const FacetIterator& that_facet, const BodyStates& states, const double zG) const;
-        double pe(const BodyStates& states, const std::vector<double>& x, const EnvironmentAndFrames& env) const;
+        double pe(const BodyStates& states, const std::vector<double>& x, const EnvironmentAndFrames& env) const override;
         std::shared_ptr<Eigen::Vector3d> centre_of_buoyancy;
 };
 

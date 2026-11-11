@@ -21,15 +21,15 @@ class Controller : public ssc::solver::DiscreteSystem
     public:
         Controller(const double date_of_first_call, const double dt, const std::string& name);
 
-        virtual ~Controller();
+        ~Controller() override;
 
         /**
          * @brief Get the list of all outputs (commands) computed by the controller.
          *
          */
         virtual std::vector<std::string> get_command_names() const = 0;
-        std::vector<std::string> get_outputs() const;
-        std::string get_name() const;
+        std::vector<std::string> get_outputs() const override;
+        std::string get_name() const override;
 
     protected:
         /**
@@ -58,7 +58,7 @@ class Controller : public ssc::solver::DiscreteSystem
          * @param time Current simulation time (in seconds).
          * @param system The continuous system. Used to retrieve the continuous states.
          */
-        virtual void update_discrete_states(const double time, ssc::solver::ContinuousSystem& system) = 0;
+        void update_discrete_states(const double time, ssc::solver::ContinuousSystem& system) override = 0;
         std::string name;
 
 };

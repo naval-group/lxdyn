@@ -16,9 +16,9 @@ class CSVControllerTest : public ::testing::Test
 {
     protected:
         CSVControllerTest();
-        virtual ~CSVControllerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~CSVControllerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         std::string test_yaml() const;
         TempFile csv;
         ssc::random_data_generator::DataGenerator a;

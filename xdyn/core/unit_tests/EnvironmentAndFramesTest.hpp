@@ -14,7 +14,7 @@ class EnvironmentAndFramesTest : public ::testing::Test
 {
 public:
     EnvironmentAndFramesTest ();
-    virtual ~EnvironmentAndFramesTest ();
+    ~EnvironmentAndFramesTest () override;
 };
 
 #endif /* CORE_UNIT_TESTS_INC_ENVIRONMENTANDFRAMESTEST_HPP_ */

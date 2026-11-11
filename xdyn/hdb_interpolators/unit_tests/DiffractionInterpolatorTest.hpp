@@ -15,9 +15,9 @@ class DiffractionInterpolatorTest : public ::testing::Test
 {
     protected:
         DiffractionInterpolatorTest();
-        virtual ~DiffractionInterpolatorTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~DiffractionInterpolatorTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

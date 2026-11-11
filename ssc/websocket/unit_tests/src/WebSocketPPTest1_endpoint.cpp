@@ -8,9 +8,9 @@ class WebSocketPPTest1_endpoint : public ::testing::Test
 {
     protected:
         WebSocketPPTest1_endpoint(){}
-        virtual ~WebSocketPPTest1_endpoint(){}
-        virtual void SetUp(){}
-        virtual void TearDown(){}
+        ~WebSocketPPTest1_endpoint() override{}
+        void SetUp() override{}
+        void TearDown() override{}
 };
 
 TEST_F(WebSocketPPTest1_endpoint,  construct_server_iostream ) {

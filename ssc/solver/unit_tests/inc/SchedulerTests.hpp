@@ -8,9 +8,9 @@ class SchedulerTests : public ::testing::Test
 {
     protected:
         SchedulerTests();
-        virtual ~SchedulerTests();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SchedulerTests() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

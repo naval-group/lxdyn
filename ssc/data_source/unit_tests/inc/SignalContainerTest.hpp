@@ -16,9 +16,9 @@ class SignalContainerTest : public ::testing::Test
 {
     protected:
         SignalContainerTest();
-        virtual ~SignalContainerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SignalContainerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

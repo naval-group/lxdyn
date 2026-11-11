@@ -30,14 +30,14 @@ namespace ssc
         {
             public:
                 ConstantStepInterpolator();
-                virtual ~ConstantStepInterpolator();
+                ~ConstantStepInterpolator() override;
                 ConstantStepInterpolator(const double& xmin_, const double& xmax_, const std::vector<double>& y);
 
             protected:
-                virtual void update_coefficients_if_necessary(const double x0);
+                void update_coefficients_if_necessary(const double x0) override;
                 virtual void find_index_of_interval_containing(const double val);
-                virtual double get_f() const = 0;
-                virtual double get_df(const size_t derivative_order) const = 0;
+                double get_f() const override = 0;
+                double get_df(const size_t derivative_order) const override = 0;
 
                 double xmin;
                 double xmax;

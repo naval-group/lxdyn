@@ -16,9 +16,9 @@ class LinearHydrostaticForceModelTest : public ::testing::Test
 {
     protected:
         LinearHydrostaticForceModelTest();
-        virtual ~LinearHydrostaticForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~LinearHydrostaticForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

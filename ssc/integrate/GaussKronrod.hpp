@@ -28,12 +28,12 @@ namespace ssc
             public:
                 GaussKronrod();
                 GaussKronrod(const Function& f_);
-                ~GaussKronrod();
+                ~GaussKronrod() override;
                 GaussKronrod(const GaussKronrod& rhs);
                 GaussKronrod& operator=(const GaussKronrod& rhs);
 
             private:
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6);
+                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
                 int* iwork;
                 double* work;
         };

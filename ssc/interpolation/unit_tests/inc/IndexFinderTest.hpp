@@ -15,9 +15,9 @@ class IndexFinderTest : public ::testing::Test
 {
     protected:
         IndexFinderTest();
-        virtual ~IndexFinderTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~IndexFinderTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

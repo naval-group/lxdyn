@@ -30,9 +30,9 @@ class DiracDirectionalSpreading : public WaveDirectionalSpreading
           *  \returns Density (between 0 and 1, no unit)
           */
         double operator()(const double psi //!< Primary wave direction in radians.
-                         ) const;
+                         ) const override;
 
-        WaveDirectionalSpreading* clone() const;
+        WaveDirectionalSpreading* clone() const override;
 
         /**  \author cady
           *  \date Jul 31, 2014, 12:20:52 PM
@@ -41,7 +41,7 @@ class DiracDirectionalSpreading : public WaveDirectionalSpreading
           */
         std::vector<double> get_directions(const size_t n,         //!< Ignored
                                            const bool periodic = false //!< Ignored
-                                                   ) const;
+                                                   ) const override;
 
     private:
         DiracDirectionalSpreading(); // Disabled

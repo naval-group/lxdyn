@@ -22,7 +22,7 @@ namespace ssc
 
             private:
                 ClenshawCurtisCosine();
-                int get_internal_type_number() const;
+                int get_internal_type_number() const override;
         };
     }
 }

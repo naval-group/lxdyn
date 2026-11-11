@@ -6,6 +6,7 @@ Checks:
   - 'misc-throw-by-value-catch-by-reference'
   - 'modernize-make-shared'
   - 'modernize-make-unique'
+  - 'modernize-use-override'
   - 'modernize-use-nullptr'
   - 'modernize-use-using'
 

@@ -15,9 +15,9 @@ class Cos2sDirectionalSpreadingTest : public ::testing::Test
 {
     protected:
         Cos2sDirectionalSpreadingTest();
-        virtual ~Cos2sDirectionalSpreadingTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~Cos2sDirectionalSpreadingTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

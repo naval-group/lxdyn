@@ -15,9 +15,9 @@ class low_level_hdb_parserTest : public ::testing::Test
 {
     protected:
         low_level_hdb_parserTest();
-        virtual ~low_level_hdb_parserTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~low_level_hdb_parserTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

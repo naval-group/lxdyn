@@ -16,9 +16,9 @@ class maneuvering_parserTest : public ::testing::Test
 {
     protected:
         maneuvering_parserTest();
-        virtual ~maneuvering_parserTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~maneuvering_parserTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

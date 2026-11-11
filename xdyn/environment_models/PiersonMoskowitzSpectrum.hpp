@@ -35,7 +35,7 @@ class PiersonMoskowitzSpectrum : public JonswapSpectrum
                                  const double Tp    //!< Mean wave period (in seconds));
                                 );
 
-        WaveSpectralDensity* clone() const;
+        WaveSpectralDensity* clone() const override;
 
     private:
         PiersonMoskowitzSpectrum(); // Disabled

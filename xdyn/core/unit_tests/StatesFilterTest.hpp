@@ -16,9 +16,9 @@ class StatesFilterTest : public ::testing::Test
 {
     protected:
         StatesFilterTest();
-        virtual ~StatesFilterTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~StatesFilterTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

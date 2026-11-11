@@ -14,9 +14,9 @@ class GrpcControllerTest : public ::testing::Test
 {
     protected:
         GrpcControllerTest();
-        virtual ~GrpcControllerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~GrpcControllerTest() override;
+        void SetUp() override;
+        void TearDown() override;
 };
 
 

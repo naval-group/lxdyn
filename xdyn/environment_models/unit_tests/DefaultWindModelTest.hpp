@@ -15,9 +15,9 @@ class DefaultWindModelTest : public ::testing::Test
 {
     protected:
         DefaultWindModelTest ();
-        virtual ~DefaultWindModelTest ();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~DefaultWindModelTest () override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

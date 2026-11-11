@@ -22,9 +22,9 @@ class InterpolationModule : public ssc::data_source::DataSourceModule
 
         InterpolationModule(const InterpolationModule& rhs, ssc::data_source::DataSource* const data_source);
 
-        ssc::data_source::DataSourceModule* clone() const;
-        ssc::data_source::DataSourceModule* clone(ssc::data_source::DataSource* const data_source) const;
-        void update() const;
+        ssc::data_source::DataSourceModule* clone() const override;
+        ssc::data_source::DataSourceModule* clone(ssc::data_source::DataSource* const data_source) const override;
+        void update() const override;
 
     private:
         std::string xname;

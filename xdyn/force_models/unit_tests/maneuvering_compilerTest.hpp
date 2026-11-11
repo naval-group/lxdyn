@@ -16,9 +16,9 @@ class maneuvering_compilerTest : public ::testing::Test
 {
     protected:
         maneuvering_compilerTest();
-        virtual ~maneuvering_compilerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~maneuvering_compilerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

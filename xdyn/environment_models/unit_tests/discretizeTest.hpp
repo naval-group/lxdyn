@@ -15,9 +15,9 @@ class discretizeTest : public ::testing::Test
 {
     protected:
         discretizeTest();
-        virtual ~discretizeTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~discretizeTest() override;
+        void SetUp() override;
+        void TearDown() override;
         std::vector<double> random_increasing_vector_of_size(const size_t n) const;
         ssc::random_data_generator::DataGenerator a;
 };

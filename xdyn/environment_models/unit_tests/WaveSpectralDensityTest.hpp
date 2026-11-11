@@ -16,9 +16,9 @@ class WaveSpectralDensityTest : public ::testing::Test
 {
     protected:
         WaveSpectralDensityTest();
-        virtual ~WaveSpectralDensityTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~WaveSpectralDensityTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

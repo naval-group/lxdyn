@@ -15,9 +15,9 @@ class KtKqForceModelTest : public ::testing::Test
 {
     protected:
         KtKqForceModelTest();
-        virtual ~KtKqForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~KtKqForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

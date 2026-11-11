@@ -75,7 +75,7 @@ template <typename T> class H5_Serialize : public H5_Interface<T>
         {
         }
 
-        ~H5_Serialize()
+        ~H5_Serialize() override
         {
             H5_Interface<T>::h5Type.close();
             H5_Interface<T>::h5Space.close();
@@ -120,7 +120,7 @@ template <typename T> class H5_Parse : public H5_Interface<T>
         {
         }
 
-        ~H5_Parse()
+        ~H5_Parse() override
         {
             H5_Interface<T>::h5Type.close();
             H5_Interface<T>::h5Space.close();

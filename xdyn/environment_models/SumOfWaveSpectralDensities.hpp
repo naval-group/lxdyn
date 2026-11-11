@@ -32,9 +32,9 @@ class SumOfWaveSpectralDensities : public WaveSpectralDensity
         SumOfWaveSpectralDensities(const WaveSpectralDensity& w1, const WaveSpectralDensity& w2);
         SumOfWaveSpectralDensities(const std::vector<WaveSpectralDensity>& ws);
         double operator()(const double omega //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
-                                  ) const;
+                                  ) const override;
 
-        WaveSpectralDensity* clone() const;
+        WaveSpectralDensity* clone() const override;
 
         /**  \brief Returns n angular frequencies between omega_min (included)
           *         and omega_max (also included)
@@ -46,7 +46,7 @@ class SumOfWaveSpectralDensities : public WaveSpectralDensity
                                                     const bool equal_energy_bins,      //!< Choose omegas so the integral of S between two successive omegas is constant
                                                     const bool periodic = false,        //!< Pick frequencies whose wavelength divides the repetition size
                                                     const std::vector<double> sizes = {}//!< Repetition sizes in metres, largest first
-                                                    ) const;
+                                                    ) const override;
 
     private:
         std::vector<WaveSpectralDensityPtr> terms;

@@ -13,9 +13,9 @@ class SeabedTest : public ::testing::Test
 {
     protected:
         SeabedTest();
-        virtual ~SeabedTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SeabedTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

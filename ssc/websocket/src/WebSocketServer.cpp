@@ -52,7 +52,7 @@ Server::Server(MessageHandler& message_handler, const short unsigned int port, c
 
 struct DoNothing : public MessageHandler
 {
-    void operator()(const Message&){}
+    void operator()(const Message&) override{}
 };
 
 Server::Server(const short unsigned int port, const bool verbose) : pimpl(new Impl())

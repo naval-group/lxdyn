@@ -43,7 +43,7 @@ class DefaultSurfaceElevation : public SurfaceElevationInterface
             const std::vector<double> &x, //!< x-coordinates of the points, relative to the centre of the NED frame, projected in the NED frame
             const std::vector<double> &y, //!< y-coordinates of the points, relative to the centre of the NED frame, projected in the NED frame
             const double t                //!< Current instant (in seconds)
-            ) const;
+            ) const override;
 
         /**  \author cady
           *  \date Feb 3, 2015, 10:06:45 AM
@@ -57,7 +57,7 @@ class DefaultSurfaceElevation : public SurfaceElevationInterface
             const std::vector<double>& z,  //!< z-positions in the NED frame (in meters)
             const double t,                //!< Current time instant (in seconds)
             const std::vector<double>& eta //!< Wave elevations at (x,y) in the NED frame (in meters)
-            ) const;
+            ) const override;
 
         std::vector<double> dynamic_pressure(
             const double rho,               //!< water density (in kg/m^3)
@@ -67,10 +67,10 @@ class DefaultSurfaceElevation : public SurfaceElevationInterface
             const std::vector<double> &z,   //!< z-positions in the NED frame (in meters)
             const std::vector<double> &eta, //!< Wave elevations at (x,y) in the NED frame (in meters)
             const double t                  //!< Current time instant (in seconds)
-            ) const;
+            ) const override;
 
         std::vector<FlatDiscreteDirectionalWaveSpectrum> get_flat_directional_spectra(
-            const double x, const double y, const double t) const;
+            const double x, const double y, const double t) const override;
 
         double zwave;
 };

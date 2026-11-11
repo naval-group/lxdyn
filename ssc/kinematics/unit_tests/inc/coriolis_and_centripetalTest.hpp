@@ -15,9 +15,9 @@ class coriolis_and_centripetalTest : public ::testing::Test
 {
     protected:
         coriolis_and_centripetalTest();
-        virtual ~coriolis_and_centripetalTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~coriolis_and_centripetalTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

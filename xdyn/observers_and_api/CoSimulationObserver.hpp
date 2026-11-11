@@ -7,7 +7,7 @@ class CoSimulationObserver : public SimulationServerObserver
 {
 public:
     CoSimulationObserver(const std::vector<std::string>& extra_fields_to_serialize, const std::string& body_name);
-    virtual ~CoSimulationObserver() = default;
+    ~CoSimulationObserver() override = default;
 
 private:
     using Observer::get_serializer;

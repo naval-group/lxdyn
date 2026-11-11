@@ -18,9 +18,9 @@ class RudderForceModelTest : public ::testing::Test
 {
     protected:
         RudderForceModelTest();
-        virtual ~RudderForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~RudderForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         EnvironmentAndFrames get_env();
         ssc::random_data_generator::DataGenerator a;
 };

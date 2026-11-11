@@ -15,9 +15,9 @@ class GRPCForceModelTest : public ::testing::Test
 {
     protected:
         GRPCForceModelTest();
-        virtual ~GRPCForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~GRPCForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
 };
 
 

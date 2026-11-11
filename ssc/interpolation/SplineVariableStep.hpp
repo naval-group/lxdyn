@@ -44,8 +44,8 @@ namespace ssc
                 SplineVariableStep(const std::vector<double>& x, const std::vector<double>& y, const bool allow_queries_outside_bounds = false);
 
             private:
-                double get_f() const;
-                double get_df(const size_t derivative_order) const;
+                double get_f() const override;
+                double get_df(const size_t derivative_order) const override;
 
                 class Impl;
                 std::shared_ptr<Impl> pimpl;

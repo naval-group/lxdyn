@@ -16,9 +16,9 @@ class BlockedDOFTest : public ::testing::Test
 {
     protected:
         BlockedDOFTest();
-        virtual ~BlockedDOFTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~BlockedDOFTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

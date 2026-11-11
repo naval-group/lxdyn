@@ -8,9 +8,9 @@ class KinematicTreeTest : public ::testing::Test
 {
     protected:
         KinematicTreeTest();
-        virtual ~KinematicTreeTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~KinematicTreeTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -16,9 +16,9 @@ class maneuvering_DataSource_builderTest : public ::testing::Test
 {
     protected:
         maneuvering_DataSource_builderTest();
-        virtual ~maneuvering_DataSource_builderTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~maneuvering_DataSource_builderTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

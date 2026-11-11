@@ -16,9 +16,9 @@ class FilonTest : public ::testing::Test
 {
     protected:
         FilonTest();
-        virtual ~FilonTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~FilonTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

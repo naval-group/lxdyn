@@ -22,9 +22,9 @@ class MapObserverTest : public ::testing::Test
 {
     protected:
         MapObserverTest();
-        virtual ~MapObserverTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~MapObserverTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

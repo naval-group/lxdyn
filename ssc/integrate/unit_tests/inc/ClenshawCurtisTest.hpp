@@ -16,9 +16,9 @@ class ClenshawCurtisTest : public ::testing::Test
 {
     protected:
         ClenshawCurtisTest();
-        virtual ~ClenshawCurtisTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~ClenshawCurtisTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -11,9 +11,9 @@ class AssetPathTest : public ::testing::Test
 {
     protected:
         AssetPathTest();
-        virtual ~AssetPathTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~AssetPathTest() override;
+        void SetUp() override;
+        void TearDown() override;
 };
 
 #endif /* ASSETPATHTEST_HPP_ */

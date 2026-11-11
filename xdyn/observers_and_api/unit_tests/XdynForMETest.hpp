@@ -16,9 +16,9 @@ class XdynForMETest : public ::testing::Test
 {
     protected:
         XdynForMETest();
-        virtual ~XdynForMETest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~XdynForMETest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

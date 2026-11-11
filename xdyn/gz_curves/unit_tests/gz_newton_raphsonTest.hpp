@@ -16,9 +16,9 @@ class gz_newton_raphsonTest : public ::testing::Test
 {
     protected:
         gz_newton_raphsonTest();
-        virtual ~gz_newton_raphsonTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~gz_newton_raphsonTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

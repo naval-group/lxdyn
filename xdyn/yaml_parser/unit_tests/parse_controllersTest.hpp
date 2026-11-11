@@ -15,9 +15,9 @@ class parse_controllersTest : public ::testing::Test
 {
     protected:
         parse_controllersTest();
-        virtual ~parse_controllersTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~parse_controllersTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

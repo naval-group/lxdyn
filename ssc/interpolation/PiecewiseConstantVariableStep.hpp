@@ -88,19 +88,19 @@ namespace ssc
                     return T();
                 }
 
-                double f(const double x0)
+                double f(const double x0) override
                 {
                     update_coefficients_if_necessary(x0);
                     return pc_f<T>(y_, (size_t)idx);
                 }
 
             private:
-                double get_f() const
+                double get_f() const override
                 {
                     return 0;
                 }
 
-                double get_df(const size_t derivative_order) const
+                double get_df(const size_t derivative_order) const override
                 {
                     (void) derivative_order;
                     return 0;

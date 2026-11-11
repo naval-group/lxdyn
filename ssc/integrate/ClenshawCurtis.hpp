@@ -19,14 +19,14 @@ namespace ssc
             public:
                 ClenshawCurtis(const double tau);
                 ClenshawCurtis(const Function& f, const double tau);
-                ~ClenshawCurtis();
+                ~ClenshawCurtis() override;
                 ClenshawCurtis(const ClenshawCurtis& rhs);
                 ClenshawCurtis& operator=(const ClenshawCurtis& rhs);
                 double compute_for(const double tau, const double a, const double b, const double eps);
 
             private:
                 ClenshawCurtis();
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6);
+                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
                 virtual int get_internal_type_number() const = 0;
                 double tau;
                 int nb_of_chebychev_moments;

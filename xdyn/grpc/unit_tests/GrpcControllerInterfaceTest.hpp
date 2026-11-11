@@ -15,9 +15,9 @@ class GrpcControllerInterfaceTest : public ::testing::Test
 {
     protected:
         GrpcControllerInterfaceTest();
-        virtual ~GrpcControllerInterfaceTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~GrpcControllerInterfaceTest() override;
+        void SetUp() override;
+        void TearDown() override;
 };
 
 

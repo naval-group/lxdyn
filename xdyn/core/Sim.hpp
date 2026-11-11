@@ -80,7 +80,7 @@ class Sim : public ssc::solver::ContinuousSystem
          *  \param 
          *  \returns dxdt the vector of states derivatives.
         */
-        void dx_dt(const StateType& x, StateType& dxdt, const double t);
+        void dx_dt(const StateType& x, StateType& dxdt, const double t) override;
 
         /** \brief Force states to a prescribed value 
          *  \details It is possible to make some states of some bodies follow a given path. The states
@@ -93,7 +93,7 @@ class Sim : public ssc::solver::ContinuousSystem
          *  \returns Updated states according to forcing requirements
         */
 
-        void force_states(StateType& x, const double t) const;
+        void force_states(StateType& x, const double t) const override;
 
         /** @} */ 
 
@@ -134,19 +134,19 @@ class Sim : public ssc::solver::ContinuousSystem
 
         /** \brief Sets the value of one of the system's discrete states. In our case, these discrete states are the command values calculated by the controllers. This method is used by the controllers to store the updated command values in the DataSource, for use by controlled forces (e.g. propellers).
          */
-        void set_discrete_state(const std::string &state_name, const double value);
+        void set_discrete_state(const std::string &state_name, const double value) override;
 
         /** \brief Gets the value of the given input from the datasource
          *
          * Used by controllers to get the inputs they need (setpoints or commands) to compute a command.
          */
-        double get_input_value(const std::string &name) const;
+        double get_input_value(const std::string &name) const override;
 
         /** \brief Gets the value of a Sim state ("x", "u", "qr", "phi", ...)
          *
          * Used by controllers to get the states they need to compute a command.
          */
-        double get_state_value(const std::string &name) const;
+        double get_state_value(const std::string &name) const override;
 
         void reset_history();
         std::vector<std::string> get_command_names() const;
@@ -154,7 +154,7 @@ class Sim : public ssc::solver::ContinuousSystem
         /** \brief This function calls all force models from the current body states.
           * \detail This should be called before the first call to Sim::output if the initial state (at construction) is to be recorded.
           */
-        void initialize_system_outputs_before_first_observation();
+        void initialize_system_outputs_before_first_observation() override;
 
     private:
         ssc::kinematics::UnsafeWrench sum_of_forces(const StateType& x, const BodyPtr& body, const double t);

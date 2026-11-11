@@ -24,9 +24,9 @@ namespace ssc
             public:
                 CubicRunoutSplines();
                 CubicRunoutSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
-                virtual ~CubicRunoutSplines() {}
+                ~CubicRunoutSplines() override {}
             private:
-                double get_endpoint_value() const;
+                double get_endpoint_value() const override;
         };
     }
 }

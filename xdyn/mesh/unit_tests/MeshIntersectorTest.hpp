@@ -9,9 +9,9 @@ class MeshIntersectorTest : public ::testing::Test
 {
     protected:
         MeshIntersectorTest();
-        virtual ~MeshIntersectorTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~MeshIntersectorTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

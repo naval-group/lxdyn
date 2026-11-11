@@ -9,8 +9,8 @@ class DataGeneratorTests : public ::testing::Test
     protected:
         DataGeneratorTests() : a(ssc::random_data_generator::DataGenerator(95442))
                                 {}
-        virtual void SetUp();
-        virtual void TearDown();
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

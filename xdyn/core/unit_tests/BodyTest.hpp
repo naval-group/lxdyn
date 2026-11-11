@@ -17,9 +17,9 @@ class BodyTest : public ::testing::Test
 {
     protected:
         BodyTest();
-        virtual ~BodyTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~BodyTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         static const BodyPtr body;
 };
