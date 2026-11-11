@@ -64,8 +64,9 @@ TEST_F(AiryTest, single_frequency_single_direction_at_one_point)
     const double k = 4.*PI*PI/Tp/Tp/9.81;
     //! [AiryTest example]
     //! [AiryTest expected output]
-    for (double t = 0 ; t < 3*Tp ; t+=0.1)
+    for (int i = 0 ; i < 30*Tp ; ++i)
     {
+        const double t = 0.1*i;
         ASSERT_NEAR(-Hs/2*sin(-2*PI/Tp*t+k*(x.at(0)*cos(psi0)+y.at(0)*sin(psi0)) +phi), wave.get_elevation(x,y,t).at(0), 1E-6);
     }
     //! [AiryTest expected output]
@@ -117,8 +118,9 @@ TEST_F(AiryTest, two_frequencies_single_direction_at_one_point)
     const std::vector<double> y{a.random<double>()};
     const double phi = 3.4482969340598712549;
     const double k = 4.*PI*PI/Tp/Tp/9.81;
-    for (double t = 0 ; t < 3*Tp ; t+=0.1)
+    for (int i = 0 ; i < 30*Tp ; ++i)
     {
+        const double t = 0.1*i;
         ASSERT_NEAR(-Hs/sqrt(2)*sin(-2*PI/Tp*t + k*(x.at(0)*cos(psi0)+y.at(0)*sin(psi0)) +phi), wave.get_elevation(x,y,t).at(0), 1E-6);
     }
 }
@@ -148,8 +150,9 @@ TEST_F(AiryTest, one_frequency_two_directions_at_one_point)
     const std::vector<double> y{a.random<double>()};
     const double phi = 3.4482969340598712549;
     const double k = 4.*PI*PI/Tp/Tp/9.81;
-    for (double t = 0 ; t < 3*Tp ; t+=0.1)
+    for (int i = 0 ; i < 30*Tp ; ++i)
     {
+        const double t = 0.1*i;
         ASSERT_NEAR(-Hs/sqrt(2)*sin(-2*PI/Tp*t + k*(x.at(0)*cos(psi0)+y.at(0)*sin(psi0)) +phi), wave.get_elevation(x,y,t).at(0), 1E-6);
     }
 }
@@ -207,8 +210,9 @@ TEST_F(AiryTest, dynamic_pressure)
     const double g = 9.81;
     const double k = 4.*PI*PI/Tp/Tp/g;
 
-    for (double t = 0 ; t < 3*Tp ; t+=0.1)
+    for (int i = 0 ; i < 30*Tp ; ++i)
     {
+        const double t = 0.1*i;
         ASSERT_NEAR(Hs / 2 * rho * g * exp(-k * z.at(0)) * sin(-2 * PI / Tp * t + k * (x.at(0) * cos(psi0) + y.at(0) * sin(psi0)) + phi), wave.get_dynamic_pressure(rho, g, x, y, z, eta, t).at(0), 1E-6);
     }
 }
