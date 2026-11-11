@@ -197,10 +197,18 @@ Client::Client() : pimpl(new Impl())
 Client::~Client()
 {
     pimpl->endpoint.stop_perpetual();
-    Impl::IdToConnexionMap::const_iterator it = pimpl->id_to_connection.begin();
-    for (;it!=pimpl->id_to_connection.end() ; ++it)
+    try
     {
-        pimpl->close(it->second);
+        Impl::IdToConnexionMap::const_iterator it = pimpl->id_to_connection.begin();
+        for (;it!=pimpl->id_to_connection.end() ; ++it)
+        {
+            pimpl->close(it->second);
+        }
+    }
+    catch(const std::exception&)
+    {
+        // A connection left open would keep the thread from returning.
+        pimpl->endpoint.stop();
     }
     pimpl->websocket_thread->join();
 }
