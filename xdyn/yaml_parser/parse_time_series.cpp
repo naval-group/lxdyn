@@ -14,12 +14,9 @@
 void operator >> (const YAML::Node& node, YamlTimeSeries& c)
 {
     c.name = "";
-    try
+    if (node["name"])
     {
         node["name"] >> c.name;
-    }
-    catch(std::exception& ) // Nothing to do: 'name' section is not mandatory (should be empty for controller setpoints)
-    {
     }
 
     node["t"] >> c.t;

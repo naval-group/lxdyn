@@ -217,13 +217,11 @@ xdyn_fmu::Model xdyn_fmu::read_model(const std::string& yaml, const std::string&
                 c.xdyn_name = force->get_name() + "(" + command + ")";
                 c.name = name_part(body_forces.first) + "." + name_part(force->get_name()) + "."
                          + name_part(command);
-                // A command the YAML declares without a value: the master sets it before the
-                // first step.
                 try
                 {
                     c.value = builder.sim.get_input_value(c.xdyn_name);
                 }
-                catch (const std::exception&)
+                catch (const std::exception&) // NOLINT(bugprone-empty-catch): a command the YAML declares without a value is set by the master before the first step
                 {
                 }
                 model.commands.push_back(c);

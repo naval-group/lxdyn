@@ -19,7 +19,6 @@ Checks:
   # Off until their sites are fixed, each by the commit that turns it on.
   - '-bugprone-branch-clone'
   - '-bugprone-derived-method-shadowing-base-method'
-  - '-bugprone-empty-catch'
   - '-bugprone-forward-declaration-namespace'
   - '-bugprone-narrowing-conversions'
   - '-bugprone-signed-char-misuse'
