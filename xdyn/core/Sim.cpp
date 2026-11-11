@@ -116,7 +116,7 @@ std::vector<std::string> Sim::get_command_names() const
             {
                 if (not(command_name.empty()))
                 {
-                    ret.push_back(force_name + "(" + command_name + ")");
+                    ret.emplace_back(force_name).append("(").append(command_name).append(")");
                 }
             }
         }

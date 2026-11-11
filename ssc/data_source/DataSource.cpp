@@ -230,11 +230,11 @@ void ssc::data_source::DataSource::define_derivative(const std::string& state_na
     {
         if (it->first == state_name)
         {
-            THROW(__PRETTY_FUNCTION__, DataSourceException, std::string("Cannot define two variables for the same derivative: derivative of state '" + state_name + "' has already been defined as '" + it->second + "': attempting to define it as " + derivative_name));
+            THROW(__PRETTY_FUNCTION__, DataSourceException, "Cannot define two variables for the same derivative: derivative of state '" << state_name << "' has already been defined as '" << it->second << "': attempting to define it as " << derivative_name);
         }
         if (it->second == derivative_name)
         {
-            THROW(__PRETTY_FUNCTION__, DataSourceException, std::string("A variable cannot be the derivative of two different states: '" + derivative_name + "' is already the derivative of '" + it->first + ": attempting to define it as the derivative of '" + state_name + "' as well"));
+            THROW(__PRETTY_FUNCTION__, DataSourceException, "A variable cannot be the derivative of two different states: '" << derivative_name << "' is already the derivative of '" << it->first << ": attempting to define it as the derivative of '" << state_name << "' as well");
         }
     }
     state_names.push_back(std::make_pair(state_name,derivative_name));
