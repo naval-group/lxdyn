@@ -30,12 +30,13 @@ namespace ssc
             public:
                 TrapezoidalIntegration();
                 TrapezoidalIntegration(const Function& f);
+                ~TrapezoidalIntegration() override;
                 double integrate_n_steps(double a, double b, size_t n) const;
 
             private:
                 double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
                 class Impl;
-                std::shared_ptr<Impl> pimpl;
+                std::unique_ptr<Impl> pimpl;
         };
     }
 }

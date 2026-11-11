@@ -42,13 +42,16 @@ namespace ssc
             public:
                 SplineVariableStep();
                 SplineVariableStep(const std::vector<double>& x, const std::vector<double>& y, const bool allow_queries_outside_bounds = false);
+                ~SplineVariableStep() override;
+                SplineVariableStep(SplineVariableStep&&);
+                SplineVariableStep& operator=(SplineVariableStep&&);
 
             private:
                 double get_f() const override;
                 double get_df(const size_t derivative_order) const override;
 
                 class Impl;
-                std::shared_ptr<Impl> pimpl;
+                std::unique_ptr<Impl> pimpl;
         };
     }
 }

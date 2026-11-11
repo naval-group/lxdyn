@@ -41,7 +41,7 @@ namespace ssc
 
             private:
                 struct Impl;
-                std::shared_ptr<Impl> pimpl;
+                std::unique_ptr<Impl> pimpl;
                 void send_vector(const int id, void const * payload, const size_t nb_of_bytes);
                 void send_vector(void const * payload, const size_t nb_of_bytes);
                 template<typename T>

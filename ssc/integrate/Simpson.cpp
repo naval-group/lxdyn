@@ -48,6 +48,8 @@ ssc::integrate::Simpson::Simpson() : ssc::integrate::Integrator(), pimpl(new Imp
 {
 }
 
+ssc::integrate::Simpson::~Simpson() = default;
+
 ssc::integrate::Simpson::Simpson(const Function& f_) : ssc::integrate::Integrator(f_), pimpl(new Impl())
 {
 }

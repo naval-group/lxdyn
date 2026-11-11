@@ -137,14 +137,16 @@ void Hdf5WaveObserver::Impl::write(const SurfaceElevationGrid& waveElevationGrid
 
 Hdf5WaveObserver::Hdf5WaveObserver(
         const H5::H5File& h5File, const std::string& datasetName, const size_t nx, const size_t ny):
-                pimpl(std::make_shared<Hdf5WaveObserver::Impl>(Hdf5WaveObserverBuilder(h5File, datasetName, nx, ny)))
+                pimpl(std::make_unique<Hdf5WaveObserver::Impl>(Hdf5WaveObserverBuilder(h5File, datasetName, nx, ny)))
 {
 }
+
+Hdf5WaveObserver::~Hdf5WaveObserver() = default;
 
 Hdf5WaveObserver::Hdf5WaveObserver(
         const std::string& fileName, const std::string& datasetName,
         const std::size_t nx, const std::size_t ny):
-                pimpl(std::make_shared<Hdf5WaveObserver::Impl>(Hdf5WaveObserverBuilder(fileName, datasetName, nx, ny)))
+                pimpl(std::make_unique<Hdf5WaveObserver::Impl>(Hdf5WaveObserverBuilder(fileName, datasetName, nx, ny)))
 {
 }
 

@@ -177,3 +177,5 @@ Kinematics::Kinematics() : pimpl(new Impl())
 {
 
 }
+
+Kinematics::~Kinematics() = default;

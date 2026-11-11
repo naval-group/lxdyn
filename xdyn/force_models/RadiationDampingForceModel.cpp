@@ -371,6 +371,8 @@ RadiationDampingForceModel::RadiationDampingForceModel(const RadiationDampingFor
 {
 }
 
+RadiationDampingForceModel::~RadiationDampingForceModel() = default;
+
 double RadiationDampingForceModel::get_Tmax() const
 {
     return pimpl->get_Tmax();

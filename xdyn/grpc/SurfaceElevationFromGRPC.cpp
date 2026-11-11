@@ -366,6 +366,8 @@ SurfaceElevationFromGRPC::SurfaceElevationFromGRPC(const YamlGRPC& yaml, const s
 {
 }
 
+SurfaceElevationFromGRPC::~SurfaceElevationFromGRPC() = default;
+
 std::vector<double> SurfaceElevationFromGRPC::wave_height(
     const std::vector<double>& x,                    //!< x-position in the NED frame (in meters)
     const std::vector<double>& y,                    //!< y-position in the NED frame (in meters)

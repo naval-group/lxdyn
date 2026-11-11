@@ -28,8 +28,8 @@ GMForceModel::GMForceModel(const Yaml& data, const std::string& body_name_, cons
 , underlying_hs_force_model()
 , dphi(data.roll_step)
 , env(env)
-, GM(new double(0))
-, GZ(new double(0))
+, GM(0)
+, GZ(0)
 {
     if (env.w.use_count()==0)
     {
@@ -51,7 +51,7 @@ GMForceModel::GMForceModel(const Yaml& data, const std::string& body_name_, cons
 
 double GMForceModel::get_GM() const
 {
-    return *this->GM;
+    return GM;
 }
 
 GMForceModel::Yaml GMForceModel::parse(const std::string& yaml)
@@ -107,8 +107,8 @@ Wrench GMForceModel::get_force(const BodyStates& states, const double t, const E
     const auto hydrostatic_force_in_NED = ret.change_point_and_frame(ssc::kinematics::Point("NED",0,0,0),"NED",env.k);
     const double gz1 = calculate_gz(env.k->get("NED", body_name), ssc::kinematics::Wrench(hydrostatic_force_in_NED.get_point(), hydrostatic_force_in_NED.to_vector()));
     const double gz2 = get_gz_for_shifted_states(states, t, env);
-    *GM = (gz1-gz2)/dphi;
-    *GZ = (gz1+gz2)/2;
+    GM = (gz1-gz2)/dphi;
+    GZ = (gz1+gz2)/2;
     // Make sure to call get_force again to restore the cache: otherwise calculating GZ & GM will
     // have modified latest_force_in_body_frame (and then Kinematics object)
     // but won't be detected by ForceModel::operator()
@@ -120,8 +120,8 @@ Wrench GMForceModel::get_force(const BodyStates& states, const double t, const E
 
 void GMForceModel::extra_observations(Observer& observer) const
 {
-    observer.write_before_solver_step(*GM,DataAddressing(std::vector<std::string>{"efforts",get_body_name(),get_name(),"GM"},std::string("GM(") + get_body_name() + ")"));
-    observer.write_before_solver_step(*GZ,DataAddressing(std::vector<std::string>{"efforts",get_body_name(),get_name(),"GZ"},std::string("GZ(") + get_body_name() + ")"));
+    observer.write_before_solver_step(GM,DataAddressing(std::vector<std::string>{"efforts",get_body_name(),get_name(),"GM"},std::string("GM(") + get_body_name() + ")"));
+    observer.write_before_solver_step(GZ,DataAddressing(std::vector<std::string>{"efforts",get_body_name(),get_name(),"GZ"},std::string("GZ(") + get_body_name() + ")"));
 }
 
 double GMForceModel::pe(const BodyStates& , const std::vector<double>& , const EnvironmentAndFrames& ) const

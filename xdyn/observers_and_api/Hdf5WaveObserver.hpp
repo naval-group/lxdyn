@@ -22,12 +22,14 @@ class Hdf5WaveObserver
                 const std::size_t nx = 0,
                 const std::size_t ny = 0);
 
+        ~Hdf5WaveObserver();
+
         Hdf5WaveObserver& operator<<(const SurfaceElevationGrid& waveElevationGrid);
 
     private:
         Hdf5WaveObserver(); // Disabled
         class Impl;
-        std::shared_ptr<Impl> pimpl;
+        std::unique_ptr<Impl> pimpl;
 };
 
 using Hdf5WaveObserverPtr = std::shared_ptr<Hdf5WaveObserver>;

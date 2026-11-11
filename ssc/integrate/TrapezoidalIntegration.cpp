@@ -38,6 +38,8 @@ ssc::integrate::TrapezoidalIntegration::TrapezoidalIntegration() : Integrator(),
 {
 }
 
+ssc::integrate::TrapezoidalIntegration::~TrapezoidalIntegration() = default;
+
 ssc::integrate::TrapezoidalIntegration::TrapezoidalIntegration(const Function& f_) : Integrator(f_), pimpl(new Impl())
 {
 }
