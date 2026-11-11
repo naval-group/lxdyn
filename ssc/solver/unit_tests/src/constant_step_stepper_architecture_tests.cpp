@@ -9,7 +9,6 @@
 #include "ODEMocks.hpp"
 #include "ssc/solver/solve.hpp"
 
-using ::testing::_;
 using ::testing::InSequence;
 using ::testing::NiceMock;
 using ::testing::Return;
@@ -45,27 +44,27 @@ TEST_F(
         seq; // Name is irrelevant: all expectations in its scope are expected to occur in sequence
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
-    EXPECT_CALL(mock, collect_available_serializations(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, collect_available_serializations(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, check_variables_to_serialize_are_available()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_after_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_after_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, model_function(_, _, _)).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_before_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, model_function(testing::_, testing::_, testing::_)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_before_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, flush()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
-    EXPECT_CALL(mock, do_step(_, _, _, _)).RetiresOnSaturation();
-    EXPECT_CALL(mock, force_states(_, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, do_step(testing::_, testing::_, testing::_, testing::_)).RetiresOnSaturation();
+    EXPECT_CALL(mock, force_states(testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, detected_state_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, locate_event()).RetiresOnSaturation();
     EXPECT_CALL(mock, run_event_actions()).RetiresOnSaturation();
     EXPECT_CALL(mock, advance_to_next_time_event()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_after_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_after_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, model_function(_, _, _)).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_before_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, model_function(testing::_, testing::_, testing::_)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_before_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, flush()).RetiresOnSaturation();
 
     solve_for_constant_step<ExplicitStepperWithMock, SystemWithMock, ObserverWithMock>(sys, observer, stepper,
@@ -90,25 +89,25 @@ TEST_F(
         seq; // Name is irrelevant: all expectations in its scope are expected to occur in sequence
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
-    EXPECT_CALL(mock, collect_available_serializations(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, collect_available_serializations(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, check_variables_to_serialize_are_available()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_after_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_after_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, model_function(_, _, _)).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_before_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, model_function(testing::_, testing::_, testing::_)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_before_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, flush()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_step()).RetiresOnSaturation();
-    EXPECT_CALL(mock, do_step(_, _, _, _)).RetiresOnSaturation();
-    EXPECT_CALL(mock, force_states(_, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, do_step(testing::_, testing::_, testing::_, testing::_)).RetiresOnSaturation();
+    EXPECT_CALL(mock, force_states(testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, detected_state_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, advance_to_next_time_event()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_after_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_after_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, has_more_time_events()).RetiresOnSaturation();
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
-    EXPECT_CALL(mock, model_function(_, _, _)).RetiresOnSaturation();
-    EXPECT_CALL(mock, observe_before_solver_step(_, _, _)).RetiresOnSaturation();
+    EXPECT_CALL(mock, model_function(testing::_, testing::_, testing::_)).RetiresOnSaturation();
+    EXPECT_CALL(mock, observe_before_solver_step(testing::_, testing::_, testing::_)).RetiresOnSaturation();
     EXPECT_CALL(mock, flush()).RetiresOnSaturation();
 
     solve_for_constant_step<ExplicitStepperWithMock, SystemWithMock, ObserverWithMock>(sys, observer, stepper,

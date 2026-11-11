@@ -11,7 +11,6 @@
 #include "xdyn/external_data_structures/YamlBody.hpp"
 #include "xdyn/external_data_structures/YamlRotation.hpp"
 #include "xdyn/hdb_interpolators/History.hpp"
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

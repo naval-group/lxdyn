@@ -9,7 +9,6 @@
 #include "BurcherTest.hpp"
 #include "ssc/integrate/Burcher.hpp"
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

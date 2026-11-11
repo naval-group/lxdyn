@@ -7,7 +7,6 @@
 #include "WaveDirectionalSpreading.hpp"
 #include "SumOfWaveDirectionalSpreadings.hpp"
 
-#define _USE_MATH_DEFINE
 #include <algorithm>
 #include <cmath>
 #define PI M_PI

@@ -12,7 +12,6 @@
 #include "State.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#define _USE_MATH_DEFINE
 #include <cmath>
 #include <memory>
 #define PI M_PI

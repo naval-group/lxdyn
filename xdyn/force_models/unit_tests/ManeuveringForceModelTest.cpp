@@ -12,7 +12,6 @@
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "gmock/gmock.h"
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

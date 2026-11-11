@@ -7,7 +7,6 @@
 
 #include "ssc/integrate/Filon.hpp"
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 
@@ -33,7 +32,7 @@ double ssc::integrate::Filon::compute_for(const double tau_, const double a, con
 extern "C" int filon(double f(void*,double*), void *obj, double *a, double *b, double *
         fpa, double *fpb, double *fba, double *fbb, double *w,
         double *eps, int *maxh, int *lc, int *ls, double
-        *c__, double *s);
+        *c, double *s);
 
 double ssc::integrate::Filon::integrate_impl(const Function& f_, double a, double b, double eps)
 {

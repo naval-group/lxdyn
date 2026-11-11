@@ -15,7 +15,6 @@
 #include "xdyn/yaml_parser/parse_time_series.hpp"
 
 constexpr double EPS = 1E-14;
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

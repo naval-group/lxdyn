@@ -131,7 +131,7 @@ ssc::integrate::ClenshawCurtis::ClenshawCurtis(const Function& f_, const double 
 extern "C" int dqawoe_(double f(void*,double*), void*, double *a, double *b, double *omega, int *
         integr, double *epsabs, double *epsrel, int *limit, int *icall,
         int *maxp1, double *result, double *abserr, int *neval, int *
-        ier, int *last, double *alist__, double *blist, double *rlist, double *
+        ier, int *last, double *alist, double *blist, double *rlist, double *
         elist, int *iord, int *nnlog, int *momcom, double *chebmo);
 
 double ssc::integrate::ClenshawCurtis::integrate_impl(const Function& f_, double a, double b, double eps)

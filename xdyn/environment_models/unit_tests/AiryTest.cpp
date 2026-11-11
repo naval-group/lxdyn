@@ -16,7 +16,6 @@
 #include "Stretching.hpp"
 #include "discretize.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

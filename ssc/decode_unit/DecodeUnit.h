@@ -54,8 +54,8 @@
 // A good start would be to compare outputs with UNIX or CYGWIN /bin/units
 //
 
-#ifndef __DECODE_UNIT__
-#define __DECODE_UNIT__
+#ifndef DECODEUNIT_H_
+#define DECODEUNIT_H_
 
 #include <string>
 #include <istream>
@@ -229,4 +229,4 @@ namespace ssc
     }
 }
 
-#endif // __DECODE_UNIT__
+#endif // DECODEUNIT_H_

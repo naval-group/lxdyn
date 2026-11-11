@@ -28,7 +28,6 @@
 #define BODY "body 1"
 
 constexpr int N = 2000;
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

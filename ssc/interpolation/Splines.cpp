@@ -15,7 +15,7 @@ using doublereal = double;
 extern "C"
 {
     int dgtsv_(integer *n, integer *nrhs, doublereal *dl,
-        doublereal *d__, doublereal *du, doublereal *b, integer *ldb, integer
+        doublereal *d, doublereal *du, doublereal *b, integer *ldb, integer
         *info);
 }
 
@@ -205,29 +205,29 @@ std::vector<double> Splines::compute_second_derivative() const
     *n_ = (integer)n-2;
     *nrhs = 1;
     doublereal *dl = new doublereal[*n_];
-    doublereal *d__ = new doublereal[*n_+2];
+    doublereal *d = new doublereal[*n_+2];
     doublereal *du = new doublereal[*n_];
     doublereal *b = new doublereal[*n_+2];
     integer *ldb = new integer;
     integer *info = new integer;
     *ldb = *n_;
-    d__[0] = get_endpoint_value();
-    d__[*n_+1] = get_endpoint_value();
+    d[0] = get_endpoint_value();
+    d[*n_+1] = get_endpoint_value();
     b[0] = 0;
     for (size_t i = 1 ; i <= (size_t)*n_ ; ++i)
     {
         dl[i-1] = 1;
         du[i-1] = 1;
-        d__[i] = 4;
+        d[i] = 4;
         b[i] = 6./h/h*(y[i-1]-2.*y[i]+y[i+1]);
     }
     b[*n_+1] = 0;
-    dgtsv_(n_, nrhs, dl, d__, du, b+1, ldb, info);
+    dgtsv_(n_, nrhs, dl, d, du, b+1, ldb, info);
     const std::vector<double> ret(b,b+*n_+2);
     delete n_;
     delete nrhs;
     delete [] dl;
-    delete [] d__;
+    delete [] d;
     delete [] du;
     delete [] b;
     delete info;

@@ -12,10 +12,8 @@
 #include "xdyn/core/BodyBuilder.hpp"
 
 #include "gmock/gmock.h"
-using ::testing::_;
 using ::testing::ElementsAreArray;
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #include <memory>
 #define PI M_PI

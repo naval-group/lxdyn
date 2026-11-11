@@ -12,7 +12,6 @@
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include <ssc/data_source.hpp>
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 #include <limits>

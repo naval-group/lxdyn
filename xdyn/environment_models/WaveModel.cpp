@@ -11,7 +11,6 @@
 #include <cmath> // For isnan
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_real_distribution.hpp>
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

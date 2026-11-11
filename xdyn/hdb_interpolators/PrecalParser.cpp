@@ -4,7 +4,6 @@
 #include <ssc/decode_unit.hpp>
 #include <algorithm>
 #include <list>
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 constexpr double DEG2RAD = PI/180.;

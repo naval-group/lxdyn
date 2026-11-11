@@ -14,7 +14,6 @@
 
 #include "ssc/kinematics/RotationMatrix.hpp"
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

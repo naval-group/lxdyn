@@ -18,7 +18,6 @@
 
 #define BODY "body 1"
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 

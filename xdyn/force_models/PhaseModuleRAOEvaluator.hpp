@@ -1,5 +1,5 @@
-#ifndef _PHASEMODULERAOEVALUATORHPP_
-#define _PHASEMODULERAOEVALUATORHPP_
+#ifndef PHASEMODULERAOEVALUATOR_HPP_
+#define PHASEMODULERAOEVALUATOR_HPP_
 
 #include "xdyn/hdb_interpolators/RaoInterpolator.hpp"
 #include <ssc/kinematics.hpp>
@@ -31,4 +31,4 @@ class PhaseModuleRAOEvaluator
         void check_spectra_periods_are_in_rao_period_bounds(const std::vector<FlatDiscreteDirectionalWaveSpectrum>& spectra) const;
 };
 
-#endif /* _PHASEMODULERAOEVALUATORHPP_ */
+#endif /* PHASEMODULERAOEVALUATOR_HPP_ */

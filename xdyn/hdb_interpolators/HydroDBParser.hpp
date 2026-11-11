@@ -5,8 +5,8 @@
  *      Author: lincker
  */
 
-#ifndef __HYDRODBPARSERHPP__
-#define __HYDRODBPARSERHPP__
+#ifndef HYDRODBPARSER_HPP_
+#define HYDRODBPARSER_HPP_
 
 #include <array>
 #include <memory>

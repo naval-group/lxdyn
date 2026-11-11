@@ -13,7 +13,6 @@
 #include <boost/algorithm/string.hpp> // replace in string
 #include <boost/regex.hpp>
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 constexpr double DEG = 180./PI;

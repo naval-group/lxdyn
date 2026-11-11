@@ -10,7 +10,6 @@
 #include "xdyn/hdb_interpolators/HDBParser.hpp"
 #include "xdyn/test_data_generator/hdb_data.hpp"
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 constexpr double EPS = 1E-10;

@@ -11,7 +11,6 @@
 
 #include <boost/math/special_functions/gamma.hpp>
 
-#define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 
