@@ -38,7 +38,7 @@ namespace ssc
         class IndexFinder
         {
             public:
-                IndexFinder(const std::vector<double>& x, const bool throw_if_outside_bounds_=true);
+                explicit IndexFinder(const std::vector<double>& x, const bool throw_if_outside_bounds_=true);
                 size_t compute(const double x0);
 
             private:

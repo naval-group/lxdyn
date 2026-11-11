@@ -31,7 +31,7 @@ FilteredStates::FilteredStates(const StatesFilter& filters, const AbstractStates
 class MovingAverage : public StateFilter
 {
     public:
-        MovingAverage(const double duration_in_seconds_) : duration_in_seconds(duration_in_seconds_)
+        explicit MovingAverage(const double duration_in_seconds_) : duration_in_seconds(duration_in_seconds_)
         {}
 
         double filter(const History& h) const override

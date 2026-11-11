@@ -10,13 +10,13 @@
 class Hdf5WaveObserver
 {
     public:
-        Hdf5WaveObserver(
+        explicit Hdf5WaveObserver(
                 const H5::H5File& h5File,
                 const std::string& datasetName = "WaveElevation",
                 const std::size_t nx = 0,
                 const std::size_t ny = 0);
 
-        Hdf5WaveObserver(
+        explicit Hdf5WaveObserver(
                 const std::string& fileName,
                 const std::string& datasetName = "WaveElevation",
                 const std::size_t nx = 0,

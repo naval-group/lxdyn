@@ -18,7 +18,7 @@ struct YamlSimServerInputs;
 struct SimServerInputs
 {
     SimServerInputs(const YamlSimServerInputs& server_inputs, const double max_history_length);
-    SimServerInputs(const double Dt);
+    explicit SimServerInputs(const double Dt);
     double t;
     double Dt;
     StateType state_at_t;

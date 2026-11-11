@@ -34,7 +34,7 @@ namespace ssc
                 void decoerce(std::list<double>& ret);
 
             protected:
-                PhysicalQuantity(const std::vector<double>& v);
+                explicit PhysicalQuantity(const std::vector<double>& v);
                 std::vector<double> val;
         };
     }

@@ -18,7 +18,7 @@ namespace ssc
         {
             public:
                 Rectangle();
-                Rectangle(const Function& f);
+                explicit Rectangle(const Function& f);
 
             private:
                 double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;

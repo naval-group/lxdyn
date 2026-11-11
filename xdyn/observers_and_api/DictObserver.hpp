@@ -15,7 +15,7 @@ class DictObserver : public Observer
 {
     public:
         DictObserver();
-        DictObserver(const std::vector<std::string>& d);
+        explicit DictObserver(const std::vector<std::string>& d);
         ~DictObserver() override;
 
     protected:

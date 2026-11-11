@@ -14,7 +14,7 @@ template <typename T> class H5_Interface
                 h5Type(createId())
         {
         }
-        H5_Interface(const H5::CompType& h5Type_):
+        explicit H5_Interface(const H5::CompType& h5Type_):
                 h5Space(H5_Tools::createDataSpace1DUnlimited()),
                 h5Type(h5Type_)
         {

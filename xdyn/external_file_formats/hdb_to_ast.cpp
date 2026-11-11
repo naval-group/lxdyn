@@ -12,7 +12,7 @@ class Ast_visitor
     : public boost::static_visitor<>
 {
     public:
-        Ast_visitor(hdb::AST& ast_) : ast(ast_){}
+        explicit Ast_visitor(hdb::AST& ast_) : ast(ast_){}
         void operator()(const hdb::Key<std::string>& k)
         {
             ast.string_keys.push_back(k);

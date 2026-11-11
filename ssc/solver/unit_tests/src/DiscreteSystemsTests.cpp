@@ -35,7 +35,7 @@ using RungeKuttaStepper = boost::numeric::odeint::runge_kutta4<StateType>;
 
 struct ContinuousSystem : public ssc::solver::ContinuousSystem
 {
-    ContinuousSystem(const std::vector<double> &x0) { state = x0; }
+    explicit ContinuousSystem(const std::vector<double> &x0) { state = x0; }
 
     void dx_dt(const std::vector<double> &, std::vector<double> &dxdt, double) override
     {

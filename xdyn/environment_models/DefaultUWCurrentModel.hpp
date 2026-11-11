@@ -12,7 +12,7 @@
 class DefaultUWCurrentModel : public UWCurrentModel
 {
 public:
-    DefaultUWCurrentModel(int); // Constructor argument is a dummy in order to be able to call DefaultUWCurrentModel(DefaultUWCurrentModel::parse(...)) from parser
+    explicit DefaultUWCurrentModel(int); // Constructor argument is a dummy in order to be able to call DefaultUWCurrentModel(DefaultUWCurrentModel::parse(...)) from parser
     ~DefaultUWCurrentModel() override;
 
     Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d& position, const double t, const double wave_height) const override;

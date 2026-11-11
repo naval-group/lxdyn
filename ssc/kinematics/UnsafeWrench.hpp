@@ -27,10 +27,10 @@ namespace ssc
         {
             public:
                 UnsafeWrench();
-                UnsafeWrench(const Point& P);
+                explicit UnsafeWrench(const Point& P);
                 UnsafeWrench(const Point& P, const Eigen::Vector3d& force, const Eigen::Vector3d& torque);
                 UnsafeWrench(const UnsafeWrench& rhs);
-                UnsafeWrench(const Wrench& rhs);
+                explicit UnsafeWrench(const Wrench& rhs);
                 UnsafeWrench& operator=(const UnsafeWrench &) = default;
 
                 UnsafeWrench operator+(const UnsafeWrench& rhs) const;

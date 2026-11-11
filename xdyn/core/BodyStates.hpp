@@ -30,13 +30,13 @@ using Matrix66 = Eigen::Matrix<double,6,6>;
 
 struct BodyStates : AbstractStates<History>
 {
-    BodyStates(
+    explicit BodyStates(
         const double Tmax=0 //!< Defines how much history we store
         );
-    BodyStates(
+    explicit BodyStates(
         const YamlFilteredStates& filtered_states, const double Tmax=0 //!< Defines how much history we store
         );
-    BodyStates(
+    explicit BodyStates(
         const StatesFilter& states_filter, const double Tmax=0 //!< Defines how much history we store
         );
     using AbstractStates<History>::operator=;

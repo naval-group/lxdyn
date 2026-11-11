@@ -27,8 +27,8 @@
 class WaveModel
 {
     public:
-        WaveModel(const FlatDiscreteDirectionalWaveSpectrum& spectrum);
-        WaveModel(const DiscreteDirectionalWaveSpectrum& spectrum);
+        explicit WaveModel(const FlatDiscreteDirectionalWaveSpectrum& spectrum);
+        explicit WaveModel(const DiscreteDirectionalWaveSpectrum& spectrum);
         WaveModel(const DiscreteDirectionalWaveSpectrum& spectrum, const double constant_random_phase);
         WaveModel(const DiscreteDirectionalWaveSpectrum& spectrum, const int random_number_generator_seed);
         virtual ~WaveModel();

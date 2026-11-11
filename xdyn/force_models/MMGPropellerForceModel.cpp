@@ -40,7 +40,7 @@ MMGPropellerForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
 MMGPropellerForceModel::Yaml MMGPropellerForceModel::parse(const std::string& yaml)
 {
     YAML::Node node = YAML::Load(yaml);
-    Yaml ret = AbstractWageningen::parse(yaml);
+    Yaml ret(AbstractWageningen::parse(yaml));
     node["k0"]  >> ret.k0;
     node["k1"] >> ret.k1;
     node["k2"] >> ret.k2;

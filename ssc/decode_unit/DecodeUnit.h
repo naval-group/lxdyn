@@ -111,7 +111,7 @@ namespace ssc
                 {
                     std::string m_word;
                     public :
-                        WordToken(std::string word);
+                        explicit WordToken(std::string word);
                         ~WordToken() override;
                         e_token_type type() override;
                         std::string description() override;
@@ -122,7 +122,7 @@ namespace ssc
                 {
                     int m_num;
                     public :
-                        IntToken(int num);
+                        explicit IntToken(int num);
                         ~IntToken() override;
                         e_token_type type() override;
                         std::string description() override;
@@ -132,7 +132,7 @@ namespace ssc
                 class DoubleToken : public Token {
                     double m_num;
                 public :
-                    DoubleToken(double num);
+                    explicit DoubleToken(double num);
                     ~DoubleToken() override;
                     e_token_type type() override;
                     std::string description() override;
@@ -143,7 +143,7 @@ namespace ssc
                 {
                     int m_op;
                     public :
-                        OperationToken(char op);
+                        explicit OperationToken(char op);
                         ~OperationToken() override;
                         e_token_type type() override;
                         std::string description() override;
@@ -216,7 +216,7 @@ namespace ssc
                 UnitDecoder(const UnitDecoder& rhs);
                 UnitDecoder& operator=(const UnitDecoder& rhs);
             public :
-                UnitDecoder(const std::string& unit);
+                explicit UnitDecoder(const std::string& unit);
                 UnitDecoder(const std::string& unit , std::map<std::string,double> &known_units);
                 ~UnitDecoder();
                 double decode();

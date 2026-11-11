@@ -7,7 +7,7 @@
 class SimulationServerObserver : public Observer
 {
     public:
-        SimulationServerObserver(const std::vector<std::string>& extra_fields_to_serialize);
+        explicit SimulationServerObserver(const std::vector<std::string>& extra_fields_to_serialize);
         ~SimulationServerObserver() override = default;
 
         std::vector<YamlState> get() const;

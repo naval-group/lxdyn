@@ -16,7 +16,7 @@
 class StringEvaluator: public boost::static_visitor<>
 {
     public:
-        StringEvaluator(std::stringstream& os);
+        explicit StringEvaluator(std::stringstream& os);
         template <typename T> void operator()(const T& )
         {
             os << "NA";

@@ -20,7 +20,7 @@
 class DiracDirectionalSpreading : public WaveDirectionalSpreading
 {
     public:
-        DiracDirectionalSpreading(const double psi0 //!< Primary wave direction (NED, "coming from") in radians
+        explicit DiracDirectionalSpreading(const double psi0 //!< Primary wave direction (NED, "coming from") in radians
                                  );
 
         /**  \author cady

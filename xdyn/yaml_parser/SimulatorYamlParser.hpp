@@ -14,7 +14,7 @@
 class SimulatorYamlParser
 {
     public:
-        SimulatorYamlParser(const std::string& data);
+        explicit SimulatorYamlParser(const std::string& data);
         YamlSimulatorInput parse() const;
 
     private:

@@ -10,7 +10,7 @@ struct SurfaceElevationGrid
     Eigen::VectorXd y;
     Eigen::MatrixXd z;
 
-    SurfaceElevationGrid(
+    explicit SurfaceElevationGrid(
             const double t_ = 0.0,
             const Eigen::VectorXd& x_ = Eigen::VectorXd(),
             const Eigen::VectorXd& y_ = Eigen::VectorXd(),

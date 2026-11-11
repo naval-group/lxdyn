@@ -17,7 +17,7 @@ namespace ssc
         class ClenshawCurtisCosine : public ClenshawCurtis
         {
             public:
-                ClenshawCurtisCosine(const double tau);
+                explicit ClenshawCurtisCosine(const double tau);
                 ClenshawCurtisCosine(const Function& f, const double tau);
 
             private:

@@ -23,7 +23,7 @@ class WageningenControlledForceModel : public AbstractWageningen
         struct Yaml : public AbstractWageningen::Yaml
         {
             Yaml();
-            Yaml(const AbstractWageningen::Yaml& y);
+            explicit Yaml(const AbstractWageningen::Yaml& y);
             ~Yaml() override{}
             size_t number_of_blades;
             double blade_area_ratio;

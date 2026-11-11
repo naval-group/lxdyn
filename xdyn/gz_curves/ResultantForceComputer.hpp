@@ -29,7 +29,7 @@ namespace GZ
     class ResultantForceComputer
     {
         public:
-            ResultantForceComputer(const Sim& sim, const double dz = 1e-6, const double theta = 1e-6);
+            explicit ResultantForceComputer(const Sim& sim, const double dz = 1e-6, const double theta = 1e-6);
             ::GZ::Resultant resultant(const ::GZ::State& point);
             Eigen::Matrix2d K(const Eigen::Vector3d& X);
 

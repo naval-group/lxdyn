@@ -45,7 +45,7 @@ class HDBParser::Impl
         {
         }
 
-        Impl(const std::string& data)
+        explicit Impl(const std::string& data)
         : omega_rad()
         , tree(hdb::parse(data))
         , M()

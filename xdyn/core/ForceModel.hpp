@@ -52,7 +52,7 @@ class Memoization
 {
     public:
         Memoization() = delete;
-        Memoization(const std::function<Wrench(const BodyStates&, const double, const EnvironmentAndFrames&, const std::map<std::string,double>&)>& callback);
+        explicit Memoization(const std::function<Wrench(const BodyStates&, const double, const EnvironmentAndFrames&, const std::map<std::string,double>&)>& callback);
         Wrench run_if_not_cached(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>&);
 
 

@@ -17,7 +17,7 @@ class RudderForceModel : public ForceModel
         struct Yaml : WageningenControlledForceModel::Yaml
         {
             Yaml();
-            Yaml(const WageningenControlledForceModel::Yaml& yaml);
+            explicit Yaml(const WageningenControlledForceModel::Yaml& yaml);
             double Ar;                                                      //!< Rudder area (in m^2) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
             double b;                                                       //!< Rudder height (in m) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
             double effective_aspect_ratio_factor;                           //!< Non-dimensional (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 97 § b)

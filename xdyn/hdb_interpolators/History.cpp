@@ -14,7 +14,7 @@
 
 union Double
 {
-    Double(const double num) : f(num) {}
+    explicit Double(const double num) : f(num) {}
     // Portable extraction of components.
     bool negative() const { return i < 0; }
     int64_t i;

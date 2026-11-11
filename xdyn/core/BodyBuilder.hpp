@@ -31,7 +31,7 @@ class BodyBuilder
          *           the rotation conventions, which is why this is the only
          *           constructor available.
          */
-        BodyBuilder(const YamlRotation& convention);
+        explicit BodyBuilder(const YamlRotation& convention);
 
         /** \brief Build a 'Body' object from YAML & STL data
          *  \returns New Body object

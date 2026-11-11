@@ -33,7 +33,7 @@ namespace ssc
         {
             public:
                 Simpson();
-                Simpson(const Function& f);
+                explicit Simpson(const Function& f);
                 ~Simpson() override;
 
             private:

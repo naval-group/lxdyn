@@ -28,7 +28,7 @@ namespace ssc
         {
             public:
                 Server(MessageHandler& message_handler, const short unsigned int port, const bool verbose = false);
-                Server(const short unsigned int port, const bool verbose = false);
+                explicit Server(const short unsigned int port, const bool verbose = false);
                 ~Server();
 
             private:

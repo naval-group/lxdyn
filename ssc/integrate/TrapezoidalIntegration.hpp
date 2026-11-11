@@ -29,7 +29,7 @@ namespace ssc
         {
             public:
                 TrapezoidalIntegration();
-                TrapezoidalIntegration(const Function& f);
+                explicit TrapezoidalIntegration(const Function& f);
                 ~TrapezoidalIntegration() override;
                 double integrate_n_steps(double a, double b, size_t n) const;
 

@@ -18,7 +18,7 @@ template<typename T> class Pimpl
         std::unique_ptr<T> m;
     public:
         Pimpl();
-        template<typename ...Args> Pimpl( Args&& ... );
+        template<typename ...Args> explicit Pimpl( Args&& ... );
         ~Pimpl();
         T* operator->();
         T& operator*();

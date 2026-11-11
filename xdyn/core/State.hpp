@@ -8,8 +8,8 @@
 class State : public AbstractStates<History>
 {
     public :
-        State(const double Tmax=0);
-        State(const AbstractStates<History>& h);
+        explicit State(const double Tmax=0);
+        explicit State(const AbstractStates<History>& h);
         StateType get_StateType(const size_t index) const;
         State(const AbstractStates<double>& vals,
               const double t0);

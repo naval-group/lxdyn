@@ -81,7 +81,7 @@ class PrecalParser : public HydroDBParser
 
 
     private:
-        PrecalParser(const PrecalFile& precal_file);
+        explicit PrecalParser(const PrecalFile& precal_file);
         std::vector<double> extract_matrix_coeff(const std::string& short_name, const std::string& long_name, const size_t i, const size_t j) const;
         void init_diffraction_tables();
         void init_froude_krylov_tables();

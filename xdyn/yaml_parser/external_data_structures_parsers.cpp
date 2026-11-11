@@ -37,7 +37,7 @@ void parse_point_with_name(const YAML::Node& node, YamlPoint& p, const std::stri
 {
     YamlCoordinates c;
     node >> c;
-    p = c;
+    p = YamlPoint(c);
     node["frame"] >> p.frame;
     p.name = name;
 }

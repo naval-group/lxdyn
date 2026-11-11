@@ -27,11 +27,11 @@
 class SurfaceElevationFromWaves: public SurfaceElevationInterface
 {
     public:
-        SurfaceElevationFromWaves(
+        explicit SurfaceElevationFromWaves(
             const std::vector<WaveModelPtr>& models,
             const std::pair<std::size_t,std::size_t> output_mesh_size = std::make_pair((std::size_t)0,(std::size_t)0),
             const ssc::kinematics::PointMatrixPtr& output_mesh = std::make_shared<ssc::kinematics::PointMatrix>("NED", 0));
-        SurfaceElevationFromWaves(
+        explicit SurfaceElevationFromWaves(
             const WaveModelPtr& model,
             const std::pair<std::size_t,std::size_t> output_mesh_size = std::make_pair((std::size_t)0,(std::size_t)0),
             const ssc::kinematics::PointMatrixPtr& output_mesh = std::make_shared<ssc::kinematics::PointMatrix>("NED", 0));

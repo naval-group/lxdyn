@@ -27,7 +27,7 @@ namespace ssc
         {
             public:
                 QuadPack();
-                QuadPack(const Function& f_);
+                explicit QuadPack(const Function& f_);
                 ~QuadPack() override;
                 double op(double *x);
 

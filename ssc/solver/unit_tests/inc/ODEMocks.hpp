@@ -56,7 +56,7 @@ class ODEMocks
 class SystemWithMock : public ssc::solver::ContinuousSystem
 {
   public:
-    SystemWithMock(ODEMocks &mock_)
+    explicit SystemWithMock(ODEMocks &mock_)
         : mock(mock_)
     {
     }
@@ -91,7 +91,7 @@ class SystemWithMock : public ssc::solver::ContinuousSystem
 class ObserverWithMock
 {
   public:
-    ObserverWithMock(ODEMocks &mock_)
+    explicit ObserverWithMock(ODEMocks &mock_)
         : mock(mock_)
     {
     }
@@ -109,7 +109,7 @@ class ObserverWithMock
 class SchedulerWithMock : public ssc::solver::Scheduler
 {
   public:
-    SchedulerWithMock(ODEMocks &mock_)
+    explicit SchedulerWithMock(ODEMocks &mock_)
         : ssc::solver::Scheduler(0, 0, 0)
         , mock(mock_)
         , first_run(new bool(true))
@@ -162,7 +162,7 @@ class SchedulerWithMock : public ssc::solver::Scheduler
 class EventHandlerWithMock : public ssc::solver::EventHandler
 {
   public:
-    EventHandlerWithMock(ODEMocks &mock_)
+    explicit EventHandlerWithMock(ODEMocks &mock_)
         : mock(mock_)
     {
     }
@@ -181,7 +181,7 @@ class EventHandlerWithMock : public ssc::solver::EventHandler
 class ExplicitStepperWithMock
 {
   public:
-    ExplicitStepperWithMock(ODEMocks &mock_)
+    explicit ExplicitStepperWithMock(ODEMocks &mock_)
         : mock(mock_)
     {
     }
@@ -198,7 +198,7 @@ class ExplicitStepperWithMock
 class ControlledStepperWithMock
 {
   public:
-    ControlledStepperWithMock(ODEMocks &mock_)
+    explicit ControlledStepperWithMock(ODEMocks &mock_)
         : mock(mock_)
     {
     }

@@ -24,7 +24,7 @@ class GravityForceModel : public ForceModel
 
     private:
         GravityForceModel();
-        GravityForceModel(const double g);
+        explicit GravityForceModel(const double g);
         double g;
         ssc::kinematics::KinematicsPtr k;
 };

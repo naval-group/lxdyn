@@ -16,7 +16,7 @@
 class CsvObserver : public Observer
 {
     public:
-        CsvObserver(const std::string& filename);
+        explicit CsvObserver(const std::string& filename);
         CsvObserver(const std::string& filename, const std::vector<std::string>& data);
         ~CsvObserver() override;
 

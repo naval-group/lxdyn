@@ -418,11 +418,11 @@ MMGRudderForceModel::MMGRudderForceModel(const Yaml& input_, const std::string& 
     , m_propulsionModel(MMGPropellerForceModel(input_, body_name_, env))
     , m_rudderModel(input_, env.rho)
     , m_propeller_wrench_internal_frame_at_P(
-          new Wrench(ssc::kinematics::Point(input_.position_of_propeller_frame.frame, 0, 0, 0)))
-    , m_propeller_wrench_body_frame_at_Ob(new Wrench(ssc::kinematics::Point(body_name, 0, 0, 0)))
-    , m_propeller_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED", 0, 0, 0)))
-    , m_rudder_wrench_body_frame_at_Ob(new Wrench(ssc::kinematics::Point(body_name, 0, 0, 0)))
-    , m_rudder_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED", 0, 0, 0)))
+          new Wrench(ssc::kinematics::Point(input_.position_of_propeller_frame.frame, 0, 0, 0), input_.position_of_propeller_frame.frame))
+    , m_propeller_wrench_body_frame_at_Ob(new Wrench(ssc::kinematics::Point(body_name, 0, 0, 0), body_name))
+    , m_propeller_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED", 0, 0, 0), "NED"))
+    , m_rudder_wrench_body_frame_at_Ob(new Wrench(ssc::kinematics::Point(body_name, 0, 0, 0), body_name))
+    , m_rudder_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED", 0, 0, 0), "NED"))
 {
 }
 

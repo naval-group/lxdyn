@@ -10,7 +10,7 @@ struct Hdf5Addressing
 {
     std::string address;
     Hdf5Addressing():address(){}
-    Hdf5Addressing(
+    explicit Hdf5Addressing(
             const DataAddressing& addressing,
             const std::string& basename=""
             );
@@ -19,7 +19,7 @@ struct Hdf5Addressing
 class Hdf5Observer : public Observer
 {
     public:
-        Hdf5Observer(const std::string& filename);
+        explicit Hdf5Observer(const std::string& filename);
         Hdf5Observer(const std::string& filename, const std::vector<std::string>& data);
         void write_before_simulation(const MeshPtr& mesh, const DataAddressing& address) override;
         void write_before_simulation(const std::string& data, const DataAddressing& address) override;

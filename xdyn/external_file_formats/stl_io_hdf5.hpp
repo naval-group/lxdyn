@@ -9,7 +9,7 @@ struct SVectorOfVectorOfPoints
     VectorOfVectorOfPoints vvP;
     size_t nPoints;
     size_t nTriangles;
-    SVectorOfVectorOfPoints(const VectorOfVectorOfPoints& vvP_);
+    explicit SVectorOfVectorOfPoints(const VectorOfVectorOfPoints& vvP_);
     std::vector<double> concatenatePoints() const;
     std::vector<uint64_t> concatenateTriangles() const;
 };

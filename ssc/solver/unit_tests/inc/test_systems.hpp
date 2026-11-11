@@ -14,7 +14,7 @@ using StateType = std::vector<double>;
 
 struct SimpleODE : public ssc::solver::ContinuousSystem
 {
-    SimpleODE(const StateType &x0) { state = x0; }
+    explicit SimpleODE(const StateType &x0) { state = x0; }
 
     void dx_dt(const StateType &x, StateType &dxdt, double) override
     {
@@ -30,7 +30,7 @@ struct SimpleODE : public ssc::solver::ContinuousSystem
 
 struct QuadraticODE : public ssc::solver::ContinuousSystem
 {
-    QuadraticODE(const StateType &x0) { state = x0; }
+    explicit QuadraticODE(const StateType &x0) { state = x0; }
 
     void dx_dt(const StateType &x, StateType &dxdt, double t) override
     {

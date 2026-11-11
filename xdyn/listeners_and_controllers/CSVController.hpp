@@ -26,7 +26,7 @@ class CSVController : public Controller
   public:
     struct Yaml
     {
-        Yaml(const std::string& yaml);
+        explicit Yaml(const std::string& yaml);
         std::string path; //!< Path to CSV file containing the commands
         std::string time_column; //!< Title of the time column
         char separator; //!< Column separator (either ',' or ';')
