@@ -30,7 +30,6 @@ Checks:
   - '-bugprone-unhandled-self-assignment'
   - '-bugprone-unused-local-non-trivial-variable'
   - '-bugprone-unused-raii'
-  - '-performance-inefficient-string-concatenation'
 
 WarningsAsErrors: '*'
 # Third-party headers arrive through -isystem and stay quiet; these are the rest that are not ours.

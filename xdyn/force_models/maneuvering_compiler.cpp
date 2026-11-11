@@ -43,7 +43,7 @@ namespace maneuvering
                 exponents.reserve(d.exponents.size());
                 for (const auto& e:d.exponents) exponents.push_back(this->operator()(e));
                 std::string ret = b;
-                for (const auto& e:exponents) ret = std::string("(") + ret + ")^(" + e + ")";
+                for (const auto& e:exponents) ret.insert(0, "(").append(")^(").append(e).append(")");
                 return ret;
             }
             std::string operator()(const ::Term& d) const
@@ -52,7 +52,7 @@ namespace maneuvering
                 for (const auto& op:d.rest)
                 {
                     std::string val = this->operator()(op.factor);
-                    ret = ret + op.operator_ + "(" + val + ")";
+                    ret.append(op.operator_).append("(").append(val).append(")");
                 }
                 return ret;
             }
@@ -62,7 +62,7 @@ namespace maneuvering
                 for (const auto& op:d.rest)
                 {
                     std::string val = this->operator()(op.term);
-                    ret = ret + op.operator_ + "(" + val + ")";
+                    ret.append(op.operator_).append("(").append(val).append(")");
                 }
                 return ret;
             }
