@@ -14,7 +14,7 @@
 class ConfBuilder
 {
     public :
-        ConfBuilder(const std::string& yaml_model);
+        explicit ConfBuilder(const std::string& yaml_model);
         ConfBuilder(const std::string& yaml_model, const VectorOfVectorOfPoints& mesh);
 
         Sim sim;

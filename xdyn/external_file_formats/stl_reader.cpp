@@ -17,7 +17,7 @@ void read_normal(char *line, Eigen::Vector3d& vertices, ParserState& state);
 VectorOfVectorOfPoints read_ascii_stl(std::istream& input_stream, ParserState &state);
 
 struct ParserState {
-    ParserState(std::istream& istream):
+    explicit ParserState(std::istream& istream):
         input_stream(istream){}
 
     std::string parse_error_string(const std::string &token){

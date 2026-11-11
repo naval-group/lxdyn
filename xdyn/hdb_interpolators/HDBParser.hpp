@@ -79,7 +79,7 @@ class HDBParser : public HydroDBParser
         HDBParser();
 
     private:
-        HDBParser(const std::string& data);
+        explicit HDBParser(const std::string& data);
         class Impl;
         std::unique_ptr<Impl> pimpl;
 };

@@ -7,7 +7,7 @@
 class Hdf5WaveObserver::Impl
 {
     public:
-        Impl(const Hdf5WaveObserverBuilder& builder):
+        explicit Impl(const Hdf5WaveObserverBuilder& builder):
             h5File(builder.get_h5File()),
             group(builder.get_group()),
             h5ElementT(builder.get_h5ElementT()),

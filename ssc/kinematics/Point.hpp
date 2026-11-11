@@ -29,7 +29,7 @@ namespace ssc
         {
             public:
                 Point();
-                Point(const std::string& frame);
+                explicit Point(const std::string& frame);
                 Point(const Point& P);
                 Point(const std::string& frame, const Eigen::Vector3d& v);
                 Point(const std::string& frame, const double x, const double y, const double z);

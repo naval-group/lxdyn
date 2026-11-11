@@ -28,7 +28,7 @@ namespace maneuvering
     class Node
     {
         public:
-            Node(const std::vector<NodePtr>& children);
+            explicit Node(const std::vector<NodePtr>& children);
             virtual ~Node();
             virtual Function get_lambda() const = 0;
             std::vector<NodePtr> get_children() const;
@@ -65,7 +65,7 @@ namespace maneuvering
     class Constant : public Nullary
     {
         public:
-            Constant(const double val);
+            explicit Constant(const double val);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -78,7 +78,7 @@ namespace maneuvering
     class Unary : public Node
     {
         public:
-            Unary(const NodePtr& operand);
+            explicit Unary(const NodePtr& operand);
 
             NodePtr get_operand() const;
     };
@@ -86,7 +86,7 @@ namespace maneuvering
     class Cos : public Unary
     {
         public:
-            Cos(const NodePtr& operand);
+            explicit Cos(const NodePtr& operand);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -96,7 +96,7 @@ namespace maneuvering
     class Sin : public Unary
     {
         public:
-            Sin(const NodePtr& operand);
+            explicit Sin(const NodePtr& operand);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -106,7 +106,7 @@ namespace maneuvering
     class Abs : public Unary
     {
         public:
-            Abs(const NodePtr& operand);
+            explicit Abs(const NodePtr& operand);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -116,7 +116,7 @@ namespace maneuvering
     class Log : public Unary
     {
         public:
-            Log(const NodePtr& operand);
+            explicit Log(const NodePtr& operand);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -146,7 +146,7 @@ namespace maneuvering
     class Exp : public Unary
     {
         public:
-            Exp(const NodePtr& operand);
+            explicit Exp(const NodePtr& operand);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -156,7 +156,7 @@ namespace maneuvering
     class Sqrt : public Unary
     {
         public:
-            Sqrt(const NodePtr& operand);
+            explicit Sqrt(const NodePtr& operand);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -262,7 +262,7 @@ namespace maneuvering
     class UnknownIdentifier : public Nullary
     {
         public:
-            UnknownIdentifier(const std::string& identifier_name);
+            explicit UnknownIdentifier(const std::string& identifier_name);
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             std::string get_name() const;

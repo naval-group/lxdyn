@@ -28,9 +28,9 @@ class SumOfWaveSpectralDensities : public WaveSpectralDensity
 {
     public:
         SumOfWaveSpectralDensities();
-        SumOfWaveSpectralDensities(const WaveSpectralDensity& w);
+        explicit SumOfWaveSpectralDensities(const WaveSpectralDensity& w);
         SumOfWaveSpectralDensities(const WaveSpectralDensity& w1, const WaveSpectralDensity& w2);
-        SumOfWaveSpectralDensities(const std::vector<WaveSpectralDensity>& ws);
+        explicit SumOfWaveSpectralDensities(const std::vector<WaveSpectralDensity>& ws);
         double operator()(const double omega //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
                                   ) const override;
 

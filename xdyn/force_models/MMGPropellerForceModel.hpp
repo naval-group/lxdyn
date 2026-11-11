@@ -29,7 +29,7 @@ class MMGPropellerForceModel : public AbstractWageningen
         struct Yaml : public AbstractWageningen::Yaml
         {
             Yaml();
-            Yaml(const AbstractWageningen::Yaml& y);
+            explicit Yaml(const AbstractWageningen::Yaml& y);
             double k0;
             double k1;
             double k2;

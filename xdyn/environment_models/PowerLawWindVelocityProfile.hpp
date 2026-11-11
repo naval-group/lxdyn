@@ -16,12 +16,12 @@ public:
     struct Input : public WindMeanVelocityProfile::Input
     {
         Input();
-        Input(const WindMeanVelocityProfile::Input& parent);
+        explicit Input(const WindMeanVelocityProfile::Input& parent);
         double alpha;
         double z_ref;
     };
 
-    PowerLawWindVelocityProfile(const Input& input);
+    explicit PowerLawWindVelocityProfile(const Input& input);
     ~PowerLawWindVelocityProfile() override;
 
     double get_wind_velocity(const double z) const override;

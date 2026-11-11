@@ -30,7 +30,7 @@ namespace ssc
             public:
                 Wrench();
                 virtual ~Wrench() {}
-                Wrench(const Point& P);
+                explicit Wrench(const Point& P);
                 Wrench(const Point& P, const Vector6d& v);
                 Wrench(const Point& P, const Eigen::Vector3d& force, const Eigen::Vector3d& torque);
                 Wrench(const Wrench& rhs);

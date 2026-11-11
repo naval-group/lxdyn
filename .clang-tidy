@@ -9,6 +9,7 @@ Checks:
   - 'modernize-use-override'
   - 'modernize-use-nullptr'
   - 'modernize-use-using'
+  - 'google-explicit-constructor'
 
   # Off for good.
   - '-bugprone-easily-swappable-parameters'  # an API-design opinion, and noisy

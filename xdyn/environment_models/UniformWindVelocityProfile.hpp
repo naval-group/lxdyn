@@ -16,7 +16,7 @@
 class UniformWindVelocityProfile : public WindMeanVelocityProfile
 {
 public:
-    UniformWindVelocityProfile(const Input& input);
+    explicit UniformWindVelocityProfile(const Input& input);
     ~UniformWindVelocityProfile() override;
 
     double get_wind_velocity(const double z) const override;

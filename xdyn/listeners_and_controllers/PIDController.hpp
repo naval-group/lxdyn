@@ -24,7 +24,7 @@ class PIDController : public Controller
     public:
         struct Yaml
         {
-            Yaml(const std::string& yaml);
+            explicit Yaml(const std::string& yaml);
             /* PID Controller gains */
             double Kp; //!< Proportional gain
             double Ki; //!< Integral gain

@@ -48,7 +48,7 @@ using MeshMap = std::map<std::string, VectorOfVectorOfPoints>;
 class SimulatorBuilder
 {
     public:
-        SimulatorBuilder(const YamlSimulatorInput& input, const double t0 = 0.0, const ssc::data_source::DataSource& command_listener = ssc::data_source::DataSource());
+        explicit SimulatorBuilder(const YamlSimulatorInput& input, const double t0 = 0.0, const ssc::data_source::DataSource& command_listener = ssc::data_source::DataSource());
 
         /**  \brief Builds a Sim object using the supplied mesh map (one mesh per body)
           *  \details This function is mainly used in the integration tests.

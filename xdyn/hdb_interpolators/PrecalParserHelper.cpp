@@ -42,7 +42,7 @@ class AbstractLineGetter
 template <typename T> class LineGetter : public AbstractLineGetter
 {
   public:
-    LineGetter(const std::string& s) : stream(s)
+    explicit LineGetter(const std::string& s) : stream(s)
     {}
 
     ~LineGetter() override {}
@@ -75,7 +75,7 @@ template <typename T> class LineGetter : public AbstractLineGetter
 class GetLineFromString : public LineGetter<std::istringstream>
 {
   public:
-    GetLineFromString(const std::string& s)
+    explicit GetLineFromString(const std::string& s)
         : LineGetter<std::istringstream>(s)
     {
     }
@@ -84,7 +84,7 @@ class GetLineFromString : public LineGetter<std::istringstream>
 class GetLineFromFile : public LineGetter<std::ifstream>
 {
   public:
-    GetLineFromFile(const std::string& s)
+    explicit GetLineFromFile(const std::string& s)
         : LineGetter<std::ifstream>(s)
     {
         if (not(stream))
@@ -100,7 +100,7 @@ class GetLineFromFile : public LineGetter<std::ifstream>
 class Parser
 {
   public:
-    Parser(AbstractLineGetter& line_getter_)
+    explicit Parser(AbstractLineGetter& line_getter_)
         : line_getter(line_getter_)
         , current_section()
         , parsed_sections()

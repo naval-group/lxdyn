@@ -47,8 +47,8 @@ class FacetIterator
 class MeshIntersector
 {
     public:
-        MeshIntersector(const VectorOfVectorOfPoints& mesh, const bool check_orientation=true);
-        MeshIntersector(
+        explicit MeshIntersector(const VectorOfVectorOfPoints& mesh, const bool check_orientation=true);
+        explicit MeshIntersector(
                 const MeshPtr& mesh_                  //!< the mesh to intersect
                 );
 

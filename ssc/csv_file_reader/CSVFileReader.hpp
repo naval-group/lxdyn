@@ -21,7 +21,7 @@ namespace ssc
         {
             public:
                 CSVFileReader(const char* filename, const size_t expected_nb_of_columns, const char separator=',');
-                CSVFileReader(const std::string& contents, const char separator=',');
+                explicit CSVFileReader(const std::string& contents, const char separator=',');
                 bool has_more_data() const;
                 std::vector<double> get_line();
                 std::map<std::string,std::vector<double> > get_map() const;

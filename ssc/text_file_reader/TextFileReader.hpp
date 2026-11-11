@@ -29,8 +29,8 @@ namespace ssc
         class TextFileReader
         {
             public:
-                TextFileReader(const std::string& filename);
-                TextFileReader(const std::vector<std::string>& filenames);
+                explicit TextFileReader(const std::string& filename);
+                explicit TextFileReader(const std::vector<std::string>& filenames);
                 std::string get_contents() const;
 
             private:

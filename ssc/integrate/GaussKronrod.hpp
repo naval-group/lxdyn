@@ -27,7 +27,7 @@ namespace ssc
         {
             public:
                 GaussKronrod();
-                GaussKronrod(const Function& f_);
+                explicit GaussKronrod(const Function& f_);
                 ~GaussKronrod() override;
                 GaussKronrod(const GaussKronrod& rhs);
                 GaussKronrod& operator=(const GaussKronrod& rhs);

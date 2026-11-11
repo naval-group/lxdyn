@@ -27,7 +27,7 @@ namespace ssc
         {
             public:
                 Integrator();
-                Integrator(const Function& f_);
+                explicit Integrator(const Function& f_);
                 virtual ~Integrator();
                 double integrate_f(double a, double b, double eps=1e-6);
                 double integrate(const Function& f, double a, double b, double eps=1e-6);

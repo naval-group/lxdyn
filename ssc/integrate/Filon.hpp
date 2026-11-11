@@ -18,7 +18,7 @@ namespace ssc
         {
             public:
                 Filon();
-                Filon(const Function& f_);
+                explicit Filon(const Function& f_);
                 Filon(const Function& f_, const double tau);
                 double compute_for(const double tau, const double a, const double b, const double eps);
 

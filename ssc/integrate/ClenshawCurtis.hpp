@@ -17,7 +17,7 @@ namespace ssc
         class ClenshawCurtis : public QuadPack
         {
             public:
-                ClenshawCurtis(const double tau);
+                explicit ClenshawCurtis(const double tau);
                 ClenshawCurtis(const Function& f, const double tau);
                 ~ClenshawCurtis() override;
                 ClenshawCurtis(const ClenshawCurtis& rhs);

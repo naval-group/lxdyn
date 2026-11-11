@@ -24,7 +24,7 @@
 class History
 {
     public:
-        History(const double Tmax=0 //!< Max. history length (in seconds): anything older than that will be forgotten (i.e. how far back in the past should we be able to go before defaulting to zero)
+        explicit History(const double Tmax=0 //!< Max. history length (in seconds): anything older than that will be forgotten (i.e. how far back in the past should we be able to go before defaulting to zero)
                 );
 
         /**  \brief Returns the average value integrated between t-length and t, t being the current instant.
@@ -99,7 +99,7 @@ class History
         double oldest_recorded_instant;
 
     public:
-        History(const Container& L); // For testing purposes only
+        explicit History(const Container& L); // For testing purposes only
 };
 
 std::ostream& operator<<(std::ostream& os, const History& h);

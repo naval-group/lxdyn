@@ -25,7 +25,7 @@ class HydroDBParser;
 class ToGRPC
 {
     public:
-        ToGRPC(const GRPCForceModel::Input& input_);
+        explicit ToGRPC(const GRPCForceModel::Input& input_);
         RequiredWaveInformationRequest from_required_wave_information(const double t, const double x, const double y, const double z, const std::string& instance_name) const;
         SpectrumResponse* from_flat_discrete_directional_wave_spectra(const std::vector<FlatDiscreteDirectionalWaveSpectrum>& spectra) const;
         WaveInformation* from_wave_information(const WaveRequest& wave_request, const double t, const EnvironmentAndFrames& env) const;

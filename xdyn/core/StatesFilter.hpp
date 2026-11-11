@@ -32,7 +32,7 @@ struct YamlFilteredStates;
 class StatesFilter
 {
     public:
-        StatesFilter(const YamlFilteredStates& input);
+        explicit StatesFilter(const YamlFilteredStates& input);
         double get_Tmax() const;
         double get_filtered_x(const AbstractStates<History>& history) const;
         double get_filtered_y(const AbstractStates<History>& history) const;

@@ -16,7 +16,7 @@
 
 struct GZ::Curve::Impl
 {
-    Impl(const Sim& sim) :
+    explicit Impl(const Sim& sim) :
         res(sim),
         f(std::bind(&ResultantForceComputer::resultant, &res, std::placeholders::_1)),
         k(std::bind(&ResultantForceComputer::K, &res, std::placeholders::_1))

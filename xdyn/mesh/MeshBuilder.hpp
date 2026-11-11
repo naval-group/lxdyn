@@ -60,9 +60,9 @@ using EdgeMap = std::map<Edge, size_t, EdgeComparator>;
 class MeshBuilder
 {
     public:
-        MeshBuilder(const VectorOfVectorOfPoints& v_, const bool check_orientation=true);
-        MeshBuilder(const VectorOfPoints& tri, const bool check_orientation=true);
-        MeshBuilder(const Matrix3x& tri);
+        explicit MeshBuilder(const VectorOfVectorOfPoints& v_, const bool check_orientation=true);
+        explicit MeshBuilder(const VectorOfPoints& tri, const bool check_orientation=true);
+        explicit MeshBuilder(const Matrix3x& tri);
         Mesh build();
         void operator()(const VectorOfPoints& Tri);
 

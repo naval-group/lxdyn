@@ -20,7 +20,7 @@ std::string ResistanceCurveForceModel::model_name() {return "resistance curve";}
 class ResistanceCurveForceModel::Impl
 {
     public:
-        Impl(const Yaml& data) : S(data.Va, data.R, /*allow queries outside bounds*/ true), vmin(data.Va.front()), vmax(data.Va.back())
+        explicit Impl(const Yaml& data) : S(data.Va, data.R, /*allow queries outside bounds*/ true), vmin(data.Va.front()), vmax(data.Va.back())
         {
         }
 

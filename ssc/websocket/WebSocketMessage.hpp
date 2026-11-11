@@ -23,7 +23,7 @@ namespace ssc
         struct Message
         {
             Message();
-            Message(const WebSocketMessageImpl& pimpl);
+            explicit Message(const WebSocketMessageImpl& pimpl);
             void send_text(const std::string& payload) const;
             template<typename T>
             void send_binary(const std::vector<T> vector) const

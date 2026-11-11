@@ -27,7 +27,7 @@
 class SurfaceElevationInterface
 {
     public:
-        SurfaceElevationInterface(
+        explicit SurfaceElevationInterface(
             const ssc::kinematics::PointMatrixPtr& output_mesh,
             const std::pair<std::size_t,std::size_t>& output_mesh_size = std::make_pair((std::size_t)0,(std::size_t)0)
             );

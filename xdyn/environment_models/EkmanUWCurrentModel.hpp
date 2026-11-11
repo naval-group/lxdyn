@@ -19,7 +19,7 @@ public:
     struct Input
     {
         Input();
-        Input(Seabed);
+        explicit Input(Seabed);
         Seabed seabed;
         double top_ekman_depth;     ///< Top layer thickness (m)
         double bottom_ekman_depth;  ///< Bottom layer thickness (m)
@@ -29,7 +29,7 @@ public:
         double wind_angle;          ///< Wind direction (rad)
         double wind_stress;         ///< Wind stress (N/m2)
     };
-    EkmanUWCurrentModel(const Input& input);
+    explicit EkmanUWCurrentModel(const Input& input);
     ~EkmanUWCurrentModel() override;
 
     Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d& position, const double time, const double wave_height) const override;

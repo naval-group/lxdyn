@@ -74,7 +74,7 @@ using Interpolator = std::shared_ptr<ssc::interpolation::Interpolator>;
 class Builder
 {
     public:
-        Builder(const YamlBlockedDOF& yaml) : input(yaml), tables(build_tables())
+        explicit Builder(const YamlBlockedDOF& yaml) : input(yaml), tables(build_tables())
         {
             check_states_are_not_defined_twice(input);
         }

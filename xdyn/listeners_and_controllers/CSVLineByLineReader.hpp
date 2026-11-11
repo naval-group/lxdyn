@@ -10,7 +10,7 @@
 class CSVLineByLineReader
 {
     public:
-        CSVLineByLineReader(const CSVYaml& y);
+        explicit CSVLineByLineReader(const CSVYaml& y);
         /**
          * @brief Get values in the CSV for a given date. Updates the position in the CSV.
          * @details If the CSV contains t0 and t1, querying t for t0 <= t < t1 will return
@@ -45,7 +45,7 @@ class CSVLineByLineReader
         struct DateValues
         {
             DateValues();
-            DateValues(const std::map<std::string,std::string>& commands2columns);
+            explicit DateValues(const std::map<std::string,std::string>& commands2columns);
             double date;
             std::unordered_map<std::string, double> values;
         };

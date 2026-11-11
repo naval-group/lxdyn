@@ -126,7 +126,7 @@ GrpcControllerInterface::Input::Input ():url(), name(), yaml(){}
 
 struct GrpcControllerInterface::Impl
 {
-    Impl(const GrpcControllerInterface::Input& input_)
+    explicit Impl(const GrpcControllerInterface::Input& input_)
     : input(input_)
     , stub(Controller::NewStub(grpc::CreateChannel(input.url, grpc::InsecureChannelCredentials())))
     {}

@@ -35,7 +35,7 @@ class HoltropMennenForceModel : public ForceModel
         };
         struct DerivedData
         {
-                DerivedData(const Input& base_data);
+                explicit DerivedData(const Input& base_data);
                 double c17;
                 double c15;
                 double c7;

@@ -6,7 +6,7 @@
 
 struct WebsocketURLElements
 {
-    WebsocketURLElements(const std::string& url);
+    explicit WebsocketURLElements(const std::string& url);
     std::string protocol;
     std::string domain;
     int port;

@@ -25,7 +25,7 @@ struct YamlStretching;
 class Stretching
 {
     public:
-        Stretching(const YamlStretching& input //!< Usually read from YAML
+        explicit Stretching(const YamlStretching& input //!< Usually read from YAML
                   );
         double rescaled_z(const double original_z, //!< z value we wish to rescale (in meters)
                           const double wave_height //!< Wave height (in meters), z being oriented downwards

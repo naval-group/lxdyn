@@ -29,7 +29,7 @@ class MMGRudderForceModel : public ForceModel
     struct Yaml : MMGPropellerForceModel::Yaml
     {
         Yaml();
-        Yaml(const MMGPropellerForceModel::Yaml& yaml);
+        explicit Yaml(const MMGPropellerForceModel::Yaml& yaml);
         double Ar; //!< Rudder projected area without considering the horn part(in m^2)
         double b;  //!< Rudder span (in m)
         double xH_adim; //!< Non-dimensional longitudinal coordinate of acting point of the additional lateral force in MMG frame

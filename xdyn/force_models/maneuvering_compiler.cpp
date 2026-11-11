@@ -79,7 +79,7 @@ namespace maneuvering
     class Evaluator: public boost::static_visitor<NodePtr>
     {
         public:
-            Evaluator(const YamlRotation& rot_) : rot(rot_) {}
+            explicit Evaluator(const YamlRotation& rot_) : rot(rot_) {}
             NodePtr operator()(const Nil& ) const
             {
                 return make_constant(std::nan(""));
