@@ -11,9 +11,7 @@ grpc::Status to_gRPC_status(const ErrorReporter& error_outputter)
         case ErrorReporter::Status::INVALID_INPUT:
             return grpc::Status(grpc::StatusCode::INVALID_ARGUMENT,error_outputter.get_message());
         case ErrorReporter::Status::SIMULATION_ERROR:
-            return grpc::Status(grpc::StatusCode::ABORTED, error_outputter.get_message());
         case ErrorReporter::Status::INTERNAL_ERROR:
-            return grpc::Status(grpc::StatusCode::ABORTED, error_outputter.get_message());
         case ErrorReporter::Status::NETWORK_ERROR:
             return grpc::Status(grpc::StatusCode::ABORTED, error_outputter.get_message());
     }

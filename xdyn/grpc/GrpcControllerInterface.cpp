@@ -157,7 +157,6 @@ struct GrpcControllerInterface::Impl
                 ret.angle_representation = AngleRepresentation::QUATERNION;
                 break;
             case SetParametersResponse_AngleRepresentation::SetParametersResponse_AngleRepresentation_SetParametersResponse_AngleRepresentation_INT_MIN_SENTINEL_DO_NOT_USE_:
-                break;
             case SetParametersResponse_AngleRepresentation::SetParametersResponse_AngleRepresentation_SetParametersResponse_AngleRepresentation_INT_MAX_SENTINEL_DO_NOT_USE_:
                 break;
         }
