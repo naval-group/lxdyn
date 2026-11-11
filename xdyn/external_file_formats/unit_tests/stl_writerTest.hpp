@@ -15,9 +15,9 @@ class stl_writerTest : public ::testing::Test
 {
     protected:
         stl_writerTest();
-        virtual ~stl_writerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~stl_writerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

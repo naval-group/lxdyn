@@ -16,9 +16,9 @@ class DataSourceTest : public ::testing::Test
 {
     protected:
         DataSourceTest();
-        virtual ~DataSourceTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~DataSourceTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

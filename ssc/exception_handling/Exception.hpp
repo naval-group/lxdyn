@@ -15,9 +15,9 @@ namespace ssc
                 Exception(const std::string& message, const std::string& file, const std::string& function, const unsigned int line);
                 Exception(const Exception& rhs);
 
-                ~Exception () throw ();
+                ~Exception () throw () override;
 
-                virtual const char* what() const throw();
+                const char* what() const throw() override;
                 std::string get_message() const;
 
             private:

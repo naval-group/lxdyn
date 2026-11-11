@@ -15,9 +15,9 @@ class TwoDimensionalInterpolationVariableStepTest : public ::testing::Test
 {
     protected:
         TwoDimensionalInterpolationVariableStepTest();
-        virtual ~TwoDimensionalInterpolationVariableStepTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~TwoDimensionalInterpolationVariableStepTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

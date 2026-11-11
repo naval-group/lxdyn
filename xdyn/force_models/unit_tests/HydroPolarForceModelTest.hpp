@@ -7,7 +7,7 @@ class HydroPolarForceModelTest : public ::testing::Test
 {
     public:
         HydroPolarForceModelTest();
-        virtual ~HydroPolarForceModelTest() = default;
+        ~HydroPolarForceModelTest() override = default;
 };
 
 #endif /* FORCE_MODELS_UNIT_TESTS_INC_HYDROPOLARFORCEMODELTEST_HPP_ */

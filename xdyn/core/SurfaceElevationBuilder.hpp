@@ -56,7 +56,7 @@ class SurfaceElevationBuilder : public SurfaceElevationBuilderInterface
             const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) :
                 SurfaceElevationBuilderInterface(wave_parsers_, directional_spreading_parsers_, spectrum_parsers_)
         {}
-        boost::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const;
+        boost::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const override;
 
     private:
         SurfaceElevationBuilder(); // Disabled

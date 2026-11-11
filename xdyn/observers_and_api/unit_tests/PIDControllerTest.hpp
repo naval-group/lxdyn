@@ -15,9 +15,9 @@ class PIDControllerTest : public ::testing::Test
 {
     protected:
         PIDControllerTest();
-        virtual ~PIDControllerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~PIDControllerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         std::string pid_specific_yaml(const double Kp, const double Ki, const double Kd,
                                       const std::string& setpoint_name,

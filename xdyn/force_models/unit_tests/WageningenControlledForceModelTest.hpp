@@ -15,9 +15,9 @@ class WageningenControlledForceModelTest : public ::testing::Test
 {
     protected:
         WageningenControlledForceModelTest();
-        virtual ~WageningenControlledForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~WageningenControlledForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

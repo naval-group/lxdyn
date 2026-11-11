@@ -45,8 +45,8 @@ template <typename T> class LineGetter : public AbstractLineGetter
     LineGetter(const std::string& s) : stream(s)
     {}
 
-    virtual ~LineGetter() {}
-    std::string get_next_line()
+    ~LineGetter() override {}
+    std::string get_next_line() override
     {
         std::string normalized_line;
         std::string original_line;
@@ -63,7 +63,7 @@ template <typename T> class LineGetter : public AbstractLineGetter
         }
         return normalized_line;
     }
-    bool has_more_lines() const
+    bool has_more_lines() const override
     {
         return not(stream.eof());
     }

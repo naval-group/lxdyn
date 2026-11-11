@@ -16,9 +16,9 @@ class ObserverTests : public ::testing::Test
 {
     protected:
         ObserverTests();
-        virtual ~ObserverTests();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~ObserverTests() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -36,7 +36,7 @@ class Airy : public WaveModel
             const double t, //!< Current time instant (in seconds)
             const std::vector<double>& rao_module, //!< Module of the RAO
             const std::vector<double>& rao_phase //!< Phase of the RAO
-            ) const;
+            ) const override;
 
     private:
         Airy(); // Disabled
@@ -53,7 +53,7 @@ class Airy : public WaveModel
             const std::vector<double> &x, //!< x-positions in the NED frame (in meters)
             const std::vector<double> &y,            //!< y-positions in the NED frame (in meters)
             const double t                           //!< Current time instant (in seconds)
-            ) const;
+            ) const override;
 
         /**  \brief Wave velocity (projected in the NED frame, at points (x,y,z)).
           *  \returns Orbital velocities in m/s
@@ -70,7 +70,7 @@ class Airy : public WaveModel
             const std::vector<double>& z,  //!< z-positions in the NED frame (in meters)
             const double t,                //!< Current time instant (in seconds)
             const std::vector<double>& eta //!< Wave heights at x,y,t (in meters)
-            ) const;
+            ) const override;
 
         /**  \brief Unsteady pressure field induced by undisturbed waves. Used to compute the Froude-Krylov forces.
           *  \details Also called "subsurface pressure" (by DNV), "unsteady pressure" (by Faltinsen) or constant pressure contour (by Lloyd)
@@ -94,7 +94,7 @@ class Airy : public WaveModel
             const std::vector<double> &z,   //!< z-positions in the NED frame (in meters)
             const std::vector<double> &eta, //!< Wave elevations at (x,y) in the NED frame (in meters)
             const double t                  //!< Current time instant (in seconds)
-            ) const;
+            ) const override;
 };
 
 #endif /* AIRY_HPP_ */

@@ -30,7 +30,7 @@ public:
     };
 
     WindMeanVelocityProfile(const Input& input);
-    virtual ~WindMeanVelocityProfile();
+    ~WindMeanVelocityProfile() override;
 
     Eigen::Vector3d get_wind(const Eigen::Vector3d& position, const double t) const override;
     virtual double get_wind_velocity(const double z) const =0;

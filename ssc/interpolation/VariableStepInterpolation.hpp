@@ -32,14 +32,14 @@ namespace ssc
         {
             public:
                 VariableStepInterpolation();
-                virtual ~VariableStepInterpolation();
+                ~VariableStepInterpolation() override;
                 VariableStepInterpolation(const std::vector<double>& x, const bool allow_queries_outside_bounds = false);
 
             protected:
                 size_t get_index(const double x0_) const;
-                virtual double get_f() const = 0;
-                virtual double get_df(const size_t derivative_order) const = 0;
-                virtual void update_coefficients_if_necessary(const double x0);
+                double get_f() const override = 0;
+                double get_df(const size_t derivative_order) const override = 0;
+                void update_coefficients_if_necessary(const double x0) override;
 
             private:
                 std::shared_ptr<IndexFinder> index;

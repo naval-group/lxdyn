@@ -15,9 +15,9 @@ class SplinesTest : public ::testing::Test
 {
     protected:
         SplinesTest();
-        virtual ~SplinesTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SplinesTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

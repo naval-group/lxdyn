@@ -17,7 +17,7 @@ struct ListOfStringMessages : public MessageHandler
     ListOfStringMessages() : messages()
     {
     }
-    void operator()(const Message& msg)
+    void operator()(const Message& msg) override
     {
         messages.push_back(msg.get_payload());
     }
@@ -30,7 +30,7 @@ struct ListOfDoubleMessages : public MessageHandler
     ListOfDoubleMessages() : messages()
     {
     }
-    void operator()(const Message& msg)
+    void operator()(const Message& msg) override
     {
         const auto v = msg.get_binary_payload<double>();
         messages.insert(messages.end(), v.begin(), v.end());

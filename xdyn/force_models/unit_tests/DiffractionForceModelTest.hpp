@@ -22,9 +22,9 @@ class DiffractionForceModelTest : public ::testing::Test
         static BodyStates get_states_with_forward_speed(const double u = 0);
     protected:
         DiffractionForceModelTest();
-        virtual ~DiffractionForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~DiffractionForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -16,9 +16,9 @@ class ClosingFacetComputerTest : public ::testing::Test
 {
     protected:
         ClosingFacetComputerTest();
-        virtual ~ClosingFacetComputerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~ClosingFacetComputerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -8,9 +8,9 @@ class VelocityTest : public ::testing::Test
 {
     protected:
         VelocityTest();
-        virtual ~VelocityTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~VelocityTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

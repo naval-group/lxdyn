@@ -16,9 +16,9 @@ class LinearFroudeKrylovForceModelTest : public ::testing::Test
 {
     protected:
         LinearFroudeKrylovForceModelTest();
-        virtual ~LinearFroudeKrylovForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~LinearFroudeKrylovForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         double small_relative_error(const double val) const;
         ssc::random_data_generator::DataGenerator a;
 };

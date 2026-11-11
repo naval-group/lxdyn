@@ -15,9 +15,9 @@ class H5InterfaceTest : public ::testing::Test
 {
     protected:
         H5InterfaceTest();
-        virtual ~H5InterfaceTest(){}
-        virtual void SetUp(){}
-        virtual void TearDown(){}
+        ~H5InterfaceTest() override{}
+        void SetUp() override{}
+        void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
 };
 

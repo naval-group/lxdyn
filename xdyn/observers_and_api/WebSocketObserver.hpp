@@ -24,11 +24,11 @@ class WebSocketObserver : public DictObserver
     public:
         WebSocketObserver(const std::string& address, const short unsigned int port);
         WebSocketObserver(const std::string& address, const short unsigned int port, const std::vector<std::string>& data);
-        ~WebSocketObserver();
+        ~WebSocketObserver() override;
 
     private:
         WebSocketPtr socket;
-        void flush_after_write();
+        void flush_after_write() override;
 };
 
 #endif /* WEBSOCKETOBSERVER_HPP_ */

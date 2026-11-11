@@ -15,9 +15,9 @@ class WindMeanVelocityProfileTest : public ::testing::Test
 {
 public:
     WindMeanVelocityProfileTest();
-    virtual ~WindMeanVelocityProfileTest();
-    virtual void SetUp();
-    virtual void TearDown();
+    ~WindMeanVelocityProfileTest() override;
+    void SetUp() override;
+    void TearDown() override;
     ssc::random_data_generator::DataGenerator a;
 };
 

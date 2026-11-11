@@ -15,9 +15,9 @@ class CumulateTest : public ::testing::Test
 {
     protected:
         CumulateTest();
-        virtual ~CumulateTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~CumulateTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

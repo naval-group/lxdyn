@@ -29,55 +29,55 @@ class PrecalParser : public HydroDBParser
                                      const std::string& object_name,
                                      const std::string& not_found_message) const;
 
-        Eigen::Matrix<double,6,6> get_added_mass() const;
-        std::array<std::vector<std::vector<double> >,6 > get_diffraction_module_tables() const;
-        std::array<std::vector<std::vector<double> >,6 > get_diffraction_phase_tables() const;
-        std::vector<double> get_diffraction_module_periods() const;
-        std::vector<double> get_diffraction_phase_periods() const;
-        std::vector<double> get_diffraction_module_psis() const;
-        std::vector<double> get_diffraction_phase_psis() const;
+        Eigen::Matrix<double,6,6> get_added_mass() const override;
+        std::array<std::vector<std::vector<double> >,6 > get_diffraction_module_tables() const override;
+        std::array<std::vector<std::vector<double> >,6 > get_diffraction_phase_tables() const override;
+        std::vector<double> get_diffraction_module_periods() const override;
+        std::vector<double> get_diffraction_phase_periods() const override;
+        std::vector<double> get_diffraction_module_psis() const override;
+        std::vector<double> get_diffraction_phase_psis() const override;
 
-        std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_module_tables() const;
-        std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_phase_tables() const;
-        std::vector<double> get_froude_krylov_phase_psis() const;
-        std::vector<double> get_froude_krylov_phase_periods() const;
-        std::vector<double> get_froude_krylov_module_psis() const;
-        std::vector<double> get_froude_krylov_module_periods() const;
+        std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_module_tables() const override;
+        std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_phase_tables() const override;
+        std::vector<double> get_froude_krylov_phase_psis() const override;
+        std::vector<double> get_froude_krylov_phase_periods() const override;
+        std::vector<double> get_froude_krylov_module_psis() const override;
+        std::vector<double> get_froude_krylov_module_periods() const override;
 
         /**
          * @brief Get the angular frequencies for the radiation damping and added mass matrices
          */
-        std::vector<double> get_angular_frequencies() const;
+        std::vector<double> get_angular_frequencies() const override;
         /**
          * @brief Speed at which the radiation damping matrices were calculated.
          * Used to determine if we can apply a forward-speed correction to the radiation damping
          * force model.
          */
-        double get_forward_speed() const;
+        double get_forward_speed() const override;
 
         /**
          * @brief Added mass matrix coefficient Ma(i,j) = f(omega) for all omegas
          */
-        std::vector<double> get_added_mass_coeff(const size_t i, const size_t j) const;
+        std::vector<double> get_added_mass_coeff(const size_t i, const size_t j) const override;
 
         /**
          * @brief Radiation damping matrix coefficient Br(i,j) = f(omega) for all omegas
          */
-        std::vector<double> get_radiation_damping_coeff(const size_t i, const size_t j) const;
+        std::vector<double> get_radiation_damping_coeff(const size_t i, const size_t j) const override;
 
         /**
          * @brief Get the wave drift forces (by angular frequency a and incidence i M[a][i]), in N/(m².s).
          */
-        std::array<std::vector<std::vector<double> >,6 > get_wave_drift_tables() const;
+        std::array<std::vector<std::vector<double> >,6 > get_wave_drift_tables() const override;
         /**
          * @brief Get the incidences at which the wave drift forces are expressed (in rad).
          */
-        std::vector<double> get_wave_drift_psis() const;
+        std::vector<double> get_wave_drift_psis() const override;
 
         /**
          * @brief Periods at which the wave drift forces are expressed (in seconds).
          */
-        std::vector<double> get_wave_drift_periods() const;
+        std::vector<double> get_wave_drift_periods() const override;
 
 
     private:

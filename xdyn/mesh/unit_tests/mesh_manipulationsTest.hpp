@@ -16,9 +16,9 @@ class mesh_manipulationsTest : public ::testing::Test
 {
     protected:
         mesh_manipulationsTest();
-        virtual ~mesh_manipulationsTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~mesh_manipulationsTest() override;
+        void SetUp() override;
+        void TearDown() override;
 
         Matrix3x get_rectangle(const double w, const double h) const;
         ssc::random_data_generator::DataGenerator a;

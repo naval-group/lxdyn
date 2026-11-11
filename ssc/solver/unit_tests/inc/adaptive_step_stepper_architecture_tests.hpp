@@ -8,9 +8,9 @@ class adaptive_step_stepper_architecture_tests : public ::testing::Test
 {
     protected:
         adaptive_step_stepper_architecture_tests();
-        virtual ~adaptive_step_stepper_architecture_tests();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~adaptive_step_stepper_architecture_tests() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -16,9 +16,9 @@ class string2vectorTest : public ::testing::Test
 {
     protected:
         string2vectorTest();
-        virtual ~string2vectorTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~string2vectorTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

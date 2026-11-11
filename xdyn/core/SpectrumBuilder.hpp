@@ -29,7 +29,7 @@ class SpectrumBuilder : public SpectrumBuilderInterface
 {
     public:
         SpectrumBuilder() : SpectrumBuilderInterface(){}
-        boost::optional<std::shared_ptr<WaveSpectralDensity> > try_to_parse(const std::string& model, const std::string& yaml) const;
+        boost::optional<std::shared_ptr<WaveSpectralDensity> > try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
 using SpectrumBuilderPtr = std::shared_ptr<SpectrumBuilderInterface>;

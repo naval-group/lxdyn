@@ -15,9 +15,9 @@ class LinearInterpolationVariableStepTest : public ::testing::Test
 {
     protected:
         LinearInterpolationVariableStepTest();
-        virtual ~LinearInterpolationVariableStepTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~LinearInterpolationVariableStepTest() override;
+        void SetUp() override;
+        void TearDown() override;
 
         ssc::random_data_generator::DataGenerator a;
 

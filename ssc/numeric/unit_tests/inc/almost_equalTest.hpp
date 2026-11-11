@@ -15,9 +15,9 @@ class almost_equalTest : public ::testing::Test
 {
     protected:
         almost_equalTest();
-        virtual ~almost_equalTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~almost_equalTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         double one_ULP_less(const double x) const;
         double one_ULP_more(const double x) const;

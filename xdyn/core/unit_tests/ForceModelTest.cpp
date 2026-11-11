@@ -34,7 +34,7 @@ class RandomForce : public ForceModel
             const BodyStates& /*states*/,
             const double /*t*/,
             const EnvironmentAndFrames& /*env*/,
-            const std::map<std::string,double>& /*commands*/) const
+            const std::map<std::string,double>& /*commands*/) const override
         {
             ssc::kinematics::Vector6d ret;
             ret(0) = a.random<double>().between(+2, +3);

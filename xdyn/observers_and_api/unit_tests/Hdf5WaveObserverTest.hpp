@@ -8,9 +8,9 @@ class SimHdf5WaveObserverTest : public ::testing::Test
 {
     protected:
         SimHdf5WaveObserverTest();
-        virtual ~SimHdf5WaveObserverTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SimHdf5WaveObserverTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -31,9 +31,9 @@ namespace ssc
 
             private:
                 LinearInterpolation();
-                double get_f() const;
-                double get_df(const size_t derivative_order) const;
-                void compute_coefficients_for_ith_interval(const double x0, const size_t i);
+                double get_f() const override;
+                double get_df(const size_t derivative_order) const override;
+                void compute_coefficients_for_ith_interval(const double x0, const size_t i) override;
                 std::vector<double> x0;
                 std::vector<double> x1;
                 std::vector<double> y0;

@@ -8,8 +8,8 @@ class MeshBuilderTest : public ::testing::Test
 {
     protected:
         MeshBuilderTest();
-        virtual void SetUp(){}
-        virtual void TearDown(){}
+        void SetUp() override{}
+        void TearDown() override{}
 };
 
 size_t get_oriented_edge_index(const size_t &e);

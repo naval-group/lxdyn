@@ -14,9 +14,9 @@ class PrecalParserTest : public ::testing::Test
 {
     protected:
         PrecalParserTest();
-        virtual ~PrecalParserTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~PrecalParserTest() override;
+        void SetUp() override;
+        void TearDown() override;
 };
 
 #endif  /* PRECALPARSERTEST_HPP_ */

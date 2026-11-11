@@ -16,32 +16,32 @@ struct SimpleODE : public ssc::solver::ContinuousSystem
 {
     SimpleODE(const StateType &x0) { state = x0; }
 
-    void dx_dt(const StateType &x, StateType &dxdt, double)
+    void dx_dt(const StateType &x, StateType &dxdt, double) override
     {
         state = x;
         dxdt[0] = 2; //*t;//2*x[0];
     }
 
-    void initialize_system_outputs_before_first_observation() {}
-    void set_discrete_state(const std::string &, const double) {}
-    double get_input_value(const std::string &) const { return -1; }
-    double get_state_value(const std::string &) const { return -1; }
+    void initialize_system_outputs_before_first_observation() override {}
+    void set_discrete_state(const std::string &, const double) override {}
+    double get_input_value(const std::string &) const override { return -1; }
+    double get_state_value(const std::string &) const override { return -1; }
 };
 
 struct QuadraticODE : public ssc::solver::ContinuousSystem
 {
     QuadraticODE(const StateType &x0) { state = x0; }
 
-    void dx_dt(const StateType &x, StateType &dxdt, double t)
+    void dx_dt(const StateType &x, StateType &dxdt, double t) override
     {
         state = x;
         dxdt[0] = 2 * t;
     }
 
-    void initialize_system_outputs_before_first_observation() {}
-    void set_discrete_state(const std::string &, const double) {}
-    double get_input_value(const std::string &) const { return -1; }
-    double get_state_value(const std::string &) const { return -1; }
+    void initialize_system_outputs_before_first_observation() override {}
+    void set_discrete_state(const std::string &, const double) override {}
+    double get_input_value(const std::string &) const override { return -1; }
+    double get_state_value(const std::string &) const override { return -1; }
 };
 
 #endif /* TEST_SYSTEMS_HPP_ */

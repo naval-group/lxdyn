@@ -22,9 +22,9 @@ public:
     };
 
     LogWindVelocityProfile(const Input& input);
-    virtual ~LogWindVelocityProfile();
+    ~LogWindVelocityProfile() override;
 
-    virtual double get_wind_velocity(const double z) const override;
+    double get_wind_velocity(const double z) const override;
     static std::string model_name();
     static Input parse(const std::string& yaml_input);
 

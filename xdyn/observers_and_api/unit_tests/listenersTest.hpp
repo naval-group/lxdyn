@@ -15,9 +15,9 @@ class listenersTest : public ::testing::Test
 {
     protected:
         listenersTest();
-        virtual ~listenersTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~listenersTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -8,9 +8,9 @@ class JsonObserverTest : public ::testing::Test
 {
     protected:
         JsonObserverTest();
-        virtual ~JsonObserverTest(){}
-        virtual void SetUp(){}
-        virtual void TearDown(){}
+        ~JsonObserverTest() override{}
+        void SetUp() override{}
+        void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
 };
 

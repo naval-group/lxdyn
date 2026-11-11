@@ -15,9 +15,9 @@ class ParabolicInterpolationTest : public ::testing::Test
 {
     protected:
         ParabolicInterpolationTest();
-        virtual ~ParabolicInterpolationTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~ParabolicInterpolationTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

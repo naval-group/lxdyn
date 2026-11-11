@@ -15,9 +15,9 @@ class BretschneiderSpectrumTest : public ::testing::Test
 {
     protected:
         BretschneiderSpectrumTest();
-        virtual ~BretschneiderSpectrumTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~BretschneiderSpectrumTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

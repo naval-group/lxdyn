@@ -42,7 +42,7 @@ class SurfaceElevationFromGRPC : public SurfaceElevationInterface
             const std::vector<double>& x,    //!< x-position in the NED frame (in meters)
             const std::vector<double>& y,    //!< y-position in the NED frame (in meters)
             const double t                   //!< Current time instant (in seconds)
-            ) const;
+            ) const override;
 
         /**  \brief Unsteady pressure field induced by undisturbed waves. Used to compute the Froude-Krylov forces.
           *  \details Also called "subsurface pressure" (by DNV), "unsteady pressure" (by Faltinsen) or constant pressure contour (by Lloyd)
@@ -66,7 +66,7 @@ class SurfaceElevationFromGRPC : public SurfaceElevationInterface
             const std::vector<double>& z,   //!< z-position in the NED frame (in meters)
             const std::vector<double>& eta, //!< Wave elevation at (x,y) in the NED frame (in meters)
             const double t    //!< Current time instant (in seconds)
-          ) const;
+          ) const override;
 
         /**  \brief Wave velocity (projected in the NED frame, at a point (x,y,z)).
           *  \returns Orbital velocity in m/s
@@ -101,10 +101,10 @@ class SurfaceElevationFromGRPC : public SurfaceElevationInterface
             const std::vector<double>& z,  //!< z-positions in the NED frame (in meters)
             const double t,                //!< Current time instant (in seconds)
             const std::vector<double>& eta //!< Wave elevations at (x,y) in the NED frame (in meters)
-            ) const;
+            ) const override;
 
     private:
-        std::vector<FlatDiscreteDirectionalWaveSpectrum> get_flat_directional_spectra(const double x, const double y, const double t) const;
+        std::vector<FlatDiscreteDirectionalWaveSpectrum> get_flat_directional_spectra(const double x, const double y, const double t) const override;
         SurfaceElevationFromGRPC(); // Disabled (private & without implementation)
         class Impl;
         std::shared_ptr<Impl> pimpl;

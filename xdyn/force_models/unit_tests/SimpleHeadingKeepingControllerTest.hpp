@@ -16,9 +16,9 @@ class SimpleHeadingKeepingControllerTest : public ::testing::Test
 {
     protected:
         SimpleHeadingKeepingControllerTest();
-        virtual ~SimpleHeadingKeepingControllerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SimpleHeadingKeepingControllerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -40,9 +40,9 @@ class JonswapSpectrum : public WaveSpectralDensity
           *  \snippet environment_models/unit_tests/JonswapSpectrumTest.cpp JonswaSpectrumTest example
           */
         double operator()(const double omega //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
-                         ) const;
+                         ) const override;
 
-        WaveSpectralDensity* clone() const;
+        WaveSpectralDensity* clone() const override;
 
     private:
         JonswapSpectrum(); // Disabled

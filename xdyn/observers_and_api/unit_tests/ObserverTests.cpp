@@ -30,7 +30,7 @@ struct ListOfStringMessages : public ssc::websocket::MessageHandler
     ListOfStringMessages() : messages()
     {
     }
-    void operator()(const ssc::websocket::Message& msg)
+    void operator()(const ssc::websocket::Message& msg) override
     {
         messages.push_back(msg.get_payload());
     }

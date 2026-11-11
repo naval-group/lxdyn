@@ -38,7 +38,7 @@ namespace ssc
             private:
                 class Impl;
                 std::shared_ptr<Impl> pimpl;
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6);
+                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
         };
     }
 }

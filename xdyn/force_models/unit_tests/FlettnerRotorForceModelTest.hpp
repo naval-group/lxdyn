@@ -7,7 +7,7 @@ class FlettnerRotorForceModelTest : public ::testing::Test
 {
     public:
         FlettnerRotorForceModelTest();
-        virtual ~FlettnerRotorForceModelTest() = default;
+        ~FlettnerRotorForceModelTest() override = default;
 };
 
 #endif /* FORCE_MODELS_UNIT_TESTS_INC_FLETTNERROTORFORCEMODELTEST_HPP_ */

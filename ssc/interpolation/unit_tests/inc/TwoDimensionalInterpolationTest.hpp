@@ -15,9 +15,9 @@ class TwoDimensionalSplinesTest : public ::testing::Test
 {
     protected:
         TwoDimensionalSplinesTest();
-        virtual ~TwoDimensionalSplinesTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~TwoDimensionalSplinesTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

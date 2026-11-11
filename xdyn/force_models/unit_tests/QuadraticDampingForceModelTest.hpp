@@ -15,9 +15,9 @@ class QuadraticDampingForceModelTest : public ::testing::Test
 {
     protected:
     QuadraticDampingForceModelTest();
-        virtual ~QuadraticDampingForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~QuadraticDampingForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

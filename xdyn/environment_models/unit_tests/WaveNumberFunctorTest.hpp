@@ -15,9 +15,9 @@ class WaveNumberFunctorTest : public ::testing::Test
 {
     protected:
         WaveNumberFunctorTest();
-        virtual ~WaveNumberFunctorTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~WaveNumberFunctorTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

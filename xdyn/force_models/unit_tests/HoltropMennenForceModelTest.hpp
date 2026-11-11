@@ -9,9 +9,9 @@ class HoltropMennenForceModelTest : public ::testing::Test
 {
 protected:
     HoltropMennenForceModelTest();
-    virtual ~HoltropMennenForceModelTest();
-    virtual void SetUp();
-    virtual void TearDown();
+    ~HoltropMennenForceModelTest() override;
+    void SetUp() override;
+    void TearDown() override;
     ssc::random_data_generator::DataGenerator a;
     EnvironmentAndFrames env;
 };

@@ -15,9 +15,9 @@ class CSVFileReaderTest : public ::testing::Test
 {
     protected:
         CSVFileReaderTest();
-        virtual ~CSVFileReaderTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~CSVFileReaderTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -41,9 +41,9 @@ class MMGPropellerForceModel : public AbstractWageningen
         MMGPropellerForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
         static Yaml parse(const std::string& yaml);
 
-        virtual double get_Kt(const std::map<std::string,double>& commands, const double J) const;//!< inherited function to compute K_T given J
-        virtual double get_Kq(const std::map<std::string,double>& commands, const double J) const;//!< inherited function to compute K_Q which is always null here
-        virtual double get_wake_factor(const BodyStates& states) const;//!< inherited function to compute the wake factor
+        double get_Kt(const std::map<std::string,double>& commands, const double J) const override;//!< inherited function to compute K_T given J
+        double get_Kq(const std::map<std::string,double>& commands, const double J) const override;//!< inherited function to compute K_Q which is always null here
+        double get_wake_factor(const BodyStates& states) const override;//!< inherited function to compute the wake factor
         static std::string model_name();
         void check(const double J) const;//!< Throw an error message if J is outside its domain of validity
         double saturate(const double J) const;//!< Correct J if it is outside its domain of validity

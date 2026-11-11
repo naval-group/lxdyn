@@ -25,17 +25,17 @@ namespace maneuvering
             {
             }
 
-            ssc::data_source::DataSourceModule* clone() const
+            ssc::data_source::DataSourceModule* clone() const override
             {
                 return new Module(*this);
             }
 
-            ssc::data_source::DataSourceModule* clone(ssc::data_source::DataSource* const data_source) const
+            ssc::data_source::DataSourceModule* clone(ssc::data_source::DataSource* const data_source) const override
             {
                 return new Module(*this, data_source);
             }
 
-            void update() const
+            void update() const override
             {
                 const BodyStates states = ds->get<BodyStates>("states");
                 const double t = ds->get<double>("t");

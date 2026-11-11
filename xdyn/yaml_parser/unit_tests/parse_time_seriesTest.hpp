@@ -15,9 +15,9 @@ class parse_time_seriesTest : public ::testing::Test
 {
     protected:
         parse_time_seriesTest();
-        virtual ~parse_time_seriesTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~parse_time_seriesTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

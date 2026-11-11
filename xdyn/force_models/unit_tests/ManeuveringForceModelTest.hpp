@@ -16,9 +16,9 @@ class ManeuveringForceModelTest : public ::testing::Test
 {
     protected:
         ManeuveringForceModelTest();
-        virtual ~ManeuveringForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~ManeuveringForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

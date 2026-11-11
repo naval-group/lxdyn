@@ -31,7 +31,7 @@ class LinearDampingForceModel : public DampingForceModel
 
     private:
         LinearDampingForceModel();
-        Eigen::Matrix<double, 6, 1> get_force_and_torque(const Eigen::Matrix<double,6,6>& D, const Eigen::Matrix<double, 6, 1>& W) const;
+        Eigen::Matrix<double, 6, 1> get_force_and_torque(const Eigen::Matrix<double,6,6>& D, const Eigen::Matrix<double, 6, 1>& W) const override;
 };
 
 #endif /* LINEARDAMPINGFORCEMODEL_HPP_ */

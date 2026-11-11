@@ -16,9 +16,9 @@ class SimpleStationKeepingControllerTest : public ::testing::Test
 {
     protected:
         SimpleStationKeepingControllerTest();
-        virtual ~SimpleStationKeepingControllerTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~SimpleStationKeepingControllerTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

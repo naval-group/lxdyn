@@ -30,9 +30,9 @@ public:
         double wind_stress;         ///< Wind stress (N/m2)
     };
     EkmanUWCurrentModel(const Input& input);
-    virtual ~EkmanUWCurrentModel();
+    ~EkmanUWCurrentModel() override;
 
-    virtual Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d& position, const double time, const double wave_height) const override;
+    Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d& position, const double time, const double wave_height) const override;
 
     static std::string model_name();
     static Input parse(const std::string&);

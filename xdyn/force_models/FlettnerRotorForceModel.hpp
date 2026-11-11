@@ -30,7 +30,7 @@ class FlettnerRotorForceModel : public ForceModel
 
         FlettnerRotorForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
         FlettnerRotorForceModel() = delete;
-        virtual ~FlettnerRotorForceModel() = default;
+        ~FlettnerRotorForceModel() override = default;
 
         static std::string model_name();
         static Input parse(const std::string& yaml);

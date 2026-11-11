@@ -31,17 +31,17 @@ class InverseTransformComputer : public DataSourceModule
         {
         }
 
-        DataSourceModule* clone() const
+        DataSourceModule* clone() const override
         {
             return new InverseTransformComputer(*this);
         }
 
-        DataSourceModule* clone(DataSource* const data_source) const
+        DataSourceModule* clone(DataSource* const data_source) const override
         {
             return new InverseTransformComputer(*this, data_source);
         }
 
-        void update() const
+        void update() const override
         {
             const Transform t = ds->get<Transform>(name_of_direct_transform);
             ds->set(name_of_inverse_transform, t.inverse());
@@ -62,17 +62,17 @@ class CompositeTransformComputer : public DataSourceModule
         {
         }
 
-        DataSourceModule* clone() const
+        DataSourceModule* clone() const override
         {
             return new CompositeTransformComputer(*this);
         }
 
-        DataSourceModule* clone(DataSource* const data_source) const
+        DataSourceModule* clone(DataSource* const data_source) const override
         {
             return new CompositeTransformComputer(*this, data_source);
         }
 
-        void update() const
+        void update() const override
         {
             Transform t = ds->get<Transform>(make_transform_name(transforms.front()));
             const std::string name_of_transform = make_transform_name(transforms.front().first,transforms.back().second);

@@ -16,9 +16,9 @@ class ForceModelTest : public ::testing::Test
 {
     protected:
         ForceModelTest();
-        virtual ~ForceModelTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~ForceModelTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

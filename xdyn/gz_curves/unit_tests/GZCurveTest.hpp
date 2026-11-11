@@ -18,9 +18,9 @@ class GZCurveTest : public ::testing::Test
 {
     protected:
         GZCurveTest();
-        virtual ~GZCurveTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~GZCurveTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         static Sim sim;
 };

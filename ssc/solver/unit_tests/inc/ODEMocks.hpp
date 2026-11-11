@@ -60,26 +60,26 @@ class SystemWithMock : public ssc::solver::ContinuousSystem
         : mock(mock_)
     {
     }
-    void dx_dt(const std::vector<double> &x, std::vector<double> &dx_dt, double t)
+    void dx_dt(const std::vector<double> &x, std::vector<double> &dx_dt, double t) override
     {
         mock.model_function(x, dx_dt, t);
     }
 
-    void force_states(std::vector<double> &x, const double t) const { mock.force_states(x, t); }
+    void force_states(std::vector<double> &x, const double t) const override { mock.force_states(x, t); }
 
-    void initialize_system_outputs_before_first_observation()
+    void initialize_system_outputs_before_first_observation() override
     {
         mock.initialize_system_outputs_before_first_observation();
     }
 
-    void set_discrete_state(const std::string &discrete_state_name, const double value)
+    void set_discrete_state(const std::string &discrete_state_name, const double value) override
     {
         mock.set_discrete_state(discrete_state_name, value);
     }
 
-    double get_input_value(const std::string &name) const { return mock.get_input_value(name); }
+    double get_input_value(const std::string &name) const override { return mock.get_input_value(name); }
 
-    double get_state_value(const std::string &name) const { return mock.get_state_value(name); }
+    double get_state_value(const std::string &name) const override { return mock.get_state_value(name); }
 
   protected:
     ODEMocks &mock;
@@ -115,7 +115,7 @@ class SchedulerWithMock : public ssc::solver::Scheduler
         , first_run(new bool(true))
     {
     }
-    bool has_more_time_events() const
+    bool has_more_time_events() const override
     {
         mock.has_more_time_events();
         const bool b = *first_run;
@@ -123,9 +123,9 @@ class SchedulerWithMock : public ssc::solver::Scheduler
         return b;
     }
 
-    void add_time_event(const double t) { mock.add_time_event(t); }
+    void add_time_event(const double t) override { mock.add_time_event(t); }
 
-    ~SchedulerWithMock() noexcept { delete first_run; }
+    ~SchedulerWithMock() noexcept override { delete first_run; }
 
     SchedulerWithMock &operator=(const SchedulerWithMock &rhs)
     {
@@ -135,7 +135,7 @@ class SchedulerWithMock : public ssc::solver::Scheduler
         }
         return *this;
     }
-    std::vector<SchedulerWithMock::Callback> get_discrete_state_updaters_to_run()
+    std::vector<SchedulerWithMock::Callback> get_discrete_state_updaters_to_run() override
     {
         return std::vector<Callback>();
     }
@@ -147,11 +147,11 @@ class SchedulerWithMock : public ssc::solver::Scheduler
     {
     }
 
-    double get_time() const { return mock.get_time(); }
+    double get_time() const override { return mock.get_time(); }
 
-    double get_step() const { return mock.get_step(); }
+    double get_step() const override { return mock.get_step(); }
 
-    void advance_to_next_time_event() { mock.advance_to_next_time_event(); }
+    void advance_to_next_time_event() override { mock.advance_to_next_time_event(); }
 
   private:
     SchedulerWithMock();
@@ -167,11 +167,11 @@ class EventHandlerWithMock : public ssc::solver::EventHandler
     {
     }
 
-    bool detected_state_events() const { return mock.detected_state_events(); }
+    bool detected_state_events() const override { return mock.detected_state_events(); }
 
-    void locate_event() { mock.locate_event(); }
+    void locate_event() override { mock.locate_event(); }
 
-    void run_event_actions() { mock.run_event_actions(); }
+    void run_event_actions() override { mock.run_event_actions(); }
 
   private:
     EventHandlerWithMock();

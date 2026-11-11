@@ -26,9 +26,9 @@ class Cos2sDirectionalSpreading : public WaveDirectionalSpreading
           *  \returns Density (between 0 and 1, no unit)
           */
         double operator()(const double psi //!< Primary wave direction in radians.
-                         ) const;
+                         ) const override;
 
-        WaveDirectionalSpreading* clone() const;
+        WaveDirectionalSpreading* clone() const override;
 
 
     private:

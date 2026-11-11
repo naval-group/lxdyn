@@ -8,9 +8,9 @@ class DefaultSurfaceElevationTest : public ::testing::Test
 {
     protected:
         DefaultSurfaceElevationTest();
-        virtual ~DefaultSurfaceElevationTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~DefaultSurfaceElevationTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

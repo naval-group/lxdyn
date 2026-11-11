@@ -29,7 +29,7 @@ class DirectionalSpreadingBuilder : public DirectionalSpreadingBuilderInterface
 {
     public:
         DirectionalSpreadingBuilder() : DirectionalSpreadingBuilderInterface(){}
-        boost::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const;
+        boost::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
 using DirectionalSpreadingBuilderPtr = std::shared_ptr<DirectionalSpreadingBuilderInterface>;

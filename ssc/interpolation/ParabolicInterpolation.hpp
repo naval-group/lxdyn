@@ -35,9 +35,9 @@ namespace ssc
 
             private:
                 ParabolicInterpolation();
-                void compute_coefficients_for_ith_interval(const double x0, const size_t i);
-                double get_f() const;
-                double get_df(const size_t derivative_order) const;
+                void compute_coefficients_for_ith_interval(const double x0, const size_t i) override;
+                double get_f() const override;
+                double get_df(const size_t derivative_order) const override;
                 std::vector<ParabolicCoefficients> coeffs_;
         };
     }

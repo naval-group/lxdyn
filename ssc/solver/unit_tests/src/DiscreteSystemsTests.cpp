@@ -37,15 +37,15 @@ struct ContinuousSystem : public ssc::solver::ContinuousSystem
 {
     ContinuousSystem(const std::vector<double> &x0) { state = x0; }
 
-    void dx_dt(const std::vector<double> &, std::vector<double> &dxdt, double)
+    void dx_dt(const std::vector<double> &, std::vector<double> &dxdt, double) override
     {
         dxdt[0] = 1;
     }
 
-    void initialize_system_outputs_before_first_observation() {}
-    void set_discrete_state(const std::string &, const double) {}
-    double get_input_value(const std::string &) const { return -1; }
-    double get_state_value(const std::string &) const { return -1; }
+    void initialize_system_outputs_before_first_observation() override {}
+    void set_discrete_state(const std::string &, const double) override {}
+    double get_input_value(const std::string &) const override { return -1; }
+    double get_state_value(const std::string &) const override { return -1; }
 };
 
 class DiscreteSystem : public ssc::solver::DiscreteSystem

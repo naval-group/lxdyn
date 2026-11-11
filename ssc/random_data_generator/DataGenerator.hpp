@@ -151,7 +151,7 @@ namespace ssc
                     return *this;
                 }
 
-                TypedScalarDataGenerator<T>& no()
+                TypedScalarDataGenerator<T>& no() override
                 {
                     negated = true;
                     return *this;
@@ -278,7 +278,7 @@ namespace ssc
                     return *this;
                 }
 
-                TypedVectorDataGenerator<T>& no()
+                TypedVectorDataGenerator<T>& no() override
                 {
                     negated = true;
                     return *this;
@@ -331,7 +331,7 @@ namespace ssc
                     return *this;
                 }
 
-                TypedSetDataGenerator<T>& no()
+                TypedSetDataGenerator<T>& no() override
                 {
                     negated = true;
                     return *this;

@@ -38,7 +38,7 @@ class SurfaceElevationFromWaves: public SurfaceElevationInterface
 
         std::vector<WaveModelPtr> get_models() const {return directional_spectra;}
 
-        void serialize_wave_spectra_before_simulation(ObserverPtr& observer) const;
+        void serialize_wave_spectra_before_simulation(ObserverPtr& observer) const override;
     private:
         SurfaceElevationFromWaves(); // Disabled
 
@@ -46,7 +46,7 @@ class SurfaceElevationFromWaves: public SurfaceElevationInterface
             const double x,
             const double y,
             const double t
-            ) const;
+            ) const override;
 
         /**
          *  \section ex1 Example
@@ -58,7 +58,7 @@ class SurfaceElevationFromWaves: public SurfaceElevationInterface
             const std::vector<double> &x, //!< x-coordinates of the points, relative to the centre of the NED frame, projected in the NED frame
             const std::vector<double> &y, //!< y-coordinates of the points, relative to the centre of the NED frame, projected in the NED frame
             const double t                //!< Current instant (in seconds)
-            ) const;
+            ) const override;
 
         /**  \author cady
           *  \date Feb 3, 2015, 10:06:45 AM
@@ -72,7 +72,7 @@ class SurfaceElevationFromWaves: public SurfaceElevationInterface
                 const std::vector<double>& z,   //!< z-positions in the NED frame (in meters)
                 const double t,                 //!< Current time instant (in seconds)
                 const std::vector<double>& eta //!< Wave elevations at (x,y) in the NED frame (in meters)
-                ) const;
+                ) const override;
 
         /**  \brief Unsteady pressure field induced by undisturbed waves. Used to compute the Froude-Krylov forces.
           *  \details Also called "subsurface pressure" (by DNV), "unsteady pressure" (by Faltinsen) or constant pressure contour (by Lloyd)
@@ -98,7 +98,7 @@ class SurfaceElevationFromWaves: public SurfaceElevationInterface
                 const std::vector<double> &z,   //!< z-positions in the NED frame (in meters)
                 const std::vector<double> &eta, //!< Wave elevations at (x,y) in the NED frame (in meters)
                 const double t                  //!< Current time instant (in seconds)
-                ) const;
+                ) const override;
 
         std::vector<WaveModelPtr> directional_spectra;
 };

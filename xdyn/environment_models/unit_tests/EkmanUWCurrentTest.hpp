@@ -12,9 +12,9 @@ class EkmanUWCurrentTest : public ::testing::Test
 {
     protected:
         EkmanUWCurrentTest();
-        virtual ~EkmanUWCurrentTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~EkmanUWCurrentTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

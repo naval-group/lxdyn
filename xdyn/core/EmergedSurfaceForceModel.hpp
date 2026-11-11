@@ -16,12 +16,12 @@ class EmergedSurfaceForceModel : public SurfaceForceModel
 {
     public:
         EmergedSurfaceForceModel(const std::string& name, const std::string& body_name, const EnvironmentAndFrames& env);
-        virtual ~EmergedSurfaceForceModel();
+        ~EmergedSurfaceForceModel() override;
 
     private:
         EmergedSurfaceForceModel();
-        FacetIterator begin(const MeshIntersectorPtr& intersector) const;
-        FacetIterator end(const MeshIntersectorPtr& intersector) const;
+        FacetIterator begin(const MeshIntersectorPtr& intersector) const override;
+        FacetIterator end(const MeshIntersectorPtr& intersector) const override;
 };
 
 #endif /* EMERGEDSURFACEFORCEMODEL_HPP_ */

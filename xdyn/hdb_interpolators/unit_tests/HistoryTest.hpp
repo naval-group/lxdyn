@@ -16,9 +16,9 @@ class HistoryTest : public ::testing::Test
 {
     protected:
         HistoryTest();
-        virtual ~HistoryTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~HistoryTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

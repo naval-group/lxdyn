@@ -23,7 +23,7 @@ namespace ssc
                 double compute_for(const double tau, const double a, const double b, const double eps);
 
             private:
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6);
+                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
                 double tau;
         };
     }

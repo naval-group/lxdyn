@@ -32,10 +32,10 @@ namespace ssc
 
             private:
                 PiecewiseConstant();
-                void compute_coefficients_for_ith_interval(const double x0, const size_t i);
-                void update_coefficients_if_necessary(const double val);
-                double get_f() const;
-                double get_df(const size_t derivative_order) const;
+                void compute_coefficients_for_ith_interval(const double x0, const size_t i) override;
+                void update_coefficients_if_necessary(const double val) override;
+                double get_f() const override;
+                double get_df(const size_t derivative_order) const override;
         };
     }
 }

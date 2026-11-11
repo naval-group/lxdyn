@@ -9,9 +9,9 @@ class WebSocketPPTest2_server : public ::testing::Test
 {
     protected:
         WebSocketPPTest2_server(){}
-        virtual ~WebSocketPPTest2_server(){}
-        virtual void SetUp(){}
-        virtual void TearDown(){}
+        ~WebSocketPPTest2_server() override{}
+        void SetUp() override{}
+        void TearDown() override{}
 };
 
 using server = websocketpp::server<websocketpp::config::core>;

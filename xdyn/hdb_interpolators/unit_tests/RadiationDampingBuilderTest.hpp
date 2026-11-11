@@ -16,9 +16,9 @@ class RadiationDampingBuilderTest : public ::testing::Test
 {
     protected:
         RadiationDampingBuilderTest();
-        virtual ~RadiationDampingBuilderTest();
-        virtual void SetUp();
-        virtual void TearDown();
+        ~RadiationDampingBuilderTest() override;
+        void SetUp() override;
+        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

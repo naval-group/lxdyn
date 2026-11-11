@@ -24,14 +24,14 @@ class WageningenControlledForceModel : public AbstractWageningen
         {
             Yaml();
             Yaml(const AbstractWageningen::Yaml& y);
-            virtual ~Yaml(){}
+            ~Yaml() override{}
             size_t number_of_blades;
             double blade_area_ratio;
         };
 
         WageningenControlledForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        double get_Kt(const std::map<std::string,double>& commands, const double J) const;
-        double get_Kq(const std::map<std::string,double>& commands, const double J) const;
+        double get_Kt(const std::map<std::string,double>& commands, const double J) const override;
+        double get_Kq(const std::map<std::string,double>& commands, const double J) const override;
         double Kt(const size_t Z, const double AE_A0, const double P_D, const double J) const;
         double Kq(const size_t Z, const double AE_A0, const double P_D, const double J) const;
         static std::string model_name();

@@ -10,7 +10,7 @@ class WrenchTest : public ::testing::Test
 {
 public:
     WrenchTest();
-    virtual ~WrenchTest();
+    ~WrenchTest() override;
     ssc::random_data_generator::DataGenerator a;
 };
 
