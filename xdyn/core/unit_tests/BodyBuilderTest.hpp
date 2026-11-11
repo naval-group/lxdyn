@@ -24,7 +24,7 @@ class BodyBuilderTest : public ::testing::Test
         void SetUp() override;
         void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
-        static const BodyPtr body;
+        const BodyPtr& body;
 };
 
 #endif  /* BODYBUILDERTEST_HPP_ */

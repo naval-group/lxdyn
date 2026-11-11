@@ -20,7 +20,7 @@ class SimTest : public ::testing::Test
         void SetUp() override;
         void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
-        static const VectorOfVectorOfPoints test_ship_stl;
+        const VectorOfVectorOfPoints& test_ship_stl;
 };
 
 #endif  /* SIMTEST_HPP_ */

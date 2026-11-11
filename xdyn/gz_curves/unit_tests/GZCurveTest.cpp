@@ -18,11 +18,15 @@
 #include <cmath>
 #define PI M_PI
 
-Sim GZCurveTest::sim = GZ::make_sim(test_data::test_ship_hydrostatic_test("non-linear hydrostatic (exact)"), test_data::cube());
+static Sim& shared_sim()
+{
+    static Sim ret = GZ::make_sim(test_data::test_ship_hydrostatic_test("non-linear hydrostatic (exact)"), test_data::cube());
+    return ret;
+}
 
 constexpr double EPS = 1E-10;
 
-GZCurveTest::GZCurveTest() : a(ssc::random_data_generator::DataGenerator(54522))
+GZCurveTest::GZCurveTest() : a(ssc::random_data_generator::DataGenerator(54522)), sim(shared_sim())
 {
 }
 

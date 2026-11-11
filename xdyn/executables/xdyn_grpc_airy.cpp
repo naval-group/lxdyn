@@ -15,7 +15,7 @@
 #include <google/protobuf/stubs/common.h>
 #include <grpcpp/grpcpp.h>
 
-const std::string xdyn_grpc_airy_description = "This is the Airy wave gRPC server, based on xdyn";
+constexpr const char* xdyn_grpc_airy_description = "This is the Airy wave gRPC server, based on xdyn";
 
 struct XdynGrpcAiryCommandLineArguments
 {

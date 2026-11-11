@@ -22,10 +22,14 @@
 #include <ssc/kinematics.hpp>
 #include <cmath>
 
-const YamlSimulatorInput SimulatorBuilderTest::input = SimulatorYamlParser(test_data::full_example()).parse();
+static const YamlSimulatorInput& shared_input()
+{
+    static const YamlSimulatorInput ret = SimulatorYamlParser(test_data::full_example()).parse();
+    return ret;
+}
 
 
-SimulatorBuilderTest::SimulatorBuilderTest() : a(ssc::random_data_generator::DataGenerator(1212)),
+SimulatorBuilderTest::SimulatorBuilderTest() : a(ssc::random_data_generator::DataGenerator(1212)), input(shared_input()),
                                                builder(SimulatorBuilder(input, 0))
 {
 }

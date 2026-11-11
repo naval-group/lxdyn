@@ -12,8 +12,6 @@
 #include <iostream>
 #include <sstream>
 
-const std::string ssc::data_source::DataSource::default_setter = "Unregistered DataSource user";
-
 class CycleException : public ssc::data_source::DataSourceException
 {
     public:

@@ -24,7 +24,7 @@ class SimulatorBuilderTest : public ::testing::Test
         std::vector<BodyPtr> get_body_vector(const std::string& name) const;
 
         ssc::random_data_generator::DataGenerator a;
-        static const YamlSimulatorInput input;
+        const YamlSimulatorInput& input;
         SimulatorBuilder builder;
 };
 

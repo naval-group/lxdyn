@@ -24,14 +24,19 @@ using namespace ssc::data_source;
 
 constexpr int NB_OF_TRIALS = 100;
 
-static ssc::random_data_generator::DataGenerator a_(21);
 static DataSource* ds_;
+
+static std::string random_module_name()
+{
+    static ssc::random_data_generator::DataGenerator a_(21);
+    return a_.random<std::string>();
+}
 
 using ::testing::Return;
 using ::testing::NiceMock;
 using ::testing::StrictMock;
 using ::testing::InSequence;
-MockableDataSourceModule::MockableDataSourceModule() : DataSourceModule(ds_, a_.random<std::string>())
+MockableDataSourceModule::MockableDataSourceModule() : DataSourceModule(ds_, random_module_name())
 {
 
 }

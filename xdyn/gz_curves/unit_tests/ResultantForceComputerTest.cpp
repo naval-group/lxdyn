@@ -19,9 +19,13 @@
 constexpr double EPS = 1E-10;
 constexpr double BIG_EPS = 1E-5;
 
-Sim ResultantForceComputerTest::sim = GZ::make_sim(test_data::oscillating_cube_example(), test_data::cube());
+static Sim& shared_sim()
+{
+    static Sim ret = GZ::make_sim(test_data::oscillating_cube_example(), test_data::cube());
+    return ret;
+}
 
-ResultantForceComputerTest::ResultantForceComputerTest() : a(ssc::random_data_generator::DataGenerator(87878899))
+ResultantForceComputerTest::ResultantForceComputerTest() : a(ssc::random_data_generator::DataGenerator(87878899)), sim(shared_sim())
 {
 }
 

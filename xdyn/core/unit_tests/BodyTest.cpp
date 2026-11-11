@@ -16,7 +16,13 @@
 #include <memory>
 #define PI M_PI
 
-BodyTest::BodyTest() : a(ssc::random_data_generator::DataGenerator(21212))
+static const BodyPtr& shared_body()
+{
+    static const BodyPtr ret = BodyBuilderTest::build_body(1);
+    return ret;
+}
+
+BodyTest::BodyTest() : a(ssc::random_data_generator::DataGenerator(21212)), body(shared_body())
 {
 }
 
@@ -31,8 +37,6 @@ void BodyTest::SetUp()
 void BodyTest::TearDown()
 {
 }
-
-const BodyPtr BodyTest::body = BodyBuilderTest::build_body(1);
 
 TEST_F(BodyTest, frame_of_origin_point_is_correct)
 {

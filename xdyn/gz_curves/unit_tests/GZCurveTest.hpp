@@ -22,7 +22,7 @@ class GZCurveTest : public ::testing::Test
         void SetUp() override;
         void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
-        static Sim sim;
+        Sim& sim;
 };
 
 #endif  /* GZCURVETEST_HPP_ */

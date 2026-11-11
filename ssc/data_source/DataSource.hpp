@@ -577,7 +577,7 @@ namespace ssc
                   */
                 void check_out();
 
-                static const std::string default_setter; //!< Default name of the DataSource user
+                static constexpr const char* default_setter = "Unregistered DataSource user"; //!< Default name of the DataSource user
 
                 /**  \returns A map containing all signals of a given type
                   *  \snippet data_source/unit_tests/src/DataSourceTest.cpp DataSourceTest get_all_example
