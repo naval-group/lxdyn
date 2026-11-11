@@ -32,7 +32,7 @@ class WavesImpl final : public Waves::Service {
         {
             const std::function<void()> f = [this, &request]()
             {
-                const std::string yaml_data(request->parameters());
+                const std::string& yaml_data(request->parameters());
                 std::cout << "Receiving this input YAML:" << std::endl;
                 std::cout << yaml_data << std::endl;
                 this->env = get_environment_for_wave_queries(yaml_data);

@@ -42,7 +42,7 @@ grpc::Status run_and_report_errors_as_gRPC_status(const std::function<void(void)
 template <typename Request> void check_euler_states_size(const Request* request)
 {
     CHECK_REQUEST_POINTER()
-    const auto states = request->states();
+    const auto& states = request->states();
     CHECK_SIZE(x);
     CHECK_SIZE(y);
     CHECK_SIZE(z);
@@ -61,7 +61,7 @@ template <typename Request> void check_euler_states_size(const Request* request)
 template <typename Request> void check_quaternion_states_size(const Request* request)
 {
     CHECK_REQUEST_POINTER()
-    const auto states = request->states();
+    const auto& states = request->states();
     CHECK_SIZE(x);
     CHECK_SIZE(y);
     CHECK_SIZE(z);
