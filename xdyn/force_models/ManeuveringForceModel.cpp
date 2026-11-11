@@ -67,7 +67,7 @@ ManeuveringForceModel::ManeuveringForceModel(const Yaml& data, const std::string
         ds(new ssc::data_source::DataSource())
 {
     env.k->add(make_transform(data.frame_of_reference, data.name, env.rot));
-    for (auto var2expr:data.var2expr)
+    for (const auto& var2expr:data.var2expr)
     {
         m[var2expr.first] = maneuvering::compile(var2expr.second, env.rot);
     }
@@ -101,7 +101,7 @@ Wrench ManeuveringForceModel::get_force(const BodyStates& states, const double t
 double ManeuveringForceModel::get_Tmax() const
 {
     double Tmax = 0;
-    for (auto it:m)
+    for (const auto& it:m)
     {
         Tmax = std::max(Tmax, maneuvering::get_Tmax(it.second));
     }

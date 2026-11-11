@@ -9,7 +9,7 @@ TEST_F(ListOfObserversTest, should_be_able_to_create_a_list_of_observers)
     {
         ListOfObservers s(yaml);
     }
-    for (auto output:yaml)
+    for (const auto& output:yaml)
     {
         if (output.format == "hdf5")
         {

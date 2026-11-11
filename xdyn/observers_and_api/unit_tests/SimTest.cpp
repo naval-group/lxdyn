@@ -385,7 +385,7 @@ TEST_F(SimTest, rolling_cube_with_big_mesh)
     ssc::solver::Scheduler scheduler(0, 1, 0.1);
     const auto res = simulate<ssc::solver::RK4Stepper>(test_data::new_oscillating_cube_example(), test_data::big_cube(), scheduler);
     std::vector<double> phi;
-    for (auto r:res)
+    for (const auto& r:res)
     {
         ASSERT_NEAR(0, body0(r).x(), 1e-6);
         ASSERT_NEAR(0, body0(r).y(), 1e-6);

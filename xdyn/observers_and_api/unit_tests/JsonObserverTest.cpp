@@ -21,7 +21,7 @@ TEST_F(JsonObserverTest, should_be_able_to_create_an_observer)
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (auto output:yaml)
+    for (const auto& output:yaml)
     {
         if (output.format == "json")
         {
@@ -44,7 +44,7 @@ TEST_F(JsonObserverTest, should_be_able_to_create_an_observer_with_waves)
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (auto output:yaml)
+    for (const auto& output:yaml)
     {
         if (output.format == "json")
         {

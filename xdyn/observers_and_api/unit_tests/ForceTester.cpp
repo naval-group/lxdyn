@@ -212,7 +212,7 @@ boost::optional<double> ForceTester::gm(const double x,
 {
     std::vector<double> states = set_states(x, y, z, phi, theta, psi);
     boost::optional<double> ret;
-    for (auto force:forces)
+    for (const auto& force:forces)
     {
         if (force->get_name() == "GM")
         {

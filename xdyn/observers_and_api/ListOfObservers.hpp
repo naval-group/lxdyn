@@ -32,7 +32,7 @@ class ListOfObservers
                 const T& val,
                 const DataAddressing& address)
         {
-            for (auto observer:observers)
+            for (const auto& observer:observers)
             {
                 observer->write_before_solver_step(val, address);
             }
@@ -42,7 +42,7 @@ class ListOfObservers
                 const T& val,
                 const DataAddressing& address)
         {
-            for (auto observer:observers)
+            for (const auto& observer:observers)
             {
                 observer->write_after_solver_step(val, address);
             }
@@ -52,7 +52,7 @@ class ListOfObservers
                         const T& val,
                         const DataAddressing& address)
         {
-            for (auto observer:observers)
+            for (const auto& observer:observers)
             {
                 observer->write_before_simulation(val, address);
             }

@@ -123,14 +123,14 @@ std::string serialize(const std::vector<YamlState>& states)
     ADD_ARRAY("theta", doc);
     ADD_ARRAY("psi", doc);
     doc.AddMember("extra_observations",rapidjson::Value(rapidjson::kObjectType).Move(), doc.GetAllocator());
-    for(auto extra_obs:states.at(0).extra_observations)
+    for(const auto& extra_obs:states.at(0).extra_observations)
     {
         rapidjson::Value field_name(extra_obs.first.c_str(), doc.GetAllocator());
         doc["extra_observations"].AddMember(field_name, rapidjson::Value(rapidjson::kArrayType).Move(), doc.GetAllocator());
     }
 
     // Writing
-    for(auto state:states)
+    for(const auto& state:states)
     {
         PUSH_BACK(doc["t"], state.t, doc);
         PUSH_BACK(doc["x"], state.x, doc);
@@ -149,7 +149,7 @@ std::string serialize(const std::vector<YamlState>& states)
         PUSH_BACK(doc["phi"], state.phi, doc);
         PUSH_BACK(doc["theta"], state.theta, doc);
         PUSH_BACK(doc["psi"], state.psi, doc);
-        for(auto obs:state.extra_observations)
+        for(const auto& obs:state.extra_observations)
             {
                 PUSH_BACK(doc["extra_observations"][obs.first.c_str()], obs.second, doc);
             }

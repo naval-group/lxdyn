@@ -33,7 +33,7 @@ void GrpcController::add_controller_outputs_to_data_source(const double time, ss
     }
     const auto response = grpc->get_commands(time, sys.state, dx_dt, setpoints);
     const auto commands = response.commands;
-    for (auto command : commands)
+    for (const auto& command : commands)
     {
         Controller::set_discrete_state(sys, command.first, command.second);
     }

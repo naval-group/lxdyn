@@ -239,13 +239,13 @@ class HDBParser::Impl
             RAOData ret;
             bool found_relevant_rao_section = false;
             bool found_relevant_rao_subsection = false;
-            for (auto ms:tree.lists_of_matrix_sections_with_id)
+            for (const auto& ms:tree.lists_of_matrix_sections_with_id)
             {
                 if (ms.header == section_name)
                 {
                     found_relevant_rao_section = true;
                     size_t psi_idx = 0;
-                    for (auto s:ms.sections_with_id)
+                    for (const auto& s:ms.sections_with_id)
                     {
                         if (boost::algorithm::starts_with(s.header, subsection_name))
                         {

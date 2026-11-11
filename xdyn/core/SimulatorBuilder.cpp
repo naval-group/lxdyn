@@ -94,7 +94,7 @@ EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
                 env_model_successfully_parsed = true;
             }
         }
-        for(auto parser:wind_model_parsers)
+        for(const auto& parser:wind_model_parsers)
         {
             boost::optional<WindModelPtr> w = parser(*that_model);
             if (w)
@@ -107,7 +107,7 @@ EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
                 env_model_successfully_parsed = true;
             }
         }
-        for(auto parser:UWCurrent_model_parsers)
+        for(const auto& parser:UWCurrent_model_parsers)
         {
             boost::optional<UWCurrentModelPtr> c = parser(*that_model);
             if (c)
@@ -185,10 +185,10 @@ void SimulatorBuilder::add(const YamlModel& model, ListOfForces& L, const std::s
 std::vector<bool> SimulatorBuilder::are_there_surface_forces_acting_on_body(const std::vector<ListOfForces>& forces) const
 {
     std::vector<bool> ret;
-    for (auto forces_acting_on_body:forces)
+    for (const auto& forces_acting_on_body:forces)
     {
         bool has_surface_forces = false;
-        for (auto force:forces_acting_on_body)
+        for (const auto& force:forces_acting_on_body)
         {
             has_surface_forces |= force->is_a_surface_force_model();
         }

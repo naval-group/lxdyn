@@ -66,7 +66,7 @@ class CSVWriter
         void print_title()
         {
             os << x_name;
-            for (auto f:function_names)
+            for (const auto& f:function_names)
             {
                 os << ',' << f;
             }
@@ -78,7 +78,7 @@ class CSVWriter
             for (auto x:xs)
             {
                 os << x;
-                for (auto f:functions)
+                for (const auto& f:functions)
                 {
                     os << ',' << f(x);
                 }

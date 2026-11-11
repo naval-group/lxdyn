@@ -187,7 +187,7 @@ void initialize_controllers(
     )
 {
     system.set_discrete_state("t", scheduler.get_time());
-    for (auto controller:controllers)
+    for (const auto& controller:controllers)
     {
         controller->initialize(scheduler, system);
     }
