@@ -20,7 +20,6 @@ Checks:
   - '-bugprone-forward-declaration-namespace'
   - '-bugprone-signed-char-misuse'
   - '-bugprone-suspicious-include'
-  - '-bugprone-suspicious-string-compare'
   - '-bugprone-unhandled-self-assignment'
 
 WarningsAsErrors: '*'
