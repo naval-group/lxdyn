@@ -11,7 +11,7 @@
 #include "xdyn/binary_stl_data/generate_test_ship.hpp"
 #include "xdyn/external_file_formats/stl_writer.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/gz_curves/make_sim_for_GZ.cpp"
+#include "xdyn/gz_curves/make_sim_for_GZ.hpp"
 #include "xdyn/test_data_generator/stl_data.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 

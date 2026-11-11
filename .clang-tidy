@@ -16,12 +16,6 @@ Checks:
   - '-performance-avoid-endl'                # the flush is sometimes wanted, and the cost is noise
   - '-performance-enum-size'                 # bytes saved per enum, not a defect
 
-  # Off until their sites are fixed, each by the commit that turns it on.
-  - '-bugprone-forward-declaration-namespace'
-  - '-bugprone-signed-char-misuse'
-  - '-bugprone-suspicious-include'
-  - '-bugprone-unhandled-self-assignment'
-
 WarningsAsErrors: '*'
 # Third-party headers arrive through -isystem and stay quiet; these are the rest that are not ours.
 HeaderFilterRegex: '.*'

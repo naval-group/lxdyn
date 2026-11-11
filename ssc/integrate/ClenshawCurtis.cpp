@@ -49,6 +49,7 @@ ssc::integrate::ClenshawCurtis::ClenshawCurtis(const ClenshawCurtis& rhs) : Quad
 
 ssc::integrate::ClenshawCurtis& ssc::integrate::ClenshawCurtis::operator=(const ClenshawCurtis& rhs)
 {
+    if (this == &rhs) return *this;
     f = rhs.f;
     tau = rhs.tau;
     nb_of_chebychev_moments = rhs.nb_of_chebychev_moments;

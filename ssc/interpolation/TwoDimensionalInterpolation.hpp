@@ -14,7 +14,6 @@
 #define not !
 #endif
 
-class ParabolicRunoutSplines;
 #ifndef TWODIMENSIONALSPLINES_HPP_
 #define TWODIMENSIONALSPLINES_HPP_
 
