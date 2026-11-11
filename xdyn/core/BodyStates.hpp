@@ -39,7 +39,7 @@ struct BodyStates : AbstractStates<History>
     BodyStates(
         const StatesFilter& states_filter, const double Tmax=0 //!< Defines how much history we store
         );
-    BodyStates& operator=(const AbstractStates<History>& rhs);
+    using AbstractStates<History>::operator=;
     std::string name;                                              //!< Body's name
     ssc::kinematics::Point G;                                      //!< Position of the ship's centre of gravity
     MeshPtr mesh;                                                  //!< Vertices & edges of the body's mesh

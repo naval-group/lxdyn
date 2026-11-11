@@ -45,7 +45,7 @@ std::vector<Res> get_results(const ListOfObservers& observers)
     if (observers.empty())
         return std::vector<Res>();
     const auto observer = static_cast<EverythingObserver*>(observers.get().front().get());
-    return observer->get();
+    return observer->get_res();
 }
 
 TEST_F(EverythingObserverTest, example)
