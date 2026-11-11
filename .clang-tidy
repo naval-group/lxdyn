@@ -1,8 +1,9 @@
-# Footguns, not style. Every finding fails the gate, so a check joins in the commit that fixes its sites.
+# A check is off for good only when it is wrong for this code; a deliberate site carries NOLINT(<check>): <reason>.
 Checks:
   - '-*'
   - 'bugprone-*'
   - 'performance-*'
+  - 'misc-throw-by-value-catch-by-reference'
   - 'modernize-make-shared'
   - 'modernize-make-unique'
   - 'modernize-use-nullptr'

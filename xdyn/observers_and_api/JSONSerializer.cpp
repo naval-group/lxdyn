@@ -18,7 +18,7 @@ YamlSimServerInputs deserialize(const std::string& input)
     }
     if (not(document.HasMember("states")))
     {
-        THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "Missing key 'states' in JSON root.")
+        THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "Missing key 'states' in JSON root.");
     }
     if (not(document["states"].IsArray()))
     {
@@ -49,7 +49,7 @@ YamlSimServerInputs deserialize(const std::string& input)
         const rapidjson::Value& commands = document["commands"];
         if (not(commands.IsObject()) && not(commands.IsNull()))
         {
-            THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "'commands' should be a JSON object (key-values): got " << ssc::json::print_type(commands))
+            THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "'commands' should be a JSON object (key-values): got " << ssc::json::print_type(commands));
         }
         else
         {
@@ -67,7 +67,7 @@ YamlSimServerInputs deserialize(const std::string& input)
         const rapidjson::Value& commands = document["requested_output"];
         if (not(commands.IsArray()) && not(commands.IsNull()))
         {
-            THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "'commands' should be a JSON array: got " << ssc::json::print_type(commands))
+            THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "'commands' should be a JSON array: got " << ssc::json::print_type(commands));
         }
         else
         {

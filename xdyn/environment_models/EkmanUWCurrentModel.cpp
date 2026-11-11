@@ -51,7 +51,7 @@ EkmanUWCurrentModel::Input EkmanUWCurrentModel::parse(const std::string& yaml_in
     }
     else
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Please provide either a 'seabed file' or a 'seabed depth' for the Ekman current model.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Please provide either a 'seabed file' or a 'seabed depth' for the Ekman current model.");
     }
     double U10;
     xdyn::yaml_parser::parse_uv(node["wind orientation"], input.wind_angle);

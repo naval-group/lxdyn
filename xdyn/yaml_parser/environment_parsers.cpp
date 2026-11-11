@@ -150,7 +150,7 @@ void operator >> (const YAML::Node& node, YamlDiscretization& g)
     }
     if (g.periodic && g.repetition_sizes.empty())
     {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Space-periodic waves were asked for, but no 'repetition sizes' were given in the 'discretization' section.")
+        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Space-periodic waves were asked for, but no 'repetition sizes' were given in the 'discretization' section.");
     }
 }
 
