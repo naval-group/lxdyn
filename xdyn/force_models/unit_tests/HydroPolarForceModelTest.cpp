@@ -227,7 +227,7 @@ TEST_F(HydroPolarForceModelTest, should_print_warning_for_polar_input_with_unexp
     input.angle_of_attack = {0.,0.12217305,0.15707963,0.20943951,0.48869219,1.04719755,1.57079633,2.0943951,2.61799388,M_PI,3*M_PI/2};
     input.lift_coefficient = {0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207,-0.11207};
     input.drag_coefficient = {0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483,1.34483};
-    HydroPolarForceModel(input, "body", env);
+    EXPECT_NO_THROW(HydroPolarForceModel(input, "body", env));
     ASSERT_FALSE(debug.str().empty());
 
     // Reset the stderr stringstream
@@ -239,7 +239,7 @@ TEST_F(HydroPolarForceModelTest, should_print_warning_for_polar_input_with_unexp
     input.angle_of_attack = {-M_PI/2,0.,0.12217305,0.15707963,0.20943951,0.48869219,1.04719755,1.57079633,2.0943951,2.61799388, M_PI};
     input.lift_coefficient = {0.00000,0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207};
     input.drag_coefficient = {0.03448,0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483};
-    HydroPolarForceModel(input, "body", env);
+    EXPECT_NO_THROW(HydroPolarForceModel(input, "body", env));
     ASSERT_FALSE(debug.str().empty());
 
     // Reset the stderr stringstream
@@ -251,7 +251,7 @@ TEST_F(HydroPolarForceModelTest, should_print_warning_for_polar_input_with_unexp
     input.angle_of_attack = {-3*M_PI/2,-M_PI/2,0.,0.12217305,0.15707963,0.20943951,0.48869219,1.04719755,1.57079633,2.0943951,2.61799388, M_PI};
     input.lift_coefficient = {0.00000,0.00000,0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207};
     input.drag_coefficient = {0.03448,0.03448,0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483};
-    HydroPolarForceModel(input, "body", env);
+    EXPECT_NO_THROW(HydroPolarForceModel(input, "body", env));
     ASSERT_FALSE(debug.str().empty());
 
     // Restore cerr's buffer

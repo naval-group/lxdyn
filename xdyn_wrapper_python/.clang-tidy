@@ -1,0 +1,3 @@
+InheritParentConfig: true
+# pybind11 registers a class in py::class_'s constructor, so the discarded temporary is the point.
+Checks: '-bugprone-unused-raii'

@@ -93,7 +93,7 @@ TEST_F(TextFileReaderTest, should_issue_a_warning_if_a_file_is_empty)
     // Call TextFileReader
     const std::string filename = "data_for_TextFileReaderTest";
     create_file(filename, "");
-    TextFileReader(std::vector<std::string>(1, filename));
+    EXPECT_NO_THROW(TextFileReader(std::vector<std::string>(1, filename)));
     remove_file_if_it_exists(filename);
     const std::string error = error_stream.str();
     // Restore cerr's buffer

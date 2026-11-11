@@ -36,7 +36,7 @@ namespace ssc
         {
             const size_t n = x.size();
             std::vector<Linear> ret;
-            PiecewiseConstantVariableStep<double>(x,y); // Checks if x is in strictly increasing order & that x & y have same size
+            const PiecewiseConstantVariableStep<double> validated(x,y); // Checks if x is in strictly increasing order & that x & y have same size
             for (size_t i = 0 ; i < n-1 ; ++i)
             {
                 const double a = (y.at(i+1) - y.at(i)) / (x.at(i+1) - x.at(i));
