@@ -24,11 +24,7 @@
 void solve(const std::string& solver_name, Sim& sys, ssc::solver::Scheduler& scheduler, ListOfObservers& observer, const std::vector<ssc::solver::DiscreteSystemPtr>& controllers);
 void solve(const std::string& solver_name, Sim& sys, ssc::solver::Scheduler& scheduler, ListOfObservers& observer, const std::vector<ssc::solver::DiscreteSystemPtr>& controllers)
 {
-    if (solver_name=="euler")
-    {
-        ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer, controllers);
-    }
-    else if (solver_name=="rk4")
+    if (solver_name=="rk4")
     {
         ssc::solver::quicksolve<ssc::solver::RK4Stepper>(sys, scheduler, observer, controllers);
     }
