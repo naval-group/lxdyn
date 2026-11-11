@@ -98,7 +98,7 @@ grpc::Status to_grpc(grpc::ServerContext* , const std::vector<YamlState>& res, C
     {
         return grpc::Status(grpc::StatusCode::INTERNAL, "We got a zero-size res vector from SimServer::play_one_step. This should never happen and is a bug in xdyn's gRPC implementation. Please contact xdyn's support team!");
     }
-    const YamlState state = res.back();
+    const YamlState& state = res.back();
     // No memory leaks here because we will call set_allocated_* which will take
     // ownership of these pointers.
     // Cf. https://developers.google.com/protocol-buffers/docs/reference/cpp-generated
