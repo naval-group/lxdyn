@@ -32,7 +32,7 @@ void start_grpc_server(const XdynForCSCommandLineArguments& input_data, const st
     server.start(input_data.port);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char** argv) // NOLINT(bugprone-exception-escape): --debug leaves exceptions uncaught for the debugger
 {
     XdynForCSCommandLineArguments input_data;
     if (argc==1) return display_help(argv[0], input_data);

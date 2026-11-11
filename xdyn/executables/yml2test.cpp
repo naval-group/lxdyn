@@ -26,11 +26,12 @@ std::string remove_file_extension(const std::string& filename)
     return filename.substr(0, lastdot);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char** argv) // NOLINT(bugprone-exception-escape): a developer tool, where std::terminate prints the exception
 {
     if (argc != 2)
     {
         std::cout << "Usage: " << argv[0] << " <YAML file>" << std::endl;
+        return EXIT_FAILURE;
     }
     std::ifstream file(argv[1]);
 

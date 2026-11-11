@@ -20,7 +20,6 @@ Checks:
   - '-bugprone-branch-clone'
   - '-bugprone-derived-method-shadowing-base-method'
   - '-bugprone-empty-catch'
-  - '-bugprone-exception-escape'
   - '-bugprone-float-loop-counter'
   - '-bugprone-forward-declaration-namespace'
   - '-bugprone-narrowing-conversions'
@@ -42,3 +41,6 @@ WarningsAsErrors: '*'
 # Third-party headers arrive through -isystem and stay quiet; these are the rest that are not ours.
 HeaderFilterRegex: '.*'
 ExcludeHeaderFilterRegex: '(/\.zig-cache/|/external/|/ssc/f2c/|/ssc/json/rapidjson/|/xdyn_wrapper_fmi/fmi2/)'
+CheckOptions:
+  # Allocation failure ends in std::terminate wherever it surfaces.
+  bugprone-exception-escape.IgnoredExceptions: 'bad_alloc,bad_array_new_length,length_error'

@@ -102,7 +102,7 @@ int run(const XdynCommandLineArguments& input_data, ErrorReporter& error_outputt
     return EXIT_SUCCESS;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char** argv) // NOLINT(bugprone-exception-escape): --debug leaves exceptions uncaught for the debugger
 {
     XdynCommandLineArguments input_data;
     int error = 0;

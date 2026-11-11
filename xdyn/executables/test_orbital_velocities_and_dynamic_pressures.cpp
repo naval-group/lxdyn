@@ -18,7 +18,7 @@
 #include <cmath>
 #define PI M_PI
 
-int main(int , char** )
+int main(int , char** ) // NOLINT(bugprone-exception-escape): a developer tool, where std::terminate prints the exception
 {
     const double Hs = 3;
     const double Tp = 5;
