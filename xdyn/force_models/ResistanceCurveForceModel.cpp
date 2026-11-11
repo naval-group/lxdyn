@@ -44,6 +44,8 @@ ResistanceCurveForceModel::ResistanceCurveForceModel(const Yaml& data, const std
 {
 }
 
+ResistanceCurveForceModel::~ResistanceCurveForceModel() = default;
+
 ResistanceCurveForceModel::Yaml ResistanceCurveForceModel::parse(const std::string& yaml)
 {
     YAML::Node node = YAML::Load(yaml);

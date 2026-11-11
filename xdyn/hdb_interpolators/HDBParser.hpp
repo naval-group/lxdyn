@@ -28,6 +28,8 @@ class HDBParser : public HydroDBParser
         static HDBParser from_file(const std::string& filename);
         static HDBParser from_string(const std::string& contents);
         ~HDBParser() override;
+        HDBParser(HDBParser&&);
+        HDBParser& operator=(HDBParser&&);
         double get_forward_speed() const override; //!< Speed at which the radiation damping matrices were calculated. Used to determine if we can apply a forward-speed correction
         TimestampedMatrices get_added_mass_array() const;
         TimestampedMatrices get_radiation_damping_array() const;
@@ -79,7 +81,7 @@ class HDBParser : public HydroDBParser
     private:
         HDBParser(const std::string& data);
         class Impl;
-        std::shared_ptr<Impl> pimpl;
+        std::unique_ptr<Impl> pimpl;
 };
 
 #endif /* HDBPARSER_HPP_ */

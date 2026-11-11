@@ -53,6 +53,8 @@ KtKqForceModel::KtKqForceModel(const Yaml& input, const std::string& body_name_,
 {
 }
 
+KtKqForceModel::~KtKqForceModel() = default;
+
 double KtKqForceModel::get_Kt(const std::map<std::string,double>&, const double J) const
 {
     double ret = 0;

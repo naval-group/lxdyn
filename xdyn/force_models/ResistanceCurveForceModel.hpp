@@ -33,6 +33,7 @@ class ResistanceCurveForceModel : public ForceModel
             std::vector<double> R;
         };
         ResistanceCurveForceModel(const Yaml& data, const std::string& body_name, const EnvironmentAndFrames& env);
+        ~ResistanceCurveForceModel() override;
         static Yaml parse(const std::string& yaml);
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
         static std::string model_name();
@@ -40,7 +41,7 @@ class ResistanceCurveForceModel : public ForceModel
     private:
         ResistanceCurveForceModel();
         class Impl;
-        std::shared_ptr<Impl> pimpl;
+        std::unique_ptr<Impl> pimpl;
 
 };
 

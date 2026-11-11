@@ -17,7 +17,7 @@ FastHydrostaticForceModel::FastHydrostaticForceModel(
     const std::string& body_name_,
     const EnvironmentAndFrames& env) :
         ImmersedSurfaceForceModel(model_name(), body_name_, env),
-        centre_of_buoyancy(new Eigen::Vector3d())
+        centre_of_buoyancy()
 {
     if (env.w.use_count()==0)
     {
@@ -31,7 +31,7 @@ FastHydrostaticForceModel::FastHydrostaticForceModel(
     const std::string& body_name_,
     const EnvironmentAndFrames& env) :
         ImmersedSurfaceForceModel(force_name_, body_name_, env),
-        centre_of_buoyancy(new Eigen::Vector3d())
+        centre_of_buoyancy()
 {
 }
 
@@ -41,7 +41,7 @@ void FastHydrostaticForceModel::calculations_after_surface_integration(const Bod
 
     if (C.all_facets_are_in_same_plane) C.volume = 0;
 
-    for (Eigen::Index i = 0 ; i < 3 ; ++i) centre_of_buoyancy->operator()(i) = C.G(i);
+    for (Eigen::Index i = 0 ; i < 3 ; ++i) centre_of_buoyancy(i) = C.G(i);
 }
 
 
@@ -57,9 +57,9 @@ EPoint FastHydrostaticForceModel::get_application_point(const FacetIterator& tha
 
 ssc::kinematics::Point FastHydrostaticForceModel::get_centre_of_buoyancy() const
 {
-    return ssc::kinematics::Point(get_body_name(), centre_of_buoyancy->operator()(0),
-                                                   centre_of_buoyancy->operator()(1),
-                                                   centre_of_buoyancy->operator()(2));
+    return ssc::kinematics::Point(get_body_name(), centre_of_buoyancy(0),
+                                                   centre_of_buoyancy(1),
+                                                   centre_of_buoyancy(2));
 }
 
 std::function<SurfaceForceModel::DF(const FacetIterator &, const size_t, const EnvironmentAndFrames &, const BodyStates &, const double)>

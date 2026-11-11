@@ -23,6 +23,7 @@ namespace GZ
     {
         public:
             Curve(const Sim& sim);
+            ~Curve();
             static std::vector<double> get_phi(const double dphi, const double phi_max);
             double gz(const double phi) const;
             double zeq(const double phi, const double theta) const;
@@ -32,7 +33,7 @@ namespace GZ
         private:
             Curve();
             struct Impl;
-            std::shared_ptr<Impl> pimpl;
+            std::unique_ptr<Impl> pimpl;
             double theta_eq;
     };
 }

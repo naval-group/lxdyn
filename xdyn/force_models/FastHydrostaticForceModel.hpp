@@ -38,7 +38,7 @@ class FastHydrostaticForceModel : public ImmersedSurfaceForceModel
         //void extra_observations(Observer& observer) const;
         virtual EPoint get_application_point(const FacetIterator& that_facet, const BodyStates& states, const double zG) const;
         double pe(const BodyStates& states, const std::vector<double>& x, const EnvironmentAndFrames& env) const override;
-        std::shared_ptr<Eigen::Vector3d> centre_of_buoyancy;
+        mutable Eigen::Vector3d centre_of_buoyancy;
 };
 
 #endif /* FASTHYDROSTATICFORCEMODEL_HPP_ */

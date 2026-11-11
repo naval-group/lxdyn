@@ -24,6 +24,7 @@ class GRPCForceModel : public ForceModel
             std::string precal_filename;
         };
         GRPCForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
+        ~GRPCForceModel() override;
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
         static Input parse(const std::string& yaml);
         static std::string model_name();
@@ -33,8 +34,8 @@ class GRPCForceModel : public ForceModel
         void extra_observations(Observer& observer) const override;
         GRPCForceModel(); // Disabled
         class Impl;
-        std::shared_ptr<Impl> pimpl;
-        GRPCForceModel(const std::shared_ptr<Impl>& pimpl, const std::string& body_name, const EnvironmentAndFrames& env);
+        std::unique_ptr<Impl> pimpl;
+        GRPCForceModel(std::unique_ptr<Impl> pimpl, const std::string& body_name, const EnvironmentAndFrames& env);
 
 };
 

@@ -82,6 +82,8 @@ GZ::Curve::Curve(const Sim& sim) : pimpl(new Impl(sim)), theta_eq(get_Xeq()(2))
 {
 }
 
+GZ::Curve::~Curve() = default;
+
 std::vector<double> GZ::Curve::get_phi(const double dphi, const double phi_max)
 {
     check_input(dphi, phi_max);

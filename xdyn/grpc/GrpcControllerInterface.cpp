@@ -200,8 +200,8 @@ struct GrpcControllerInterface::Impl
 };
 
 
-GrpcControllerInterface::GrpcControllerInterface(const std::shared_ptr<GrpcControllerInterface::Impl>& pimpl_, const GrpcSetParametersResponse& set_parameters_response_) :
-pimpl(pimpl_),
+GrpcControllerInterface::GrpcControllerInterface(std::unique_ptr<GrpcControllerInterface::Impl> pimpl_, const GrpcSetParametersResponse& set_parameters_response_) :
+pimpl(std::move(pimpl_)),
 set_parameters_response(set_parameters_response_)
 {}
 
@@ -225,21 +225,21 @@ std::vector<std::string> GrpcControllerInterface::get_command_names() const
 
 std::shared_ptr<GrpcControllerInterface> GrpcControllerInterface::build(const GrpcControllerInterface::Input& input, const double t0)
 {
-    std::shared_ptr<GrpcControllerInterface::Impl> pimpl = std::make_shared<GrpcControllerInterface::Impl>(input);
+    std::unique_ptr<GrpcControllerInterface::Impl> pimpl = std::make_unique<GrpcControllerInterface::Impl>(input);
     const GrpcSetParametersResponse res = pimpl->set_parameters(t0);
     switch(res.angle_representation)
     {
         case AngleRepresentation::EULER_321:
-            return std::shared_ptr<GrpcControllerInterface>(new Euler321GrpcController(pimpl, res));
+            return std::shared_ptr<GrpcControllerInterface>(new Euler321GrpcController(std::move(pimpl), res));
             break;
         case AngleRepresentation::QUATERNION:
-            return std::shared_ptr<GrpcControllerInterface>(new QuaternionGrpcController(pimpl, res));
+            return std::shared_ptr<GrpcControllerInterface>(new QuaternionGrpcController(std::move(pimpl), res));
             break;
         default:
-            return std::shared_ptr<GrpcControllerInterface>(new Euler321GrpcController(pimpl, res));
+            return std::shared_ptr<GrpcControllerInterface>(new Euler321GrpcController(std::move(pimpl), res));
             break;
     }
-    return std::shared_ptr<GrpcControllerInterface>(new Euler321GrpcController(pimpl, res));
+    return std::shared_ptr<GrpcControllerInterface>(new Euler321GrpcController(std::move(pimpl), res));
 }
 
 GrpcControllerInterface::Input
@@ -278,8 +278,8 @@ GrpcControllerResponse Euler321GrpcController::get_commands(const double t, cons
     return pimpl->get_commands_euler321(t, states, dstates_dt, setpoints);
 }
 
-Euler321GrpcController::Euler321GrpcController(const std::shared_ptr<Impl>& pimpl_, const GrpcSetParametersResponse& set_parameters_response) : GrpcControllerInterface(pimpl_, set_parameters_response)
+Euler321GrpcController::Euler321GrpcController(std::unique_ptr<Impl> pimpl_, const GrpcSetParametersResponse& set_parameters_response) : GrpcControllerInterface(std::move(pimpl_), set_parameters_response)
 {}
 
-QuaternionGrpcController::QuaternionGrpcController(const std::shared_ptr<Impl>& pimpl_, const GrpcSetParametersResponse& set_parameters_response) : GrpcControllerInterface(pimpl_, set_parameters_response)
+QuaternionGrpcController::QuaternionGrpcController(std::unique_ptr<Impl> pimpl_, const GrpcSetParametersResponse& set_parameters_response) : GrpcControllerInterface(std::move(pimpl_), set_parameters_response)
 {}

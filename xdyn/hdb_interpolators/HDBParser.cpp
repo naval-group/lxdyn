@@ -626,6 +626,9 @@ HDBParser::~HDBParser()
 {
 }
 
+HDBParser::HDBParser(HDBParser&&) = default;
+HDBParser& HDBParser::operator=(HDBParser&&) = default;
+
 double HDBParser::get_forward_speed() const
 {
     return pimpl->get_forward_speed();

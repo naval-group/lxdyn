@@ -19,6 +19,7 @@ class SurfaceElevationFromGRPC : public SurfaceElevationInterface
 {
     public:
         SurfaceElevationFromGRPC(const YamlGRPC& yaml, const ssc::kinematics::PointMatrixPtr& output_mesh);
+        ~SurfaceElevationFromGRPC() override;
 
         /**  \brief Calculate radiation forces using first order force RAO
           *  \returns Force (or torque), depending on the RAO
@@ -107,7 +108,7 @@ class SurfaceElevationFromGRPC : public SurfaceElevationInterface
         std::vector<FlatDiscreteDirectionalWaveSpectrum> get_flat_directional_spectra(const double x, const double y, const double t) const override;
         SurfaceElevationFromGRPC(); // Disabled (private & without implementation)
         class Impl;
-        std::shared_ptr<Impl> pimpl;
+        std::unique_ptr<Impl> pimpl;
 };
 
 #endif /* SURFACE_ELEVATION_FROM_GRPC_HPP */
