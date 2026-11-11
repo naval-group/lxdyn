@@ -101,8 +101,9 @@ TEST_F(SurfaceElevationFromWavesTest, relative_wave_height)
     const double phi = 3.4482969340598712549;
 //! [SurfaceElevationFromWavesTest relative_wave_height example]
 //! [SurfaceElevationFromWavesTest relative_wave_height expected output]
-    for (double t = 0 ; t < 30 ; t+=0.1)
+    for (int i = 0 ; i < 300 ; ++i)
     {
+        const double t = 0.1*i;
         const ssc::kinematics::Point P("NED", a.random<double>(), a.random<double>(), a.random<double>());
         const std::vector<double> x{P.x()};
         const std::vector<double> y{P.y()};
@@ -123,8 +124,9 @@ TEST_F(SurfaceElevationFromWavesTest, dynamic_pressure)
     const double phi = 3.4482969340598712549;
 //! [SurfaceElevationFromWavesTest dynamic_pressure example]
 //! [SurfaceElevationFromWavesTest dynamic_pressure expected output]
-    for (double t = 0 ; t < 30 ; t+=0.1)
+    for (int i = 0 ; i < 300 ; ++i)
     {
+        const double t = 0.1*i;
 
         const ssc::kinematics::Point Q("NED", a.random<double>().between(-100, 100), a.random<double>().between(-100, 100), 6);
         ssc::kinematics::PointMatrix P(Q.v, "NED");

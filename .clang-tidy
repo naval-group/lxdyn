@@ -20,7 +20,6 @@ Checks:
   - '-bugprone-branch-clone'
   - '-bugprone-derived-method-shadowing-base-method'
   - '-bugprone-empty-catch'
-  - '-bugprone-float-loop-counter'
   - '-bugprone-forward-declaration-namespace'
   - '-bugprone-narrowing-conversions'
   - '-bugprone-signed-char-misuse'

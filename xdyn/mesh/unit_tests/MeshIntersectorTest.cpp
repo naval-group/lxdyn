@@ -720,8 +720,9 @@ TEST_F(MeshIntersectorTest, bug_in_centroid)
     auto C = intersector.center_of_mass_immersed();
     ASSERT_DOUBLE_EQ(0, C.volume);
 
-    for (double z0=0.1;z0<1;z0+=0.1)
+    for (int i=1;i<10;++i)
     {
+        const double z0 = 0.1*i;
         dz = get_L_immersions(z0);
         intersector.update_intersection_with_free_surface(dz,dz);
         auto C = intersector.center_of_mass_immersed();
