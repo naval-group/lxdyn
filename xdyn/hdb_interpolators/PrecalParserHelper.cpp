@@ -541,7 +541,6 @@ RAOAttributes analyze_rao_tokens(const std::vector<std::string>& tokens);
 RAOAttributes analyze_rao_tokens(const std::vector<std::string>& tokens)
 {
     RAOAttributes ret;
-    std::string token = "";
     size_t i = 0;
     std::string header = "";
     while (tokens[i] != ":" && i < tokens.size())
