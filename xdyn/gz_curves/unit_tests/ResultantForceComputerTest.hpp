@@ -20,7 +20,7 @@ class ResultantForceComputerTest : public ::testing::Test
         void SetUp() override;
         void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
-        static Sim sim;
+        Sim& sim;
 };
 
 #endif  /* RESULTANTFORCECOMPUTERTEST_HPP_ */

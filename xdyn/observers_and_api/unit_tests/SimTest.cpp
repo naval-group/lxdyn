@@ -33,7 +33,11 @@ constexpr double EPS = 1E-10;
 #define SQUARE(x) ((x)*(x))
 const double DEG = atan(1.)/45.;
 
-const VectorOfVectorOfPoints SimTest::test_ship_stl = test_ship();
+static const VectorOfVectorOfPoints& shared_test_ship_stl()
+{
+    static const VectorOfVectorOfPoints ret = test_ship();
+    return ret;
+}
 
 namespace
 {
@@ -43,7 +47,7 @@ namespace
     }
 }
 
-SimTest::SimTest() : a(ssc::random_data_generator::DataGenerator(42222))
+SimTest::SimTest() : a(ssc::random_data_generator::DataGenerator(42222)), test_ship_stl(shared_test_ship_stl())
 {
 }
 

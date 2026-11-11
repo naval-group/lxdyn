@@ -21,7 +21,7 @@ class BodyTest : public ::testing::Test
         void SetUp() override;
         void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
-        static const BodyPtr body;
+        const BodyPtr& body;
 };
 
 #endif  /* BODYTEST_HPP_ */

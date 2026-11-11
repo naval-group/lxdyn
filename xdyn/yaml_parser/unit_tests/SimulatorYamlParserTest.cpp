@@ -23,10 +23,19 @@
 
 using namespace testing; // So we can use 'ElementsAre' unqualified
 
-const YamlSimulatorInput SimulatorYamlParserTest::yaml = SimulatorYamlParser(test_data::full_example_with_propulsion()).parse();
-const YamlSimulatorInput SimulatorYamlParserTest::old_yaml = SimulatorYamlParser(test_data::full_example_with_propulsion_and_old_key_name()).parse();
+static const YamlSimulatorInput& shared_yaml()
+{
+    static const YamlSimulatorInput ret = SimulatorYamlParser(test_data::full_example_with_propulsion()).parse();
+    return ret;
+}
 
-SimulatorYamlParserTest::SimulatorYamlParserTest() : a(ssc::random_data_generator::DataGenerator(1212))
+static const YamlSimulatorInput& shared_old_yaml()
+{
+    static const YamlSimulatorInput ret = SimulatorYamlParser(test_data::full_example_with_propulsion_and_old_key_name()).parse();
+    return ret;
+}
+
+SimulatorYamlParserTest::SimulatorYamlParserTest() : a(ssc::random_data_generator::DataGenerator(1212)), yaml(shared_yaml()), old_yaml(shared_old_yaml())
 {
 }
 

@@ -17,9 +17,13 @@
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-const BodyPtr BodyBuilderTest::body = BodyBuilderTest::build_body();
+static const BodyPtr& shared_body()
+{
+    static const BodyPtr ret = BodyBuilderTest::build_body();
+    return ret;
+}
 
-BodyBuilderTest::BodyBuilderTest() : a(ssc::random_data_generator::DataGenerator(1218221))
+BodyBuilderTest::BodyBuilderTest() : a(ssc::random_data_generator::DataGenerator(1218221)), body(shared_body())
 {
 }
 

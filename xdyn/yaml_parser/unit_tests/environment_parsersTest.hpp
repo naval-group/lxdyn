@@ -21,7 +21,7 @@ class environment_parsersTest : public ::testing::Test
         void SetUp() override{}
         void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
-        static const YamlWaveModel yaml;
+        const YamlWaveModel& yaml;
 };
 
 class environment_parsers_from_list_of_rays_Test : public ::testing::Test
@@ -32,7 +32,7 @@ class environment_parsers_from_list_of_rays_Test : public ::testing::Test
         void SetUp() override{}
         void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
-        static const YamlWaveModel yaml;
+        const YamlWaveModel& yaml;
 };
 
 class environment_parsers_from_external_list_of_rays_Test : public ::testing::Test
