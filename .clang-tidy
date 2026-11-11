@@ -17,7 +17,6 @@ Checks:
   - '-performance-enum-size'                 # bytes saved per enum, not a defect
 
   # Off until their sites are fixed, each by the commit that turns it on.
-  - '-bugprone-derived-method-shadowing-base-method'
   - '-bugprone-forward-declaration-namespace'
   - '-bugprone-narrowing-conversions'
   - '-bugprone-signed-char-misuse'

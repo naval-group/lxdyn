@@ -45,10 +45,6 @@ void FastHydrostaticForceModel::calculations_after_surface_integration(const Bod
 }
 
 
-std::string FastHydrostaticForceModel::get_name() const
-{
-    return this->model_name();
-}
 
 EPoint FastHydrostaticForceModel::get_application_point(const FacetIterator& that_facet, const BodyStates&, const double) const
 {

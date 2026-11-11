@@ -141,7 +141,7 @@ void EverythingObserver::add(const std::function<void(Res&, const double)>& inse
     }
 }
 
-std::vector<Res> EverythingObserver::get() const
+std::vector<Res> EverythingObserver::get_res() const
 {
     return res;
 }

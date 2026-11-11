@@ -25,7 +25,6 @@ class FastHydrostaticForceModel : public ImmersedSurfaceForceModel
                                   const BodyStates& states,
                                   const double t
                                  ) const override;
-        std::string get_name() const;
         static std::string model_name();
         ssc::kinematics::Point get_centre_of_buoyancy() const;
 

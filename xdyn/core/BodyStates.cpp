@@ -72,12 +72,6 @@ states_filter(states_filter_)
 {
 }
 
-BodyStates& BodyStates::operator=(const AbstractStates<History>& rhs)
-{
-    AbstractStates<History>::operator=(rhs);
-    return *this;
-}
-
 ssc::kinematics::EulerAngles BodyStates::convert(const ssc::kinematics::RotationMatrix& R, const YamlRotation& rotations)
 {
     using namespace ssc::kinematics;

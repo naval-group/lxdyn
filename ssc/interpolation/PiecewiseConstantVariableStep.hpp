@@ -80,14 +80,6 @@ namespace ssc
                     return y_[(size_t)idx];
                 }
 
-                using Interpolator::df;
-                T df(const double x0, const size_t derivative_order)
-                {
-                    (void) x0;
-                    (void) derivative_order;
-                    return T();
-                }
-
                 double f(const double x0) override
                 {
                     update_coefficients_if_necessary(x0);
