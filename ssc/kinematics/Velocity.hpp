@@ -49,7 +49,7 @@ namespace ssc
                 inline double q() const {return omega.y();}
                 inline double r() const {return omega.z();}
 
-                void swap(Velocity& other);
+                void swap(Velocity& other) noexcept;
 
             private:
                 Velocity();
@@ -58,7 +58,7 @@ namespace ssc
                 AngularVelocityVector omega;
         };
 
-        void swap(Velocity& a, Velocity& b); // provide non-member for ADL
+        void swap(Velocity& a, Velocity& b) noexcept; // provide non-member for ADL
     }
 }
 

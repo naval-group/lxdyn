@@ -36,7 +36,7 @@ namespace ssc
                 Wrench(const Wrench& rhs);
 
                 Wrench& operator=(Wrench rhs);
-                void swap(Wrench& other);
+                void swap(Wrench& other) noexcept;
 
                 /**  \author cec
                  *  \date Apr 28, 2014, 3:40:27 PM

@@ -167,8 +167,8 @@ SplineVariableStep::SplineVariableStep() : VariableStepInterpolation(std::vector
 }
 
 SplineVariableStep::~SplineVariableStep() = default;
-SplineVariableStep::SplineVariableStep(SplineVariableStep&&) = default;
-SplineVariableStep& SplineVariableStep::operator=(SplineVariableStep&&) = default;
+SplineVariableStep::SplineVariableStep(SplineVariableStep&&) noexcept = default;
+SplineVariableStep& SplineVariableStep::operator=(SplineVariableStep&&) noexcept = default;
 
 SplineVariableStep::SplineVariableStep(const std::vector<double>& x, const std::vector<double>& y, const bool allow_queries_outside_bounds) :
         VariableStepInterpolation(sort(x), allow_queries_outside_bounds),

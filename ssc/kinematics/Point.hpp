@@ -46,7 +46,7 @@ namespace ssc
                 inline double z() const {return v[2];}
                 std::string get_frame() const;
 
-                void swap(Point& other);
+                void swap(Point& other) noexcept;
 
             private:
                 std::string frame;
@@ -54,7 +54,7 @@ namespace ssc
 
         std::ostream& operator<<(std::ostream& os, const Point& P);
 
-        void swap(Point& a, Point& b); // provide non-member for ADL
+        void swap(Point& a, Point& b) noexcept; // provide non-member for ADL
     }
 }
 

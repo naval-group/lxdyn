@@ -23,14 +23,14 @@ Point::Point(const std::string& frame_, const double x_, const double y_, const 
 {
 }
 
-void Point::swap(Point& other)
+void Point::swap(Point& other) noexcept
 {
     using std::swap; // Allow argument-dependent lookup
     v.swap(other.v);
     swap(frame, other.frame);
 }
 
-void ssc::kinematics::swap(Point& a, Point& b)
+void ssc::kinematics::swap(Point& a, Point& b) noexcept
 {
     a.swap(b);
 }

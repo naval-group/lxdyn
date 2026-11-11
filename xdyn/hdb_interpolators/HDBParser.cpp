@@ -625,8 +625,8 @@ HDBParser::~HDBParser()
 {
 }
 
-HDBParser::HDBParser(HDBParser&&) = default;
-HDBParser& HDBParser::operator=(HDBParser&&) = default;
+HDBParser::HDBParser(HDBParser&&) noexcept = default;
+HDBParser& HDBParser::operator=(HDBParser&&) noexcept = default;
 
 double HDBParser::get_forward_speed() const
 {
