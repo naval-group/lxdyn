@@ -57,7 +57,7 @@ Velocity Velocity::change_point(const Point& Q) const
     return Velocity(Q, vQ, omega);
 }
 
-void Velocity::swap(Velocity& other)
+void Velocity::swap(Velocity& other) noexcept
 {
     using std::swap; // For argument-dependent lookup (ADL): not strictly necessary here but good practice
     swap(P, other.P);
@@ -65,7 +65,7 @@ void Velocity::swap(Velocity& other)
     swap(omega, other.omega);
 }
 
-void ssc::kinematics::swap(Velocity& a, Velocity& b) // provide non-member for ADL
+void ssc::kinematics::swap(Velocity& a, Velocity& b) noexcept // provide non-member for ADL
 {
     a.swap(b);
 }

@@ -43,8 +43,8 @@ namespace ssc
                 SplineVariableStep();
                 SplineVariableStep(const std::vector<double>& x, const std::vector<double>& y, const bool allow_queries_outside_bounds = false);
                 ~SplineVariableStep() override;
-                SplineVariableStep(SplineVariableStep&&);
-                SplineVariableStep& operator=(SplineVariableStep&&);
+                SplineVariableStep(SplineVariableStep&&) noexcept;
+                SplineVariableStep& operator=(SplineVariableStep&&) noexcept;
 
             private:
                 double get_f() const override;

@@ -62,7 +62,7 @@ Wrench::Wrench(const Wrench& rhs) : force(rhs.force),
 {
 }
 
-void Wrench::swap(Wrench& other)
+void Wrench::swap(Wrench& other) noexcept
 {
     using std::swap; // Allow argument-dependent lookup
     force.swap(other.force);

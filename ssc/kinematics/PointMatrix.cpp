@@ -7,7 +7,7 @@ PointMatrix::PointMatrix() : m(Matrix3Xd()), frame("")
 {
 }
 
-PointMatrix::PointMatrix(PointMatrix&& other) : m(Matrix3Xd()), frame("")
+PointMatrix::PointMatrix(PointMatrix&& other) noexcept : m(Matrix3Xd()), frame("")
 {
     swap(other);
 }
@@ -31,7 +31,7 @@ PointMatrix& PointMatrix::operator=(PointMatrix other)
     return *this;
 }
 
-void PointMatrix::swap(PointMatrix& other)
+void PointMatrix::swap(PointMatrix& other) noexcept
 {
     m.swap(other.m);
     frame.swap(other.frame);
@@ -53,7 +53,7 @@ PointMatrix ssc::kinematics::operator+(const Point& P, const PointMatrix& M)
     return M+P;
 }
 
-void ssc::kinematics::swap(PointMatrix& one, PointMatrix& the_other)
+void ssc::kinematics::swap(PointMatrix& one, PointMatrix& the_other) noexcept
 {
     one.swap(the_other);
 }
