@@ -626,6 +626,7 @@ void H5_Tools::read(
     for (hsize_t i=0; i<dims_out[0];++i)
     {
         std::vector<std::vector<double> > tmp;
+        tmp.reserve(dims_out[1]);
         for (hsize_t j=0; j<dims_out[1]; ++j)
         {
             tmp.push_back(std::vector<double>(p + i *dims_out[1] * dims_out[2] + j * dims_out[2],

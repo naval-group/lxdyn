@@ -70,6 +70,7 @@ std::vector<std::vector<size_t> > convert_sets_to_vectors(const std::vector<std:
 std::vector<std::vector<size_t> > convert_sets_to_vectors(const std::vector<std::set<size_t> >& facets)
 {
     std::vector<std::vector<size_t> > ret;
+    ret.reserve(facets.size());
     for (const auto& facet : facets)
     {
         ret.push_back(std::vector<size_t>(facet.begin(), facet.end()));
@@ -127,6 +128,7 @@ std::vector<std::vector<size_t> > convert_to_original_indexes(const std::vector<
     for (const auto& v:idx_to_convert)
     {
         std::vector<size_t> l;
+        l.reserve(v.size());
         for (auto idx:v)
         {
             l.push_back(idx_of_relevant_edges[idx]);
@@ -542,6 +544,7 @@ ClosingFacetComputer::Contour ClosingFacetComputer::contour() const
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "Not getting the same contour when starting from two different extreme edges");
     }
     std::vector<size_t> contour_with_original_indexes;
+    contour_with_original_indexes.reserve(first_contour.edge_idx.size());
     for (const auto idx:first_contour.edge_idx) contour_with_original_indexes.push_back(original_edge_index[idx]);
     Contour ret;
     ret.edge_idx = contour_with_original_indexes;

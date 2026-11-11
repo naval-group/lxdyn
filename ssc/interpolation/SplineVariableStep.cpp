@@ -123,6 +123,7 @@ class SplineVariableStep::Impl
         void sort_xs(const std::vector<double>& x_, const std::vector<double>& y_)
         {
             std::vector<size_t> idx;
+            idx.reserve(n);
             for (size_t i = 0 ; i < n ; ++i) idx.push_back(i);
             std::sort(idx.begin(), idx.end(), [&x_](const size_t i, const size_t j)->bool{return x_[i] < x_[j];});
             for (size_t i = 0 ; i < n ; ++i)

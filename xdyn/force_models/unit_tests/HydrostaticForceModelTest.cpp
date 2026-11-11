@@ -215,8 +215,7 @@ TEST_F(HydrostaticForceModelTest, potential_energy_half_immersed_cube_fast)
 
     BodyStates states = get_body(BODY, unit_cube())->get_states();
     std::vector<double> x(13,0);
-    std::vector<double> dz;
-    for (size_t i = 0 ; i < 4 ; ++i) dz.push_back(0.5);
+    std::vector<double> dz(4, 0.5);
     for (size_t i = 0 ; i < 4 ; ++i) dz.push_back(-0.5);
     FastHydrostaticForceModel F(BODY, env);
     states.intersector->update_intersection_with_free_surface(dz,dz);
@@ -238,8 +237,7 @@ TEST_F(HydrostaticForceModelTest, potential_energy_half_immersed_cube_exact)
 
     BodyStates states = get_body(BODY, unit_cube())->get_states();
     std::vector<double> x(13,0);
-    std::vector<double> dz;
-    for (size_t i = 0 ; i < 4 ; ++i) dz.push_back(0.5);
+    std::vector<double> dz(4, 0.5);
     for (size_t i = 0 ; i < 4 ; ++i) dz.push_back(-0.5);
     states.intersector->update_intersection_with_free_surface(dz,dz);
 

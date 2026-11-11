@@ -46,6 +46,7 @@ bool Memoization::is_cached(const double t, const std::vector<double>& states, c
 Wrench Memoization::run_if_not_cached(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands)
 {
     std::vector<double> current_command_values;
+    current_command_values.reserve(commands.size());
     for (const auto& kv:commands)
     {
         current_command_values.push_back(kv.second);
