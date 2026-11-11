@@ -21,7 +21,7 @@ static volatile sig_atomic_t stop;
 
 #define ADDRESS "127.0.0.1"
 #define WEBSOCKET_ADDRESS "ws://" ADDRESS
-#define WEBSOCKET_PORT    1234
+constexpr int WEBSOCKET_PORT = 1234;
 #include <iostream>
 #include <string>
 #include <cstdio>

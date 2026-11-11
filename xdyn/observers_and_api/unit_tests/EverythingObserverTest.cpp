@@ -14,7 +14,6 @@
 #include "xdyn/yaml_parser/parse_output.hpp"
 #include <ssc/solver/steppers.hpp>
 
-#define EPS 1E-8
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI

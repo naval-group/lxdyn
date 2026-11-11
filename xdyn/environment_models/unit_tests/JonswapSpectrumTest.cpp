@@ -13,7 +13,7 @@
 #include <cmath>
 #define PI M_PI
 
-#define NB_TRIALS 10
+constexpr int NB_TRIALS = 10;
 
 JonswapSpectrumTest::JonswapSpectrumTest() : a(ssc::random_data_generator::DataGenerator(92224))
 {

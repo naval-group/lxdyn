@@ -15,9 +15,9 @@
 #include <memory>
 #define PI M_PI
 
-#define DEG2RAD (PI/180.)
+constexpr double DEG2RAD = PI/180.;
 
-#define EPS 1E-6
+constexpr double EPS = 1E-6;
 
 #define BODY "body 1"
 

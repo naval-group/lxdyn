@@ -1,8 +1,8 @@
 #ifndef DATAGENERATOR_HPP_
 #define DATAGENERATOR_HPP_
 
-#define GET_A_MIN_STRING_LENGTH 3
-#define GET_A_MAX_STRING_LENGTH 17
+constexpr int GET_A_MIN_STRING_LENGTH = 3;
+constexpr int GET_A_MAX_STRING_LENGTH = 17;
 
 #include <math.h> // For floor
 #include <stdlib.h> // For size_t

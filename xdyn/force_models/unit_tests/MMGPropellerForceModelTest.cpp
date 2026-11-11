@@ -15,7 +15,7 @@
 #include <memory>
 #define PI M_PI
 
-#define EPS 1E-6
+constexpr double EPS = 1E-6;
 
 #define BODY "body 1"
 

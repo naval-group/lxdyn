@@ -25,14 +25,13 @@
 
 #include <ssc/macros.hpp>
 
-#define EPS (1E-8)
+constexpr double EPS = 1E-8;
 
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
 
-#define ANTHINEAS_VOLUME 601.726637766
-#define ANTHINEAS_SURFACE 495.51109419742073214
+constexpr double ANTHINEAS_VOLUME = 601.726637766;
 
 ForceTests::ForceTests() : a(ssc::random_data_generator::DataGenerator(8222))
 {

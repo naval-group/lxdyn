@@ -13,7 +13,7 @@
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
-#define EPS (1E-6)
+constexpr double EPS = 1E-6;
 
 ClenshawCurtisTest::ClenshawCurtisTest() : a(ssc::random_data_generator::DataGenerator(54212))
 {

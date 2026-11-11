@@ -23,7 +23,7 @@ TEST_F(H5InterfaceTest, writeFileDescription)
     ASSERT_EQ(0,remove(fileName.c_str()));
 }
 
-#define MAX_NAME_LENGTH 32
+constexpr int MAX_NAME_LENGTH = 32;
 
 using PersonalInformation = struct {
     int age;

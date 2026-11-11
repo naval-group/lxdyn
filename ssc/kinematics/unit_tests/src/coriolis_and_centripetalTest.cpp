@@ -8,7 +8,7 @@
 #include "coriolis_and_centripetalTest.hpp"
 #include "ssc/kinematics/coriolis_and_centripetal.hpp"
 
-#define EPS 1E-13
+constexpr double EPS = 1E-13;
 
 using namespace ssc::kinematics;
 

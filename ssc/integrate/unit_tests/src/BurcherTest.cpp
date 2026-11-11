@@ -13,8 +13,8 @@
 #include <cmath>
 #define PI M_PI
 
-#define EPS1 (1E-6)
-#define EPS2 (1E-3)
+constexpr double EPS1 = 1E-6;
+constexpr double EPS2 = 1E-3;
 
 BurcherTest::BurcherTest() : a(ssc::random_data_generator::DataGenerator(212))
 {

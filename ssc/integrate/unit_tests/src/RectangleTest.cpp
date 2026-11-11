@@ -9,7 +9,7 @@
 #include "ssc/integrate/Rectangle.hpp"
 #include "ssc/macros/extra_test_assertions.hpp"
 #include "ssc/macros/test_macros.hpp"
-#define EPS 1E-3
+constexpr double EPS = 1E-3;
 
 RectangleTest::RectangleTest() : a(ssc::random_data_generator::DataGenerator(2122))
 {

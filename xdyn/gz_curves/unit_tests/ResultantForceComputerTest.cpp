@@ -17,8 +17,8 @@
 #include <set>
 
 #define PI M_PI
-#define EPS (1E-10)
-#define BIG_EPS (1E-5)
+constexpr double EPS = 1E-10;
+constexpr double BIG_EPS = 1E-5;
 
 Sim ResultantForceComputerTest::sim = GZ::make_sim(test_data::oscillating_cube_example(), test_data::cube());
 

@@ -11,15 +11,15 @@
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
 
-#define EPS 1E-2
-#define NB_TRIALS 100
+constexpr double EPS = 1E-2;
+constexpr int NB_TRIALS = 100;
 
 #define _USE_MATH_DEFINE
 #include <cmath>
 #include <memory>
 #define PI M_PI
 
-#define DEG2RAD (PI/180.)
+constexpr double DEG2RAD = PI/180.;
 
 #define BODY "body 1"
 

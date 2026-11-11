@@ -18,7 +18,7 @@
 #include <cmath>
 #define PI M_PI
 
-#define EPS (1E-10)
+constexpr double EPS = 1E-10;
 
 RadiationDampingBuilderTest::RadiationDampingBuilderTest() : a(ssc::random_data_generator::DataGenerator(212))
 {

@@ -7,7 +7,7 @@
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI
-#define DEG2RAD (PI/180.)
+constexpr double DEG2RAD = PI/180.;
 
 PrecalParser PrecalParser::from_string(const std::string& precal_file_contents)
 {

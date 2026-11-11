@@ -11,7 +11,7 @@
 #include "JSONSerializer.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include <ssc/macros.hpp>
-#define EPS 1E-8
+constexpr double EPS = 1E-8;
 
 XdynForMETest::XdynForMETest() : a(ssc::random_data_generator::DataGenerator(123456789))
 {

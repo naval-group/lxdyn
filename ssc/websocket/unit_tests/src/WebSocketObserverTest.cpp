@@ -8,7 +8,7 @@
 
 #define ADDRESS "127.0.0.1"
 #define WEBSOCKET_ADDRESS "ws://" ADDRESS
-#define WEBSOCKET_PORT    9002
+constexpr int WEBSOCKET_PORT = 9002;
 
 using namespace ssc::websocket;
 

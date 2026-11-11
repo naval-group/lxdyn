@@ -4,8 +4,8 @@
 #include <iomanip>
 #include <iostream>
 
-#define PRECISION 3
-#define WIDTH (PRECISION+6)
+constexpr int PRECISION = 3;
+constexpr int WIDTH = PRECISION+6;
 
 TsvObserver::TsvObserver(const std::string& filename) :
             Observer(),

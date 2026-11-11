@@ -13,7 +13,7 @@
 #include <ssc/macros.hpp>
 #include <ssc/kinematics.hpp>
 
-#define EPS 1E-6
+constexpr double EPS = 1E-6;
 
 #define _USE_MATH_DEFINE
 #include <cmath>

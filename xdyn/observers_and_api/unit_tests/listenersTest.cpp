@@ -14,7 +14,7 @@
 #include "xdyn/yaml_parser/parse_controllers.hpp"
 #include "xdyn/yaml_parser/parse_time_series.hpp"
 
-#define EPS (1E-14)
+constexpr double EPS = 1E-14;
 #define _USE_MATH_DEFINE
 #include <cmath>
 #define PI M_PI

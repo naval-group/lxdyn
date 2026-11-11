@@ -25,7 +25,7 @@ void SimpsonTest::TearDown()
 {
 }
 
-#define EPS 1E-6
+constexpr double EPS = 1E-6;
 
 TEST_F(SimpsonTest, should_be_able_to_integrate_x)
 {

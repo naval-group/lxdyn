@@ -11,7 +11,7 @@
 #include <cmath>
 #define PI M_PI
 
-#define RAD2DEG (180./PI)
+constexpr double RAD2DEG = 180./PI;
 
 ssc::kinematics::EulerAngles convert(const double qr, const double qi, const double qj, const double qk);
 ssc::kinematics::EulerAngles convert(const double qr, const double qi, const double qj, const double qk)

@@ -21,7 +21,7 @@
 #define PI M_PI
 #include <fstream>
 
-#define EPS 5E-2
+constexpr double EPS = 5E-2;
 
 RadiationDampingForceModelTest::RadiationDampingForceModelTest() : a(ssc::random_data_generator::DataGenerator(2121))
 {

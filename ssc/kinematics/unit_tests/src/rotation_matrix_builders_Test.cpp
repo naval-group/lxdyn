@@ -17,7 +17,7 @@
 #endif
 #define PI M_PI
 
-#define EPS (1E-10)
+constexpr double EPS = 1E-10;
 
 using namespace ssc::kinematics;
 

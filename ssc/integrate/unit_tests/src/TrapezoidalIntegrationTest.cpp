@@ -25,8 +25,8 @@ void TrapezoidalIntegrationTest::TearDown()
 {
 }
 
-#define EPS 1E-6
-#define NINT 20000
+constexpr double EPS = 1E-6;
+constexpr int NINT = 20000;
 TEST_F(TrapezoidalIntegrationTest, should_be_able_to_integrate_x)
 {
     for (size_t i = 0 ; i < 100 ; ++i)

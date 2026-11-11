@@ -12,7 +12,7 @@
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include <ssc/kinematics.hpp>
 
-#define EPS (1E-10)
+constexpr double EPS = 1E-10;
 
 update_kinematicsTests::update_kinematicsTests() : a(ssc::random_data_generator::DataGenerator(121))
 {

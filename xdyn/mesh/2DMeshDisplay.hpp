@@ -31,8 +31,8 @@ template <typename T> struct XY
     T y;
 };
 
-#define X_CANVAS_SIZE 30
-#define Y_CANVAS_SIZE 15
+constexpr int X_CANVAS_SIZE = 30;
+constexpr int Y_CANVAS_SIZE = 15;
 #define DOT_CHAR '*'
 #define POINT_CHAR 'X'
 
