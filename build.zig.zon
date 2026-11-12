@@ -1,6 +1,6 @@
 .{
     .name = .xdyn,
-    .version = "26.11.0",
+    .version = "26.11.1",
     .fingerprint = 0x94e6ba73c3e4ae6d,
     .minimum_zig_version = "0.17.0",
     .paths = .{
