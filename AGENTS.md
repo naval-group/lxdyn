@@ -20,7 +20,7 @@ mise run integration:grpc      # if you touched proto/ or xdyn_grpc/
 nix flake check                # what CI runs
 ```
 
-Run one test with `mise run zig:build && $(sh tools/build-dir.sh)/bin/run_all_tests --gtest_filter='Gravity*'`, or skip the long end-to-end ones with `--gtest_filter=-'*LONG*'`.
+Run one test with `mise run test -- --gtest_filter='Gravity*'`, or skip the long end-to-end ones with `--gtest_filter=-'*LONG*'`. The suites write their fixtures and outputs into the directory they run from, so never start `run_all_tests` from the repository root.
 
 ## Layout
 

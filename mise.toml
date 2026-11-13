@@ -81,6 +81,10 @@ run = """
 zig build -Ddebug --prefix "$(sh tools/build-dir.sh)-debug"
 """
 
+[tasks.test]
+description = "Run the native unit suites in their scratch directory: mise run test -- --gtest_filter='Gravity*'"
+run = "zig build test --"
+
 [tasks.build]
 description = "Build xdyn and run the native unit tests"
 depends = ["zig:build"]
