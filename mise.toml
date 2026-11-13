@@ -311,5 +311,5 @@ description = "Reformat the first-party C and C++ with the pinned clang-format"
 run = "sh tools/format.sh -i"
 
 [tasks.lint]
-description = "Check for tabs in the C and C++, and zig fmt the build files"
+description = "Check for tabs and clang-format in the C and C++, and zig fmt the build files"
 run = "sh tools/lint.sh"
