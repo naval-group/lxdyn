@@ -1,38 +1,41 @@
-#include <cstring>
-#include <string>
-#include <sstream>
-#include <cstdio>
+#include "xdyn/external_file_formats/stl_reader.hpp"
+
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
+#include <sstream>
+#include <string>
 
 #include "xdyn/exceptions/MeshException.hpp"
-#include "xdyn/external_file_formats/stl_reader.hpp"
 
 const int LINE_MAX_LENGTH = 256;
 const char TOKEN_vertex[] = "vertex";
 const char TOKEN_normal[] = "normal";
 
 struct ParserState;
-EPoint read_vertex(char *line, ParserState& state);
-void read_normal(char *line, Eigen::Vector3d& vertices, ParserState& state);
-VectorOfVectorOfPoints read_ascii_stl(std::istream& input_stream, ParserState &state);
+EPoint read_vertex(char* line, ParserState& state);
+void read_normal(char* line, Eigen::Vector3d& vertices, ParserState& state);
+VectorOfVectorOfPoints read_ascii_stl(std::istream& input_stream, ParserState& state);
 
 struct ParserState {
-    explicit ParserState(std::istream& istream):
-        input_stream(istream){}
+    explicit ParserState(std::istream& istream) : input_stream(istream) {}
 
-    std::string parse_error_string(const std::string &token){
+    std::string parse_error_string(const std::string& token)
+    {
         std::ostringstream ostr;
-        ostr << "Error parsing \""<< token;
+        ostr << "Error parsing \"" << token;
         return ostr.str();
     }
 
-    std::string error_unknown_string(const std::string &token){
+    std::string error_unknown_string(const std::string& token)
+    {
         std::ostringstream ostr;
-        ostr << "Error unknown token "<< token;
+        ostr << "Error unknown token " << token;
         return ostr.str();
     }
 
-    void get_line(char *line){
+    void get_line(char* line)
+    {
         input_stream.getline(line, LINE_MAX_LENGTH);
     }
 
@@ -42,33 +45,32 @@ struct ParserState {
 /**
  * \brief reads a vertex from a line
  */
-EPoint read_vertex(char *line, ParserState& state)
+EPoint read_vertex(char* line, ParserState& state)
 {
     EPoint ret;
     int width;
     char token[20] = "";
-    /*int res = */sscanf(line, "%s%n", token, &width);
-    if (strcmp(token, TOKEN_vertex) != 0)
-    {
+    /*int res = */ sscanf(line, "%s%n", token, &width);
+    if (strcmp(token, TOKEN_vertex) != 0) {
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_vertex));
     }
-    std::istringstream coordinates(line+width);
-    if (not(coordinates >> ret(0) >> ret(1) >> ret(2)))
-    {
+    std::istringstream coordinates(line + width);
+    if (not(coordinates >> ret(0) >> ret(1) >> ret(2))) {
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_vertex));
     }
     return ret;
 }
 
-void read_normal(char *line, Eigen::Vector3d& vertices, ParserState& state){
+void read_normal(char* line, Eigen::Vector3d& vertices, ParserState& state)
+{
     int width;
     char token[20];
-    /*int res = */sscanf(line, "%s%n", token, &width);
-    if (strcmp(token, TOKEN_normal) != 0){
+    /*int res = */ sscanf(line, "%s%n", token, &width);
+    if (strcmp(token, TOKEN_normal) != 0) {
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_normal));
     }
-    std::istringstream coordinates(line+width);
-    if (not(coordinates >> vertices(0) >> vertices(1) >> vertices(2))){
+    std::istringstream coordinates(line + width);
+    if (not(coordinates >> vertices(0) >> vertices(1) >> vertices(2))) {
         THROW(__PRETTY_FUNCTION__, MeshException, state.parse_error_string(TOKEN_normal));
     }
 }
@@ -77,14 +79,14 @@ void read_normal(char *line, Eigen::Vector3d& vertices, ParserState& state){
  * \brief reads the ASCII file from a char input stream
  */
 VectorOfVectorOfPoints read_ascii_stl(
-    std::istream& input_stream, //!<
-    ParserState &state)
+    std::istream& input_stream,  //!<
+    ParserState& state)
 {
     VectorOfVectorOfPoints result;
     bool endReached = false;
     char token[LINE_MAX_LENGTH];
-    int  width = 0;
-    char *next = nullptr;
+    int width = 0;
+    char* next = nullptr;
     char input[LINE_MAX_LENGTH];
     state.get_line(input);
     Eigen::Vector3d normal;
@@ -96,7 +98,8 @@ VectorOfVectorOfPoints read_ascii_stl(
 
         // Advance to the first nonspace character in INPUT.
         // 32==SPACE character
-        for (next = input; *next != '\0' && *next == 32; next++){}
+        for (next = input; *next != '\0' && *next == 32; next++) {
+        }
         // Skip blank lines and comments and linebreaks.
         if (*next == '\0' || *next == '#' || *next == '!' || *next == '$') {
             continue;
@@ -107,7 +110,7 @@ VectorOfVectorOfPoints read_ascii_stl(
         next = next + width;
         // FACET
         VectorOfPoints facet;
-        if (!strcmp(token, "facet")){
+        if (!strcmp(token, "facet")) {
             VectorOfPoints facet;
             // Get the XYZ coordinates of the normal vector to the face.
             read_normal(next, normal, state);
@@ -127,28 +130,29 @@ VectorOfVectorOfPoints read_ascii_stl(
             state.get_line(input);
             //
             result.push_back(facet);
-        } else if (!strcmp(token, "color") || !strcmp(token, "solid")) { // the colour and the object name are unused
-        } else if (!strcmp(token, "endsolid")){ // ENDSOLID
+        } else if (!strcmp(token, "color") || !strcmp(token, "solid")) {  // the colour and the
+                                                                          // object name are unused
+        } else if (!strcmp(token, "endsolid")) {                          // ENDSOLID
             endReached = true;
-        } else { // Unexpected or unrecognized.
+        } else {  // Unexpected or unrecognized.
             THROW(__PRETTY_FUNCTION__, MeshException, state.error_unknown_string(token));
         }
     }
-    if(!endReached){
-        THROW(__PRETTY_FUNCTION__, MeshException,
-                "The 'endsolid' keyword was not found before the end of file. "
-                 "The file may be damaged or is a binary STL format. "
-                 "A binary STL file must not have 'solid' keyword in header.");
+    if (!endReached) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            MeshException,
+            "The 'endsolid' keyword was not found before the end of file. "
+            "The file may be damaged or is a binary STL format. "
+            "A binary STL file must not have 'solid' keyword in header.");
     }
     return result;
 }
 
 VectorOfVectorOfPoints read_stl(const std::string& input)
 {
-    switch(identify_stl(input))
-    {
-        case StlType::ASCII:
-        {
+    switch (identify_stl(input)) {
+        case StlType::ASCII: {
             std::istringstream inputStream(input);
             ParserState state(inputStream);
             return read_ascii_stl(inputStream, state);
@@ -156,7 +160,10 @@ VectorOfVectorOfPoints read_stl(const std::string& input)
         case StlType::BINARY:
             return read_binary_stl(input);
         case StlType::UNKNOWN:
-            THROW(__PRETTY_FUNCTION__, MeshException, "Unable to identify the type of STL file (binary or ASCII)");
+            THROW(
+                __PRETTY_FUNCTION__,
+                MeshException,
+                "Unable to identify the type of STL file (binary or ASCII)");
     }
     return VectorOfVectorOfPoints();
 }
@@ -175,7 +182,9 @@ VectorOfVectorOfPoints read_stl(const std::string& input)
  *     UINT16    – Attribute byte count      -  2 bytes
  * end
  */
-VectorOfVectorOfPoints read_binary_stl(std::istream& stream) // Shamelessly copied from http://ravehgonen.wordpress.com/tag/stl-file-format/
+VectorOfVectorOfPoints read_binary_stl(
+    std::istream&
+        stream)  // Shamelessly copied from http://ravehgonen.wordpress.com/tag/stl-file-format/
 {
     char buffer[4] = {0};
     VectorOfVectorOfPoints ret;
@@ -185,32 +194,28 @@ VectorOfVectorOfPoints read_binary_stl(std::istream& stream) // Shamelessly copi
     unsigned int nFaces = 0;
     memcpy((void*)&nFaces, (void*)&buffer, sizeof(buffer));
 
-    float v[12]; // normal=3 + vertices=3*3 = 12
+    float v[12];  // normal=3 + vertices=3*3 = 12
 
     // Every Face is 50 Bytes: Normal(3*float), Vertices(9*float), 2 Bytes Spacer
-    for (size_t i=0; i<nFaces; ++i)
-    {
-        if (stream.good())
-        {
-            stream.ignore(12); // Ignore the normal (MeshBuilder recalculates it anyway)
-            for (size_t j=0; j<9; ++j)
-            {
+    for (size_t i = 0; i < nFaces; ++i) {
+        if (stream.good()) {
+            stream.ignore(12);  // Ignore the normal (MeshBuilder recalculates it anyway)
+            for (size_t j = 0; j < 9; ++j) {
                 // As per http://stackoverflow.com/a/12861635
-                for (size_t k = 0 ; k < sizeof buffer ; ++k)
-                {
+                for (size_t k = 0; k < sizeof buffer; ++k) {
                     char c;
                     stream.get(c);
-                    *(((char*)&(v[j])) + k) = c;//fgetc(buffer);
+                    *(((char*)&(v[j])) + k) = c;  // fgetc(buffer);
                 }
             }
-            stream.ignore(2); // Ignore separator
+            stream.ignore(2);  // Ignore separator
         }
 
-       VectorOfPoints t;
-       t.push_back(EPoint(v[0], v[1], v[2]));
-       t.push_back(EPoint(v[3], v[4], v[5]));
-       t.push_back(EPoint(v[6], v[7], v[8]));
-       ret.push_back(t);
+        VectorOfPoints t;
+        t.push_back(EPoint(v[0], v[1], v[2]));
+        t.push_back(EPoint(v[3], v[4], v[5]));
+        t.push_back(EPoint(v[6], v[7], v[8]));
+        ret.push_back(t);
     }
     return ret;
 }
@@ -223,8 +228,7 @@ VectorOfVectorOfPoints read_binary_stl(const std::string& input)
 
 std::ostream& operator<<(std::ostream& out, const StlType& stl_type)
 {
-    switch(stl_type)
-    {
+    switch (stl_type) {
         case StlType::ASCII:
             out << "ASCII";
             break;
@@ -245,8 +249,7 @@ int get_nb_of_triangles(const std::string& bytes)
     // triangular facets in the file" (cf. https://en.wikipedia.org/wiki/STL_(file_format))
     // Little endian: "A little-endian system [...] stores the least-significant byte at the
     // smallest address" (cf. https://en.wikipedia.org/wiki/Endianness)
-    if (bytes.size() < 84)
-    {
+    if (bytes.size() < 84) {
         return 0;
     }
 
@@ -262,9 +265,8 @@ bool file_size_is_a_valid_binary_stl_file_size(const std::string& input)
 {
     const size_t header_size = 80;
     const size_t nb_of_bytes_for_nb_of_triangles = 4;
-    const size_t expected_binary_stl_size = header_size +
-        + nb_of_bytes_for_nb_of_triangles
-        + 50 * static_cast<size_t>(get_nb_of_triangles(input));
+    const size_t expected_binary_stl_size = header_size + +nb_of_bytes_for_nb_of_triangles +
+                                            50 * static_cast<size_t>(get_nb_of_triangles(input));
     return input.size() == expected_binary_stl_size;
 }
 
@@ -272,27 +274,28 @@ StlType identify_stl(const std::string& input)
 {
     const size_t solid_pos = input.find("solid");
     const size_t endsolid_pos = input.find("endsolid", solid_pos);
-    if (solid_pos != std::string::npos)
-    {
-        if (endsolid_pos != std::string::npos)
-        {
-            if ((endsolid_pos < 80) && file_size_is_a_valid_binary_stl_file_size(input))
-            {
+    if (solid_pos != std::string::npos) {
+        if (endsolid_pos != std::string::npos) {
+            if ((endsolid_pos < 80) && file_size_is_a_valid_binary_stl_file_size(input)) {
                 return StlType::BINARY;
             }
             return StlType::ASCII;
         }
-        if (file_size_is_a_valid_binary_stl_file_size(input))
-        {
+        if (file_size_is_a_valid_binary_stl_file_size(input)) {
             return StlType::BINARY;
         }
-        THROW(__PRETTY_FUNCTION__, MeshException, "Unable to determine if mesh is a binary or an ASCII STL: file contained the 'solid' keyword, but not 'endsolid' (so it can't be an ASCII STL) and its size is not 84 + 50*n (where n is the number of triangles at bytes 81,82,83,84) so it can't be a binary STL either.");
+        THROW(
+            __PRETTY_FUNCTION__,
+            MeshException,
+            "Unable to determine if mesh is a binary or an ASCII STL: file contained the 'solid' keyword, but not 'endsolid' (so it can't be an ASCII STL) and its size is not 84 + 50*n (where n is the number of triangles at bytes 81,82,83,84) so it can't be a binary STL either.");
         return StlType::UNKNOWN;
     }
-    if (file_size_is_a_valid_binary_stl_file_size(input))
-    {
+    if (file_size_is_a_valid_binary_stl_file_size(input)) {
         return StlType::BINARY;
     }
-    THROW(__PRETTY_FUNCTION__, MeshException, "Unable to determine if mesh is a binary or an ASCII STL: file did not contain the 'solid' keyword (so it can't be an ASCII STL), and its size is not 84 + 50*n (where n is the number of triangles at bytes 81,82,83,84) so it can't be a binary STL either.");
+    THROW(
+        __PRETTY_FUNCTION__,
+        MeshException,
+        "Unable to determine if mesh is a binary or an ASCII STL: file did not contain the 'solid' keyword (so it can't be an ASCII STL), and its size is not 84 + 50*n (where n is the number of triangles at bytes 81,82,83,84) so it can't be a binary STL either.");
     return StlType::UNKNOWN;
 }

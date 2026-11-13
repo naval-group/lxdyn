@@ -5,24 +5,33 @@
  *      Author: mcharlou2016
  */
 #include "LogWindVelocityProfile.hpp"
-#include "xdyn/yaml_parser/parse_unit_value.hpp"
-#include "xdyn/yaml_parser/yaml_compat.h"
+
 #include <cmath>
 
+#include "xdyn/yaml_parser/parse_unit_value.hpp"
+#include "xdyn/yaml_parser/yaml_compat.h"
 
-LogWindVelocityProfile::LogWindVelocityProfile(const Input& input) : WindMeanVelocityProfile(input), z0(input.z0), z_ref(input.z_ref)
+LogWindVelocityProfile::LogWindVelocityProfile(const Input& input)
+    : WindMeanVelocityProfile(input), z0(input.z0), z_ref(input.z_ref)
 {
-    if(z_ref <= 0)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "the reference height must be strictly positive");
+    if (z_ref <= 0) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "the reference height must be strictly positive");
     }
-    if(z0 <= 0)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "the roughness length must be strictly positive");
+    if (z0 <= 0) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "the roughness length must be strictly positive");
     }
 }
 
-std::string LogWindVelocityProfile::model_name() {return "log wind profile";}
+std::string LogWindVelocityProfile::model_name()
+{
+    return "log wind profile";
+}
 
 LogWindVelocityProfile::Input LogWindVelocityProfile::parse(const std::string& yaml_input)
 {
@@ -36,6 +45,8 @@ LogWindVelocityProfile::Input LogWindVelocityProfile::parse(const std::string& y
 double LogWindVelocityProfile::get_wind_velocity(const double z) const
 {
     // -z because the NED frame has negative z above sea level
-    if(z <= 0) return velocity * std::log(-z / z0) / std::log(z_ref / z0);
-    else return 0.;
+    if (z <= 0)
+        return velocity * std::log(-z / z0) / std::log(z_ref / z0);
+    else
+        return 0.;
 }

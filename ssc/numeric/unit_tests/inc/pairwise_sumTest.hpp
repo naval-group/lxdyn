@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class pairwise_sumTest : public ::testing::Test
-{
-    protected:
-        pairwise_sumTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class pairwise_sumTest : public ::testing::Test {
+protected:
+    pairwise_sumTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* PAIRWISE_SUMTEST_HPP_ */
+#endif /* PAIRWISE_SUMTEST_HPP_ */

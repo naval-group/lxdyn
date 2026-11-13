@@ -12,10 +12,10 @@
 
 #include "xdyn/environment_models/WindModel.hpp"
 
-class DefaultWindModel : public WindModel
-{
+class DefaultWindModel : public WindModel {
 public:
-    explicit DefaultWindModel(int); // Constructor argument is a dummy in order to be able to call DefaultWindModel(DefaultWindModel::parse(...)) from parser
+    explicit DefaultWindModel(int);  // Constructor argument is a dummy in order to be able to call
+                                     // DefaultWindModel(DefaultWindModel::parse(...)) from parser
 
     Eigen::Vector3d get_wind(const Eigen::Vector3d& position, const double t) const override;
 

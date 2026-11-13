@@ -8,29 +8,25 @@
 #ifndef ENVIRONMENT_PARSERSTEST_HPP_
 #define ENVIRONMENT_PARSERSTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
+#include "gtest/gtest.h"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 
-class environment_parsersTest : public ::testing::Test
-{
-    protected:
-        environment_parsersTest();
-        ssc::random_data_generator::DataGenerator a;
-        const YamlWaveModel& yaml;
+class environment_parsersTest : public ::testing::Test {
+protected:
+    environment_parsersTest();
+    ssc::random_data_generator::DataGenerator a;
+    const YamlWaveModel& yaml;
 };
 
-class environment_parsers_from_list_of_rays_Test : public ::testing::Test
-{
-    protected:
-        environment_parsers_from_list_of_rays_Test();
-        ssc::random_data_generator::DataGenerator a;
-        const YamlWaveModel& yaml;
+class environment_parsers_from_list_of_rays_Test : public ::testing::Test {
+protected:
+    environment_parsers_from_list_of_rays_Test();
+    ssc::random_data_generator::DataGenerator a;
+    const YamlWaveModel& yaml;
 };
 
-class environment_parsers_from_external_list_of_rays_Test : public ::testing::Test
-{
-};
+class environment_parsers_from_external_list_of_rays_Test : public ::testing::Test {};
 
-#endif  /* ENVIRONMENT_PARSERSTEST_HPP_ */
+#endif /* ENVIRONMENT_PARSERSTEST_HPP_ */

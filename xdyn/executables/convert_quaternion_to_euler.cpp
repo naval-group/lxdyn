@@ -5,28 +5,30 @@
  *      Author: cady
  */
 
-#include <ssc/kinematics.hpp>
-#include <iostream>
 #include <cmath>
+#include <iostream>
+#include <ssc/kinematics.hpp>
 #include <string>
 #define PI M_PI
 
-constexpr double RAD2DEG = 180./PI;
+constexpr double RAD2DEG = 180. / PI;
 
-ssc::kinematics::EulerAngles convert(const double qr, const double qi, const double qj, const double qk);
-ssc::kinematics::EulerAngles convert(const double qr, const double qi, const double qj, const double qk)
+ssc::kinematics::EulerAngles
+convert(const double qr, const double qi, const double qj, const double qk);
+ssc::kinematics::EulerAngles
+convert(const double qr, const double qi, const double qj, const double qk)
 {
     using namespace ssc::kinematics;
-    Eigen::Quaternion<double> quat(qr,qi,qj,qk);
+    Eigen::Quaternion<double> quat(qr, qi, qj, qk);
     const RotationMatrix R = quat.toRotationMatrix();
     return ssc::kinematics::euler_angles<INTRINSIC, CHANGING_ANGLE_ORDER, 3, 2, 1>(R);
 }
 
 int main(int argc, char** argv)
 {
-    if (argc != 5)
-    {
-        std::cerr << "Need exactly 4 arguments (qr, qi, qj, qk): received " << argc-1 << std::endl;
+    if (argc != 5) {
+        std::cerr << "Need exactly 4 arguments (qr, qi, qj, qk): received " << argc - 1
+                  << std::endl;
         return 1;
     }
 
@@ -37,8 +39,8 @@ int main(int argc, char** argv)
 
     const ssc::kinematics::EulerAngles angles = convert(qr, qi, qj, qk);
 
-    std::cout << "phi: "   << angles.phi*RAD2DEG << std::endl
-              << "theta: " << angles.theta*RAD2DEG << std::endl
-              << "psi: "   << angles.psi*RAD2DEG << std::endl;
+    std::cout << "phi: " << angles.phi * RAD2DEG << std::endl
+              << "theta: " << angles.theta * RAD2DEG << std::endl
+              << "psi: " << angles.psi * RAD2DEG << std::endl;
     return 0;
 }

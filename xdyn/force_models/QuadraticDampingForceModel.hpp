@@ -12,17 +12,21 @@ struct EnvironmentAndFrames;
 
 #include "DampingForceModel.hpp"
 
-class QuadraticDampingForceModel : public DampingForceModel
-{
-    public:
-        using Input = Eigen::Matrix<double,6,6>;
-        QuadraticDampingForceModel(const Input& D, const std::string& body_name, const EnvironmentAndFrames& env);
-        static Input parse(const std::string& yaml);
-        static std::string model_name();
+class QuadraticDampingForceModel : public DampingForceModel {
+public:
+    using Input = Eigen::Matrix<double, 6, 6>;
+    QuadraticDampingForceModel(
+        const Input& D,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    static Input parse(const std::string& yaml);
+    static std::string model_name();
 
-    private:
-        QuadraticDampingForceModel();
-        Eigen::Matrix<double, 6, 1> get_force_and_torque(const Eigen::Matrix<double,6,6>& D, const Eigen::Matrix<double, 6, 1>& W) const override;
+private:
+    QuadraticDampingForceModel();
+    Eigen::Matrix<double, 6, 1> get_force_and_torque(
+        const Eigen::Matrix<double, 6, 6>& D,
+        const Eigen::Matrix<double, 6, 1>& W) const override;
 };
 
 #endif /* QuadraticDampingForceModel_HPP_ */

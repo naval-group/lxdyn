@@ -3,10 +3,11 @@
 
 #include "SimulationServerObserver.hpp"
 
-class CoSimulationObserver : public SimulationServerObserver
-{
+class CoSimulationObserver : public SimulationServerObserver {
 public:
-    CoSimulationObserver(const std::vector<std::string>& extra_fields_to_serialize, const std::string& body_name);
+    CoSimulationObserver(
+        const std::vector<std::string>& extra_fields_to_serialize,
+        const std::string& body_name);
 
 private:
     using Observer::get_serializer;

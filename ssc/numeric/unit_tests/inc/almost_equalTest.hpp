@@ -11,16 +11,14 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class almost_equalTest : public ::testing::Test
-{
-    protected:
-        almost_equalTest();
-        ssc::random_data_generator::DataGenerator a;
-        double one_ULP_less(const double x) const;
-        double one_ULP_more(const double x) const;
-        double five_ULP_less(double x) const;
-        double five_ULP_more(double x) const;
-
+class almost_equalTest : public ::testing::Test {
+protected:
+    almost_equalTest();
+    ssc::random_data_generator::DataGenerator a;
+    double one_ULP_less(const double x) const;
+    double one_ULP_more(const double x) const;
+    double five_ULP_less(double x) const;
+    double five_ULP_more(double x) const;
 };
 
-#endif  /* ALMOST_EQUALTEST_HPP_ */
+#endif /* ALMOST_EQUALTEST_HPP_ */

@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef ENV_FOR_TESTS_HPP_
 #define ENV_FOR_TESTS_HPP_
 
@@ -17,4 +16,4 @@ class WaveModel;
 
 EnvironmentAndFrames get_environment_and_frames(const std::shared_ptr<WaveModel>& wave_model);
 
-#endif  /* ENV_FOR_TESTS_HPP_ */
+#endif /* ENV_FOR_TESTS_HPP_ */

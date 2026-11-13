@@ -8,8 +8,8 @@
 #ifndef RadiationDampingForceModel_HPP_
 #define RadiationDampingForceModel_HPP_
 
-#include <ssc/macros.hpp>
 #include <memory>
+#include <ssc/macros.hpp>
 
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/external_data_structures/YamlRadiationDamping.hpp"
@@ -18,26 +18,30 @@ class HydroDBParser;
 
 struct EnvironmentAndFrames;
 
-class RadiationDampingForceModel : public ForceModel
-{
-    public:
-        struct Input
-        {
-            std::shared_ptr<HydroDBParser> parser;
-            YamlRadiationDamping yaml;
-        };
-        RadiationDampingForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        ~RadiationDampingForceModel() override;
-        Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
-        static Input parse(const std::string& yaml, const bool parse_hdb=true);
-        static std::string model_name();
-        double get_Tmax() const override;
+class RadiationDampingForceModel : public ForceModel {
+public:
+    struct Input {
+        std::shared_ptr<HydroDBParser> parser;
+        YamlRadiationDamping yaml;
+    };
+    RadiationDampingForceModel(
+        const Input& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    ~RadiationDampingForceModel() override;
+    Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const override;
+    static Input parse(const std::string& yaml, const bool parse_hdb = true);
+    static std::string model_name();
+    double get_Tmax() const override;
 
-    private:
-        RadiationDampingForceModel();
-        class Impl;
-        std::unique_ptr<Impl> pimpl;
-
+private:
+    RadiationDampingForceModel();
+    class Impl;
+    std::unique_ptr<Impl> pimpl;
 };
 
 #endif /* RadiationDampingForceModel_HPP_ */

@@ -19,28 +19,26 @@
  *  \section ex2 Expected output
  *  \snippet integrate/unit_tests/src/QuadPackTest.cpp QuadPackTest expected output
  */
-namespace ssc
+namespace ssc {
+namespace integrate {
+class QuadPack : public Integrator {
+public:
+    QuadPack() = default;
+    explicit QuadPack(const Function& f_);
+    double op(double* x);
+
+protected:
+    void throw_any_errors(const int error_code) const;
+};
+
+template <typename T>
+double integrand(void* obj, double* x)
 {
-    namespace integrate
-    {
-        class QuadPack : public Integrator
-        {
-            public:
-                QuadPack() = default;
-                explicit QuadPack(const Function& f_);
-                double op(double *x);
-
-            protected:
-                void throw_any_errors(const int error_code) const;
-        };
-
-        template <typename T> double integrand(void* obj, double* x)
-        {
-            T* qpi = (T*)(obj);
-            const double ret = qpi->op(x);
-            return ret;
-        }
-    }
+    T* qpi = (T*)(obj);
+    const double ret = qpi->op(x);
+    return ret;
 }
+}  // namespace integrate
+}  // namespace ssc
 
 #endif /* QUADPACK_HPP_ */

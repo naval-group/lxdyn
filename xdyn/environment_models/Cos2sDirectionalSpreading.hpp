@@ -12,28 +12,29 @@
 
 /** \ingroup wave_models
  *  \section ex1 Example
- *  \snippet environment_models/unit_tests/Cos2sDirectionalSpreadingTest.cpp Cos2sDirectionalSpreadingTest example
+ *  \snippet environment_models/unit_tests/Cos2sDirectionalSpreadingTest.cpp
+ * Cos2sDirectionalSpreadingTest example
  *  \section ex2 Expected output
- *  \snippet environment_models/unit_tests/Cos2sDirectionalSpreadingTest.cpp Cos2sDirectionalSpreadingTest expected output
- *  \see "Hydrodynamique navale : théorie et modèles", 2009, Alain Bovis, Les Presses de l'ENSTA, page 131
+ *  \snippet environment_models/unit_tests/Cos2sDirectionalSpreadingTest.cpp
+ * Cos2sDirectionalSpreadingTest expected output
+ *  \see "Hydrodynamique navale : théorie et modèles", 2009, Alain Bovis, Les Presses de l'ENSTA,
+ * page 131
  */
-class Cos2sDirectionalSpreading : public WaveDirectionalSpreading
-{
-    public:
-        Cos2sDirectionalSpreading(const double psi0, const double s);
+class Cos2sDirectionalSpreading : public WaveDirectionalSpreading {
+public:
+    Cos2sDirectionalSpreading(const double psi0, const double s);
 
-        /**  \brief Wave density by direction.
-          *  \returns Density (between 0 and 1, no unit)
-          */
-        double operator()(const double psi //!< Primary wave direction in radians.
-                         ) const override;
+    /**  \brief Wave density by direction.
+     *  \returns Density (between 0 and 1, no unit)
+     */
+    double operator()(const double psi  //!< Primary wave direction in radians.
+    ) const override;
 
-        WaveDirectionalSpreading* clone() const override;
+    WaveDirectionalSpreading* clone() const override;
 
-
-    private:
-        double s;
-        double Fs{0};
+private:
+    double s;
+    double Fs{0};
 };
 
 #endif /* COS2SDIRECTIONALSPREADING_HPP_ */

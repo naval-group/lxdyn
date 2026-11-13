@@ -2,10 +2,10 @@
 #define PARSE_ADDRESS_HPP_
 
 #include <string>
+
 #include "xdyn/external_data_structures/YamlOutput.hpp"
 
-struct WebsocketURLElements
-{
+struct WebsocketURLElements {
     explicit WebsocketURLElements(const std::string& url);
     std::string protocol;
     std::string domain;

@@ -8,15 +8,14 @@
 #ifndef JONSWAPSPECTRUMTEST_HPP_
 #define JONSWAPSPECTRUMTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class JonswapSpectrumTest : public ::testing::Test
-{
-    protected:
-        JonswapSpectrumTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class JonswapSpectrumTest : public ::testing::Test {
+protected:
+    JonswapSpectrumTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* JONSWAPSPECTRUMTEST_HPP_ */
+#endif /* JONSWAPSPECTRUMTEST_HPP_ */

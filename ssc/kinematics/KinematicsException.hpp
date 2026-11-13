@@ -10,19 +10,20 @@
 
 #include "ssc/exception_handling/Exception.hpp"
 
-namespace ssc
-{
-    namespace kinematics
+namespace ssc {
+namespace kinematics {
+class KinematicsException : public ::ssc::exception_handling::Exception {
+public:
+    KinematicsException(
+        const std::string& message,
+        const std::string& file,
+        const std::string& function,
+        const unsigned int line)
+        : Exception(message, file, function, line)
     {
-        class KinematicsException: public ::ssc::exception_handling::Exception
-        {
-            public:
-                KinematicsException(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) :
-                    Exception(message, file, function, line)
-                {
-                }
-        };
     }
-}
+};
+}  // namespace kinematics
+}  // namespace ssc
 
 #endif /* KINEMATICSEXCEPTION_HPP_ */

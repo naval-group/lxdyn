@@ -8,14 +8,14 @@
 #ifndef LISTENERSTEST_HPP_
 #define LISTENERSTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class listenersTest : public ::testing::Test
-{
-    protected:
-        listenersTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class listenersTest : public ::testing::Test {
+protected:
+    listenersTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* LISTENERSTEST_HPP_ */
+#endif /* LISTENERSTEST_HPP_ */

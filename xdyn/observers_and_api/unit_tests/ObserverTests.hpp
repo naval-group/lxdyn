@@ -8,14 +8,14 @@
 #ifndef OBSERVERTESTS_HPP_
 #define OBSERVERTESTS_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class ObserverTests : public ::testing::Test
-{
-    protected:
-        ObserverTests();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class ObserverTests : public ::testing::Test {
+protected:
+    ObserverTests();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* OBSERVERTESTS_HPP_ */
+#endif /* OBSERVERTESTS_HPP_ */

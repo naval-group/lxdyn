@@ -6,16 +6,15 @@
  */
 
 #include <ssc/random_data_generator.hpp>
+
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 
-namespace ssc
+namespace ssc {
+namespace random_data_generator {
+template <>
+EPoint TypedScalarDataGenerator<EPoint>::get() const
 {
-    namespace random_data_generator
-    {
-        template <>
-        EPoint TypedScalarDataGenerator<EPoint>::get() const
-        {
-            return EPoint(random<double>(),random<double>(),random<double>());
-        }
-    }
+    return EPoint(random<double>(), random<double>(), random<double>());
 }
+}  // namespace random_data_generator
+}  // namespace ssc

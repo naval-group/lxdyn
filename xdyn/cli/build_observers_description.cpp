@@ -1,4 +1,5 @@
 #include "build_observers_description.hpp"
+
 #include "XdynCommandLineArguments.hpp"
 #include "xdyn/core/Sim.hpp"
 #include "xdyn/external_file_formats/stl_io_hdf5.hpp"
@@ -19,41 +20,39 @@ void add_wave_spectra(ObserverPtr& observer, const Sim& sys)
 {
     const auto env = sys.get_env();
     const auto w = env.w;
-    if (w)
-    {
+    if (w) {
         w->serialize_wave_spectra_before_simulation(observer);
     }
 }
-
 
 std::string serialize_command(const XdynCommandLineArguments& inputData)
 {
     std::stringstream s;
     s << "xdyn ";
-    if (not inputData.yaml_filenames.empty()) s << "-y ";
-    for (const auto& f:inputData.yaml_filenames)
-    {
+    if (not inputData.yaml_filenames.empty())
+        s << "-y ";
+    for (const auto& f : inputData.yaml_filenames) {
         s << f << " ";
     }
-    s << " --tstart " << inputData.tstart<<" ";
-    s << " --tend " << inputData.tend<<" ";
-    s << " --dt " << inputData.initial_timestep<<" ";
-    s << " --solver "<<inputData.solver;
-    if (not(inputData.output_filename.empty()))
-    {
+    s << " --tstart " << inputData.tstart << " ";
+    s << " --tend " << inputData.tend << " ";
+    s << " --dt " << inputData.initial_timestep << " ";
+    s << " --solver " << inputData.solver;
+    if (not(inputData.output_filename.empty())) {
         s << " -o " << inputData.output_filename;
     }
-    if (not(inputData.wave_output.empty()))
-    {
+    if (not(inputData.wave_output.empty())) {
         s << " -w " << inputData.wave_output;
     }
     return s.str();
 }
 
-void add_observer_from_cli_dash_o_option(const XdynCommandLineArguments& input_data, ListOfObservers& out);
 void add_observer_from_cli_dash_o_option(
-        const XdynCommandLineArguments& input_data,
-        ListOfObservers& out)
+    const XdynCommandLineArguments& input_data,
+    ListOfObservers& out);
+void add_observer_from_cli_dash_o_option(
+    const XdynCommandLineArguments& input_data,
+    ListOfObservers& out)
 {
     YamlOutput description = build_YamlOutput_from_filename(input_data.output_filename);
     description.full_output = true;
@@ -68,17 +67,14 @@ void add_observer_from_cli_dash_o_option(
     out.add_observer(observer);
 }
 
-void add_observers_from_cli(
-        const XdynCommandLineArguments& input_data,
-        ListOfObservers& out)
+void add_observers_from_cli(const XdynCommandLineArguments& input_data, ListOfObservers& out)
 {
-    if (not(input_data.output_filename.empty()))
-    {
+    if (not(input_data.output_filename.empty())) {
         add_observer_from_cli_dash_o_option(input_data, out);
     }
-    if (not(input_data.wave_output.empty()))
-    {
-        auto wave_observer = ListOfObservers::parse_observer(create_wave_observer_description(input_data));
+    if (not(input_data.wave_output.empty())) {
+        auto wave_observer =
+            ListOfObservers::parse_observer(create_wave_observer_description(input_data));
         out.add_observer(wave_observer);
     }
 }

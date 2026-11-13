@@ -1,74 +1,76 @@
 #ifndef XDYN_WRAPPER_FMI_MODEL_HPP
 #define XDYN_WRAPPER_FMI_MODEL_HPP
 
-#include "xdyn/core/AssetPath.hpp"
-
 #include <array>
 #include <mutex>
 #include <string>
 #include <vector>
 
-namespace xdyn_fmu
+#include "xdyn/core/AssetPath.hpp"
+
+namespace xdyn_fmu {
+// Value references, the contract between modelDescription.xml and the fmi2* functions.
+constexpr unsigned VR_STATE = 1;          // x y z u v w p q r qr qi qj qk
+constexpr unsigned VR_EULER = 14;         // phi theta psi
+constexpr unsigned VR_DT = 100;           // xdyn's integration step
+constexpr unsigned VR_SOLVER = 101;       // Enumeration xdyn.Solver, read as an Integer
+constexpr unsigned VR_ENVIRONMENT = 102;  // String: "environment models" replacing the model's
+constexpr unsigned VR_RESET = 200;        // Boolean
+constexpr unsigned VR_RESET_STATE = 201;  // 13 states
+constexpr unsigned VR_DERIVATIVE = 300;   // der(x) ... der(qk), with Model Exchange
+constexpr unsigned VR_COMMAND = 1000;     // the model's commands, body by body, force by force
+
+// xdyn's solvers, in the order of the xdyn.Solver enumeration: solver k is item k + 1.
+const std::vector<std::string>& solvers();
+
+// A command input: xdyn's name for it, e.g. propeller(rpm), and the FMU's,
+// TestShip.propeller.rpm.
+struct Command {
+    std::string xdyn_name;
+    std::string name;
+    double value = 0;  // the YAML's own value, 0 where it has none
+};
+
+// What the FMU needs to know about a model before simulating it.
+struct Model {
+    std::string body;
+    std::string rotations;  // the YAML's rotations convention, e.g. [psi, theta', phi'']
+    std::vector<Command> commands;
+    std::array<double, 13> state{};
+    std::array<double, 3> euler{};  // phi, theta, psi of the initial state
+    // Why the FMU cannot offer Model Exchange for this model, empty when it can.
+    std::string no_model_exchange;
+};
+
+std::mutex& assets_root_mutex();
+
+// Calls f with xdyn's asset root set to `assets_root`, the directory a YAML's relative paths
+// start from. The root is process-wide in xdyn and read while a model is built, so instances
+// built in parallel take turns; none is left set behind.
+template <typename F>
+auto with_assets_root(const std::string& assets_root, F f) -> decltype(f())
 {
-    // Value references, the contract between modelDescription.xml and the fmi2* functions.
-    constexpr unsigned VR_STATE = 1;         // x y z u v w p q r qr qi qj qk
-    constexpr unsigned VR_EULER = 14;        // phi theta psi
-    constexpr unsigned VR_DT = 100;          // xdyn's integration step
-    constexpr unsigned VR_SOLVER = 101;      // Enumeration xdyn.Solver, read as an Integer
-    constexpr unsigned VR_ENVIRONMENT = 102; // String: "environment models" replacing the model's
-    constexpr unsigned VR_RESET = 200;       // Boolean
-    constexpr unsigned VR_RESET_STATE = 201; // 13 states
-    constexpr unsigned VR_DERIVATIVE = 300;  // der(x) ... der(qk), with Model Exchange
-    constexpr unsigned VR_COMMAND = 1000;    // the model's commands, body by body, force by force
-
-    // xdyn's solvers, in the order of the xdyn.Solver enumeration: solver k is item k + 1.
-    const std::vector<std::string>& solvers();
-
-    // A command input: xdyn's name for it, e.g. propeller(rpm), and the FMU's,
-    // TestShip.propeller.rpm.
-    struct Command
-    {
-        std::string xdyn_name;
-        std::string name;
-        double value = 0; // the YAML's own value, 0 where it has none
-    };
-
-    // What the FMU needs to know about a model before simulating it.
-    struct Model
-    {
-        std::string body;
-        std::string rotations; // the YAML's rotations convention, e.g. [psi, theta', phi'']
-        std::vector<Command> commands;
-        std::array<double, 13> state{};
-        std::array<double, 3> euler{}; // phi, theta, psi of the initial state
-        // Why the FMU cannot offer Model Exchange for this model, empty when it can.
-        std::string no_model_exchange;
-    };
-
-    std::mutex& assets_root_mutex();
-
-    // Calls f with xdyn's asset root set to `assets_root`, the directory a YAML's relative paths
-    // start from. The root is process-wide in xdyn and read while a model is built, so instances
-    // built in parallel take turns; none is left set behind.
-    template <typename F>
-    auto with_assets_root(const std::string& assets_root, F f) -> decltype(f())
-    {
-        std::lock_guard<std::mutex> lock(assets_root_mutex());
-        struct Restore
+    std::lock_guard<std::mutex> lock(assets_root_mutex());
+    struct Restore {
+        ~Restore()
         {
-            ~Restore() { xdyn::set_assets_root(""); }
-        } restore;
-        xdyn::set_assets_root(assets_root);
-        return f();
-    }
+            xdyn::set_assets_root("");
+        }
+    } restore;
+    xdyn::set_assets_root(assets_root);
+    return f();
+}
 
-    Model read_model(const std::string& yaml, const std::string& assets_root);
+Model read_model(const std::string& yaml, const std::string& assets_root);
 
-    // `yaml` with its "environment models" replaced by `environment`, a YAML list (xdyn.environment).
-    std::string with_environment(const std::string& yaml, const std::string& environment);
+// `yaml` with its "environment models" replaced by `environment`, a YAML list (xdyn.environment).
+std::string with_environment(const std::string& yaml, const std::string& environment);
 
-    std::string model_description(const Model& model, const std::string& model_name, double dt,
-                                  const std::string& solver);
-} // namespace xdyn_fmu
+std::string model_description(
+    const Model& model,
+    const std::string& model_name,
+    double dt,
+    const std::string& solver);
+}  // namespace xdyn_fmu
 
 #endif

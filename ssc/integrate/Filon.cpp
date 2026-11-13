@@ -10,29 +10,38 @@
 #include <cmath>
 #define PI M_PI
 
-ssc::integrate::Filon::Filon() :  tau(0)
-{
+ssc::integrate::Filon::Filon() : tau(0) {}
 
-}
+ssc::integrate::Filon::Filon(const Function& f_) : QuadPack(f_), tau(0) {}
 
-ssc::integrate::Filon::Filon(const Function& f_) : QuadPack(f_), tau(0)
-{
-}
+ssc::integrate::Filon::Filon(const Function& f_, const double tau_) : QuadPack(f_), tau(tau_) {}
 
-ssc::integrate::Filon::Filon(const Function& f_, const double tau_) : QuadPack(f_), tau(tau_)
-{
-}
-
-double ssc::integrate::Filon::compute_for(const double tau_, const double a, const double b, const double eps)
+double ssc::integrate::Filon::compute_for(
+    const double tau_,
+    const double a,
+    const double b,
+    const double eps)
 {
     tau = tau_;
     return integrate_impl(f, a, b, eps);
 }
 
-extern "C" int filon(double f(void*,double*), void *obj, double *a, double *b, double *
-        fpa, double *fpb, double *fba, double *fbb, double *w,
-        double *eps, int *maxh, int *lc, int *ls, double
-        *c, double *s);
+extern "C" int filon(
+    double f(void*, double*),
+    void* obj,
+    double* a,
+    double* b,
+    double* fpa,
+    double* fpb,
+    double* fba,
+    double* fbb,
+    double* w,
+    double* eps,
+    int* maxh,
+    int* lc,
+    int* ls,
+    double* c,
+    double* s);
 
 double ssc::integrate::Filon::integrate_impl(const Function& f_, double a, double b, double eps)
 {
@@ -45,21 +54,22 @@ double ssc::integrate::Filon::integrate_impl(const Function& f_, double a, doubl
     double fba = 0;
     double fbb = 0;
     int lc = 1;
-    int ls = 1-lc;
-    filon(integrand<Filon>,
-           (void*)this,
-           &a,
-           &b,
-           &fpa,
-           &fpb,
-           &fba,
-           &fbb,
-           &tau,
-           &eps,
-           &maxh,
-           &lc,
-           &ls,
-           &res_cos,
-           &res_sin);
+    int ls = 1 - lc;
+    filon(
+        integrand<Filon>,
+        (void*)this,
+        &a,
+        &b,
+        &fpa,
+        &fpb,
+        &fba,
+        &fbb,
+        &tau,
+        &eps,
+        &maxh,
+        &lc,
+        &ls,
+        &res_cos,
+        &res_sin);
     return res_cos;
 }

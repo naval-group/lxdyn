@@ -8,18 +8,17 @@
 #ifndef MMGRUDDERFORCEMODELTEST_HPP_
 #define MMGRUDDERFORCEMODELTEST_HPP_
 
-#include <ssc/random_data_generator/DataGenerator.hpp>
 #include <ssc/macros.hpp>
+#include <ssc/random_data_generator/DataGenerator.hpp>
+
 #include "gtest/gtest.h"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 
-class MMGRudderForceModelTest : public ::testing::Test
-{
-    protected:
-        MMGRudderForceModelTest();
-        EnvironmentAndFrames get_env();
-        ssc::random_data_generator::DataGenerator a;
-
+class MMGRudderForceModelTest : public ::testing::Test {
+protected:
+    MMGRudderForceModelTest();
+    EnvironmentAndFrames get_env();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* MMGRUDDERFORCEMODELTEST_HPP_ */
+#endif /* MMGRUDDERFORCEMODELTEST_HPP_ */

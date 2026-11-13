@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class IndexFinderTest : public ::testing::Test
-{
-    protected:
-        IndexFinderTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class IndexFinderTest : public ::testing::Test {
+protected:
+    IndexFinderTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* INDEXFINDERTEST_HPP_ */
+#endif /* INDEXFINDERTEST_HPP_ */

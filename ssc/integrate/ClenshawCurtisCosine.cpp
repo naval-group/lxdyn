@@ -11,7 +11,8 @@ ssc::integrate::ClenshawCurtisCosine::ClenshawCurtisCosine(const double tau) : C
 {
 }
 
-ssc::integrate::ClenshawCurtisCosine::ClenshawCurtisCosine(const Function& f, const double tau) : ClenshawCurtis(f,tau)
+ssc::integrate::ClenshawCurtisCosine::ClenshawCurtisCosine(const Function& f, const double tau)
+    : ClenshawCurtis(f, tau)
 {
 }
 
@@ -19,4 +20,3 @@ int ssc::integrate::ClenshawCurtisCosine::get_internal_type_number() const
 {
     return 1;
 }
-

@@ -8,14 +8,14 @@
 #ifndef CLOSINGFACETCOMPUTERTEST_HPP_
 #define CLOSINGFACETCOMPUTERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class ClosingFacetComputerTest : public ::testing::Test
-{
-    protected:
-        ClosingFacetComputerTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class ClosingFacetComputerTest : public ::testing::Test {
+protected:
+    ClosingFacetComputerTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* CLOSINGFACETCOMPUTERTEST_HPP_ */
+#endif /* CLOSINGFACETCOMPUTERTEST_HPP_ */

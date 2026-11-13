@@ -7,7 +7,4 @@
 
 #include "GZTypes.hpp"
 
-
-GZ::Resultant::Resultant() : state(0,0,0)
-{
-}
+GZ::Resultant::Resultant() : state(0, 0, 0) {}

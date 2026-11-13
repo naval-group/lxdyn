@@ -9,25 +9,23 @@
 #define PARABOLICRUNOUTSPLINES_HPP_
 #include "Splines.hpp"
 
-namespace ssc
-{
-    namespace interpolation
-    {
-        /** \author cec
-         *  \brief This class was created to choose a parabolic runout for cubic splines
-         *  \details It has the following responsibility:
-         *  - Implement the get_endpoint_value method
-         */
-        class ParabolicRunoutSplines : public Splines
-        {
-            public:
-                ParabolicRunoutSplines();
-                ParabolicRunoutSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
-                ~ParabolicRunoutSplines() override = default;
-            private:
-                double get_endpoint_value() const override;
-        };
-    }
-}
+namespace ssc {
+namespace interpolation {
+/** \author cec
+ *  \brief This class was created to choose a parabolic runout for cubic splines
+ *  \details It has the following responsibility:
+ *  - Implement the get_endpoint_value method
+ */
+class ParabolicRunoutSplines : public Splines {
+public:
+    ParabolicRunoutSplines();
+    ParabolicRunoutSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
+    ~ParabolicRunoutSplines() override = default;
+
+private:
+    double get_endpoint_value() const override;
+};
+}  // namespace interpolation
+}  // namespace ssc
 
 #endif /* PARABOLICRUNOUTSPLINES_HPP_ */

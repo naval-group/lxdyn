@@ -8,14 +8,14 @@
 #ifndef MANEUVERINGFORCEMODELTEST_HPP_
 #define MANEUVERINGFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class ManeuveringForceModelTest : public ::testing::Test
-{
-    protected:
-        ManeuveringForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class ManeuveringForceModelTest : public ::testing::Test {
+protected:
+    ManeuveringForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* MANEUVERINGFORCEMODELTEST_HPP_ */
+#endif /* MANEUVERINGFORCEMODELTEST_HPP_ */

@@ -5,32 +5,35 @@
  *      Author: cady
  */
 #include "CosimulationServiceImpl.hpp"
-#include "xdyn/core/BodyStates.hpp"
-#include "xdyn/external_data_structures/YamlSimServerInputs.hpp"
+
 #include <sstream>
 
-CosimulationServiceImpl::CosimulationServiceImpl(const XdynForCS& simserver_, ErrorReporter& error_outputter_):
-        simserver(simserver_),
-        error_outputter(error_outputter_)
-{}
+#include "xdyn/core/BodyStates.hpp"
+#include "xdyn/external_data_structures/YamlSimServerInputs.hpp"
 
-YamlSimServerInputs from_grpc(grpc::ServerContext* , const CosimulationRequestEuler* request)
+CosimulationServiceImpl::CosimulationServiceImpl(
+    const XdynForCS& simserver_,
+    ErrorReporter& error_outputter_)
+    : simserver(simserver_), error_outputter(error_outputter_)
+{
+}
+
+YamlSimServerInputs from_grpc(grpc::ServerContext*, const CosimulationRequestEuler* request)
 {
     YamlSimServerInputs server_inputs;
     ssc::kinematics::EulerAngles angles;
     YamlRotation rot;
     rot.order_by = "angle";
     rot.convention = {"z", "y'", "x''"};
-    if (request)
-    {
+    if (request) {
         server_inputs.Dt = request->dt();
-        std::map<std::string, double> commands(request->commands().begin(),
-                request->commands().end());
+        std::map<std::string, double> commands(
+            request->commands().begin(),
+            request->commands().end());
         server_inputs.commands = commands;
         const size_t n = static_cast<size_t>(request->states().t_size());
         server_inputs.states.resize(n);
-        for (size_t i = 0 ; i < n ; ++i)
-        {
+        for (size_t i = 0; i < n; ++i) {
             const int int_i = static_cast<int>(i);
             server_inputs.states[i].t = request->states().t(int_i);
             server_inputs.states[i].x = request->states().x(int_i);
@@ -51,25 +54,25 @@ YamlSimServerInputs from_grpc(grpc::ServerContext* , const CosimulationRequestEu
             server_inputs.states[i].qj = std::get<2>(quaternion);
             server_inputs.states[i].qk = std::get<3>(quaternion);
         }
-        server_inputs.requested_output = std::vector<std::string>(request->requested_output().begin(),
-                                                                  request->requested_output().end());
+        server_inputs.requested_output = std::vector<std::string>(
+            request->requested_output().begin(),
+            request->requested_output().end());
     }
     return server_inputs;
 }
 
-YamlSimServerInputs from_grpc(grpc::ServerContext* , const CosimulationRequestQuaternion* request)
+YamlSimServerInputs from_grpc(grpc::ServerContext*, const CosimulationRequestQuaternion* request)
 {
     YamlSimServerInputs server_inputs;
-    if (request)
-    {
+    if (request) {
         server_inputs.Dt = request->dt();
-        std::map<std::string, double> commands(request->commands().begin(),
-                request->commands().end());
+        std::map<std::string, double> commands(
+            request->commands().begin(),
+            request->commands().end());
         server_inputs.commands = commands;
         const size_t n = static_cast<size_t>(request->states().t_size());
         server_inputs.states.resize(n);
-        for (size_t i = 0 ; i < n ; ++i)
-        {
+        for (size_t i = 0; i < n; ++i) {
             const int int_i = static_cast<int>(i);
             server_inputs.states[i].t = request->states().t(int_i);
             server_inputs.states[i].x = request->states().x(int_i);
@@ -86,17 +89,20 @@ YamlSimServerInputs from_grpc(grpc::ServerContext* , const CosimulationRequestQu
             server_inputs.states[i].qj = request->states().qj(int_i);
             server_inputs.states[i].qk = request->states().qk(int_i);
         }
-        server_inputs.requested_output = std::vector<std::string>(request->requested_output().begin(),
-                                                                  request->requested_output().end());
+        server_inputs.requested_output = std::vector<std::string>(
+            request->requested_output().begin(),
+            request->requested_output().end());
     }
     return server_inputs;
 }
 
-grpc::Status to_grpc(grpc::ServerContext* , const std::vector<YamlState>& res, CosimulationResponse* response)
+grpc::Status
+to_grpc(grpc::ServerContext*, const std::vector<YamlState>& res, CosimulationResponse* response)
 {
-    if (res.empty())
-    {
-        return grpc::Status(grpc::StatusCode::INTERNAL, "We got a zero-size res vector from SimServer::play_one_step. This should never happen and is a bug in xdyn's gRPC implementation. Please contact xdyn's support team!");
+    if (res.empty()) {
+        return grpc::Status(
+            grpc::StatusCode::INTERNAL,
+            "We got a zero-size res vector from SimServer::play_one_step. This should never happen and is a bug in xdyn's gRPC implementation. Please contact xdyn's support team!");
     }
     const YamlState& state = res.back();
     // No memory leaks here because we will call set_allocated_* which will take
@@ -105,8 +111,7 @@ grpc::Status to_grpc(grpc::ServerContext* , const std::vector<YamlState>& res, C
     // See discussion here: https://gitlab.sirehna.com/sirehna/xdyn/-/merge_requests/83#note_41051
     CosimulationState* last_state = new CosimulationState();
     CosimulationStates* all_states = new CosimulationStates();
-    for (const auto& s:res)
-    {
+    for (const auto& s : res) {
         all_states->add_x(s.x);
         all_states->add_y(s.y);
         all_states->add_z(s.z);
@@ -125,8 +130,7 @@ grpc::Status to_grpc(grpc::ServerContext* , const std::vector<YamlState>& res, C
         all_states->add_psi(s.psi);
         all_states->add_t(s.t);
 
-        for(const auto& obs:s.extra_observations)
-        {
+        for (const auto& obs : s.extra_observations) {
             response->mutable_extra_observations()->operator[](obs.first).add_value(obs.second);
         }
     }
@@ -154,27 +158,29 @@ grpc::Status to_grpc(grpc::ServerContext* , const std::vector<YamlState>& res, C
 }
 
 grpc::Status CosimulationServiceImpl::step_euler_321(
-        grpc::ServerContext* context,
-        const CosimulationRequestEuler* request,
-        CosimulationResponse* response)
+    grpc::ServerContext* context,
+    const CosimulationRequestEuler* request,
+    CosimulationResponse* response)
 {
     return step(context, request, response);
 }
 
 grpc::Status CosimulationServiceImpl::step_quaternion(
-        grpc::ServerContext* context,
-        const CosimulationRequestQuaternion* request,
-        CosimulationResponse* response)
+    grpc::ServerContext* context,
+    const CosimulationRequestQuaternion* request,
+    CosimulationResponse* response)
 {
     return step(context, request, response);
 }
 
-template <> void check_states_size<CosimulationRequestEuler>(const CosimulationRequestEuler* request)
+template <>
+void check_states_size<CosimulationRequestEuler>(const CosimulationRequestEuler* request)
 {
     check_euler_states_size(request);
 }
 
-template <> void check_states_size<CosimulationRequestQuaternion>(const CosimulationRequestQuaternion* request)
+template <>
+void check_states_size<CosimulationRequestQuaternion>(const CosimulationRequestQuaternion* request)
 {
     check_quaternion_states_size(request);
 }

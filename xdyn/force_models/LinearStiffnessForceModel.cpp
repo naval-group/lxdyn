@@ -1,43 +1,52 @@
 #include "LinearStiffnessForceModel.hpp"
+
+#include <ssc/kinematics.hpp>
+
 #include "xdyn/core/yaml2eigen.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
-#include <ssc/kinematics.hpp>
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-std::string LinearStiffnessForceModel::model_name() {return "linear stiffness";}
+std::string LinearStiffnessForceModel::model_name()
+{
+    return "linear stiffness";
+}
 
-LinearStiffnessForceModel::LinearStiffnessForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env):
-        ForceModel(input.name, {}, body_name, env),
-        K(input.K),
-        equilibrium_position(input.equilibrium_position)
+LinearStiffnessForceModel::LinearStiffnessForceModel(
+    const Input& input,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
+    : ForceModel(input.name, {}, body_name, env)
+    , K(input.K)
+    , equilibrium_position(input.equilibrium_position)
 {
 }
 
-Wrench LinearStiffnessForceModel::get_force(const BodyStates& states, const double, const EnvironmentAndFrames&, const std::map<std::string,double>&) const
+Wrench LinearStiffnessForceModel::get_force(
+    const BodyStates& states,
+    const double,
+    const EnvironmentAndFrames&,
+    const std::map<std::string, double>&) const
 {
     Eigen::Matrix<double, 6, 1> X;
     ssc::kinematics::EulerAngles angles = states.get_angles();
-    if (equilibrium_position)
-    {
-        X <<states.x() - equilibrium_position.value().coordinates.x,
+    if (equilibrium_position) {
+        X << states.x() - equilibrium_position.value().coordinates.x,
             states.y() - equilibrium_position.value().coordinates.y,
             states.z() - equilibrium_position.value().coordinates.z,
             angles.phi - equilibrium_position.value().angle.phi,
             angles.theta - equilibrium_position.value().angle.theta,
             angles.psi - equilibrium_position.value().angle.psi;
+    } else {
+        X << states.x(), states.y(), states.z(), angles.phi, angles.theta, angles.psi;
     }
-    else
-    {
-        X <<states.x(),
-            states.y(),
-            states.z(),
-            angles.phi,
-            angles.theta,
-            angles.psi;
-    }
-    const Eigen::Matrix<double, 6, 1> res = -K*X;
+    const Eigen::Matrix<double, 6, 1> res = -K * X;
     // Forces are in NED frame but moments are in body frame
-    return Wrench(ssc::kinematics::Point(body_name,0,0,0), "NED", res.head(3), states.get_rot_from_ned_to_body()*res.tail(3));;
+    return Wrench(
+        ssc::kinematics::Point(body_name, 0, 0, 0),
+        "NED",
+        res.head(3),
+        states.get_rot_from_ned_to_body() * res.tail(3));
+    ;
 }
 
 LinearStiffnessForceModel::Input LinearStiffnessForceModel::parse(const std::string& yaml)
@@ -46,13 +55,13 @@ LinearStiffnessForceModel::Input LinearStiffnessForceModel::parse(const std::str
     Input ret;
     node["name"] >> ret.name;
     YamlDynamics6x6Matrix M;
-    try
-    {
+    try {
         parse_YamlDynamics6x6Matrix(node["stiffness matrix"], M, false);
-    }
-    catch(const InvalidInputException& e)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "In node 'stiffness matrix': " << e.get_message());
+    } catch (const InvalidInputException& e) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "In node 'stiffness matrix': " << e.get_message());
     }
     ret.K = make_matrix6x6(M);
     parse_optional(node, "equilibrium position", ret.equilibrium_position);

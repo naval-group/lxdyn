@@ -7,20 +7,16 @@
 
 #include "YamlPosition.hpp"
 
-YamlPosition::YamlPosition() :
-                               frame("")
-{}
+YamlPosition::YamlPosition() : frame("") {}
 
-YamlPosition::YamlPosition(const YamlCoordinates& c, const YamlAngle& a, const std::string& f) :
-        coordinates(c),
-        angle(a),
-        frame(f)
+YamlPosition::YamlPosition(const YamlCoordinates& c, const YamlAngle& a, const std::string& f)
+    : coordinates(c), angle(a), frame(f)
 {
 }
 
 YamlPosition YamlPosition::Origin(const std::string& frame)
 {
-    return YamlPosition(YamlCoordinates(0,0,0), YamlAngle(0,0,0), frame);
+    return YamlPosition(YamlCoordinates(0, 0, 0), YamlAngle(0, 0, 0), frame);
 }
 
 std::ostream& operator<<(std::ostream& os, const YamlPosition& w)

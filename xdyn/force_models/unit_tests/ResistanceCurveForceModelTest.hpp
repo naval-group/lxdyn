@@ -8,14 +8,14 @@
 #ifndef RESISTANCECURVEFORCEMODELTEST_HPP_
 #define RESISTANCECURVEFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class ResistanceCurveForceModelTest : public ::testing::Test
-{
-    protected:
-        ResistanceCurveForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class ResistanceCurveForceModelTest : public ::testing::Test {
+protected:
+    ResistanceCurveForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* RESISTANCECURVEFORCEMODELTEST_HPP_ */
+#endif /* RESISTANCECURVEFORCEMODELTEST_HPP_ */

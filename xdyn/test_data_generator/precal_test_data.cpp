@@ -1,28 +1,40 @@
 #include "precal_test_data.hpp"
+
 #include <boost/algorithm/string.hpp>
 
 std::string test_data::precal()
 {
-    return glossary_of_terms() + general() + constants() + simulation() + exports()
-           + ship_particulars() + mass_properties() + mass_matrix() + restoring_matrix()
-           + natural_periods_and_frequencies() + added_mass_damping_matrix_inf_freq()
-           + hull_properties() + roll_damping() + labels() + dimensions() + signals() + raos();
+    return glossary_of_terms() + general() + constants() + simulation() + exports() +
+           ship_particulars() + mass_properties() + mass_matrix() + restoring_matrix() +
+           natural_periods_and_frequencies() + added_mass_damping_matrix_inf_freq() +
+           hull_properties() + roll_damping() + labels() + dimensions() + signals() + raos();
 }
 
 std::string test_data::precal_with_si_unit()
 {
-    /* Replace kilo with SI unit by removing prefix `k` in units from `signals` and `raos` functions*/
+    /* Replace kilo with SI unit by removing prefix `k` in units from `signals` and `raos`
+     * functions*/
     std::string signals_si(signals());
     std::string raos_si(raos());
-    for (const auto& unit: {"N", "N/m", "N.m/m", "N.m/m2", "N/m2", "N.s", "N.s2", "N.s/m", "N.s2/m", "N.m.s2", "N.m.s"})
-    {
+    for (const auto& unit :
+         {"N",
+          "N/m",
+          "N.m/m",
+          "N.m/m2",
+          "N/m2",
+          "N.s",
+          "N.s2",
+          "N.s/m",
+          "N.s2/m",
+          "N.m.s2",
+          "N.m.s"}) {
         boost::replace_all(signals_si, std::string("k") + unit, unit);
         boost::replace_all(raos_si, std::string("k") + unit, unit);
     }
-    return glossary_of_terms() + general() + constants() + simulation() + exports()
-           + ship_particulars() + mass_properties() + mass_matrix() + restoring_matrix()
-           + natural_periods_and_frequencies() + added_mass_damping_matrix_inf_freq()
-           + hull_properties() + roll_damping() + labels() + dimensions() + signals_si + raos_si;
+    return glossary_of_terms() + general() + constants() + simulation() + exports() +
+           ship_particulars() + mass_properties() + mass_matrix() + restoring_matrix() +
+           natural_periods_and_frequencies() + added_mass_damping_matrix_inf_freq() +
+           hull_properties() + roll_damping() + labels() + dimensions() + signals_si + raos_si;
 }
 
 std::string glossary_of_terms()
@@ -9874,13 +9886,7 @@ std::string raos_signals_120_139()
 
 std::string raos()
 {
-    return
-        raos_header() +
-        raos_signals_001_019() +
-        raos_signals_020_039() +
-        raos_signals_040_059() +
-        raos_signals_060_079() +
-        raos_signals_080_099() +
-        raos_signals_100_119() +
-        raos_signals_120_139();
+    return raos_header() + raos_signals_001_019() + raos_signals_020_039() +
+           raos_signals_040_059() + raos_signals_060_079() + raos_signals_080_099() +
+           raos_signals_100_119() + raos_signals_120_139();
 }

@@ -6,51 +6,55 @@
  */
 
 #include "EverythingObserver.hpp"
+
 #include "xdyn/core/Sim.hpp"
 #include "xdyn/core/StateLayout.hpp"
 
-EverythingObserver::EverythingObserver() : MapObserver(std::vector<std::string>({}))
-{
-}
+EverythingObserver::EverythingObserver() : MapObserver(std::vector<std::string>({})) {}
 
 std::string get_body_name(const Sim& sys);
 std::string get_body_name(const Sim& sys)
 {
-    if (sys.get_bodies().empty())
-    {
+    if (sys.get_bodies().empty()) {
         return "";
     }
     return sys.get_bodies().front()->get_name();
 }
 
-void EverythingObserver::observe_everything(const Sim& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& discrete_systems, const bool before_solver_step)
+void EverythingObserver::observe_everything(
+    const Sim& sys,
+    const double t,
+    const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>& discrete_systems,
+    const bool before_solver_step)
 {
-    sys.output(sys.state,*this, t, discrete_systems);
+    sys.output(sys.state, *this, t, discrete_systems);
     const auto all_vars = all_variables(initialize);
     initialize_serialization_of_requested_variables(all_vars);
 
-    if (before_solver_step)
-    {
+    if (before_solver_step) {
         serialize_before_solver_step(all_vars);
-    }
-    else
-    {
+    } else {
         serialize_after_solver_step(all_vars);
     }
     const std::string body_name = get_body_name(sys);
-    for (const auto& key_values:m)
-    {
+    for (const auto& key_values : m) {
         const auto inserter = get_inserter(body_name, key_values.first);
         add(inserter, key_values.second);
     }
 }
 
-void EverythingObserver::observe_before_solver_step(const Sim& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& discrete_systems)
+void EverythingObserver::observe_before_solver_step(
+    const Sim& sys,
+    const double t,
+    const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>& discrete_systems)
 {
     observe_everything(sys, t, discrete_systems, true);
 }
 
-void EverythingObserver::observe_after_solver_step(const Sim& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& discrete_systems)
+void EverythingObserver::observe_after_solver_step(
+    const Sim& sys,
+    const double t,
+    const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>& discrete_systems)
 {
     observe_everything(sys, t, discrete_systems, false);
 }
@@ -58,85 +62,73 @@ void EverythingObserver::observe_after_solver_step(const Sim& sys, const double 
 std::function<void(Res&, const double)> get_state_inserter(const size_t idx);
 std::function<void(Res&, const double)> get_state_inserter(const size_t idx)
 {
-    return [idx](Res& res, const double value){res.x.resize(state::N);res.x[idx] = value;};
+    return [idx](Res& res, const double value) {
+        res.x.resize(state::N);
+        res.x[idx] = value;
+    };
 }
 
-std::function<void(Res&, const double)> EverythingObserver::get_inserter(const std::string& body_name, const std::string& var_name) const
+std::function<void(Res&, const double)> EverythingObserver::get_inserter(
+    const std::string& body_name,
+    const std::string& var_name) const
 {
-    if (var_name == std::string("t"))
-    {
-        return [](Res& res, const double value){res.t = value;};
+    if (var_name == std::string("t")) {
+        return [](Res& res, const double value) { res.t = value; };
     }
-    if (var_name == std::string("x(") + body_name + ")")
-    {
+    if (var_name == std::string("x(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::X));
     }
-    if (var_name == std::string("y(") + body_name + ")")
-    {
+    if (var_name == std::string("y(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::Y));
     }
-    if (var_name == std::string("z(") + body_name + ")")
-    {
+    if (var_name == std::string("z(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::Z));
     }
-    if (var_name == std::string("u(") + body_name + ")")
-    {
+    if (var_name == std::string("u(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::U));
     }
-    if (var_name == std::string("v(") + body_name + ")")
-    {
+    if (var_name == std::string("v(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::V));
     }
-    if (var_name == std::string("w(") + body_name + ")")
-    {
+    if (var_name == std::string("w(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::W));
     }
-    if (var_name == std::string("p(") + body_name + ")")
-    {
+    if (var_name == std::string("p(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::P));
     }
-    if (var_name == std::string("q(") + body_name + ")")
-    {
+    if (var_name == std::string("q(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::Q));
     }
-    if (var_name == std::string("r(") + body_name + ")")
-    {
+    if (var_name == std::string("r(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::R));
     }
-    if (var_name == std::string("qr(") + body_name + ")")
-    {
+    if (var_name == std::string("qr(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::QR));
     }
-    if (var_name == std::string("qi(") + body_name + ")")
-    {
+    if (var_name == std::string("qi(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::QI));
     }
-    if (var_name == std::string("qj(") + body_name + ")")
-    {
+    if (var_name == std::string("qj(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::QJ));
     }
-    if (var_name == std::string("qk(") + body_name + ")")
-    {
+    if (var_name == std::string("qk(") + body_name + ")") {
         return get_state_inserter(state::index(0, state::QK));
     }
-    return [var_name](Res& res, const double value){res.extra_observations[var_name] = value;};
+    return [var_name](Res& res, const double value) { res.extra_observations[var_name] = value; };
 }
 
-
-
-void EverythingObserver::add(const std::function<void(Res&, const double)>& inserter, const std::vector<double>& values)
+void EverythingObserver::add(
+    const std::function<void(Res&, const double)>& inserter,
+    const std::vector<double>& values)
 {
-    if (values.empty())
-    {
+    if (values.empty()) {
         return;
     }
     const size_t n = values.size();
-    if (res.size() < n)
-    {
+    if (res.size() < n) {
         res.resize(n);
     }
-    for (size_t i = 0 ; i < n ; ++i)
-    {
+    for (size_t i = 0; i < n; ++i) {
         inserter(res[i], values[i]);
     }
 }

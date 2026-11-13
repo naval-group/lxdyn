@@ -5,28 +5,34 @@
  *      Author: cady
  */
 #include "KtKqForceModel.hpp"
+
+#include <ssc/interpolation.hpp>
+
 #include "xdyn/exceptions/NumericalErrorException.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
-#include <ssc/interpolation.hpp>
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-std::string KtKqForceModel::model_name() {return "Kt(J) & Kq(J)";}
-
-class KtKqForceModel::Impl
+std::string KtKqForceModel::model_name()
 {
-    public:
-        Impl(const std::vector<double>&J, const std::vector<double>& Kt_, const std::vector<double>& Kq_) :
-            Kt(J, Kt_),
-            Kq(J, Kq_)
-        {
-        }
+    return "Kt(J) & Kq(J)";
+}
 
-        ssc::interpolation::SplineVariableStep Kt;
-        ssc::interpolation::SplineVariableStep Kq;
+class KtKqForceModel::Impl {
+public:
+    Impl(
+        const std::vector<double>& J,
+        const std::vector<double>& Kt_,
+        const std::vector<double>& Kq_)
+        : Kt(J, Kt_), Kq(J, Kq_)
+    {
+    }
 
-    private:
-        Impl();
+    ssc::interpolation::SplineVariableStep Kt;
+    ssc::interpolation::SplineVariableStep Kq;
+
+private:
+    Impl();
 };
 
 KtKqForceModel::Yaml KtKqForceModel::parse(const std::string& yaml)
@@ -34,47 +40,46 @@ KtKqForceModel::Yaml KtKqForceModel::parse(const std::string& yaml)
     YAML::Node node = YAML::Load(yaml);
     Yaml ret;
     static_cast<AbstractWageningen::Yaml&>(ret) = AbstractWageningen::parse(yaml);
-    node["J"]  >> ret.J;
+    node["J"] >> ret.J;
     node["Kt"] >> ret.Kt;
     node["Kq"] >> ret.Kq;
 
     return ret;
 }
 
-KtKqForceModel::KtKqForceModel(const Yaml& input, const std::string& body_name_, const EnvironmentAndFrames& env) :
-            AbstractWageningen(input, body_name_, env), pimpl(new Impl(input.J, input.Kt, input.Kq))
+KtKqForceModel::KtKqForceModel(
+    const Yaml& input,
+    const std::string& body_name_,
+    const EnvironmentAndFrames& env)
+    : AbstractWageningen(input, body_name_, env), pimpl(new Impl(input.J, input.Kt, input.Kq))
 {
 }
 
 KtKqForceModel::~KtKqForceModel() = default;
 
-double KtKqForceModel::get_Kt(const std::map<std::string,double>&, const double J) const
+double KtKqForceModel::get_Kt(const std::map<std::string, double>&, const double J) const
 {
     double ret = 0;
-    try
-    {
+    try {
         ret = pimpl->Kt.f(J);
-    }
-    catch (const ssc::interpolation::IndexFinderException& e)
-    {
+    } catch (const ssc::interpolation::IndexFinderException& e) {
         std::stringstream ss;
-        ss << "Unable to interpolate Kt as a function of J when using model '" << model_name() << "'. Got the following error: " << e.get_message();
+        ss << "Unable to interpolate Kt as a function of J when using model '" << model_name()
+           << "'. Got the following error: " << e.get_message();
         THROW(__PRETTY_FUNCTION__, NumericalErrorException, ss.str());
     }
     return ret;
 }
 
-double KtKqForceModel::get_Kq(const std::map<std::string,double>&, const double J) const
+double KtKqForceModel::get_Kq(const std::map<std::string, double>&, const double J) const
 {
     double ret = 0;
-    try
-    {
+    try {
         ret = pimpl->Kq.f(J);
-    }
-    catch (const ssc::interpolation::IndexFinderException& e)
-    {
+    } catch (const ssc::interpolation::IndexFinderException& e) {
         std::stringstream ss;
-        ss << "Unable to interpolate Kq as a function of J when using model '" << model_name() << "'. Got the following error: " << e.get_message();
+        ss << "Unable to interpolate Kq as a function of J when using model '" << model_name()
+           << "'. Got the following error: " << e.get_message();
         THROW(__PRETTY_FUNCTION__, NumericalErrorException, ss.str());
     }
     return ret;

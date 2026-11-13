@@ -9,21 +9,21 @@
 #define ENVIRONMENT_MODELS_INC_WINDMEANVELOCITYPROFILE_HPP_
 
 #include <Eigen/Dense>
-#include <optional>
 #include <memory>
+#include <optional>
 #include <string>
-#include "xdyn/external_data_structures/YamlModel.hpp"
+
 #include "xdyn/environment_models/WindModel.hpp"
+#include "xdyn/external_data_structures/YamlModel.hpp"
 
 class WindMeanVelocityProfile;
 using WindMeanVelocityProfilePtr = std::shared_ptr<WindMeanVelocityProfile>;
-using WindMeanVelocityProfileParser = std::function<std::optional<WindMeanVelocityProfilePtr>(const YamlModel& yaml)>;
+using WindMeanVelocityProfileParser =
+    std::function<std::optional<WindMeanVelocityProfilePtr>(const YamlModel& yaml)>;
 
-class WindMeanVelocityProfile : public WindModel
-{
+class WindMeanVelocityProfile : public WindModel {
 public:
-    struct Input
-    {
+    struct Input {
         double velocity{};
         double direction{};
     };
@@ -31,7 +31,7 @@ public:
     explicit WindMeanVelocityProfile(const Input& input);
 
     Eigen::Vector3d get_wind(const Eigen::Vector3d& position, const double t) const override;
-    virtual double get_wind_velocity(const double z) const =0;
+    virtual double get_wind_velocity(const double z) const = 0;
     static Input parse(const std::string& yaml_input);
 
 protected:

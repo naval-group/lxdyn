@@ -10,21 +10,18 @@
 
 #include "ssc/integrate/ClenshawCurtis.hpp"
 
-namespace ssc
-{
-    namespace integrate
-    {
-        class ClenshawCurtisSine : public ClenshawCurtis
-        {
-            public:
-                explicit ClenshawCurtisSine(const double tau);
-                ClenshawCurtisSine(const Function& f, const double tau);
+namespace ssc {
+namespace integrate {
+class ClenshawCurtisSine : public ClenshawCurtis {
+public:
+    explicit ClenshawCurtisSine(const double tau);
+    ClenshawCurtisSine(const Function& f, const double tau);
 
-            private:
-                ClenshawCurtisSine();
-                int get_internal_type_number() const override;
-        };
-    }
-}
+private:
+    ClenshawCurtisSine();
+    int get_internal_type_number() const override;
+};
+}  // namespace integrate
+}  // namespace ssc
 
 #endif /* CLENSHAWCURTISSINE_HPP_ */

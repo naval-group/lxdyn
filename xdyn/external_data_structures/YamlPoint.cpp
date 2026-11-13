@@ -7,12 +7,6 @@
 
 #include "YamlPoint.hpp"
 
-YamlPoint::YamlPoint() :  name(""), frame("")
-{
+YamlPoint::YamlPoint() : name(""), frame("") {}
 
-}
-
-YamlPoint::YamlPoint(const YamlCoordinates& c) : YamlCoordinates(c), name(""), frame("")
-{
-
-}
+YamlPoint::YamlPoint(const YamlCoordinates& c) : YamlCoordinates(c), name(""), frame("") {}

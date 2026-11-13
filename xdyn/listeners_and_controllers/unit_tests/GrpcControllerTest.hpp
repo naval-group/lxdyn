@@ -10,8 +10,6 @@
 
 #include "gtest/gtest.h"
 
-class GrpcControllerTest : public ::testing::Test
-{
-};
+class GrpcControllerTest : public ::testing::Test {};
 
 #endif /* GRPC_UNIT_TESTS_INC_GRPCCONTROLLERTEST_HPP_ */

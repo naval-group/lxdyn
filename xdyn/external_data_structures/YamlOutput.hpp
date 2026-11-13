@@ -11,8 +11,7 @@
 #include <string>
 #include <vector>
 
-struct YamlOutput
-{
+struct YamlOutput {
     std::string filename;
     std::string format;
     std::string address;

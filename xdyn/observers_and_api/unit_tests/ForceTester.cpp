@@ -5,18 +5,18 @@
  *      Author: cady
  */
 
-
 #include "ForceTester.hpp"
+
 #include "xdyn/core/StateLayout.hpp"
-#include "xdyn/force_models/GMForceModel.hpp"
-#include "xdyn/force_models/ExactHydrostaticForceModel.hpp"
 #include "xdyn/force_models/DiffractionForceModel.hpp"
+#include "xdyn/force_models/ExactHydrostaticForceModel.hpp"
+#include "xdyn/force_models/GMForceModel.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/yaml_parser/check_input_yaml.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 Sim ForceTester::make_sim(const std::string& yaml, const std::string& stl) const
 {
@@ -56,33 +56,38 @@ Sim ForceTester::make_sim(const std::string& yaml, const VectorOfVectorOfPoints&
     return get_system(check_input_yaml(input), stl, 0);
 }
 
-ForceTester::ForceTester(const std::string& yaml, const VectorOfVectorOfPoints& stl) :
+ForceTester::ForceTester(const std::string& yaml, const VectorOfVectorOfPoints& stl)
+    :
 
-env(),
-current_instant(0)
+    env()
+    , current_instant(0)
 {
     auto sys = make_sim(yaml, stl);
     body = sys.get_bodies().front();
     env = sys.get_env();
 }
 
-ForceTester::ForceTester(const std::string& yaml, const std::string& stl) :
-        env(),
-        current_instant(0)
+ForceTester::ForceTester(const std::string& yaml, const std::string& stl)
+    : env(), current_instant(0)
 {
     auto sys = make_sim(yaml, stl);
     body = sys.get_bodies().front();
     env = sys.get_env();
 }
 
-std::vector<double> get_states(const double x, const double y,
-        const double z, const double phi, const double theta, const double psi)
+std::vector<double> get_states(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     std::vector<double> states(13, 0);
     states[state::index(0, state::X)] = x;
     states[state::index(0, state::Y)] = y;
     states[state::index(0, state::Z)] = z;
-    ssc::kinematics::EulerAngles angle(phi,theta,psi);
+    ssc::kinematics::EulerAngles angle(phi, theta, psi);
     YamlRotation c;
     c.order_by = "angle";
     c.convention.push_back("z");
@@ -96,127 +101,137 @@ std::vector<double> get_states(const double x, const double y,
     return states;
 }
 
-std::vector<double> ForceTester::set_states(const double x, const double y,
-        const double z, const double phi, const double theta, const double psi)
+std::vector<double> ForceTester::set_states(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
-    const std::vector<double> states = get_states(x,y,z,phi,theta,psi);
-    body->update(env,states,current_instant);
+    const std::vector<double> states = get_states(x, y, z, phi, theta, psi);
+    body->update(env, states, current_instant);
     current_instant += 1;
     return states;
 }
 
-ssc::kinematics::Wrench ForceTester::force_in_ned(const double x,
-                                                  const double y,
-                                                  const double z,
-                                                  const double phi,
-                                                  const double theta,
-                                                  const double psi)
+ssc::kinematics::Wrench ForceTester::force_in_ned(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     std::vector<double> states = set_states(x, y, z, phi, theta, psi);
     ssc::kinematics::Wrench ret;
-    if (not(forces.empty())) ret = forces.front()->operator()(body->get_states(), current_instant, env);
-    for (size_t i = 1 ; i < forces.size() ; ++i)
-    {
+    if (not(forces.empty()))
+        ret = forces.front()->operator()(body->get_states(), current_instant, env);
+    for (size_t i = 1; i < forces.size(); ++i) {
         auto f = forces.at(i)->operator()(body->get_states(), current_instant, env);
         ret = ret + f;
     }
 
-    ret.force = body->get_rot_from_ned_to(states)*ret.force;
-    ret.torque = body->get_rot_from_ned_to(states)*ret.torque;
+    ret.force = body->get_rot_from_ned_to(states) * ret.force;
+    ret.torque = body->get_rot_from_ned_to(states) * ret.torque;
     return ret;
 }
 
-double ForceTester::immersed_volume(const double x,
-                                    const double y,
-                                    const double z,
-                                    const double phi,
-                                    const double theta,
-                                    const double psi)
+double ForceTester::immersed_volume(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     set_states(x, y, z, phi, theta, psi);
     return body->get_states().intersector->immersed_volume();
 }
 
-double ForceTester::immersed_surface(const double x,
-                                     const double y,
-                                     const double z,
-                                     const double phi,
-                                     const double theta,
-                                     const double psi)
+double ForceTester::immersed_surface(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     set_states(x, y, z, phi, theta, psi);
     double S = 0;
-    for (auto it = body->get_states().intersector->begin_immersed() ; it != body->get_states().intersector->end_immersed() ; ++it)
-    {
+    for (auto it = body->get_states().intersector->begin_immersed();
+         it != body->get_states().intersector->end_immersed();
+         ++it) {
         S += it->area;
     }
     return S;
 }
 
-double ForceTester::emerged_surface(const double x,
-                                    const double y,
-                                    const double z,
-                                    const double phi,
-                                    const double theta,
-                                    const double psi)
+double ForceTester::emerged_surface(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     set_states(x, y, z, phi, theta, psi);
     double S = 0;
-    for (auto it = body->get_states().intersector->begin_emerged() ; it != body->get_states().intersector->end_emerged() ; ++it)
-    {
+    for (auto it = body->get_states().intersector->begin_emerged();
+         it != body->get_states().intersector->end_emerged();
+         ++it) {
         S += it->area;
     }
     return S;
 }
 
-double ForceTester::emerged_volume(const double x,
-                                    const double y,
-                                    const double z,
-                                    const double phi,
-                                    const double theta,
-                                    const double psi)
+double ForceTester::emerged_volume(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     set_states(x, y, z, phi, theta, psi);
     return body->get_states().intersector->emerged_volume();
 }
 
-EPoint ForceTester::center_of_buoyancy_in_ned_frame(const double x,
-                                                    const double y,
-                                                    const double z,
-                                                    const double phi,
-                                                    const double theta,
-                                                    const double psi)
+EPoint ForceTester::center_of_buoyancy_in_ned_frame(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     std::vector<double> states = set_states(x, y, z, phi, theta, psi);
     auto Tned2body = body->get_transform_from_ned_to_body(states);
     Tned2body.swap();
-    for (const auto& force:forces)
-    {
+    for (const auto& force : forces) {
         const auto hs = dynamic_cast<ExactHydrostaticForceModel*>(force.get());
-        if (hs)
-        {
+        if (hs) {
             hs->operator()(body->get_states(), current_instant++, env);
-            return (Tned2body*hs->get_centre_of_buoyancy()).v;
+            return (Tned2body * hs->get_centre_of_buoyancy()).v;
         }
     }
-    return EPoint(std::nan(""),std::nan(""),std::nan(""));
+    return EPoint(std::nan(""), std::nan(""), std::nan(""));
 }
 
-std::optional<double> ForceTester::gm(const double x,
-                       const double y,
-                       const double z,
-                       const double phi,
-                       const double theta,
-                       const double psi)
+std::optional<double> ForceTester::gm(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     std::vector<double> states = set_states(x, y, z, phi, theta, psi);
     std::optional<double> ret;
-    for (const auto& force:forces)
-    {
-        if (force->get_name() == "GM")
-        {
+    for (const auto& force : forces) {
+        if (force->get_name() == "GM") {
             GMForceModel* F = static_cast<GMForceModel*>(force.get());
-            F->operator ()(body->get_states(), 0, env);
+            F->operator()(body->get_states(), 0, env);
             ret = F->get_GM();
         }
     }

@@ -10,6 +10,8 @@
 
 #include <ssc/kinematics.hpp>
 
-double calculate_gz(const ssc::kinematics::Transform& body2ned, const ssc::kinematics::Wrench& force_and_torque_projected_in_NED_frame);
+double calculate_gz(
+    const ssc::kinematics::Transform& body2ned,
+    const ssc::kinematics::Wrench& force_and_torque_projected_in_NED_frame);
 
 #endif /* GZCOMPUTER_HPP_ */

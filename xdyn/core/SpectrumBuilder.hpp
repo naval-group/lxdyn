@@ -8,27 +8,28 @@
 #ifndef SPECTRUMBUILDER_HPP_
 #define SPECTRUMBUILDER_HPP_
 
-#include <optional>
-
-#include <string>
-#include <ssc/macros.hpp>
 #include <memory>
+#include <optional>
+#include <ssc/macros.hpp>
+#include <string>
 
 class WaveSpectralDensity;
 
-class SpectrumBuilderInterface
-{
-    public:
-        virtual ~SpectrumBuilderInterface()= default;
-        virtual std::optional<std::shared_ptr<WaveSpectralDensity> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
+class SpectrumBuilderInterface {
+public:
+    virtual ~SpectrumBuilderInterface() = default;
+    virtual std::optional<std::shared_ptr<WaveSpectralDensity>> try_to_parse(
+        const std::string& model,
+        const std::string& yaml) const = 0;
 };
 
 template <typename T>
-class SpectrumBuilder : public SpectrumBuilderInterface
-{
-    public:
-        SpectrumBuilder() : SpectrumBuilderInterface(){}
-        std::optional<std::shared_ptr<WaveSpectralDensity> > try_to_parse(const std::string& model, const std::string& yaml) const override;
+class SpectrumBuilder : public SpectrumBuilderInterface {
+public:
+    SpectrumBuilder() : SpectrumBuilderInterface() {}
+    std::optional<std::shared_ptr<WaveSpectralDensity>> try_to_parse(
+        const std::string& model,
+        const std::string& yaml) const override;
 };
 
 using SpectrumBuilderPtr = std::shared_ptr<SpectrumBuilderInterface>;

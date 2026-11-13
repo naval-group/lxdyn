@@ -1,50 +1,53 @@
 #include <iostream>
 #include <sstream>
-#include <websocketpp/server.hpp>
 #include <websocketpp/config/asio_no_tls.hpp>
+#include <websocketpp/server.hpp>
 
 #include "gtest/gtest.h"
-class WebSocketPPTest1_endpoint : public ::testing::Test
-{
-};
+class WebSocketPPTest1_endpoint : public ::testing::Test {};
 
-TEST_F(WebSocketPPTest1_endpoint,  construct_server_iostream ) {
+TEST_F(WebSocketPPTest1_endpoint, construct_server_iostream)
+{
     websocketpp::server<websocketpp::config::core> s;
 }
 
-TEST_F(WebSocketPPTest1_endpoint,  construct_server_asio_plain ) {
+TEST_F(WebSocketPPTest1_endpoint, construct_server_asio_plain)
+{
     websocketpp::server<websocketpp::config::asio> s;
 }
 
-//TEST_F(WebSocketPPTest1_endpoint,  construct_server_asio_tls ) {
-//    websocketpp::server<websocketpp::config::asio_tls> s;
-//    COUT(s);
-//}
+// TEST_F(WebSocketPPTest1_endpoint,  construct_server_asio_tls ) {
+//     websocketpp::server<websocketpp::config::asio_tls> s;
+//     COUT(s);
+// }
 
-TEST_F(WebSocketPPTest1_endpoint,  initialize_server_asio ) {
+TEST_F(WebSocketPPTest1_endpoint, initialize_server_asio)
+{
     websocketpp::server<websocketpp::config::asio> s;
     s.init_asio();
 }
 
-//TEST_F(WebSocketPPTest1_endpoint,  initialize_server_asio_external ) {
-//    websocketpp::server<websocketpp::config::asio> s;
-//    boost::asio::io_service ios;
-//    s.init_asio(&ios);
-//}
+// TEST_F(WebSocketPPTest1_endpoint,  initialize_server_asio_external ) {
+//     websocketpp::server<websocketpp::config::asio> s;
+//     boost::asio::io_service ios;
+//     s.init_asio(&ios);
+// }
 
 struct endpoint_extension {
-    int extension_method() {
+    int extension_method()
+    {
         return extension_value;
     }
 
-    bool is_server() const {
+    bool is_server() const
+    {
         return false;
     }
 
     int extension_value{5};
 };
 
-TEST_F(WebSocketPPTest1_endpoint,  listen_after_listen_failure )
+TEST_F(WebSocketPPTest1_endpoint, listen_after_listen_failure)
 {
     using websocketpp::transport::asio::error::make_error_code;
     using websocketpp::transport::asio::error::pass_through;

@@ -6,38 +6,39 @@
  */
 
 #include "FroudeKrylovForceModelTest.hpp"
+
+#include <cmath>
+#include <ssc/kinematics.hpp>
+
 #include "FroudeKrylovForceModel.hpp"
 #include "env_for_tests.hpp"
 #include "xdyn/core/BodyWithSurfaceForces.hpp"
 #include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/environment_models/Airy.hpp"
-#include "xdyn/environment_models/DiracSpectralDensity.hpp"
 #include "xdyn/environment_models/DiracDirectionalSpreading.hpp"
-#include "xdyn/environment_models/discretize.hpp"
+#include "xdyn/environment_models/DiracSpectralDensity.hpp"
 #include "xdyn/environment_models/Stretching.hpp"
+#include "xdyn/environment_models/discretize.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-
-#include <ssc/kinematics.hpp>
-
-#include <cmath>
 #define PI M_PI
 
 constexpr double EPS = 1E-8;
 constexpr double BIG_EPS = 1E-3;
 
-FroudeKrylovForceModelTest::FroudeKrylovForceModelTest() : a(ssc::random_data_generator::DataGenerator(8511545))
+FroudeKrylovForceModelTest::FroudeKrylovForceModelTest()
+    : a(ssc::random_data_generator::DataGenerator(8511545))
 {
 }
 
 std::shared_ptr<WaveModel> FroudeKrylovForceModelTest::get_wave_model() const
 {
-    const double psi0 = PI/4;
+    const double psi0 = PI / 4;
     const double Hs = 3;
     const double Tp = 10;
-    const double omega0 = 2*PI/Tp;
+    const double omega0 = 2 * PI / Tp;
     const double omega_min = 0.1;
     const double omega_max = 5;
     const size_t nfreq = 10;
@@ -46,7 +47,15 @@ std::shared_ptr<WaveModel> FroudeKrylovForceModelTest::get_wave_model() const
     ys.h = 0;
     ys.delta = 1;
     const Stretching ss(ys);
-    const DiscreteDirectionalWaveSpectrum A = discretize(DiracSpectralDensity(omega0, Hs), DiracDirectionalSpreading(psi0), omega_min, omega_max, nfreq, ndir, ss, false);
+    const DiscreteDirectionalWaveSpectrum A = discretize(
+        DiracSpectralDensity(omega0, Hs),
+        DiracDirectionalSpreading(psi0),
+        omega_min,
+        omega_max,
+        nfreq,
+        ndir,
+        ss,
+        false);
     int random_seed = 0;
     return std::shared_ptr<WaveModel>(new Airy(A, random_seed));
 }
@@ -54,10 +63,8 @@ std::shared_ptr<WaveModel> FroudeKrylovForceModelTest::get_wave_model() const
 VectorOfVectorOfPoints FroudeKrylovForceModelTest::get_points() const
 {
     auto points = two_triangles();
-    for (size_t i = 0 ; i < 2 ; ++i)
-    {
-        for (size_t j = 0 ; j < 3 ; ++j)
-        {
+    for (size_t i = 0; i < 2; ++i) {
+        for (size_t j = 0; j < 3; ++j) {
             double x = points[i][j][0];
             points[i][j][0] = points[i][j][2];
             points[i][j][2] = points[i][j][1];
@@ -69,12 +76,12 @@ VectorOfVectorOfPoints FroudeKrylovForceModelTest::get_points() const
 
 TEST_F(FroudeKrylovForceModelTest, example)
 {
-//! [FroudeKrylovForceModelTest example]
+    //! [FroudeKrylovForceModelTest example]
     const EnvironmentAndFrames env = get_environment_and_frames(get_wave_model());
     const auto points = get_points();
 
     BodyStates states = get_body(BODY, points)->get_states();
-    states.G = ssc::kinematics::Point("NED",0,2,2./3.);
+    states.G = ssc::kinematics::Point("NED", 0, 2, 2. / 3.);
     BodyPtr body(new BodyWithSurfaceForces(states, 0, BlockedDOF(""), YamlFilteredStates()));
 
     FroudeKrylovForceModel F(BODY, env);
@@ -82,52 +89,66 @@ TEST_F(FroudeKrylovForceModelTest, example)
     const double t = 0;
     body->update_intersection_with_free_surface(env, t);
     const ssc::kinematics::Wrench Ffk = F(body->get_states(), t, env);
-//! [FroudeKrylovForceModelTest example]
-//! [FroudeKrylovForceModelTest expected output]
+    //! [FroudeKrylovForceModelTest example]
+    //! [FroudeKrylovForceModelTest expected output]
     ASSERT_DOUBLE_EQ(11056.734651002685, Ffk.X());
     ASSERT_DOUBLE_EQ(0, Ffk.Y());
     ASSERT_DOUBLE_EQ(0, Ffk.Z());
     ASSERT_DOUBLE_EQ(0, Ffk.K());
     ASSERT_DOUBLE_EQ(3910.495427875187, Ffk.M());
     ASSERT_DOUBLE_EQ(432.07086885338083, Ffk.N());
-//! [FroudeKrylovForceModelTest expected output]
+    //! [FroudeKrylovForceModelTest expected output]
 }
 
 TEST_F(FroudeKrylovForceModelTest, validate_formula_against_sos_stab)
 {
     const double Hs = 0.1;
     const double Tp = 5;
-    const double omega0 = 2*PI/Tp;
+    const double omega0 = 2 * PI / Tp;
     double psi = 0;
     double phi = 5.8268;
     double t = 0;
     const double g = 9.81;
-    const double k = omega0*omega0/g;
-    const double dS = 0.2*0.2;
+    const double k = omega0 * omega0 / g;
+    const double dS = 0.2 * 0.2;
     const double rho = 1025;
 
     const double omega_min = a.random<double>().greater_than(0);
     const double omega_max = a.random<double>().greater_than(omega_min);
-    const size_t nfreq = a.random<size_t>().between(2,100);
+    const size_t nfreq = a.random<size_t>().between(2, 100);
     const size_t ndir = nfreq;
     YamlStretching ys;
     ys.h = 0;
     ys.delta = 1;
     const Stretching ss(ys);
-    const DiscreteDirectionalWaveSpectrum A = discretize(DiracSpectralDensity(omega0, Hs), DiracDirectionalSpreading(psi), omega_min, omega_max, nfreq, ndir, ss, false);
+    const DiscreteDirectionalWaveSpectrum A = discretize(
+        DiracSpectralDensity(omega0, Hs),
+        DiracDirectionalSpreading(psi),
+        omega_min,
+        omega_max,
+        nfreq,
+        ndir,
+        ss,
+        false);
     const Airy wave(A, phi);
 
     const std::vector<double> x{-0.1, 0.1, 0, 0, 0, 0};
     const std::vector<double> y{0, 0, -0.1, 0.1, 0, 0};
     const std::vector<double> z{0.2, 0.2, 0.2, 0.2, 0.1, 0.3};
-    const std::vector<double> eta = wave.get_elevation(x,y,t);
+    const std::vector<double> eta = wave.get_elevation(x, y, t);
 
-    const double F1 = rho*g*dS*Hs/2*exp(-k*(z.at(0)-eta.at(0)))*cos(omega0*t-k*(x.at(0)*cos(psi)+y.at(0)*sin(psi))+phi);
-    const double F2 = rho*g*dS*Hs/2*exp(-k*(z.at(1)-eta.at(1)))*cos(omega0*t-k*(x.at(1)*cos(psi)+y.at(1)*sin(psi))+phi);
-    const double F3 = rho*g*dS*Hs/2*exp(-k*(z.at(2)-eta.at(2)))*cos(omega0*t-k*(x.at(2)*cos(psi)+y.at(2)*sin(psi))+phi);
-    const double F4 = rho*g*dS*Hs/2*exp(-k*(z.at(3)-eta.at(3)))*cos(omega0*t-k*(x.at(3)*cos(psi)+y.at(3)*sin(psi))+phi);
-    const double F5 = rho*g*dS*Hs/2*exp(-k*(z.at(4)-eta.at(4)))*cos(omega0*t-k*(x.at(4)*cos(psi)+y.at(4)*sin(psi))+phi);
-    const double F6 = rho*g*dS*Hs/2*exp(-k*(z.at(5)-eta.at(5)))*cos(omega0*t-k*(x.at(5)*cos(psi)+y.at(5)*sin(psi))+phi);
+    const double F1 = rho * g * dS * Hs / 2 * exp(-k * (z.at(0) - eta.at(0))) *
+                      cos(omega0 * t - k * (x.at(0) * cos(psi) + y.at(0) * sin(psi)) + phi);
+    const double F2 = rho * g * dS * Hs / 2 * exp(-k * (z.at(1) - eta.at(1))) *
+                      cos(omega0 * t - k * (x.at(1) * cos(psi) + y.at(1) * sin(psi)) + phi);
+    const double F3 = rho * g * dS * Hs / 2 * exp(-k * (z.at(2) - eta.at(2))) *
+                      cos(omega0 * t - k * (x.at(2) * cos(psi) + y.at(2) * sin(psi)) + phi);
+    const double F4 = rho * g * dS * Hs / 2 * exp(-k * (z.at(3) - eta.at(3))) *
+                      cos(omega0 * t - k * (x.at(3) * cos(psi) + y.at(3) * sin(psi)) + phi);
+    const double F5 = rho * g * dS * Hs / 2 * exp(-k * (z.at(4) - eta.at(4))) *
+                      cos(omega0 * t - k * (x.at(4) * cos(psi) + y.at(4) * sin(psi)) + phi);
+    const double F6 = rho * g * dS * Hs / 2 * exp(-k * (z.at(5) - eta.at(5))) *
+                      cos(omega0 * t - k * (x.at(5) * cos(psi) + y.at(5) * sin(psi)) + phi);
 
     const double Fx = F2 - F1;
     const double Fy = F4 - F3;
@@ -142,26 +163,35 @@ TEST_F(FroudeKrylovForceModelTest, validation_against_sos_stab)
 {
     const double Hs = 0.1;
     const double Tp = 5;
-    const double omega0 = 2*PI/Tp;
+    const double omega0 = 2 * PI / Tp;
     double psi = 0;
     double phi = 5.8268;
     double t = 0;
 
     const double omega_min = a.random<double>().greater_than(0);
     const double omega_max = a.random<double>().greater_than(omega_min);
-    const size_t nfreq = a.random<size_t>().between(2,100);
+    const size_t nfreq = a.random<size_t>().between(2, 100);
     const size_t ndir = nfreq;
     YamlStretching ys;
     ys.h = 0;
     ys.delta = 1;
     const Stretching ss(ys);
-    const DiscreteDirectionalWaveSpectrum A = discretize(DiracSpectralDensity(omega0, Hs), DiracDirectionalSpreading(psi), omega_min, omega_max, nfreq, ndir, ss, false);
+    const DiscreteDirectionalWaveSpectrum A = discretize(
+        DiracSpectralDensity(omega0, Hs),
+        DiracDirectionalSpreading(psi),
+        omega_min,
+        omega_max,
+        nfreq,
+        ndir,
+        ss,
+        false);
 
-    const EnvironmentAndFrames env = get_environment_and_frames(std::shared_ptr<WaveModel>(new Airy(A, phi)));
+    const EnvironmentAndFrames env =
+        get_environment_and_frames(std::shared_ptr<WaveModel>(new Airy(A, phi)));
 
-    BodyStates states = get_body(BODY, cube(0.2,0,0,0.2))->get_states();
-    states.G = ssc::kinematics::Point("NED",0,0,0.2);
-    BodyPtr body(new BodyWithSurfaceForces(states,0,BlockedDOF(""), YamlFilteredStates()));
+    BodyStates states = get_body(BODY, cube(0.2, 0, 0, 0.2))->get_states();
+    states.G = ssc::kinematics::Point("NED", 0, 0, 0.2);
+    BodyPtr body(new BodyWithSurfaceForces(states, 0, BlockedDOF(""), YamlFilteredStates()));
 
     FroudeKrylovForceModel F(BODY, env);
     body->update_intersection_with_free_surface(env, t);

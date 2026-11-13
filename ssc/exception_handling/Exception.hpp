@@ -1,36 +1,37 @@
 #ifndef EXCEPTIONHANDLING_HPP_
 #define EXCEPTIONHANDLING_HPP_
 
-#include <string>
 #include <exception>
 #include <sstream>
+#include <string>
 
-namespace ssc
-{
-    namespace exception_handling
-    {
-        class Exception : public std::exception
-        {
-            public:
-                Exception(const std::string& message, const std::string& file, const std::string& function, const unsigned int line);
+namespace ssc {
+namespace exception_handling {
+class Exception : public std::exception {
+public:
+    Exception(
+        const std::string& message,
+        const std::string& file,
+        const std::string& function,
+        const unsigned int line);
 
-                const char* what() const throw() override;
-                std::string get_message() const;
+    const char* what() const throw() override;
+    std::string get_message() const;
 
-            private:
-                std::string full_message;
-                std::string short_message;
-        };
-    }
-}
+private:
+    std::string full_message;
+    std::string short_message;
+};
+}  // namespace exception_handling
+}  // namespace ssc
 
 #define QUOTEME_(x) #x
 #define QUOTEME(x) QUOTEME_(x)
-#define THROW(function, exception, message)\
-    do {\
-        std::stringstream ssc_throw_message;\
-        ssc_throw_message << message; /* NOLINT(bugprone-macro-parentheses): message is a << chain */\
-        throw exception(ssc_throw_message.str(), __FILE__, function, __LINE__);\
+#define THROW(function, exception, message)                                             \
+    do {                                                                                \
+        std::stringstream ssc_throw_message;                                            \
+        ssc_throw_message                                                               \
+            << message; /* NOLINT(bugprone-macro-parentheses): message is a << chain */ \
+        throw exception(ssc_throw_message.str(), __FILE__, function, __LINE__);         \
     } while (false)
 #endif
-

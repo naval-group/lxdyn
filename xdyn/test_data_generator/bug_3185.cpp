@@ -4,8 +4,9 @@
  *  Created on: Aug 26, 2020
  *      Author: cady
  */
-#include "yaml_data.hpp"
 #include <sstream>
+
+#include "yaml_data.hpp"
 
 std::string test_data::bug_3185_with_invalid_frame()
 {

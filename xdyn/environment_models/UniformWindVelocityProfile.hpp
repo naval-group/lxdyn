@@ -8,13 +8,12 @@
 #ifndef ENVIRONMENT_MODELS_INC_UNIFORMWINDVELOCITYPROFILE_HPP_
 #define ENVIRONMENT_MODELS_INC_UNIFORMWINDVELOCITYPROFILE_HPP_
 
-#include <string>
 #include <Eigen/Dense>
+#include <string>
 
 #include "WindMeanVelocityProfile.hpp"
 
-class UniformWindVelocityProfile : public WindMeanVelocityProfile
-{
+class UniformWindVelocityProfile : public WindMeanVelocityProfile {
 public:
     explicit UniformWindVelocityProfile(const Input& input);
 

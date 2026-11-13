@@ -17,12 +17,11 @@
  *  states: this was done to allow dynamic connections & disconnections of modules
  *  during the simulation. Therefore, if a module needs internal states, it has
  *  to declare them as Parameters.
-*/
-template <class T> class Parameter
-{
-    public:
-        std::string module_name;
+ */
+template <class T>
+class Parameter {
+public:
+    std::string module_name;
 };
-
 
 #endif /* PARAMETER_HPP_ */

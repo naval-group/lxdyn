@@ -5,157 +5,132 @@
  *      Author: cady
  */
 
-
 #ifndef MANEUVERING_GRAMMAR_HPP_
 #define MANEUVERING_GRAMMAR_HPP_
 
-#include "xdyn/external_file_formats/boost_spirit_includes.hpp"
 #include <boost/version.hpp>
+
+#include "xdyn/external_file_formats/boost_spirit_includes.hpp"
 
 // Explicitly disabled efficient C++ flag so that the following line compiles
 // ArithmeticGrammar() : ArithmeticGrammar::base_type(expr) is not compliant with effc++
-// error: 'hdb::hdb_grammar<>::ast' should be initialized in the member initialization list [-Werror=effc++]
+// error: 'hdb::hdb_grammar<>::ast' should be initialized in the member initialization list
+// [-Werror=effc++]
 #pragma GCC diagnostic ignored "-Weffc++"
 
-namespace maneuvering
-{
-    using SpaceType = ascii::blank_type;
+namespace maneuvering {
+using SpaceType = ascii::blank_type;
 
-    struct Nil
-    {
-    };
+struct Nil {};
 
-    struct FunctionCall;
+struct FunctionCall;
 
-    using Identifier = std::string;
+using Identifier = std::string;
 
-    using Atom = boost::variant<
-                    Nil
-                  , double
-                  , Identifier
-                  , boost::recursive_wrapper<FunctionCall>
-                >;
+using Atom = boost::variant<Nil, double, Identifier, boost::recursive_wrapper<FunctionCall>>;
 
-    struct Expr;
+struct Expr;
 
-    using Base = boost::variant<
-                    Nil
-                  , boost::recursive_wrapper<Expr>
-#if BOOST_VERSION<=106200
-                  , boost::recursive_wrapper<Atom>
+using Base = boost::variant<
+    Nil,
+    boost::recursive_wrapper<Expr>
+#if BOOST_VERSION <= 106200
+    ,
+    boost::recursive_wrapper<Atom>
 #else
-                  , Atom
+    ,
+    Atom
 #endif
-                >;
+    >;
 
-    struct Factor
-    {
-        Base base;
-        std::vector<Base> exponents;
-    };
+struct Factor {
+    Base base;
+    std::vector<Base> exponents;
+};
 
-    struct OperatorAndFactor
-    {
-        std::string operator_;
-        Factor factor;
-    };
+struct OperatorAndFactor {
+    std::string operator_;
+    Factor factor;
+};
 
-    struct Term
-    {
-        Factor first;
-        std::vector<OperatorAndFactor> rest;
-    };
+struct Term {
+    Factor first;
+    std::vector<OperatorAndFactor> rest;
+};
 
-    struct OperatorAndTerm
-    {
-        std::string operator_;
-        Term term;
-    };
+struct OperatorAndTerm {
+    std::string operator_;
+    Term term;
+};
 
-    struct Expr
-    {
-        Term first;
-        std::vector<OperatorAndTerm> rest;
-    };
+struct Expr {
+    Term first;
+    std::vector<OperatorAndTerm> rest;
+};
 
-    struct FunctionCall
-    {
-        Identifier function;
-        Expr expr;
-    };
-}
+struct FunctionCall {
+    Identifier function;
+    Expr expr;
+};
+}  // namespace maneuvering
 
 BOOST_FUSION_ADAPT_STRUCT(
-        maneuvering::Factor,
-    (maneuvering::Base, base)
-    (std::vector<maneuvering::Base>, exponents)
-)
+    maneuvering::Factor,
+    (maneuvering::Base, base)(std::vector<maneuvering::Base>, exponents))
 
 BOOST_FUSION_ADAPT_STRUCT(
-        maneuvering::OperatorAndTerm,
-    (std::string, operator_)
-    (maneuvering::Term, term)
-)
+    maneuvering::OperatorAndTerm,
+    (std::string, operator_)(maneuvering::Term, term))
 
 BOOST_FUSION_ADAPT_STRUCT(
-        maneuvering::OperatorAndFactor,
-    (std::string, operator_)
-    (maneuvering::Factor, factor)
-)
+    maneuvering::OperatorAndFactor,
+    (std::string, operator_)(maneuvering::Factor, factor))
 
 BOOST_FUSION_ADAPT_STRUCT(
-        maneuvering::Term,
-    (maneuvering::Factor, first)
-    (std::vector<maneuvering::OperatorAndFactor>, rest)
-)
+    maneuvering::Term,
+    (maneuvering::Factor, first)(std::vector<maneuvering::OperatorAndFactor>, rest))
 
 BOOST_FUSION_ADAPT_STRUCT(
-        maneuvering::Expr,
-    (maneuvering::Term, first)
-    (std::vector<maneuvering::OperatorAndTerm>, rest)
-)
+    maneuvering::Expr,
+    (maneuvering::Term, first)(std::vector<maneuvering::OperatorAndTerm>, rest))
 
 BOOST_FUSION_ADAPT_STRUCT(
-        maneuvering::FunctionCall,
-    (maneuvering::Identifier, function)
-    (maneuvering::Expr, expr)
-)
+    maneuvering::FunctionCall,
+    (maneuvering::Identifier, function)(maneuvering::Expr, expr))
 
-namespace maneuvering
-{
-    struct ArithmeticGrammar : qi::grammar<std::string::const_iterator, Expr(), SpaceType>
+namespace maneuvering {
+struct ArithmeticGrammar : qi::grammar<std::string::const_iterator, Expr(), SpaceType> {
+    ArithmeticGrammar() : ArithmeticGrammar::base_type(expr)
     {
-        ArithmeticGrammar() : ArithmeticGrammar::base_type(expr)
-        {
-            using boost::spirit::ascii::alnum;
-            using boost::spirit::ascii::alpha;
-            expr     = term >> *(operator_and_term);
-            add_operators = qi::char_("+") | qi::char_("-");
-            mul_operators = qi::char_("*") | qi::char_("/");
-            operator_and_term = add_operators >> term;
-            operator_and_factor = mul_operators >> factor;
-            term     = factor >> *(operator_and_factor);
-            factor   = base >> *( '^' >> exponent);
-            base     = ('(' >> expr >> ')') | atom;
-            exponent = base;
-            atom   = function_call | identifier | double_;
-            function_call = identifier >> '(' >> expr >> ')';
-            identifier = alpha >> *(alnum | qi::char_('_'));
-        }
+        using boost::spirit::ascii::alnum;
+        using boost::spirit::ascii::alpha;
+        expr = term >> *(operator_and_term);
+        add_operators = qi::char_("+") | qi::char_("-");
+        mul_operators = qi::char_("*") | qi::char_("/");
+        operator_and_term = add_operators >> term;
+        operator_and_factor = mul_operators >> factor;
+        term = factor >> *(operator_and_factor);
+        factor = base >> *('^' >> exponent);
+        base = ('(' >> expr >> ')') | atom;
+        exponent = base;
+        atom = function_call | identifier | double_;
+        function_call = identifier >> '(' >> expr >> ')';
+        identifier = alpha >> *(alnum | qi::char_('_'));
+    }
 
-        qi::rule<std::string::const_iterator, Expr(), SpaceType>              expr;
-        qi::rule<std::string::const_iterator, std::string(), SpaceType>       add_operators;
-        qi::rule<std::string::const_iterator, std::string(), SpaceType>       mul_operators;
-        qi::rule<std::string::const_iterator, OperatorAndTerm(), SpaceType>   operator_and_term;
-        qi::rule<std::string::const_iterator, OperatorAndFactor(), SpaceType> operator_and_factor;
-        qi::rule<std::string::const_iterator, Term(), SpaceType>              term;
-        qi::rule<std::string::const_iterator, Factor(), SpaceType>            factor;
-        qi::rule<std::string::const_iterator, Base(), SpaceType>              base;
-        qi::rule<std::string::const_iterator, Base(), SpaceType>              exponent;
-        qi::rule<std::string::const_iterator, Atom(), SpaceType>              atom;
-        qi::rule<std::string::const_iterator, FunctionCall(), SpaceType>      function_call;
-        qi::rule<std::string::const_iterator, Identifier(), SpaceType>        identifier;
-    };
-}
+    qi::rule<std::string::const_iterator, Expr(), SpaceType> expr;
+    qi::rule<std::string::const_iterator, std::string(), SpaceType> add_operators;
+    qi::rule<std::string::const_iterator, std::string(), SpaceType> mul_operators;
+    qi::rule<std::string::const_iterator, OperatorAndTerm(), SpaceType> operator_and_term;
+    qi::rule<std::string::const_iterator, OperatorAndFactor(), SpaceType> operator_and_factor;
+    qi::rule<std::string::const_iterator, Term(), SpaceType> term;
+    qi::rule<std::string::const_iterator, Factor(), SpaceType> factor;
+    qi::rule<std::string::const_iterator, Base(), SpaceType> base;
+    qi::rule<std::string::const_iterator, Base(), SpaceType> exponent;
+    qi::rule<std::string::const_iterator, Atom(), SpaceType> atom;
+    qi::rule<std::string::const_iterator, FunctionCall(), SpaceType> function_call;
+    qi::rule<std::string::const_iterator, Identifier(), SpaceType> identifier;
+};
+}  // namespace maneuvering
 
-#endif  /* MANEUVERING_GRAMMAR_HPP_ */
+#endif /* MANEUVERING_GRAMMAR_HPP_ */

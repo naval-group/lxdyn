@@ -1,5 +1,6 @@
-#include "yaml_data.hpp"
 #include <sstream>
+
+#include "yaml_data.hpp"
 
 // For DTMB BEGO MAHDB (YAML by Antoine PAGES)
 

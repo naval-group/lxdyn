@@ -11,11 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class TwoDimensionalInterpolationVariableStepTest : public ::testing::Test
-{
-    protected:
-        TwoDimensionalInterpolationVariableStepTest();
-        ssc::random_data_generator::DataGenerator a;
+class TwoDimensionalInterpolationVariableStepTest : public ::testing::Test {
+protected:
+    TwoDimensionalInterpolationVariableStepTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* TWODIMENSIONALINTERPOLATIONVARIABLESTEPTEST_HPP_ */
+#endif /* TWODIMENSIONALINTERPOLATIONVARIABLESTEPTEST_HPP_ */

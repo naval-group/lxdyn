@@ -6,8 +6,9 @@
  */
 
 #include "KinematicsTests.hpp"
-#include "ssc/kinematics/Kinematics.hpp"
+
 #include "random_kinematics.hpp"
+#include "ssc/kinematics/Kinematics.hpp"
 #include "ssc/kinematics/KinematicsException.hpp"
 #include "ssc/kinematics/rotation_matrix_builders.hpp"
 #include "transform_double_equal.hpp"
@@ -16,9 +17,7 @@ constexpr double EPS = 1E-13;
 
 using namespace ssc::kinematics;
 
-KinematicsTests::KinematicsTests() : a(ssc::random_data_generator::DataGenerator(122))
-{
-}
+KinematicsTests::KinematicsTests() : a(ssc::random_data_generator::DataGenerator(122)) {}
 
 TEST_F(KinematicsTests, can_add_a_transform_to_a_kinematics_object)
 {
@@ -49,15 +48,15 @@ TEST_F(KinematicsTests, can_retrieve_inverse_transform)
     const auto bTa = k.get(to_frame, from_frame);
     //! [KinematicsTests get_example]
     //! [KinematicsTests get_example output]
-    ASSERT_TRUE(double_equal(identity(from_frame), aTb*bTa, EPS));
-    ASSERT_TRUE(double_equal(identity(to_frame), bTa*aTb, EPS));
+    ASSERT_TRUE(double_equal(identity(from_frame), aTb * bTa, EPS));
+    ASSERT_TRUE(double_equal(identity(to_frame), bTa * aTb, EPS));
     //! [KinematicsTests get_example output]
 }
 
 TEST_F(KinematicsTests, throws_if_transform_is_not_computable)
 {
     ssc::kinematics::Kinematics k;
-    ASSERT_THROW(k.get(a.random<std::string>(),a.random<std::string>()), KinematicsException);
+    ASSERT_THROW(k.get(a.random<std::string>(), a.random<std::string>()), KinematicsException);
 }
 
 TEST_F(KinematicsTests, can_compute_a_transformation_if_necessary_and_feasible)
@@ -98,11 +97,11 @@ TEST_F(KinematicsTests, can_compute_the_inverse_of_a_composite_transform)
     k.add(aTb);
     k.add(bTc);
 
-    k.get("A", "C"); // This will build the composite transform A->C
+    k.get("A", "C");  // This will build the composite transform A->C
     ASSERT_NO_THROW(k.get("C", "A"));
 
     const auto cTa = k.get("C", "A");
-    ASSERT_TRUE(double_equal(identity("A"), aTb*bTc*cTa, EPS));
+    ASSERT_TRUE(double_equal(identity("A"), aTb * bTc * cTa, EPS));
 }
 
 TEST_F(KinematicsTests, can_compute_identity)

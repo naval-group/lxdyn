@@ -14,18 +14,19 @@
 #define OBSERVERS_AND_API_DEMO_SCRIPTS_HPP_
 
 #include <string>
+
 #include "H5Cpp.h"
 
 void exportMatLabScripts(
-        const H5::H5File& h5File,
-        const std::string& fileName,
-        const std::string& baseName,
-        const std::string& destination);
+    const H5::H5File& h5File,
+    const std::string& fileName,
+    const std::string& baseName,
+    const std::string& destination);
 
 void exportPythonScripts(
-        const H5::H5File& h5File,
-        const std::string& fileName,
-        const std::string& baseName,
-        const std::string& destination);
+    const H5::H5File& h5File,
+    const std::string& fileName,
+    const std::string& baseName,
+    const std::string& destination);
 
 #endif /* OBSERVERS_AND_API_DEMO_SCRIPTS_HPP_ */

@@ -6,12 +6,13 @@
  */
 
 #include "MMGRudderForceModelTest.hpp"
-#include "xdyn/core/BodyBuilder.hpp"
-#include "xdyn/force_models/MMGRudderForceModel.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 #include <cmath>
 #include <memory>
+
+#include "xdyn/core/BodyBuilder.hpp"
+#include "xdyn/force_models/MMGRudderForceModel.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
 #define PI M_PI
 
 constexpr double DEG2RAD = PI / 180.;
@@ -20,48 +21,47 @@ constexpr double EPS = 1E-6;
 
 #define BODY "body 1"
 
-namespace ssc
+namespace ssc {
+namespace random_data_generator {
+template <>
+MMGRudderForceModel::Yaml TypedScalarDataGenerator<MMGRudderForceModel::Yaml>::get() const
 {
-    namespace random_data_generator
-    {
-        template <>
-        MMGRudderForceModel::Yaml TypedScalarDataGenerator<MMGRudderForceModel::Yaml>::get() const
-        {
-            MMGRudderForceModel::Yaml ret;
-            ret.Ar = random<double>();
-            ret.b = random<double>();
-            ret.xH_adim = random<double>();
-            ret.lR_adim = random<double>();
-            ret.tR = random<double>();
-            ret.aH = random<double>();
-            ret.gammaR = { random<double>(), random<double>() };
-            ret.epsilon = random<double>();
-            ret.kappaMmg = random<double>();
-            ret.effective_aspect_ratio = random<double>();
-            ret.position_of_the_rudder_in_the_body_frame=YamlCoordinates(random<double>(),random<double>(),random<double>());
+    MMGRudderForceModel::Yaml ret;
+    ret.Ar = random<double>();
+    ret.b = random<double>();
+    ret.xH_adim = random<double>();
+    ret.lR_adim = random<double>();
+    ret.tR = random<double>();
+    ret.aH = random<double>();
+    ret.gammaR = {random<double>(), random<double>()};
+    ret.epsilon = random<double>();
+    ret.kappaMmg = random<double>();
+    ret.effective_aspect_ratio = random<double>();
+    ret.position_of_the_rudder_in_the_body_frame =
+        YamlCoordinates(random<double>(), random<double>(), random<double>());
 
-            // Inherited inputs from AbstractWageningen
-            ret.name = random<std::string>();
-            // ret.position_of_propeller_frame
-            ret.wake_coefficient = random<double>();
-            ret.relative_rotative_efficiency = random<double>();
-            ret.thrust_deduction_factor = random<double>();
-            ret.rotating_clockwise = random<bool>();
-            ret.diameter = random<double>();
+    // Inherited inputs from AbstractWageningen
+    ret.name = random<std::string>();
+    // ret.position_of_propeller_frame
+    ret.wake_coefficient = random<double>();
+    ret.relative_rotative_efficiency = random<double>();
+    ret.thrust_deduction_factor = random<double>();
+    ret.rotating_clockwise = random<bool>();
+    ret.diameter = random<double>();
 
-            // Inherited inputs from MMGPropellerForceModel
-            ret.k0 = random<double>();
-            ret.k1 = random<double>();
-            ret.k2 = random<double>();
-            ret.C0 = random<double>();
-            ret.C1 = random<double>();
-            ret.C2 = { random<double>(), random<double>() };
-            ret.application_point = YamlCoordinates(random<double>(), random<double>(),random<double>());
+    // Inherited inputs from MMGPropellerForceModel
+    ret.k0 = random<double>();
+    ret.k1 = random<double>();
+    ret.k2 = random<double>();
+    ret.C0 = random<double>();
+    ret.C1 = random<double>();
+    ret.C2 = {random<double>(), random<double>()};
+    ret.application_point = YamlCoordinates(random<double>(), random<double>(), random<double>());
 
-            return ret;
-        }
-    }
+    return ret;
 }
+}  // namespace random_data_generator
+}  // namespace ssc
 
 MMGRudderForceModelTest::MMGRudderForceModelTest()
     : a(ssc::random_data_generator::DataGenerator(21212))
@@ -73,7 +73,7 @@ EnvironmentAndFrames MMGRudderForceModelTest::get_env()
     EnvironmentAndFrames env;
     env.rho = 1024;
     env.g = 9.81;
-    env.rot = YamlRotation("angle", { "z", "y'", "x''" });
+    env.rot = YamlRotation("angle", {"z", "y'", "x''"});
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
@@ -145,8 +145,9 @@ TEST_F(MMGRudderForceModelTest, get_angle_of_attack)
     (same test than in RudderForceModel).
     */
 
-    const MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),
-                                                       a.random<double>());
+    const MMGRudderForceModel::RudderModel rudderModel(
+        a.random<MMGRudderForceModel::Yaml>(),
+        a.random<double>());
     ASSERT_DOUBLE_EQ(-1, rudderModel.get_angle_of_attack(1, 2));
     ASSERT_DOUBLE_EQ(1, rudderModel.get_angle_of_attack(2, 1));
 }
@@ -158,7 +159,9 @@ TEST_F(MMGRudderForceModelTest, get_fluid_angle)
     test than in RudderForceModel).
     */
 
-    const MMGRudderForceModel::RudderModel rudderModel(a.random<MMGRudderForceModel::Yaml>(),a.random<double>());
+    const MMGRudderForceModel::RudderModel rudderModel(
+        a.random<MMGRudderForceModel::Yaml>(),
+        a.random<double>());
     ssc::kinematics::Point V;
     V.x() = 1;
     V.y() = 2;
@@ -174,7 +177,8 @@ TEST_F(MMGRudderForceModelTest, get_Ar)
     */
 
     const MMGRudderForceModel::RudderModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        a.random<double>());
     ASSERT_DOUBLE_EQ(112.5, rudderModel.get_Ar());
 }
 
@@ -188,8 +192,9 @@ TEST_F(MMGRudderForceModelTest, get_Fn)
     MMGRudderForceModel::Yaml parameters = a.random<MMGRudderForceModel::Yaml>();
     parameters.effective_aspect_ratio = 1.827;
     const MMGRudderForceModel::RudderModel rudderModel(parameters, 1025);
-    ASSERT_DOUBLE_EQ(0.5 * 1025 * 100 * 100 * 2.7469977924944815 * 0.5,
-                     rudderModel.get_Fn(100, 10, 30 * DEG2RAD));
+    ASSERT_DOUBLE_EQ(
+        0.5 * 1025 * 100 * 100 * 2.7469977924944815 * 0.5,
+        rudderModel.get_Fn(100, 10, 30 * DEG2RAD));
 }
 
 TEST_F(MMGRudderForceModelTest, get_force)
@@ -204,16 +209,17 @@ TEST_F(MMGRudderForceModelTest, get_force)
     */
 
     const MMGRudderForceModel::RudderModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        a.random<double>());
 
     ssc::kinematics::Vector6d force = rudderModel.get_force(1000, 30 * DEG2RAD);
 
     ASSERT_NEAR(-(1 - 0.387) * 1000 * 0.5, force(0), EPS);
     ASSERT_NEAR(-(1 + 0.312) * 1000 * 0.8660254037844386, force(1), EPS);
     ASSERT_NEAR(0, force(2), EPS);
-    ASSERT_NEAR(12.6*(1 + 0.312) * 1000 * 0.8660254037844386, force(3), EPS);
+    ASSERT_NEAR(12.6 * (1 + 0.312) * 1000 * 0.8660254037844386, force(3), EPS);
     ASSERT_NEAR(0, force(4), EPS);
-    ASSERT_NEAR(-(-160-0.312*148.48) * 1000 * 0.8660254037844386, force(5), EPS);
+    ASSERT_NEAR(-(-160 - 0.312 * 148.48) * 1000 * 0.8660254037844386, force(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, get_vr)
@@ -227,7 +233,8 @@ TEST_F(MMGRudderForceModelTest, get_vr)
 
     // Build MMG Rudder Force Model
     const MMGRudderForceModel::RudderModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), a.random<double>());
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        a.random<double>());
     // Define a 10m/s ship speed with a +30° drift angle in MMG ref (i.e. v<0)
     BodyStates states;
     const double t = 0;
@@ -239,21 +246,19 @@ TEST_F(MMGRudderForceModelTest, get_vr)
     ///////////////////////
     // define yaw rate to have beta_R>0
     states.r.record(t, -0.023);
-    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.);
+    double vr = rudderModel.get_vr(states.u(), states.v(), states.r(), 0.);
     // gamma_R=0.64 because beta_R>0
-    ASSERT_NEAR(10 * 0.64 * (PI / 6 - 0.71 * 0.023 * 320 / 10),
-                     vr,EPS);
+    ASSERT_NEAR(10 * 0.64 * (PI / 6 - 0.71 * 0.023 * 320 / 10), vr, EPS);
 
     ///////////////////////
     // TEST 2 : beta_R<0 //
     ///////////////////////
     // define yaw rate to have beta_R<0
     states.r.record(t, -0.025);
-    vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.);
+    vr = rudderModel.get_vr(states.u(), states.v(), states.r(), 0.);
     // gamma_R=0.395 because beta_R<0
-    ASSERT_NEAR(10 * 0.395 * (PI / 6 - 0.71 * 0.025 * 320 / 10),
-                     vr,EPS);
-    
+    ASSERT_NEAR(10 * 0.395 * (PI / 6 - 0.71 * 0.025 * 320 / 10), vr, EPS);
+
     ////////////////////////////
     // TEST 3 : beta_R>0 4dof //
     ////////////////////////////
@@ -261,10 +266,9 @@ TEST_F(MMGRudderForceModelTest, get_vr)
     states.r.record(t, -0.023);
     // define yaw rate to have beta_R<0
     states.p.record(t, 0.03);
-    vr = rudderModel.get_vr(states.u(), states.v(), states.r(),states.p());
+    vr = rudderModel.get_vr(states.u(), states.v(), states.r(), states.p());
     // gamma_R=0.395 because beta_R<0
-    ASSERT_NEAR(10 * 0.64 * (PI / 6 + (- 0.71 * 0.023 * 320 + 12.6 * 0.03) / 10),
-                     vr,EPS);
+    ASSERT_NEAR(10 * 0.64 * (PI / 6 + (-0.71 * 0.023 * 320 + 12.6 * 0.03) / 10), vr, EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, get_vs)
@@ -292,30 +296,35 @@ TEST_F(MMGRudderForceModelTest, get_wrench)
 {
     /*
     The purpose of this test is to check the non-regression of the function
-    get_wrench which computes the rudder tensor given a rudder velocity, a rudder area and a rudder angle.
+    get_wrench which computes the rudder tensor given a rudder velocity, a rudder area and a rudder
+    angle.
     */
 
-    const MMGRudderForceModel::RudderModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), 1025);
+    const MMGRudderForceModel::RudderModel rudderModel(
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        1025);
     // Define a 10 m/s fluid velocity with a -5° angle at rudder location
     Eigen::Vector3d Vrud_vec(10 * cos(5 * DEG2RAD), -10 * sin(5 * DEG2RAD), 0);
     const ssc::kinematics::Point Vrud("", Vrud_vec);
     /*
-    With a 30° inflow angle of attack at the rudder location, a 100m2 rudder area and a 10m/s fluid velocity: Fn=7039181.843267109
-    In order to have a 30° fluid angle of attack at the rudder location, we define a 25° rudder angle
+    With a 30° inflow angle of attack at the rudder location, a 100m2 rudder area and a 10m/s fluid
+    velocity: Fn=7039181.843267109 In order to have a 30° fluid angle of attack at the rudder
+    location, we define a 25° rudder angle
     */
-    ssc::kinematics::Vector6d force = rudderModel.get_wrench(25*DEG2RAD, Vrud, 100);
-    ASSERT_NEAR(-(1 - 0.387) * 7039181.843267109*sin(25*DEG2RAD), force(0), EPS);
-    ASSERT_NEAR(-(1 + 0.312) * 7039181.843267109 * cos(25*DEG2RAD), force(1), EPS);
+    ssc::kinematics::Vector6d force = rudderModel.get_wrench(25 * DEG2RAD, Vrud, 100);
+    ASSERT_NEAR(-(1 - 0.387) * 7039181.843267109 * sin(25 * DEG2RAD), force(0), EPS);
+    ASSERT_NEAR(-(1 + 0.312) * 7039181.843267109 * cos(25 * DEG2RAD), force(1), EPS);
     ASSERT_NEAR(0, force(2), EPS);
-    ASSERT_NEAR(12.6*(1 + 0.312) * 7039181.843267109 * cos(25*DEG2RAD), force(3), EPS);
+    ASSERT_NEAR(12.6 * (1 + 0.312) * 7039181.843267109 * cos(25 * DEG2RAD), force(3), EPS);
     ASSERT_NEAR(0, force(4), EPS);
-    ASSERT_NEAR(-7039181.843267109 * cos(25*DEG2RAD) * (-160- 0.312 * 148.48), force(5), EPS);
+    ASSERT_NEAR(-7039181.843267109 * cos(25 * DEG2RAD) * (-160 - 0.312 * 148.48), force(5), EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, force_and_torque_3dof)
 {
     /*
-    This test checks the non-regression of the propeller + rudder tensor. The test is performed in 3 dof (u,v,r but no p).
+    This test checks the non-regression of the propeller + rudder tensor. The test is performed in 3
+    dof (u,v,r but no p).
     */
 
     // Create environnement
@@ -324,7 +333,10 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_3dof)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
     // Create rudder force model
-    const MMGRudderForceModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), b->get_name(), env);
+    const MMGRudderForceModel rudderModel(
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        b->get_name(),
+        env);
 
     // Define body velocities
     const double t = 0;
@@ -333,9 +345,9 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_3dof)
     states.r.record(0, 0.01);
     // Create commands
     std::map<std::string, double> commands;
-    commands["rpm"] = 70*2*PI/60; //70 rpm = 70*2*PI/60 rad/s
-    commands["P/D"] = 1.2;//useless for MMG propeller but necessary for AbstractWageningen
-    commands["beta"] = 10*DEG2RAD;
+    commands["rpm"] = 70 * 2 * PI / 60;  // 70 rpm = 70*2*PI/60 rad/s
+    commands["P/D"] = 1.2;  // useless for MMG propeller but necessary for AbstractWageningen
+    commands["beta"] = 10 * DEG2RAD;
 
     const auto rudderTensor = rudderModel.get_force(states, t, env, commands);
 
@@ -343,7 +355,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_3dof)
     ASSERT_NEAR(1056710.37800258, rudderTensor.X(), EPS);
     ASSERT_NEAR(3006024.8295614929, rudderTensor.Y(), EPS);
     ASSERT_NEAR(0, rudderTensor.Z(), EPS);
-    ASSERT_NEAR(-12.6*3006024.8295614929, rudderTensor.K(), EPS);
+    ASSERT_NEAR(-12.6 * 3006024.8295614929, rudderTensor.K(), EPS);
     ASSERT_NEAR(0, rudderTensor.M(), EPS);
     ASSERT_NEAR(-13618758.831489002, rudderTensor.N(), EPS);
 }
@@ -351,18 +363,22 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_3dof)
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_3dof)
 {
     /*
-    This test checks the non-regression of the rudder tensor independently from the propeller tensor. The test is performed in 3 dof (u,v,r but no p).
+    This test checks the non-regression of the rudder tensor independently from the propeller
+    tensor. The test is performed in 3 dof (u,v,r but no p).
     */
-    
-    MMGRudderForceModel::Yaml input
-        = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+
+    MMGRudderForceModel::Yaml input =
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
     // Create rudder force model
-    const MMGRudderForceModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), b->get_name(), env);
+    const MMGRudderForceModel rudderModel(
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        b->get_name(),
+        env);
 
     // Define body velocities
     const double t = 0;
@@ -371,17 +387,17 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_3dof)
     states.r.record(0, 0.01);
     // Create commands
     std::map<std::string, double> commands;
-    commands["beta"] = PI/6;
+    commands["beta"] = PI / 6;
 
     // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm and D=9
-    const double prop_thrust=1024*pow(70/60,2)*pow(9,4)*0.5;
+    const double prop_thrust = 1024 * pow(70 / 60, 2) * pow(9, 4) * 0.5;
 
-    const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
+    const auto rudderTensor = rudderModel.get_rudder_force(states, t, env, commands, prop_thrust);
 
     ASSERT_NEAR(-1828188.6643903784, rudderTensor(0), EPS);
     ASSERT_NEAR(6777273.305285248, rudderTensor(1), EPS);
     ASSERT_NEAR(0, rudderTensor(2), EPS);
-    ASSERT_NEAR(-12.6*6777273.305285248, rudderTensor(3), EPS);
+    ASSERT_NEAR(-12.6 * 6777273.305285248, rudderTensor(3), EPS);
     ASSERT_NEAR(0, rudderTensor(4), EPS);
     ASSERT_NEAR(-1065797305.9761363, rudderTensor(5), EPS);
 }
@@ -389,11 +405,12 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_3dof)
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_4dof)
 {
     /*
-    This test checks the non-regression of the rudder tensor independently from the propeller tensor. The test is performed in 4 dof (u,v,r and p).
+    This test checks the non-regression of the rudder tensor independently from the propeller
+    tensor. The test is performed in 4 dof (u,v,r and p).
     */
 
-    MMGRudderForceModel::Yaml input
-        = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+    MMGRudderForceModel::Yaml input =
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
@@ -407,46 +424,49 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_4dof)
     states.r.record(0, 0.01);
 
     // Define a -30° heel angle
-    const double phi=-PI/6;
+    const double phi = -PI / 6;
     // Get quaternions corresponding corresponding to a -30° heel angle
-    auto quaternions=states.convert(ssc::kinematics::EulerAngles(phi,0,0),env.rot);
-    states.qr.record(0,std::get<0>(quaternions));
-    states.qi.record(0,std::get<1>(quaternions));
-    states.qj.record(0,std::get<2>(quaternions));
-    states.qk.record(0,std::get<3>(quaternions));
+    auto quaternions = states.convert(ssc::kinematics::EulerAngles(phi, 0, 0), env.rot);
+    states.qr.record(0, std::get<0>(quaternions));
+    states.qi.record(0, std::get<1>(quaternions));
+    states.qj.record(0, std::get<2>(quaternions));
+    states.qk.record(0, std::get<3>(quaternions));
 
     // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm and D=9
-    const double prop_thrust=1024*pow(70/60,2)*pow(9,4)*0.5;
+    const double prop_thrust = 1024 * pow(70 / 60, 2) * pow(9, 4) * 0.5;
 
     // Create commands
     std::map<std::string, double> commands;
-    commands["beta"] = PI/6;
+    commands["beta"] = PI / 6;
 
     //////////////////////////////////
     // TEST 1: phi, dphi/dt=0, zG=0 //
     //////////////////////////////////
-    
-    const MMGRudderForceModel rudderModel_1(input, b->get_name(), env);
-    const auto rudderTensor_1 = rudderModel_1.get_rudder_force(states, t, env, commands,prop_thrust);
 
-    ASSERT_NEAR(-1828188.6643903784*cos(phi), rudderTensor_1(0), EPS);
-    ASSERT_NEAR(6777273.305285248*cos(phi), rudderTensor_1(1), EPS);
+    const MMGRudderForceModel rudderModel_1(input, b->get_name(), env);
+    const auto rudderTensor_1 =
+        rudderModel_1.get_rudder_force(states, t, env, commands, prop_thrust);
+
+    ASSERT_NEAR(-1828188.6643903784 * cos(phi), rudderTensor_1(0), EPS);
+    ASSERT_NEAR(6777273.305285248 * cos(phi), rudderTensor_1(1), EPS);
     ASSERT_NEAR(0, rudderTensor_1(2), EPS);
-    ASSERT_NEAR(-12.6*6777273.305285248*cos(phi), rudderTensor_1(3), EPS);
+    ASSERT_NEAR(-12.6 * 6777273.305285248 * cos(phi), rudderTensor_1(3), EPS);
     ASSERT_NEAR(0, rudderTensor_1(4), EPS);
-    ASSERT_NEAR(-1065797305.9761363*cos(phi), rudderTensor_1(5), EPS);
+    ASSERT_NEAR(-1065797305.9761363 * cos(phi), rudderTensor_1(5), EPS);
 
     //////////////////////////////////////
     // TEST 2: phi<>0, dphi/dt<>0, zG=0 //
     //////////////////////////////////////
-    
-    states.p.record(0, 0.02);// we define a dphi/dt value
+
+    states.p.record(0, 0.02);  // we define a dphi/dt value
     // vm has the same value than TEST 1 because zG=0
-    // To keep the same betaR value than TEST 1, we need to introduce a new m_lR_new so that m_lR_new = m_lR - zR*p/r
-    input.lR_adim+=input.position_of_the_rudder_in_the_body_frame.z*2/input.Lpp;
+    // To keep the same betaR value than TEST 1, we need to introduce a new m_lR_new so that
+    // m_lR_new = m_lR - zR*p/r
+    input.lR_adim += input.position_of_the_rudder_in_the_body_frame.z * 2 / input.Lpp;
 
     const MMGRudderForceModel rudderModel_2(input, b->get_name(), env);
-    const auto rudderTensor_2 = rudderModel_2.get_rudder_force(states, t, env, commands,prop_thrust);
+    const auto rudderTensor_2 =
+        rudderModel_2.get_rudder_force(states, t, env, commands, prop_thrust);
 
     ASSERT_NEAR(rudderTensor_1(0), rudderTensor_2(0), EPS);
     ASSERT_NEAR(rudderTensor_1(1), rudderTensor_2(1), EPS);
@@ -460,9 +480,10 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_4dof)
     ///////////////////////////////////////
 
     // To keep the same vm than TEST 1 we need xG*r=zG*p
-    states.G.x()=2;
-    states.G.z()=1;
-    const auto rudderTensor_3 = rudderModel_2.get_rudder_force(states, t, env, commands,prop_thrust);
+    states.G.x() = 2;
+    states.G.z() = 1;
+    const auto rudderTensor_3 =
+        rudderModel_2.get_rudder_force(states, t, env, commands, prop_thrust);
 
     ASSERT_NEAR(rudderTensor_1(0), rudderTensor_3(0), EPS);
     ASSERT_NEAR(rudderTensor_1(1), rudderTensor_3(1), EPS);
@@ -475,22 +496,27 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_4dof)
 TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG_3dof)
 {
     /*
-    This test checks that the displacement of the point of application or CoG is well taken into account. The test is performed in 3 dof (u,v,r but no p).
+    This test checks that the displacement of the point of application or CoG is well taken into
+    account. The test is performed in 3 dof (u,v,r but no p).
     */
-    
+
     ///////////////////////
-    // TEST 1: reference test with the body frame origin, the MMG frame origin and the CoG located at the same point
+    // TEST 1: reference test with the body frame origin, the MMG frame origin and the CoG located
+    // at the same point
     ///////////////////////
 
-    MMGRudderForceModel::Yaml input
-        = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+    MMGRudderForceModel::Yaml input =
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
     // Create rudder force model
-    const MMGRudderForceModel rudderModel(MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()), b->get_name(), env);
+    const MMGRudderForceModel rudderModel(
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        b->get_name(),
+        env);
     // Define body velocities
     const double t = 0;
     states.u.record(0, 8);
@@ -498,21 +524,24 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG_3dof)
     states.r.record(0, 0.01);
     // Create commands
     std::map<std::string, double> commands;
-    commands["beta"] = PI/6;
+    commands["beta"] = PI / 6;
     // Define a propeller thrust with rho=1024, K_T=0.5, n=70 rpm, t=0.2 and D=9
-    const double prop_thrust=0.8*1024*pow(70/60,2)*pow(9,4)*0.5;
+    const double prop_thrust = 0.8 * 1024 * pow(70 / 60, 2) * pow(9, 4) * 0.5;
     // Compute rudder force
-    const auto rudderTensor_case1 = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
+    const auto rudderTensor_case1 =
+        rudderModel.get_rudder_force(states, t, env, commands, prop_thrust);
 
     ///////////////////////
-    // TEST 2: the CoG is moved 10m backward from the body frame origin (which is still the same than the MMG origin), so that xG=-10
+    // TEST 2: the CoG is moved 10m backward from the body frame origin (which is still the same
+    // than the MMG origin), so that xG=-10
     ///////////////////////
 
     // To keep the same vm value than TEST 1, we need v=0.9 so that vm=0.9+10*0.01=1
     states.v.record(0, 0.9);
-    states.G=ssc::kinematics::Point(b->get_name(),{-10,2,3});
+    states.G = ssc::kinematics::Point(b->get_name(), {-10, 2, 3});
     // Compute rudder force
-    const auto rudderTensor_case2 = rudderModel.get_rudder_force(states, t, env, commands,prop_thrust);
+    const auto rudderTensor_case2 =
+        rudderModel.get_rudder_force(states, t, env, commands, prop_thrust);
 
     ASSERT_NEAR(rudderTensor_case2(0), rudderTensor_case1(0), EPS);
     ASSERT_NEAR(rudderTensor_case2(1), rudderTensor_case1(1), EPS);
@@ -522,18 +551,20 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG_3dof)
     ASSERT_NEAR(rudderTensor_case2(5), rudderTensor_case1(5), EPS);
 
     ///////////////////////
-    // TEST 3: the CoG is moved 10m backward from the body frame origin and the MMG frame origin is moved 10m forward the body frame origin, so that xG=-20.
+    // TEST 3: the CoG is moved 10m backward from the body frame origin and the MMG frame origin is
+    // moved 10m forward the body frame origin, so that xG=-20.
     ///////////////////////
 
-    input.position_of_propeller_frame.coordinates.x+=10;
-    input.position_of_the_rudder_in_the_body_frame.x+=10;
-    input.application_point.x+=10;
+    input.position_of_propeller_frame.coordinates.x += 10;
+    input.position_of_the_rudder_in_the_body_frame.x += 10;
+    input.application_point.x += 10;
     // To keep the same vm value than TEST 1, we need v=0.8 so that vm=0.8+20*0.01=1
     states.v.record(0, 0.8);
     // Create a new rudder force model with new inputs
     const MMGRudderForceModel rudderModel_new(input, b->get_name(), env);
     // Compute rudder force
-    const auto rudderTensor_case3 = rudderModel_new.get_rudder_force(states, t, env, commands,prop_thrust);
+    const auto rudderTensor_case3 =
+        rudderModel_new.get_rudder_force(states, t, env, commands, prop_thrust);
 
     ASSERT_NEAR(rudderTensor_case3(0), rudderTensor_case1(0), EPS);
     ASSERT_NEAR(rudderTensor_case3(1), rudderTensor_case1(1), EPS);
@@ -550,8 +581,8 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_with_propeller_pitch_3dof)
        rotated by an angle phi around its x-axis.
     */
 
-    MMGRudderForceModel::Yaml input
-        = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+    MMGRudderForceModel::Yaml input =
+        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
@@ -592,28 +623,28 @@ TEST_F(MMGRudderForceModelTest, get_rudder_location_in_MMG_frame)
     /*
     The purpose of this test is to verify that the rudder location in MMG frame is well computed
     */
-    
+
     MMGRudderForceModel::Yaml input = a.random<MMGRudderForceModel::Yaml>();
-    input.position_of_the_rudder_in_the_body_frame=YamlCoordinates(1,-2,3);
+    input.position_of_the_rudder_in_the_body_frame = YamlCoordinates(1, -2, 3);
 
     /////////////////////////////////////
     // TEST 1 : MMG frame = body frame //
     /////////////////////////////////////
-    
-    input.application_point=YamlCoordinates(0,0,0);
-    const MMGRudderForceModel::RudderModel rudderModel_1(input,a.random<double>());
-    
+
+    input.application_point = YamlCoordinates(0, 0, 0);
+    const MMGRudderForceModel::RudderModel rudderModel_1(input, a.random<double>());
+
     ASSERT_DOUBLE_EQ(1, rudderModel_1.get_rudder_location_in_MMG_frame()(0));
     ASSERT_DOUBLE_EQ(-2, rudderModel_1.get_rudder_location_in_MMG_frame()(1));
     ASSERT_DOUBLE_EQ(3, rudderModel_1.get_rudder_location_in_MMG_frame()(2));
-    
+
     /////////////////////////////////////
     // TEST2 : MMG frame <> body frame //
     /////////////////////////////////////
-    
-    input.application_point=YamlCoordinates(-2,1,-0.5);
-    const MMGRudderForceModel::RudderModel rudderModel_2(input,a.random<double>());
-    
+
+    input.application_point = YamlCoordinates(-2, 1, -0.5);
+    const MMGRudderForceModel::RudderModel rudderModel_2(input, a.random<double>());
+
     ASSERT_DOUBLE_EQ(3, rudderModel_2.get_rudder_location_in_MMG_frame()(0));
     ASSERT_DOUBLE_EQ(-3, rudderModel_2.get_rudder_location_in_MMG_frame()(1));
     ASSERT_DOUBLE_EQ(3.5, rudderModel_2.get_rudder_location_in_MMG_frame()(2));

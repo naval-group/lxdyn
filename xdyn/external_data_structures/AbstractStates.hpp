@@ -5,36 +5,63 @@
  *      Author: cady
  */
 
-
 #ifndef CORE_INC_ABSTRACTSTATES_HPP_
 #define CORE_INC_ABSTRACTSTATES_HPP_
 
-#define OP(x,op,y) (x op y)
+#define OP(x, op, y) (x op y)
 
-#define EQUAL(x) OP(lhs.x,==,rhs.x)
+#define EQUAL(x) OP(lhs.x, ==, rhs.x)
 
-#define ASSIGN(x) OP(x,=,rhs.x) // To prevent typos (eg. rhs & lhs don't match in assigment)
+#define ASSIGN(x) OP(x, =, rhs.x)  // To prevent typos (eg. rhs & lhs don't match in assigment)
 
-template <typename T> struct AbstractStates
-{
-    AbstractStates(const T& x_
-                  ,const T& y_
-                  ,const T& z_
-                  ,const T& u_
-                  ,const T& v_
-                  ,const T& w_
-                  ,const T& p_
-                  ,const T& q_
-                  ,const T& r_
-                  ,const T& qr_
-                  ,const T& qi_
-                  ,const T& qj_
-                  ,const T& qk_
-                  ) : x(x_),y(y_),z(z_),u(u_),v(v_),w(w_),p(p_),q(q_),r(r_),qr(qr_),qi(qi_),qj(qj_),qk(qk_)
+template <typename T>
+struct AbstractStates {
+    AbstractStates(
+        const T& x_,
+        const T& y_,
+        const T& z_,
+        const T& u_,
+        const T& v_,
+        const T& w_,
+        const T& p_,
+        const T& q_,
+        const T& r_,
+        const T& qr_,
+        const T& qi_,
+        const T& qj_,
+        const T& qk_)
+        : x(x_)
+        , y(y_)
+        , z(z_)
+        , u(u_)
+        , v(v_)
+        , w(w_)
+        , p(p_)
+        , q(q_)
+        , r(r_)
+        , qr(qr_)
+        , qi(qi_)
+        , qj(qj_)
+        , qk(qk_)
     {
     }
 
-    explicit AbstractStates(const double Tmax=0) : x(Tmax),y(Tmax),z(Tmax),u(Tmax),v(Tmax),w(Tmax),p(Tmax),q(Tmax),r(Tmax),qr(Tmax),qi(Tmax),qj(Tmax),qk(Tmax) {}
+    explicit AbstractStates(const double Tmax = 0)
+        : x(Tmax)
+        , y(Tmax)
+        , z(Tmax)
+        , u(Tmax)
+        , v(Tmax)
+        , w(Tmax)
+        , p(Tmax)
+        , q(Tmax)
+        , r(Tmax)
+        , qr(Tmax)
+        , qi(Tmax)
+        , qj(Tmax)
+        , qk(Tmax)
+    {
+    }
     AbstractStates(const AbstractStates<T>& rhs) = default;
     AbstractStates<T>& operator=(const AbstractStates<T>& rhs) = default;
     /// x-coordinate of the body's center of gravity in the NED frame (in m)
@@ -43,17 +70,23 @@ template <typename T> struct AbstractStates
     T y;
     /// z-coordinate of the body's center of gravity in the NED frame (in m)
     T z;
-    /// Projection of the body's translation speed (relative to NED) along the body's X-axis (in m/s)
+    /// Projection of the body's translation speed (relative to NED) along the body's X-axis (in
+    /// m/s)
     T u;
-    /// Projection of the body's translation speed (relative to NED) along the body's Y-axis (in m/s)
+    /// Projection of the body's translation speed (relative to NED) along the body's Y-axis (in
+    /// m/s)
     T v;
-    /// Projection of the body's translation speed (relative to NED) along the body's Z-axis (in m/s)
+    /// Projection of the body's translation speed (relative to NED) along the body's Z-axis (in
+    /// m/s)
     T w;
-    /// Projection of the body's rotational speed (relative to NED) along the body's X-axis (in rad/s)
+    /// Projection of the body's rotational speed (relative to NED) along the body's X-axis (in
+    /// rad/s)
     T p;
-    /// Projection of the body's rotational speed (relative to NED) along the body's Y-axis (in rad/s)
+    /// Projection of the body's rotational speed (relative to NED) along the body's Y-axis (in
+    /// rad/s)
     T q;
-    /// Projection of the body's rotational speed (relative to NED) along the body's Z-axis (in rad/s)
+    /// Projection of the body's rotational speed (relative to NED) along the body's Z-axis (in
+    /// rad/s)
     T r;
     /// Real part of the quaternion (of the rotation from NED to body)
     T qr;
@@ -65,21 +98,12 @@ template <typename T> struct AbstractStates
     T qk;
 };
 
-template <typename T> bool operator==(const AbstractStates<T>& lhs, const AbstractStates<T>& rhs)
+template <typename T>
+bool operator==(const AbstractStates<T>& lhs, const AbstractStates<T>& rhs)
 {
-    return EQUAL(x)
-       and EQUAL(y)
-       and EQUAL(z)
-       and EQUAL(u)
-       and EQUAL(v)
-       and EQUAL(w)
-       and EQUAL(p)
-       and EQUAL(q)
-       and EQUAL(r)
-       and EQUAL(qr)
-       and EQUAL(qi)
-       and EQUAL(qj)
-       and EQUAL(qk);
+    return EQUAL(x) and EQUAL(y) and EQUAL(z) and EQUAL(u) and EQUAL(v) and EQUAL(w) and
+           EQUAL(p) and EQUAL(q) and EQUAL(r) and EQUAL(qr) and EQUAL(qi) and EQUAL(qj) and
+           EQUAL(qk);
 }
 
-#endif  /* CORE_INC_ABSTRACTSTATES_HPP_ */
+#endif /* CORE_INC_ABSTRACTSTATES_HPP_ */

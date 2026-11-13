@@ -6,21 +6,23 @@
  */
 
 #include "parse_time_seriesTest.hpp"
+
 #include "parse_time_series.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
-parse_time_seriesTest::parse_time_seriesTest() : a(ssc::random_data_generator::DataGenerator(542121))
+parse_time_seriesTest::parse_time_seriesTest()
+    : a(ssc::random_data_generator::DataGenerator(542121))
 {
 }
 
 TEST_F(parse_time_seriesTest, example)
 {
-//! [parse_command_yaml example]
-    const std::string commands_yaml =
-          "  - name: controller\n"
-          "    t: [0,1,3,10]\n"
-          "    psi_co: {unit: rad, values: [0.25, 0.30, 0.40, 0]}\n";
-    std::vector<YamlTimeSeries> commands = parse_command_yaml(test_data::controlled_forces()+commands_yaml);
+    //! [parse_command_yaml example]
+    const std::string commands_yaml = "  - name: controller\n"
+                                      "    t: [0,1,3,10]\n"
+                                      "    psi_co: {unit: rad, values: [0.25, 0.30, 0.40, 0]}\n";
+    std::vector<YamlTimeSeries> commands =
+        parse_command_yaml(test_data::controlled_forces() + commands_yaml);
     ASSERT_EQ(2, commands.size());
     ASSERT_EQ("propeller", commands[0].name);
     ASSERT_EQ(4, commands[0].t.size());
@@ -52,12 +54,12 @@ TEST_F(parse_time_seriesTest, example)
     ASSERT_DOUBLE_EQ(0.30, commands[1].values["psi_co"][1]);
     ASSERT_DOUBLE_EQ(0.40, commands[1].values["psi_co"][2]);
     ASSERT_DOUBLE_EQ(0, commands[1].values["psi_co"][3]);
-//! [parse_command_yaml example]
+    //! [parse_command_yaml example]
 }
 
 TEST_F(parse_time_seriesTest, setpoints_example)
 {
-//! [parse_setpoint_yaml example]
+    //! [parse_setpoint_yaml example]
     std::vector<YamlTimeSeries> setpoints = parse_setpoint_yaml(test_data::setpoints());
     ASSERT_EQ(2, setpoints.size());
 
@@ -85,5 +87,5 @@ TEST_F(parse_time_seriesTest, setpoints_example)
     ASSERT_EQ(1, setpoints[1].values.size());
     ASSERT_EQ(1, setpoints[1].values["psi_co"].size());
     ASSERT_DOUBLE_EQ(2.5, setpoints[1].values["psi_co"][0]);
-//! [parse_setpoint_yaml example]
+    //! [parse_setpoint_yaml example]
 }

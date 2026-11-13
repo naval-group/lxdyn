@@ -6,37 +6,37 @@
  */
 
 #include "SimulatorYamlParser.hpp"
+
 #include "external_data_structures_parsers.hpp"
 #include "parse_controllers.hpp"
 #include "parse_time_series.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "yaml_compat.h"
 
-SimulatorYamlParser::SimulatorYamlParser(const std::string& data) : contents(data)
-{
-}
+SimulatorYamlParser::SimulatorYamlParser(const std::string& data) : contents(data) {}
 
 #define PARSE_OPTIONAL_KEY(key, dest) \
-if(node[key])\
-    {\
-        node[key] >> (dest);\
+    if (node[key]) {                  \
+        node[key] >> (dest);          \
     }
 
-
-#define CHECK_KEY_EXISTS(key) \
-    if (!node[key]) \
-    { \
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, \
-            std::string("YAML node \"") + (key) + \
-            std::string("\" is missing in the input data. Please add this node. See xdyn help!")); \
+#define CHECK_KEY_EXISTS(key)                                                                  \
+    if (!node[key]) {                                                                          \
+        THROW(                                                                                 \
+            __PRETTY_FUNCTION__,                                                               \
+            InvalidInputException,                                                             \
+            std::string("YAML node \"") + (key) +                                              \
+                std::string(                                                                   \
+                    "\" is missing in the input data. Please add this node. See xdyn help!")); \
     }
 
 YamlSimulatorInput SimulatorYamlParser::parse() const
 {
     YAML::Node node = YAML::Load(contents);
-    if (node.size() == 0)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException,
+    if (node.size() == 0) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
             "Something is wrong with the YAML data: no YAML nodes were detected by the YAML parser.");
     }
     CHECK_KEY_EXISTS("rotations convention");

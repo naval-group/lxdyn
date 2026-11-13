@@ -1,32 +1,36 @@
 #include "JSONSerializer.hpp"
 
-#include <ssc/json.hpp>
 #include <ssc/json/rapidjson/document.h>
-#include <ssc/json/rapidjson/writer.h>
 #include <ssc/json/rapidjson/stringbuffer.h>
+#include <ssc/json/rapidjson/writer.h>
 
-#include <iomanip> // std::setprecision
+#include <iomanip>  // std::setprecision
+#include <ssc/json.hpp>
 
 YamlSimServerInputs deserialize(const std::string& input)
 {
     rapidjson::Document document;
     ssc::json::parse(input, document);
     YamlSimServerInputs infos;
-    if (not(document.IsObject()))
-    {
-        THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "JSON should be an object (i.e. within curly braces), but it's not (it's a " << ssc::json::print_type(document) << "). The JSON we're looking at was: " << ssc::json::dump(document));
+    if (not(document.IsObject())) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            ssc::json::Exception,
+            "JSON should be an object (i.e. within curly braces), but it's not (it's a "
+                << ssc::json::print_type(document)
+                << "). The JSON we're looking at was: " << ssc::json::dump(document));
     }
-    if (not(document.HasMember("states")))
-    {
+    if (not(document.HasMember("states"))) {
         THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "Missing key 'states' in JSON root.");
     }
-    if (not(document["states"].IsArray()))
-    {
-        THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "Expecting a JSON array but got '" << ssc::json::dump(document["states"]));
+    if (not(document["states"].IsArray())) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            ssc::json::Exception,
+            "Expecting a JSON array but got '" << ssc::json::dump(document["states"]));
     }
     infos.Dt = ssc::json::find_optional_double("Dt", document, 0);
-    for (rapidjson::Value& v:document["states"].GetArray())
-    {
+    for (rapidjson::Value& v : document["states"].GetArray()) {
         YamlState s;
         s.t = ssc::json::find_double("t", v);
         s.x = ssc::json::find_double("x", v);
@@ -44,37 +48,37 @@ YamlSimServerInputs deserialize(const std::string& input)
         s.qk = ssc::json::find_double("qk", v);
         infos.states.push_back(s);
     }
-    if (document.HasMember("commands"))
-    {
+    if (document.HasMember("commands")) {
         const rapidjson::Value& commands = document["commands"];
-        if (not(commands.IsObject()) && not(commands.IsNull()))
-        {
-            THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "'commands' should be a JSON object (key-values): got " << ssc::json::print_type(commands));
-        }
-        else
-        {
-            if (not(commands.IsNull()))
-            {
-                for (rapidjson::Value::ConstMemberIterator it = commands.MemberBegin(); it != commands.MemberEnd(); ++it)
-                {
-                    infos.commands[it->name.GetString()] = ssc::json::find_double(it->name.GetString(), commands);
+        if (not(commands.IsObject()) && not(commands.IsNull())) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                ssc::json::Exception,
+                "'commands' should be a JSON object (key-values): got "
+                    << ssc::json::print_type(commands));
+        } else {
+            if (not(commands.IsNull())) {
+                for (rapidjson::Value::ConstMemberIterator it = commands.MemberBegin();
+                     it != commands.MemberEnd();
+                     ++it) {
+                    infos.commands[it->name.GetString()] =
+                        ssc::json::find_double(it->name.GetString(), commands);
                 }
             }
         }
     }
-    if (document.HasMember("requested_output"))
-    {
+    if (document.HasMember("requested_output")) {
         const rapidjson::Value& commands = document["requested_output"];
-        if (not(commands.IsArray()) && not(commands.IsNull()))
-        {
-            THROW(__PRETTY_FUNCTION__, ssc::json::Exception, "'commands' should be a JSON array: got " << ssc::json::print_type(commands));
-        }
-        else
-        {
-            if (not(commands.IsNull()))
-            {
-                for (rapidjson::Value::ConstValueIterator it = commands.Begin(); it != commands.End(); ++it)
-                {
+        if (not(commands.IsArray()) && not(commands.IsNull())) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                ssc::json::Exception,
+                "'commands' should be a JSON array: got " << ssc::json::print_type(commands));
+        } else {
+            if (not(commands.IsNull())) {
+                for (rapidjson::Value::ConstValueIterator it = commands.Begin();
+                     it != commands.End();
+                     ++it) {
                     infos.requested_output.push_back(it->GetString());
                 }
             }
@@ -83,21 +87,26 @@ YamlSimServerInputs deserialize(const std::string& input)
     return infos;
 }
 
-using InfNaNWriter = rapidjson::Writer<rapidjson::StringBuffer, rapidjson::UTF8<>, rapidjson::UTF8<>, rapidjson::CrtAllocator, rapidjson::kWriteNanAndInfFlag>;
+using InfNaNWriter = rapidjson::Writer<
+    rapidjson::StringBuffer,
+    rapidjson::UTF8<>,
+    rapidjson::UTF8<>,
+    rapidjson::CrtAllocator,
+    rapidjson::kWriteNanAndInfFlag>;
 
 void write(InfNaNWriter& writer, const std::map<std::string, double>& m);
 void write(InfNaNWriter& writer, const std::map<std::string, double>& m)
 {
     writer.StartObject();
-    for (const auto& key_value:m)
-    {
+    for (const auto& key_value : m) {
         writer.Key(key_value.first.c_str());
         writer.Double(key_value.second);
     }
     writer.EndObject();
 }
 
-#define ADD_ARRAY(key, doc) (doc).AddMember(key,rapidjson::Value(rapidjson::kArrayType).Move(), (doc).GetAllocator())
+#define ADD_ARRAY(key, doc) \
+    (doc).AddMember(key, rapidjson::Value(rapidjson::kArrayType).Move(), (doc).GetAllocator())
 #define PUSH_BACK(array, value, doc) (array).PushBack(value, (doc).GetAllocator())
 
 std::string serialize(const std::vector<YamlState>& states)
@@ -122,16 +131,20 @@ std::string serialize(const std::vector<YamlState>& states)
     ADD_ARRAY("phi", doc);
     ADD_ARRAY("theta", doc);
     ADD_ARRAY("psi", doc);
-    doc.AddMember("extra_observations",rapidjson::Value(rapidjson::kObjectType).Move(), doc.GetAllocator());
-    for(const auto& extra_obs:states.at(0).extra_observations)
-    {
+    doc.AddMember(
+        "extra_observations",
+        rapidjson::Value(rapidjson::kObjectType).Move(),
+        doc.GetAllocator());
+    for (const auto& extra_obs : states.at(0).extra_observations) {
         rapidjson::Value field_name(extra_obs.first.c_str(), doc.GetAllocator());
-        doc["extra_observations"].AddMember(field_name, rapidjson::Value(rapidjson::kArrayType).Move(), doc.GetAllocator());
+        doc["extra_observations"].AddMember(
+            field_name,
+            rapidjson::Value(rapidjson::kArrayType).Move(),
+            doc.GetAllocator());
     }
 
     // Writing
-    for(const auto& state:states)
-    {
+    for (const auto& state : states) {
         PUSH_BACK(doc["t"], state.t, doc);
         PUSH_BACK(doc["x"], state.x, doc);
         PUSH_BACK(doc["y"], state.y, doc);
@@ -149,10 +162,9 @@ std::string serialize(const std::vector<YamlState>& states)
         PUSH_BACK(doc["phi"], state.phi, doc);
         PUSH_BACK(doc["theta"], state.theta, doc);
         PUSH_BACK(doc["psi"], state.psi, doc);
-        for(const auto& obs:state.extra_observations)
-            {
-                PUSH_BACK(doc["extra_observations"][obs.first.c_str()], obs.second, doc);
-            }
+        for (const auto& obs : state.extra_observations) {
+            PUSH_BACK(doc["extra_observations"][obs.first.c_str()], obs.second, doc);
+        }
     }
 
     // Dumping to string
@@ -162,7 +174,9 @@ std::string serialize(const std::vector<YamlState>& states)
     return buffer.GetString();
 }
 
-#define WRITE_KEY_VALUE(key, value) writer.Key(key); writer.Double(value);
+#define WRITE_KEY_VALUE(key, value) \
+    writer.Key(key);                \
+    writer.Double(value);
 
 std::string serialize(const YamlState& d_dt)
 {

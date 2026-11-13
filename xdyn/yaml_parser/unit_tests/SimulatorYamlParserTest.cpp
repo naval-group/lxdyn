@@ -6,7 +6,11 @@
  */
 
 #include "SimulatorYamlParserTest.hpp"
+
+#include <boost/algorithm/string.hpp>  // For boost::replace_all
+
 #include "check_input_yaml.hpp"
+#include "gmock/gmock.h"
 #include "parse_controllers.hpp"
 #include "parse_time_series.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
@@ -14,28 +18,29 @@
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include "xdyn/test_data_generator/precal_test_data.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 
-#include "gmock/gmock.h"
-
-#include <boost/algorithm/string.hpp> // For boost::replace_all
-
-using namespace testing; // So we can use 'ElementsAre' unqualified
+using namespace testing;  // So we can use 'ElementsAre' unqualified
 
 static const YamlSimulatorInput& shared_yaml()
 {
-    static const YamlSimulatorInput ret = SimulatorYamlParser(test_data::full_example_with_propulsion()).parse();
+    static const YamlSimulatorInput ret =
+        SimulatorYamlParser(test_data::full_example_with_propulsion()).parse();
     return ret;
 }
 
 static const YamlSimulatorInput& shared_old_yaml()
 {
-    static const YamlSimulatorInput ret = SimulatorYamlParser(test_data::full_example_with_propulsion_and_old_key_name()).parse();
+    static const YamlSimulatorInput ret =
+        SimulatorYamlParser(test_data::full_example_with_propulsion_and_old_key_name()).parse();
     return ret;
 }
 
-SimulatorYamlParserTest::SimulatorYamlParserTest() : a(ssc::random_data_generator::DataGenerator(1212)), yaml(shared_yaml()), old_yaml(shared_old_yaml())
+SimulatorYamlParserTest::SimulatorYamlParserTest()
+    : a(ssc::random_data_generator::DataGenerator(1212))
+    , yaml(shared_yaml())
+    , old_yaml(shared_old_yaml())
 {
 }
 
@@ -55,7 +60,9 @@ TEST_F(SimulatorYamlParserTest, can_parse_environment)
     const std::vector<YamlModel> env = yaml.environment;
     ASSERT_EQ("no wind", env.at(0).model);
     ASSERT_EQ("no waves", env.at(1).model);
-    ASSERT_EQ("model: no waves\nconstant sea elevation in NED frame: {value: 12, unit: m}", env.at(1).yaml);
+    ASSERT_EQ(
+        "model: no waves\nconstant sea elevation in NED frame: {value: 12, unit: m}",
+        env.at(1).yaml);
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_environmental_constants)
@@ -85,44 +92,82 @@ TEST_F(SimulatorYamlParserTest, can_parse_bodies)
 
 TEST_F(SimulatorYamlParserTest, can_parse_position_of_body_frame_relative_to_mesh)
 {
-    ASSERT_DOUBLE_EQ(1,yaml.bodies.front().position_of_body_frame_relative_to_mesh.angle.phi);
-    ASSERT_DOUBLE_EQ(3,yaml.bodies.front().position_of_body_frame_relative_to_mesh.angle.theta);
-    ASSERT_DOUBLE_EQ(2,yaml.bodies.front().position_of_body_frame_relative_to_mesh.angle.psi);
-    ASSERT_EQ("mesh",yaml.bodies.front().position_of_body_frame_relative_to_mesh.frame);
-    ASSERT_DOUBLE_EQ(10,yaml.bodies.front().position_of_body_frame_relative_to_mesh.coordinates.x);
-    ASSERT_DOUBLE_EQ(0.21,yaml.bodies.front().position_of_body_frame_relative_to_mesh.coordinates.y);
-    ASSERT_DOUBLE_EQ(33e3,yaml.bodies.front().position_of_body_frame_relative_to_mesh.coordinates.z);
+    ASSERT_DOUBLE_EQ(1, yaml.bodies.front().position_of_body_frame_relative_to_mesh.angle.phi);
+    ASSERT_DOUBLE_EQ(3, yaml.bodies.front().position_of_body_frame_relative_to_mesh.angle.theta);
+    ASSERT_DOUBLE_EQ(2, yaml.bodies.front().position_of_body_frame_relative_to_mesh.angle.psi);
+    ASSERT_EQ("mesh", yaml.bodies.front().position_of_body_frame_relative_to_mesh.frame);
+    ASSERT_DOUBLE_EQ(10, yaml.bodies.front().position_of_body_frame_relative_to_mesh.coordinates.x);
+    ASSERT_DOUBLE_EQ(
+        0.21,
+        yaml.bodies.front().position_of_body_frame_relative_to_mesh.coordinates.y);
+    ASSERT_DOUBLE_EQ(
+        33e3,
+        yaml.bodies.front().position_of_body_frame_relative_to_mesh.coordinates.z);
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_initial_position_of_body_frame_relative_to_NED)
 {
-    ASSERT_EQ("NED",yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.frame);
-    ASSERT_DOUBLE_EQ(4,yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.coordinates.x);
-    ASSERT_DOUBLE_EQ(8,yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.coordinates.y);
-    ASSERT_DOUBLE_EQ(12,yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.coordinates.z);
-    ASSERT_DOUBLE_EQ(1.3,yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.angle.phi);
-    ASSERT_DOUBLE_EQ(1.4,yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.angle.theta);
-    ASSERT_DOUBLE_EQ(1.5,yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.angle.psi);
+    ASSERT_EQ(
+        "NED",
+        yaml.bodies.front().initial_position_of_body_frame_relative_to_NED_projected_in_NED.frame);
+    ASSERT_DOUBLE_EQ(
+        4,
+        yaml.bodies.front()
+            .initial_position_of_body_frame_relative_to_NED_projected_in_NED.coordinates.x);
+    ASSERT_DOUBLE_EQ(
+        8,
+        yaml.bodies.front()
+            .initial_position_of_body_frame_relative_to_NED_projected_in_NED.coordinates.y);
+    ASSERT_DOUBLE_EQ(
+        12,
+        yaml.bodies.front()
+            .initial_position_of_body_frame_relative_to_NED_projected_in_NED.coordinates.z);
+    ASSERT_DOUBLE_EQ(
+        1.3,
+        yaml.bodies.front()
+            .initial_position_of_body_frame_relative_to_NED_projected_in_NED.angle.phi);
+    ASSERT_DOUBLE_EQ(
+        1.4,
+        yaml.bodies.front()
+            .initial_position_of_body_frame_relative_to_NED_projected_in_NED.angle.theta);
+    ASSERT_DOUBLE_EQ(
+        1.5,
+        yaml.bodies.front()
+            .initial_position_of_body_frame_relative_to_NED_projected_in_NED.angle.psi);
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_initial_velocity_of_body_frame_relative_to_NED)
 {
-    ASSERT_EQ("body 1",yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.frame);
-    ASSERT_DOUBLE_EQ(-8,yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.u);
-    ASSERT_DOUBLE_EQ(-9,yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.v);
-    ASSERT_DOUBLE_EQ(14,yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.w);
-    ASSERT_DOUBLE_EQ(56,yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.p);
-    ASSERT_DOUBLE_EQ(7,yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.q);
-    ASSERT_DOUBLE_EQ(6,yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.r);
+    ASSERT_EQ(
+        "body 1",
+        yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.frame);
+    ASSERT_DOUBLE_EQ(
+        -8,
+        yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.u);
+    ASSERT_DOUBLE_EQ(
+        -9,
+        yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.v);
+    ASSERT_DOUBLE_EQ(
+        14,
+        yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.w);
+    ASSERT_DOUBLE_EQ(
+        56,
+        yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.p);
+    ASSERT_DOUBLE_EQ(
+        7,
+        yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.q);
+    ASSERT_DOUBLE_EQ(
+        6,
+        yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.r);
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_centre_of_inertia)
 {
-    ASSERT_DOUBLE_EQ(4,yaml.bodies.front().dynamics.centre_of_inertia.x);
-    ASSERT_DOUBLE_EQ(7,yaml.bodies.front().dynamics.centre_of_inertia.y);
-    ASSERT_DOUBLE_EQ(-10,yaml.bodies.front().dynamics.centre_of_inertia.z);
-    ASSERT_EQ("body 1",yaml.bodies.front().dynamics.centre_of_inertia.frame);
-    ASSERT_EQ("centre of inertia",yaml.bodies.front().dynamics.centre_of_inertia.name);
+    ASSERT_DOUBLE_EQ(4, yaml.bodies.front().dynamics.centre_of_inertia.x);
+    ASSERT_DOUBLE_EQ(7, yaml.bodies.front().dynamics.centre_of_inertia.y);
+    ASSERT_DOUBLE_EQ(-10, yaml.bodies.front().dynamics.centre_of_inertia.z);
+    ASSERT_EQ("body 1", yaml.bodies.front().dynamics.centre_of_inertia.frame);
+    ASSERT_EQ("centre of inertia", yaml.bodies.front().dynamics.centre_of_inertia.name);
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_inertia_matrix)
@@ -175,7 +220,7 @@ TEST_F(SimulatorYamlParserTest, can_parse_inertia_matrix)
 
 TEST_F(SimulatorYamlParserTest, can_parse_added_mass_matrix)
 {
-    const YamlDynamics6x6Matrix M =  yaml.bodies.front().dynamics.added_mass;
+    const YamlDynamics6x6Matrix M = yaml.bodies.front().dynamics.added_mass;
     ASSERT_EQ("body 1", M.frame);
     ASSERT_EQ(6, M.row_1.size());
     ASSERT_EQ(6, M.row_2.size());
@@ -223,8 +268,9 @@ TEST_F(SimulatorYamlParserTest, can_parse_added_mass_matrix)
 
 TEST_F(SimulatorYamlParserTest, can_parse_added_mass_matrix_from_hdb_file)
 {
-    const YamlDynamics6x6Matrix M =  yaml.bodies.front().dynamics.added_mass;
-    const YamlSimulatorInput input = SimulatorYamlParser(test_data::added_mass_from_hdb_file()).parse();
+    const YamlDynamics6x6Matrix M = yaml.bodies.front().dynamics.added_mass;
+    const YamlSimulatorInput input =
+        SimulatorYamlParser(test_data::added_mass_from_hdb_file()).parse();
     ASSERT_TRUE(input.bodies.front().dynamics.added_mass.read_from_file);
     ASSERT_EQ("test_ship.hdb", input.bodies.front().dynamics.added_mass.hdb_filename);
 }
@@ -238,12 +284,12 @@ TEST_F(SimulatorYamlParserTest, should_get_an_error_message_when_using_the_old_k
         const YamlSimulatorInput input = SimulatorYamlParser(yaml_data).parse();
         ASSERT_TRUE(input.bodies.front().dynamics.added_mass.read_from_file);
         ASSERT_EQ("test_ship.hdb", input.bodies.front().dynamics.added_mass.hdb_filename);
-    }
-    catch(const InvalidInputException& exception) {
-        ASSERT_EQ("Error parsing 'body' section (body 'body 1'): In node 'added mass matrix at the "
-                  "center of gravity and projected in the body frame': You used YAML key 'from "
-                  "precal' but this key is deprecated: you should use 'from hdb' instead.",
-                  exception.get_message());
+    } catch (const InvalidInputException& exception) {
+        ASSERT_EQ(
+            "Error parsing 'body' section (body 'body 1'): In node 'added mass matrix at the "
+            "center of gravity and projected in the body frame': You used YAML key 'from "
+            "precal' but this key is deprecated: you should use 'from hdb' instead.",
+            exception.get_message());
         exception_thrown = true;
     }
     if (!exception_thrown) {
@@ -254,7 +300,8 @@ TEST_F(SimulatorYamlParserTest, should_get_an_error_message_when_using_the_old_k
 TEST_F(SimulatorYamlParserTest, can_parse_added_mass_matrix_from_precal_file)
 {
     const std::string filename = "ONRT_SIMMAN.raodb.ini";
-    const YamlSimulatorInput input = SimulatorYamlParser(test_data::added_mass_from_precal_file()).parse();
+    const YamlSimulatorInput input =
+        SimulatorYamlParser(test_data::added_mass_from_precal_file()).parse();
     ASSERT_TRUE(input.bodies.front().dynamics.added_mass.read_from_file);
     ASSERT_EQ(filename, input.bodies.front().dynamics.added_mass.precal_filename);
 }
@@ -267,13 +314,14 @@ TEST_F(SimulatorYamlParserTest, should_not_throw_even_if_no_mesh_is_defined)
 TEST_F(SimulatorYamlParserTest, can_have_test_data_with_just_waves)
 {
     const YamlSimulatorInput input = SimulatorYamlParser(test_data::waves()).parse();
-    ASSERT_EQ(1,input.environment.size());
-    ASSERT_EQ("waves",input.environment[0].model);
+    ASSERT_EQ(1, input.environment.size());
+    ASSERT_EQ("waves", input.environment[0].model);
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_hydrodynamic_calculation_point)
 {
-    const YamlCoordinates P = yaml.bodies.front().dynamics.hydrodynamic_forces_calculation_point_in_body_frame;
+    const YamlCoordinates P =
+        yaml.bodies.front().dynamics.hydrodynamic_forces_calculation_point_in_body_frame;
     ASSERT_DOUBLE_EQ(0.696, P.x);
     ASSERT_DOUBLE_EQ(0, P.y);
     ASSERT_DOUBLE_EQ(1.418, P.z);
@@ -309,7 +357,7 @@ TEST_F(SimulatorYamlParserTest, can_parse_forced_dof)
 
 TEST_F(SimulatorYamlParserTest, can_parse_blocked_DOF_even_if_there_is_nothing_to_parse)
 {
-    const auto y  = parse("");
+    const auto y = parse("");
     ASSERT_TRUE(y.from_csv.empty());
     ASSERT_TRUE(y.from_yaml.empty());
 }
@@ -333,13 +381,12 @@ TEST_F(SimulatorYamlParserTest, should_throw_if_forcing_anything_other_than_xyzu
 
 TEST_F(SimulatorYamlParserTest, interpolation_type_should_be_valid)
 {
-    const std::string invalid_yaml =
-                                 "blocked dof:\n"
-                                 "   from YAML:\n"
-                                 "     - state: p\n"
-                                 "       t: [5,4.2]\n"
-                                 "       value: [5,6]\n"
-                                 "       interpolation: something\n";
+    const std::string invalid_yaml = "blocked dof:\n"
+                                     "   from YAML:\n"
+                                     "     - state: p\n"
+                                     "       t: [5,4.2]\n"
+                                     "       value: [5,6]\n"
+                                     "       interpolation: something\n";
     ASSERT_THROW(parse(invalid_yaml), InvalidInputException);
 }
 
@@ -354,72 +401,84 @@ TEST_F(SimulatorYamlParserTest, can_parse_rigid_body_inertia_matrix)
     ASSERT_EQ("", yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename);
     ASSERT_FALSE(yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file);
     ASSERT_EQ(6, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.size());
-    ASSERT_DOUBLE_EQ(1,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(0));
-    ASSERT_DOUBLE_EQ(2,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(1));
-    ASSERT_DOUBLE_EQ(3,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(2));
-    ASSERT_DOUBLE_EQ(4,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(3));
-    ASSERT_DOUBLE_EQ(5,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(4));
-    ASSERT_DOUBLE_EQ(6,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(5));
-    ASSERT_DOUBLE_EQ(7,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(0));
-    ASSERT_DOUBLE_EQ(2,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(1));
-    ASSERT_DOUBLE_EQ(1,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(2));
-    ASSERT_DOUBLE_EQ(2,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(3));
-    ASSERT_DOUBLE_EQ(11,  yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(4));
-    ASSERT_DOUBLE_EQ(13,  yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(5));
-    ASSERT_DOUBLE_EQ(20,  yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(0));
-    ASSERT_DOUBLE_EQ(30,  yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(1));
-    ASSERT_DOUBLE_EQ(3,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(2));
-    ASSERT_DOUBLE_EQ(80,  yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(3));
+    ASSERT_DOUBLE_EQ(1, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(0));
+    ASSERT_DOUBLE_EQ(2, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(1));
+    ASSERT_DOUBLE_EQ(3, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(2));
+    ASSERT_DOUBLE_EQ(4, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(3));
+    ASSERT_DOUBLE_EQ(5, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(4));
+    ASSERT_DOUBLE_EQ(6, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(5));
+    ASSERT_DOUBLE_EQ(7, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(0));
+    ASSERT_DOUBLE_EQ(2, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(1));
+    ASSERT_DOUBLE_EQ(1, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(2));
+    ASSERT_DOUBLE_EQ(2, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(3));
+    ASSERT_DOUBLE_EQ(11, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(4));
+    ASSERT_DOUBLE_EQ(13, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(5));
+    ASSERT_DOUBLE_EQ(20, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(0));
+    ASSERT_DOUBLE_EQ(30, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(1));
+    ASSERT_DOUBLE_EQ(3, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(2));
+    ASSERT_DOUBLE_EQ(80, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(3));
     ASSERT_DOUBLE_EQ(0.9, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(4));
     ASSERT_DOUBLE_EQ(0.1, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(5));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(0));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(1));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(2));
-    ASSERT_DOUBLE_EQ(4,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(3));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(4));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(5));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(0));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(1));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(2));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(3));
-    ASSERT_DOUBLE_EQ(5,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(4));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(5));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(0));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(1));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(2));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(3));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(4));
-    ASSERT_DOUBLE_EQ(6,   yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(5));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(0));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(1));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(2));
+    ASSERT_DOUBLE_EQ(4, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(3));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(4));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(5));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(0));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(1));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(2));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(3));
+    ASSERT_DOUBLE_EQ(5, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(4));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(5));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(0));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(1));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(2));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(3));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(4));
+    ASSERT_DOUBLE_EQ(6, yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(5));
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_rigid_body_inertia_matrix_with_old_key_name)
 {
-    ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.frame, old_yaml.bodies.at(0).dynamics.rigid_body_inertia.frame);
-    ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename, old_yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename);
-    ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file, old_yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file);
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i));
+    ASSERT_EQ(
+        yaml.bodies.at(0).dynamics.rigid_body_inertia.frame,
+        old_yaml.bodies.at(0).dynamics.rigid_body_inertia.frame);
+    ASSERT_EQ(
+        yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename,
+        old_yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename);
+    ASSERT_EQ(
+        yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file,
+        old_yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file);
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i));
     }
 }
 
@@ -429,84 +488,94 @@ TEST_F(SimulatorYamlParserTest, can_parse_added_mass_inertia_matrix)
     ASSERT_EQ("", yaml.bodies.at(0).dynamics.added_mass.hdb_filename);
     ASSERT_FALSE(yaml.bodies.at(0).dynamics.added_mass.read_from_file);
     ASSERT_EQ(6, yaml.bodies.at(0).dynamics.added_mass.row_1.size());
-    ASSERT_DOUBLE_EQ(1,   yaml.bodies.at(0).dynamics.added_mass.row_1.at(0));
-    ASSERT_DOUBLE_EQ(2,   yaml.bodies.at(0).dynamics.added_mass.row_1.at(1));
-    ASSERT_DOUBLE_EQ(3,   yaml.bodies.at(0).dynamics.added_mass.row_1.at(2));
-    ASSERT_DOUBLE_EQ(4,   yaml.bodies.at(0).dynamics.added_mass.row_1.at(3));
-    ASSERT_DOUBLE_EQ(5,   yaml.bodies.at(0).dynamics.added_mass.row_1.at(4));
-    ASSERT_DOUBLE_EQ(6,   yaml.bodies.at(0).dynamics.added_mass.row_1.at(5));
-    ASSERT_DOUBLE_EQ(-7,   yaml.bodies.at(0).dynamics.added_mass.row_2.at(0));
-    ASSERT_DOUBLE_EQ(2,   yaml.bodies.at(0).dynamics.added_mass.row_2.at(1));
-    ASSERT_DOUBLE_EQ(1,   yaml.bodies.at(0).dynamics.added_mass.row_2.at(2));
-    ASSERT_DOUBLE_EQ(2,   yaml.bodies.at(0).dynamics.added_mass.row_2.at(3));
-    ASSERT_DOUBLE_EQ(11,  yaml.bodies.at(0).dynamics.added_mass.row_2.at(4));
-    ASSERT_DOUBLE_EQ(13,  yaml.bodies.at(0).dynamics.added_mass.row_2.at(5));
-    ASSERT_DOUBLE_EQ(-20,  yaml.bodies.at(0).dynamics.added_mass.row_3.at(0));
-    ASSERT_DOUBLE_EQ(30,  yaml.bodies.at(0).dynamics.added_mass.row_3.at(1));
-    ASSERT_DOUBLE_EQ(3,   yaml.bodies.at(0).dynamics.added_mass.row_3.at(2));
-    ASSERT_DOUBLE_EQ(80,  yaml.bodies.at(0).dynamics.added_mass.row_3.at(3));
+    ASSERT_DOUBLE_EQ(1, yaml.bodies.at(0).dynamics.added_mass.row_1.at(0));
+    ASSERT_DOUBLE_EQ(2, yaml.bodies.at(0).dynamics.added_mass.row_1.at(1));
+    ASSERT_DOUBLE_EQ(3, yaml.bodies.at(0).dynamics.added_mass.row_1.at(2));
+    ASSERT_DOUBLE_EQ(4, yaml.bodies.at(0).dynamics.added_mass.row_1.at(3));
+    ASSERT_DOUBLE_EQ(5, yaml.bodies.at(0).dynamics.added_mass.row_1.at(4));
+    ASSERT_DOUBLE_EQ(6, yaml.bodies.at(0).dynamics.added_mass.row_1.at(5));
+    ASSERT_DOUBLE_EQ(-7, yaml.bodies.at(0).dynamics.added_mass.row_2.at(0));
+    ASSERT_DOUBLE_EQ(2, yaml.bodies.at(0).dynamics.added_mass.row_2.at(1));
+    ASSERT_DOUBLE_EQ(1, yaml.bodies.at(0).dynamics.added_mass.row_2.at(2));
+    ASSERT_DOUBLE_EQ(2, yaml.bodies.at(0).dynamics.added_mass.row_2.at(3));
+    ASSERT_DOUBLE_EQ(11, yaml.bodies.at(0).dynamics.added_mass.row_2.at(4));
+    ASSERT_DOUBLE_EQ(13, yaml.bodies.at(0).dynamics.added_mass.row_2.at(5));
+    ASSERT_DOUBLE_EQ(-20, yaml.bodies.at(0).dynamics.added_mass.row_3.at(0));
+    ASSERT_DOUBLE_EQ(30, yaml.bodies.at(0).dynamics.added_mass.row_3.at(1));
+    ASSERT_DOUBLE_EQ(3, yaml.bodies.at(0).dynamics.added_mass.row_3.at(2));
+    ASSERT_DOUBLE_EQ(80, yaml.bodies.at(0).dynamics.added_mass.row_3.at(3));
     ASSERT_DOUBLE_EQ(0.9, yaml.bodies.at(0).dynamics.added_mass.row_3.at(4));
     ASSERT_DOUBLE_EQ(0.1, yaml.bodies.at(0).dynamics.added_mass.row_3.at(5));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_4.at(0));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_4.at(1));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_4.at(2));
-    ASSERT_DOUBLE_EQ(4.1,   yaml.bodies.at(0).dynamics.added_mass.row_4.at(3));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_4.at(4));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_4.at(5));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_5.at(0));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_5.at(1));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_5.at(2));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_5.at(3));
-    ASSERT_DOUBLE_EQ(5.2,   yaml.bodies.at(0).dynamics.added_mass.row_5.at(4));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_5.at(5));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_6.at(0));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_6.at(1));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_6.at(2));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_6.at(3));
-    ASSERT_DOUBLE_EQ(0,   yaml.bodies.at(0).dynamics.added_mass.row_6.at(4));
-    ASSERT_DOUBLE_EQ(6.3,   yaml.bodies.at(0).dynamics.added_mass.row_6.at(5));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_4.at(0));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_4.at(1));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_4.at(2));
+    ASSERT_DOUBLE_EQ(4.1, yaml.bodies.at(0).dynamics.added_mass.row_4.at(3));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_4.at(4));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_4.at(5));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_5.at(0));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_5.at(1));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_5.at(2));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_5.at(3));
+    ASSERT_DOUBLE_EQ(5.2, yaml.bodies.at(0).dynamics.added_mass.row_5.at(4));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_5.at(5));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_6.at(0));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_6.at(1));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_6.at(2));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_6.at(3));
+    ASSERT_DOUBLE_EQ(0, yaml.bodies.at(0).dynamics.added_mass.row_6.at(4));
+    ASSERT_DOUBLE_EQ(6.3, yaml.bodies.at(0).dynamics.added_mass.row_6.at(5));
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_added_mass_matrix_with_old_key_name)
 {
-    ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.frame, old_yaml.bodies.at(0).dynamics.rigid_body_inertia.frame);
-    ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename, old_yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename);
-    ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file, old_yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file);
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i));
+    ASSERT_EQ(
+        yaml.bodies.at(0).dynamics.rigid_body_inertia.frame,
+        old_yaml.bodies.at(0).dynamics.rigid_body_inertia.frame);
+    ASSERT_EQ(
+        yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename,
+        old_yaml.bodies.at(0).dynamics.rigid_body_inertia.hdb_filename);
+    ASSERT_EQ(
+        yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file,
+        old_yaml.bodies.at(0).dynamics.rigid_body_inertia.read_from_file);
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_1.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_2.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_3.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_4.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_5.at(i));
     }
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        ASSERT_EQ(yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i), old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i));
+    for (size_t i = 0; i < 6; ++i) {
+        ASSERT_EQ(
+            yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i),
+            old_yaml.bodies.at(0).dynamics.rigid_body_inertia.row_6.at(i));
     }
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_controllers_and_commands_for_controlled_forces)
 {
-    const YamlSimulatorInput yaml = SimulatorYamlParser(
-        test_data::falling_ball_example() +
-        test_data::setpoints() +
-        test_data::controllers() +
-        test_data::grpc_controller() +
-        test_data::controlled_forces()
-    ).parse();
+    const YamlSimulatorInput yaml =
+        SimulatorYamlParser(
+            test_data::falling_ball_example() + test_data::setpoints() + test_data::controllers() +
+            test_data::grpc_controller() + test_data::controlled_forces())
+            .parse();
 
     ASSERT_EQ(2, yaml.setpoints.size());
     ASSERT_EQ("", yaml.setpoints[0].name);
@@ -526,12 +595,17 @@ TEST_F(SimulatorYamlParserTest, can_parse_controllers_and_commands_for_controlle
 
 TEST_F(SimulatorYamlParserTest, can_parse_filtered_states)
 {
-    const YamlSimulatorInput yaml = SimulatorYamlParser(test_data::tutorial_10_gRPC_force_model()).parse();
+    const YamlSimulatorInput yaml =
+        SimulatorYamlParser(test_data::tutorial_10_gRPC_force_model()).parse();
     ASSERT_TRUE(yaml.bodies.front().filtered_states.x.empty());
     ASSERT_TRUE(yaml.bodies.front().filtered_states.y.empty());
     ASSERT_TRUE(yaml.bodies.front().filtered_states.z.empty());
-    ASSERT_EQ("type of filter: moving average\nduration in seconds: 2.3", yaml.bodies.front().filtered_states.u);
-    ASSERT_EQ("type of filter: moving average\nduration in seconds: 3", yaml.bodies.front().filtered_states.v);
+    ASSERT_EQ(
+        "type of filter: moving average\nduration in seconds: 2.3",
+        yaml.bodies.front().filtered_states.u);
+    ASSERT_EQ(
+        "type of filter: moving average\nduration in seconds: 3",
+        yaml.bodies.front().filtered_states.v);
     ASSERT_TRUE(yaml.bodies.front().filtered_states.w.empty());
     ASSERT_TRUE(yaml.bodies.front().filtered_states.p.empty());
     ASSERT_TRUE(yaml.bodies.front().filtered_states.q.empty());
@@ -543,17 +617,18 @@ TEST_F(SimulatorYamlParserTest, can_parse_filtered_states)
 
 TEST_F(SimulatorYamlParserTest, missing_environment_model_yaml_node_should_throw_an_error)
 {
-    const std::string uncomplete_yaml =
-        "rotations convention: [psi, theta', phi'']\n"
-        "\n"
-        "environmental constants:\n"
-        "    g: {value: 9.81, unit: m/s^2}\n"
-        "    rho: {value: 1026, unit: kg/m^3}\n"
-        "    nu: {value: 1.18e-6, unit: m^2/s}\n";
+    const std::string uncomplete_yaml = "rotations convention: [psi, theta', phi'']\n"
+                                        "\n"
+                                        "environmental constants:\n"
+                                        "    g: {value: 9.81, unit: m/s^2}\n"
+                                        "    rho: {value: 1026, unit: kg/m^3}\n"
+                                        "    nu: {value: 1.18e-6, unit: m^2/s}\n";
     ASSERT_THROW(SimulatorYamlParser(uncomplete_yaml).parse(), InvalidInputException);
 }
 
-TEST_F(SimulatorYamlParserTest, missing_mesh_node_should_throw_an_error_for_force_model_requiring_a_mesh)
+TEST_F(
+    SimulatorYamlParserTest,
+    missing_mesh_node_should_throw_an_error_for_force_model_requiring_a_mesh)
 {
     const std::string valid_yaml = test_data::test_ship_fast_hydrostatic_test();
     const YamlSimulatorInput valid_input = SimulatorYamlParser(valid_yaml).parse();
@@ -575,26 +650,34 @@ TEST_F(SimulatorYamlParserTest, duplicate_hydrostatic_models_should_throw_an_err
     ASSERT_NO_THROW(check_input_yaml(valid_input));
 
     std::string invalid_yaml = test_data::test_ship_fast_hydrostatic_test();
-    boost::replace_all(invalid_yaml, "      - model: non-linear hydrostatic (fast)",
+    boost::replace_all(
+        invalid_yaml,
+        "      - model: non-linear hydrostatic (fast)",
         "      - model: non-linear hydrostatic (fast)\n      - model: non-linear hydrostatic (fast)\n");
     std::cout << invalid_yaml << std::endl;
     YamlSimulatorInput invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
 
     invalid_yaml = test_data::test_ship_fast_hydrostatic_test();
-    boost::replace_all(invalid_yaml, "      - model: non-linear hydrostatic (fast)",
+    boost::replace_all(
+        invalid_yaml,
+        "      - model: non-linear hydrostatic (fast)",
         "      - model: non-linear hydrostatic (fast)\n      - model: non-linear hydrostatic (exact)");
     invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
 
     invalid_yaml = test_data::test_ship_exact_hydrostatic_test();
-    boost::replace_all(invalid_yaml, "      - model: non-linear hydrostatic (exact)",
+    boost::replace_all(
+        invalid_yaml,
+        "      - model: non-linear hydrostatic (exact)",
         "      - model: non-linear hydrostatic (exact)\n      - model: non-linear hydrostatic (exact)");
     invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
 
     invalid_yaml = test_data::test_ship_exact_hydrostatic_test();
-    boost::replace_all(invalid_yaml, "      - model: non-linear hydrostatic (exact)",
+    boost::replace_all(
+        invalid_yaml,
+        "      - model: non-linear hydrostatic (exact)",
         "      - model: non-linear hydrostatic (exact)\n      - model: non-linear hydrostatic (fast)");
     invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);

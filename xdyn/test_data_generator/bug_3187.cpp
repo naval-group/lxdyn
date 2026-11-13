@@ -4,8 +4,9 @@
  *  Created on: Aug 24, 2020
  *      Author: cady
  */
-#include "yaml_data.hpp"
 #include <sstream>
+
+#include "yaml_data.hpp"
 
 std::string test_data::bug_3187()
 {

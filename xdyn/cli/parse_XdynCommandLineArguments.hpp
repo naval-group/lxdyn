@@ -8,8 +8,8 @@
 #ifndef UTILITIES_FOR_INPUTDATA_HPP_
 #define UTILITIES_FOR_INPUTDATA_HPP_
 
+#include <fstream>  // std::cout
 #include <string>
-#include <fstream> // std::cout
 
 struct XdynCommandLineArguments;
 
@@ -17,9 +17,9 @@ struct XdynCommandLineArguments;
 namespace po = boost::program_options;
 
 bool invalid(const XdynCommandLineArguments& input);
-po::options_description attach_command_line_arguments_to_options_description(XdynCommandLineArguments& input_data);
-int parse_command_line_for_xdyn(int argc, char **argv, XdynCommandLineArguments& input_data);
-int fill_input_or_display_help(char *argv, XdynCommandLineArguments& input_data);
-
+po::options_description attach_command_line_arguments_to_options_description(
+    XdynCommandLineArguments& input_data);
+int parse_command_line_for_xdyn(int argc, char** argv, XdynCommandLineArguments& input_data);
+int fill_input_or_display_help(char* argv, XdynCommandLineArguments& input_data);
 
 #endif /* UTILITIES_FOR_INPUTDATA_HPP_ */

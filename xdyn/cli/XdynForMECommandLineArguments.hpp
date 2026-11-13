@@ -11,8 +11,7 @@
 #include <string>
 #include <vector>
 
-struct XdynForMECommandLineArguments
-{
+struct XdynForMECommandLineArguments {
     XdynForMECommandLineArguments();
     std::vector<std::string> yaml_filenames;
     std::string assets_path;

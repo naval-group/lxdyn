@@ -4,7 +4,6 @@
  *  Based on G. Marsaglia KISS
  */
 
-
 /*
     This PRNG combines:
 
@@ -42,28 +41,27 @@
 
 */
 
-#include <math.h>
-#include <string.h>
-
 #include "ssc/random_data_generator/sir_rand.h"
 
+#include <math.h>
+#include <string.h>
 
 /* convert integer on 64 bits into a double in the range of [0,1).
  * we mask off the bits that don't fit into the mantissa
  * before converting to the real type
  * then multiply by the correct shift  */
 
-double sir_rand_ui64_to_double ( unsigned long u, unsigned long v)
+double sir_rand_ui64_to_double(unsigned long u, unsigned long v)
 {
-    static double fshift=0.00000000023283064365386962890625; /* this is pow(2.0,-32.0) */
+    static double fshift = 0.00000000023283064365386962890625; /* this is pow(2.0,-32.0) */
     unsigned long mask;
-    mask = (~ 0uL) << (64 - 53); /* assume double has 53 bit mantissa */
+    mask = (~0uL) << (64 - 53); /* assume double has 53 bit mantissa */
     v = v & mask;
-    return ((double) v * fshift + (double) u ) * fshift;
+    return ((double)v * fshift + (double)u) * fshift;
 }
 
-#define SIR_SL(k, n)    ((k)^((k)<<(n)))
-#define SIR_SR(k, n)    ((k)^((k)>>(n)))
+#define SIR_SL(k, n) ((k) ^ ((k) << (n)))
+#define SIR_SR(k, n) ((k) ^ ((k) >> (n)))
 
 /*   Reference for the seed:
     From: "George Marsaglia" <g...@stat.fsu.edu>
@@ -91,21 +89,21 @@ static unsigned int sir_rand_default_seed[] = {
 };
 */
 
-#define SIR_RAND_SIZE (sizeof(sir_rand_seed)/sizeof(sir_rand_seed[0]))
+#define SIR_RAND_SIZE (sizeof(sir_rand_seed) / sizeof(sir_rand_seed[0]))
 
-static unsigned int * const sir_rand_seed_1 = sir_rand_seed;
-static unsigned int * const sir_rand_seed_2 = sir_rand_seed + 4;
+static unsigned int* const sir_rand_seed_1 = sir_rand_seed;
+static unsigned int* const sir_rand_seed_2 = sir_rand_seed + 4;
 
 /* sir_rand_kernel() returns an integer value in the range of
     (0, unsigned int_HUGE].  The distribution of pseudorandom numbers
     should be uniform.  */
 
-static unsigned int sir_rand_kernel(unsigned int * seed)
+static unsigned int sir_rand_kernel(unsigned int* seed)
 {
     unsigned int kiss;
 
     seed[0] = 69069 * seed[0] + 1327217885;
-    seed[1] = SIR_SL(SIR_SR(SIR_SL(seed[1],13),17),5);
+    seed[1] = SIR_SL(SIR_SR(SIR_SL(seed[1], 13), 17), 5);
     seed[2] = 18000 * (seed[2] & 65535) + (seed[2] >> 16);
     seed[3] = 30903 * (seed[3] & 65535) + (seed[3] >> 16);
     kiss = seed[0] + seed[1] + (seed[2] << 16) + seed[3];
@@ -118,16 +116,14 @@ static unsigned int sir_rand_kernel(unsigned int * seed)
 
 double sir_rand_u01()
 {
-    unsigned long u,v;
+    unsigned long u, v;
 
-    u = sir_rand_kernel (sir_rand_seed_1);
-    v = sir_rand_kernel (sir_rand_seed_2);
-    return sir_rand_ui64_to_double (u,v);
+    u = sir_rand_kernel(sir_rand_seed_1);
+    v = sir_rand_kernel(sir_rand_seed_2);
+    return sir_rand_ui64_to_double(u, v);
 }
 
-
-static void
-sir_rand_scramble_seed (unsigned char *dest, unsigned char *src, int size)
+static void sir_rand_scramble_seed(unsigned char* dest, unsigned char* src, int size)
 {
     int i;
 
@@ -146,50 +142,45 @@ sir_rand_unscramble_seed (unsigned char *dest, unsigned char *src, int size)
 }
 */
 
-
 /* sir_rand_setseed is used to seed the PRNG with a user provided seed.  */
 
-void
-sir_rand_setseed (int put)
+void sir_rand_setseed(int put)
 {
     size_t i;
     unsigned char seed[sizeof sir_rand_seed];
     /*  We copy the seed given by the user.  */
-    for(i=0;i<SIR_RAND_SIZE;i++) {
-        put=36969*(put&65535)+(put>>16);
-        memcpy (seed + i * sizeof(unsigned int),
-            &put,
-            sizeof(unsigned int));
+    for (i = 0; i < SIR_RAND_SIZE; i++) {
+        put = 36969 * (put & 65535) + (put >> 16);
+        memcpy(seed + i * sizeof(unsigned int), &put, sizeof(unsigned int));
     }
 
     /* We put it after scrambling the bytes, to paper around users who
     provide seeds with quality only in the lower or upper part.  */
-    sir_rand_scramble_seed((unsigned char *) sir_rand_seed, seed, int(sizeof(sir_rand_seed)));
+    sir_rand_scramble_seed((unsigned char*)sir_rand_seed, seed, int(sizeof(sir_rand_seed)));
 }
-
 
 /* Toss a double with normal N(0,1) distribution
  * using a Box Muller algorithm
  */
 double sir_rand_n01()
 {
-    static int i=0;
-    static double y=0.0;
-    if( i==0 ) {
+    static int i = 0;
+    static double y = 0.0;
+    if (i == 0) {
         double s;
-        static double x=0.0;
+        static double x = 0.0;
         do {
-            x=sir_rand_u01();
-            y=sir_rand_u01();
-            x = (x-0.5)*2.0;
-            y = (y-0.5)*2.0;
-            s = x*x+y*y;
-        } while(s > 1.0 || s == 0.0);
-        x=x*sqrt(-2.0*log(s)/s);
-        y=y*sqrt(-2.0*log(s)/s);
+            x = sir_rand_u01();
+            y = sir_rand_u01();
+            x = (x - 0.5) * 2.0;
+            y = (y - 0.5) * 2.0;
+            s = x * x + y * y;
+        } while (s > 1.0 || s == 0.0);
+        x = x * sqrt(-2.0 * log(s) / s);
+        y = y * sqrt(-2.0 * log(s) / s);
         return x;
     } else {
         return y;
     }
-    i = 1-i;
+    i = 1 - i;
 }

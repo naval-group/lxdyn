@@ -8,27 +8,56 @@
  *  \brief Input data for body initialization
  @{ */
 #ifndef YAMLBODY_HPP_
-#define YAMLBODY_HPP_
+    #define YAMLBODY_HPP_
 
-#include "xdyn/external_data_structures/YamlPosition.hpp"
-#include "xdyn/external_data_structures/YamlSpeed.hpp"
-#include "xdyn/external_data_structures/YamlDynamics.hpp"
-#include "xdyn/external_data_structures/YamlModel.hpp"
+    #include <string>
+    #include <vector>
 
-#include <vector>
-#include <string>
+    #include "xdyn/external_data_structures/YamlDynamics.hpp"
+    #include "xdyn/external_data_structures/YamlModel.hpp"
+    #include "xdyn/external_data_structures/YamlPosition.hpp"
+    #include "xdyn/external_data_structures/YamlSpeed.hpp"
 
-enum class InterpolationType {PIECEWISE_CONSTANT, LINEAR, SPLINE};
-enum class BlockableState {X, Y, Z, U, V, W, P, Q, R, PHI, THETA, PSI};
-enum class FilterableState {X, Y, Z, U, V, W, P, Q, R, PHI, THETA, PSI};
-
-template <typename T> struct YamlDOF
+enum class InterpolationType
 {
-    YamlDOF() :
-        t(),
-        value(),
-        howApplied({0.,0.,0.,0.,0.,0.})
-    {}
+    PIECEWISE_CONSTANT,
+    LINEAR,
+    SPLINE
+};
+enum class BlockableState
+{
+    X,
+    Y,
+    Z,
+    U,
+    V,
+    W,
+    P,
+    Q,
+    R,
+    PHI,
+    THETA,
+    PSI
+};
+enum class FilterableState
+{
+    X,
+    Y,
+    Z,
+    U,
+    V,
+    W,
+    P,
+    Q,
+    R,
+    PHI,
+    THETA,
+    PSI
+};
+
+template <typename T>
+struct YamlDOF {
+    YamlDOF() : t(), value(), howApplied({0., 0., 0., 0., 0., 0.}) {}
     virtual ~YamlDOF() = default;
     BlockableState state{BlockableState::U};
     T t;
@@ -37,19 +66,16 @@ template <typename T> struct YamlDOF
     std::vector<double> howApplied;
 };
 
-struct YamlCSVDOF : public YamlDOF<std::string>
-{
+struct YamlCSVDOF : public YamlDOF<std::string> {
     std::string filename;
 };
 
-struct YamlBlockedDOF
-{
-    std::vector<YamlDOF<std::vector<double> > > from_yaml;
+struct YamlBlockedDOF {
+    std::vector<YamlDOF<std::vector<double>>> from_yaml;
     std::vector<YamlCSVDOF> from_csv;
 };
 
-struct YamlFilteredStates
-{
+struct YamlFilteredStates {
     YamlFilteredStates();
     std::string x;
     std::string y;
@@ -65,8 +91,7 @@ struct YamlFilteredStates
     std::string psi;
 };
 
-struct YamlBody
-{
+struct YamlBody {
     std::string name;
     std::string mesh;
     YamlPosition position_of_body_frame_relative_to_mesh;

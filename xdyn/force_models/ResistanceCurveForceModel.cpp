@@ -6,39 +6,52 @@
  */
 
 #include "ResistanceCurveForceModel.hpp"
+
+#include <iostream>
+#include <ssc/interpolation.hpp>
+
 #include "xdyn/core/Body.hpp"
 #include "xdyn/yaml_parser/environment_parsers.hpp"
-#include <ssc/interpolation.hpp>
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
-#include <iostream>
 
-std::string ResistanceCurveForceModel::model_name() {return "resistance curve";}
-
-class ResistanceCurveForceModel::Impl
+std::string ResistanceCurveForceModel::model_name()
 {
-    public:
-        explicit Impl(const Yaml& data) : S(data.Va, data.R, /*allow queries outside bounds*/ true), vmin(data.Va.front()), vmax(data.Va.back())
-        {
-        }
+    return "resistance curve";
+}
 
-        double get_resistance(const double Va)
-        {
-            if (Va<vmin) std::cerr << "Warning: resistance curve is tabulated from " << vmin << " m/s, but received Va = " << Va << " m/s" << std::endl;
-            if (Va>vmax) std::cerr << "Warning: resistance curve is tabulated up to " << vmax << " m/s, but received Va = " << Va << " m/s" << std::endl;
-            return S.f(Va);
-        }
+class ResistanceCurveForceModel::Impl {
+public:
+    explicit Impl(const Yaml& data)
+        : S(data.Va, data.R, /*allow queries outside bounds*/ true)
+        , vmin(data.Va.front())
+        , vmax(data.Va.back())
+    {
+    }
 
-    private:
-        Impl();
-        ssc::interpolation::SplineVariableStep S;
-        double vmin;
-        double vmax;
+    double get_resistance(const double Va)
+    {
+        if (Va < vmin)
+            std::cerr << "Warning: resistance curve is tabulated from " << vmin
+                      << " m/s, but received Va = " << Va << " m/s" << std::endl;
+        if (Va > vmax)
+            std::cerr << "Warning: resistance curve is tabulated up to " << vmax
+                      << " m/s, but received Va = " << Va << " m/s" << std::endl;
+        return S.f(Va);
+    }
+
+private:
+    Impl();
+    ssc::interpolation::SplineVariableStep S;
+    double vmin;
+    double vmax;
 };
 
-ResistanceCurveForceModel::ResistanceCurveForceModel(const Yaml& data, const std::string& body_name, const EnvironmentAndFrames& env) :
-        ForceModel(model_name(), {}, body_name, env),
-        pimpl(new Impl(data))
+ResistanceCurveForceModel::ResistanceCurveForceModel(
+    const Yaml& data,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
+    : ForceModel(model_name(), {}, body_name, env), pimpl(new Impl(data))
 {
 }
 
@@ -53,12 +66,18 @@ ResistanceCurveForceModel::Yaml ResistanceCurveForceModel::parse(const std::stri
     return ret;
 }
 
-Wrench ResistanceCurveForceModel::get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>&) const
+Wrench ResistanceCurveForceModel::get_force(
+    const BodyStates& states,
+    const double t,
+    const EnvironmentAndFrames& env,
+    const std::map<std::string, double>&) const
 {
     ssc::kinematics::Vector6d tau = ssc::kinematics::Vector6d::Zero();
     const auto filtered = states.get_filtered_states();
     // Resistance follows the speed through the water, not over the ground
-    const Eigen::Vector3d current_in_body = states.get_rot_from_ned_to_body().transpose()*env.get_UWCurrent(Eigen::Vector3d(states.x(), states.y(), states.z()), t);
+    const Eigen::Vector3d current_in_body =
+        states.get_rot_from_ned_to_body().transpose() *
+        env.get_UWCurrent(Eigen::Vector3d(states.x(), states.y(), states.z()), t);
     tau(0) = -pimpl->get_resistance(filtered.u - current_in_body(0));
     return Wrench(states.hydrodynamic_forces_calculation_point, body_name, tau);
 }

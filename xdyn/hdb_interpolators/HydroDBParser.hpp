@@ -8,71 +8,76 @@
 #ifndef HYDRODBPARSER_HPP_
 #define HYDRODBPARSER_HPP_
 
+#include <Eigen/Dense>
 #include <array>
 #include <memory>
 #include <string>
 #include <vector>
-#include <Eigen/Dense>
+
 #include "TimestampedMatrix.hpp"
 
+class HydroDBParser {
+public:
+    virtual ~HydroDBParser() = default;
 
-class HydroDBParser
-{
-    public:
-        virtual ~HydroDBParser() = default;
+    virtual Eigen::Matrix<double, 6, 6> get_added_mass() const = 0;
 
-        virtual Eigen::Matrix<double,6,6> get_added_mass() const = 0;
+    virtual std::array<std::vector<std::vector<double>>, 6> get_diffraction_module_tables()
+        const = 0;
+    virtual std::array<std::vector<std::vector<double>>, 6> get_diffraction_phase_tables()
+        const = 0;
+    virtual std::vector<double> get_diffraction_module_periods() const = 0;
+    virtual std::vector<double> get_diffraction_phase_periods() const = 0;
+    virtual std::vector<double> get_diffraction_module_psis() const = 0;
+    virtual std::vector<double> get_diffraction_phase_psis() const = 0;
 
-        virtual std::array<std::vector<std::vector<double> >,6 > get_diffraction_module_tables() const = 0;
-        virtual std::array<std::vector<std::vector<double> >,6 > get_diffraction_phase_tables() const = 0;
-        virtual std::vector<double> get_diffraction_module_periods() const = 0;
-        virtual std::vector<double> get_diffraction_phase_periods() const = 0;
-        virtual std::vector<double> get_diffraction_module_psis() const = 0;
-        virtual std::vector<double> get_diffraction_phase_psis() const = 0;
+    virtual std::array<std::vector<std::vector<double>>, 6> get_froude_krylov_module_tables()
+        const = 0;
+    virtual std::array<std::vector<std::vector<double>>, 6> get_froude_krylov_phase_tables()
+        const = 0;
+    virtual std::vector<double> get_froude_krylov_phase_psis() const = 0;
+    virtual std::vector<double> get_froude_krylov_phase_periods() const = 0;
+    virtual std::vector<double> get_froude_krylov_module_psis() const = 0;
+    virtual std::vector<double> get_froude_krylov_module_periods() const = 0;
+    /**
+     * @brief Get the angular frequencies for the radiation damping and added mass matrices
+     */
+    virtual std::vector<double> get_angular_frequencies() const = 0;
+    /**
+     * @brief Speed at which the radiation damping matrices were calculated.
+     * Used to determine if we can apply a forward-speed correction to the radiation damping
+     * force model.
+     */
+    virtual double get_forward_speed() const = 0;
+    /**
+     * @brief Added mass matrix coefficient Ma(i,j) = f(omega) for all omegas
+     */
+    virtual std::vector<double> get_added_mass_coeff(const size_t i, const size_t j) const = 0;
+    /**
+     * @brief Radiation damping matrix coefficient Br(i,j) = f(omega) for all omegas
+     */
+    virtual std::vector<double> get_radiation_damping_coeff(const size_t i, const size_t j)
+        const = 0;
 
-        virtual std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_module_tables() const = 0;
-        virtual std::array<std::vector<std::vector<double> >,6 > get_froude_krylov_phase_tables() const = 0;
-        virtual std::vector<double> get_froude_krylov_phase_psis() const = 0;
-        virtual std::vector<double> get_froude_krylov_phase_periods() const = 0;
-        virtual std::vector<double> get_froude_krylov_module_psis() const = 0;
-        virtual std::vector<double> get_froude_krylov_module_periods() const = 0;
-        /**
-         * @brief Get the angular frequencies for the radiation damping and added mass matrices
-         */
-        virtual std::vector<double> get_angular_frequencies() const = 0;
-        /**
-         * @brief Speed at which the radiation damping matrices were calculated.
-         * Used to determine if we can apply a forward-speed correction to the radiation damping
-         * force model.
-         */
-        virtual double get_forward_speed() const = 0;
-        /**
-         * @brief Added mass matrix coefficient Ma(i,j) = f(omega) for all omegas
-         */
-        virtual std::vector<double> get_added_mass_coeff(const size_t i, const size_t j) const = 0;
-        /**
-         * @brief Radiation damping matrix coefficient Br(i,j) = f(omega) for all omegas
-         */
-        virtual std::vector<double> get_radiation_damping_coeff(const size_t i, const size_t j) const = 0;
+    /**
+     * @brief Get the wave drift forces (by angular frequency a and incidence i M[a][i]), in
+     * N/(m².s).
+     */
+    virtual std::array<std::vector<std::vector<double>>, 6> get_wave_drift_tables() const = 0;
 
+    /**
+     * @brief Get the incidences at which the wave drift forces are expressed (in rad).
+     */
+    virtual std::vector<double> get_wave_drift_psis() const = 0;
 
-        /**
-         * @brief Get the wave drift forces (by angular frequency a and incidence i M[a][i]), in N/(m².s).
-         */
-        virtual std::array<std::vector<std::vector<double> >,6 > get_wave_drift_tables() const = 0;
-
-        /**
-         * @brief Get the incidences at which the wave drift forces are expressed (in rad).
-         */
-        virtual std::vector<double> get_wave_drift_psis() const = 0;
-
-        /**
-         * @brief Periods at which the wave drift forces are expressed (in seconds).
-         */
-        virtual std::vector<double> get_wave_drift_periods() const = 0;
-
+    /**
+     * @brief Periods at which the wave drift forces are expressed (in seconds).
+     */
+    virtual std::vector<double> get_wave_drift_periods() const = 0;
 };
 
-std::shared_ptr<HydroDBParser> parser_factory(const std::string& hdb_filename, const std::string& precal_filename);
+std::shared_ptr<HydroDBParser> parser_factory(
+    const std::string& hdb_filename,
+    const std::string& precal_filename);
 
 #endif

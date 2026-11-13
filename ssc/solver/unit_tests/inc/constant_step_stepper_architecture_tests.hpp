@@ -4,12 +4,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class constant_step_stepper_architecture_tests : public ::testing::Test
-{
-    protected:
-        constant_step_stepper_architecture_tests();
-        ssc::random_data_generator::DataGenerator a;
-
+class constant_step_stepper_architecture_tests : public ::testing::Test {
+protected:
+    constant_step_stepper_architecture_tests();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* CONSTANT_STEP_STEPPER_ARCHITECTURE_TESTS_HPP_ */
+#endif /* CONSTANT_STEP_STEPPER_ARCHITECTURE_TESTS_HPP_ */

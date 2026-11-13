@@ -2,26 +2,20 @@
 
 using namespace ssc::kinematics;
 
-Point::Point() : v(0,0,0), frame("")
-{
-}
+Point::Point() : v(0, 0, 0), frame("") {}
 
-Point::Point(const std::string& frame_) : v(0,0,0), frame(frame_)
-{
+Point::Point(const std::string& frame_) : v(0, 0, 0), frame(frame_) {}
 
-}
+Point::Point(const std::string& frame_, const Eigen::Vector3d& v_) : v(v_), frame(frame_) {}
 
-Point::Point(const std::string& frame_, const Eigen::Vector3d& v_) : v(v_), frame(frame_)
-{
-}
-
-Point::Point(const std::string& frame_, const double x_, const double y_, const double z_) : v(x_,y_,z_), frame(frame_)
+Point::Point(const std::string& frame_, const double x_, const double y_, const double z_)
+    : v(x_, y_, z_), frame(frame_)
 {
 }
 
 void Point::swap(Point& other) noexcept
 {
-    using std::swap; // Allow argument-dependent lookup
+    using std::swap;  // Allow argument-dependent lookup
     v.swap(other.v);
     swap(frame, other.frame);
 }

@@ -8,10 +8,11 @@
 #ifndef SIMOBSERVER_HPP_
 #define SIMOBSERVER_HPP_
 
-#include "xdyn/core/Res.hpp"
-#include <ssc/solver/DiscreteSystem.hpp>
 #include <memory>
+#include <ssc/solver/DiscreteSystem.hpp>
 #include <vector>
+
+#include "xdyn/core/Res.hpp"
 
 class Sim;
 
@@ -25,18 +26,26 @@ class Sim;
  *  \section ex2 Expected output
  *  \snippet simulator/unit_tests/SimObserverTest.cpp SimObserverTest expected output
  */
-class SimObserver
-{
-    public:
-        void check_variables_to_serialize_are_available() const;
-        void observe_before_solver_step(const Sim& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& discrete_systems);
-        void observe_after_solver_step(const Sim& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& discrete_systems);
-        std::vector<Res> get() const;
-        void flush();
-        void collect_available_serializations(const Sim& ss, const double , const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& );
+class SimObserver {
+public:
+    void check_variables_to_serialize_are_available() const;
+    void observe_before_solver_step(
+        const Sim& sys,
+        const double t,
+        const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>& discrete_systems);
+    void observe_after_solver_step(
+        const Sim& sys,
+        const double t,
+        const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>& discrete_systems);
+    std::vector<Res> get() const;
+    void flush();
+    void collect_available_serializations(
+        const Sim& ss,
+        const double,
+        const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>&);
 
-    private:
-        std::vector<Res> res;
+private:
+    std::vector<Res> res;
 };
 
 #endif /* SIMOBSERVER_HPP_ */

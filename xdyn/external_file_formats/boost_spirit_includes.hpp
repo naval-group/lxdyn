@@ -12,12 +12,12 @@
 #include <boost/foreach.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/fusion/include/io.hpp>
-#include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_fusion.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_object.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
+#include <boost/spirit/include/qi.hpp>
 #include <boost/variant.hpp>
 #include <boost/variant/recursive_variant.hpp>
 
@@ -26,22 +26,21 @@ namespace phoenix = boost::phoenix;
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
+using ascii::alnum;
+using ascii::alpha;
+using ascii::char_;
+using ascii::string;
 using qi::double_;
 using qi::eol;
-using qi::lit;
-using qi::lexeme;
-using qi::on_error;
 using qi::fail;
-using ascii::char_;
-using ascii::alpha;
-using ascii::alnum;
-using ascii::string;
+using qi::lexeme;
+using qi::lit;
+using qi::on_error;
 using namespace qi::labels;
 
-
 using phoenix::at_c;
-using phoenix::push_back;
 using phoenix::construct;
+using phoenix::push_back;
 using phoenix::val;
 
 #endif /* BOOST_SPIRIT_INCLUDES_HPP_ */

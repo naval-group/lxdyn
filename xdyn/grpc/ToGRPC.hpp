@@ -9,34 +9,53 @@
 #define GRPC_INC_TOGRPC_HPP_
 
 #include <grpcpp/grpcpp.h>
-#include "force.pb.h"
-#include "force.grpc.pb.h"
 
-#include "GRPCTypes.hpp"
-#include "xdyn/environment_models/DiscreteDirectionalWaveSpectrum.hpp"
-#include "xdyn/core/EnvironmentAndFrames.hpp"
+#include <memory>
+#include <ssc/macros.hpp>
 
 #include "GRPCForceModel.hpp"
-
-#include <ssc/macros.hpp>
-#include <memory>
+#include "GRPCTypes.hpp"
+#include "force.grpc.pb.h"
+#include "force.pb.h"
+#include "xdyn/core/EnvironmentAndFrames.hpp"
+#include "xdyn/environment_models/DiscreteDirectionalWaveSpectrum.hpp"
 
 class HydroDBParser;
-class ToGRPC
-{
-    public:
-        explicit ToGRPC(const GRPCForceModel::Input& input_);
-        RequiredWaveInformationRequest from_required_wave_information(const double t, const double x, const double y, const double z, const std::string& instance_name) const;
-        SpectrumResponse* from_flat_discrete_directional_wave_spectra(const std::vector<FlatDiscreteDirectionalWaveSpectrum>& spectra) const;
-        WaveInformation* from_wave_information(const WaveRequest& wave_request, const double t, const EnvironmentAndFrames& env) const;
-        States* from_state(const BodyStates& state, const double max_history_length, const EnvironmentAndFrames& env) const;
-        ForceRequest from_force_request(States* states, const std::map<std::string, double >& commands, WaveInformation* wave_information, const std::string& instance_name, FilteredStatesAndConvention* filtered_states_and_conventions) const;
-        SetForceParameterRequest from_yaml(const std::string& yaml, const std::string& body_name, const std::string& instance_name, const std::shared_ptr<HydroDBParser>& hydro_db_parser) const;
-        FilteredStatesAndConvention* from_filtered_states(const FilteredStates& filtered_states) const;
+class ToGRPC {
+public:
+    explicit ToGRPC(const GRPCForceModel::Input& input_);
+    RequiredWaveInformationRequest from_required_wave_information(
+        const double t,
+        const double x,
+        const double y,
+        const double z,
+        const std::string& instance_name) const;
+    SpectrumResponse* from_flat_discrete_directional_wave_spectra(
+        const std::vector<FlatDiscreteDirectionalWaveSpectrum>& spectra) const;
+    WaveInformation* from_wave_information(
+        const WaveRequest& wave_request,
+        const double t,
+        const EnvironmentAndFrames& env) const;
+    States* from_state(
+        const BodyStates& state,
+        const double max_history_length,
+        const EnvironmentAndFrames& env) const;
+    ForceRequest from_force_request(
+        States* states,
+        const std::map<std::string, double>& commands,
+        WaveInformation* wave_information,
+        const std::string& instance_name,
+        FilteredStatesAndConvention* filtered_states_and_conventions) const;
+    SetForceParameterRequest from_yaml(
+        const std::string& yaml,
+        const std::string& body_name,
+        const std::string& instance_name,
+        const std::shared_ptr<HydroDBParser>& hydro_db_parser) const;
+    FilteredStatesAndConvention* from_filtered_states(const FilteredStates& filtered_states) const;
 
-    private:
-        GRPCForceModel::Input input;
-        ToGRPC(); // Disabled
+private:
+    GRPCForceModel::Input input;
+    ToGRPC();  // Disabled
 };
 
 #endif /* GRPC_INC_TOGRPC_HPP_ */

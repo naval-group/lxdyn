@@ -6,13 +6,18 @@
  */
 
 #include "UniformWindVelocityProfile.hpp"
+
 #include <math.h>
 
-UniformWindVelocityProfile::UniformWindVelocityProfile(const Input& input) : WindMeanVelocityProfile(input)
+UniformWindVelocityProfile::UniformWindVelocityProfile(const Input& input)
+    : WindMeanVelocityProfile(input)
 {
 }
 
-std::string UniformWindVelocityProfile::model_name() {return "uniform wind";}
+std::string UniformWindVelocityProfile::model_name()
+{
+    return "uniform wind";
+}
 
 WindMeanVelocityProfile::Input UniformWindVelocityProfile::parse(const std::string& yaml_input)
 {

@@ -1,11 +1,10 @@
 #include "ConfBuilderTest.hpp"
+
 #include "ConfBuilder.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
-ConfBuilderTest::ConfBuilderTest() : a(ssc::random_data_generator::DataGenerator(78910))
-{
-}
+ConfBuilderTest::ConfBuilderTest() : a(ssc::random_data_generator::DataGenerator(78910)) {}
 
 TEST_F(ConfBuilderTest, compute_right_value_of_Tmax_falling_ball)
 {

@@ -7,10 +7,6 @@
 
 #include "Res.hpp"
 
-Res::Res() : t(0)
-{
-}
+Res::Res() : t(0) {}
 
-Res::Res(const double t_, const StateType& x_) : t(t_), x(x_)
-{
-}
+Res::Res(const double t_, const StateType& x_) : t(t_), x(x_) {}

@@ -11,8 +11,7 @@
 #include <string>
 #include <vector>
 
-struct YamlDynamics6x6Matrix
-{
+struct YamlDynamics6x6Matrix {
     bool read_from_file{false};
     std::string hdb_filename;
     std::string precal_filename;

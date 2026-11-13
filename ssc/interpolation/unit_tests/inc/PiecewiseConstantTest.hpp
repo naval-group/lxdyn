@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class PiecewiseConstantTest : public ::testing::Test
-{
-    protected:
-        PiecewiseConstantTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class PiecewiseConstantTest : public ::testing::Test {
+protected:
+    PiecewiseConstantTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* PIECEWISECONSTANTTEST_HPP_ */
+#endif /* PIECEWISECONSTANTTEST_HPP_ */

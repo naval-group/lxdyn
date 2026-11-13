@@ -3,28 +3,27 @@
 // DOFs, and read_model takes one body and no controllers: a derivative is then a function of the
 // time, the states and the commands alone.
 
-#include "instance.hpp"
-
 #include <algorithm>
 #include <cmath>
 #include <map>
 
+#include "instance.hpp"
+
 using namespace xdyn_fmu;
 
-namespace
+namespace {
+// The importer integrates the quaternion as any other state, so its norm drifts, and xdyn's
+// rotation matrix assumes a unit one. The importer's states stay as it set them.
+StateType with_unit_quaternion(const std::array<double, 13>& state)
 {
-    // The importer integrates the quaternion as any other state, so its norm drifts, and xdyn's
-    // rotation matrix assumes a unit one. The importer's states stay as it set them.
-    StateType with_unit_quaternion(const std::array<double, 13>& state)
-    {
-        StateType x(state.begin(), state.end());
-        const double norm = std::sqrt(x[9] * x[9] + x[10] * x[10] + x[11] * x[11] + x[12] * x[12]);
-        if (norm > 0)
-            for (size_t i = 9; i < 13; ++i)
-                x[i] /= norm;
-        return x;
-    }
-} // namespace
+    StateType x(state.begin(), state.end());
+    const double norm = std::sqrt(x[9] * x[9] + x[10] * x[10] + x[11] * x[11] + x[12] * x[12]);
+    if (norm > 0)
+        for (size_t i = 9; i < 13; ++i)
+            x[i] /= norm;
+    return x;
+}
+}  // namespace
 
 StateType xdyn_fmu::Instance::derivatives()
 {
@@ -51,86 +50,93 @@ std::array<double, 3> xdyn_fmu::Instance::angles() const
         return euler;
     const StateType x = with_unit_quaternion(state);
     const auto a = sim->sim.get_bodies().at(0)->get_angles(x, sim->sim.get_env().rot);
-    return { a.phi, a.theta, a.psi };
+    return {a.phi, a.theta, a.psi};
 }
 
-extern "C"
+extern "C" {
+fmi2Status fmi2EnterEventMode(fmi2Component c)
 {
-    fmi2Status fmi2EnterEventMode(fmi2Component c) { return c ? fmi2OK : fmi2Error; }
+    return c ? fmi2OK : fmi2Error;
+}
 
-    // No events: the model has no event indicator and no time event.
-    fmi2Status fmi2NewDiscreteStates(fmi2Component c, fmi2EventInfo* info)
-    {
-        if (not(c) or not(info))
-            return fmi2Error;
-        *info = fmi2EventInfo{};
+// No events: the model has no event indicator and no time event.
+fmi2Status fmi2NewDiscreteStates(fmi2Component c, fmi2EventInfo* info)
+{
+    if (not(c) or not(info))
+        return fmi2Error;
+    *info = fmi2EventInfo{};
+    return fmi2OK;
+}
+
+fmi2Status fmi2EnterContinuousTimeMode(fmi2Component c)
+{
+    return c ? fmi2OK : fmi2Error;
+}
+
+fmi2Status fmi2CompletedIntegratorStep(
+    fmi2Component c,
+    fmi2Boolean,
+    fmi2Boolean* enterEventMode,
+    fmi2Boolean* terminateSimulation)
+{
+    if (not(c))
+        return fmi2Error;
+    if (enterEventMode)
+        *enterEventMode = fmi2False;
+    if (terminateSimulation)
+        *terminateSimulation = fmi2False;
+    return fmi2OK;
+}
+
+fmi2Status fmi2SetTime(fmi2Component c, fmi2Real time)
+{
+    if (not(c))
+        return fmi2Error;
+    as(c)->time = time;
+    return fmi2OK;
+}
+
+fmi2Status fmi2SetContinuousStates(fmi2Component c, const fmi2Real x[], size_t nx)
+{
+    return guarded(c, "fmi2SetContinuousStates", [&](Instance& i) {
+        if (nx != i.state.size())
+            throw std::invalid_argument("expected 13 states, got " + std::to_string(nx));
+        std::copy(x, x + nx, i.state.begin());
         return fmi2OK;
-    }
+    });
+}
 
-    fmi2Status fmi2EnterContinuousTimeMode(fmi2Component c) { return c ? fmi2OK : fmi2Error; }
-
-    fmi2Status fmi2CompletedIntegratorStep(fmi2Component c, fmi2Boolean,
-                                           fmi2Boolean* enterEventMode,
-                                           fmi2Boolean* terminateSimulation)
-    {
-        if (not(c))
-            return fmi2Error;
-        if (enterEventMode)
-            *enterEventMode = fmi2False;
-        if (terminateSimulation)
-            *terminateSimulation = fmi2False;
+fmi2Status fmi2GetContinuousStates(fmi2Component c, fmi2Real x[], size_t nx)
+{
+    return guarded(c, "fmi2GetContinuousStates", [&](Instance& i) {
+        if (nx != i.state.size())
+            throw std::invalid_argument("expected 13 states, got " + std::to_string(nx));
+        std::copy(i.state.begin(), i.state.end(), x);
         return fmi2OK;
-    }
+    });
+}
 
-    fmi2Status fmi2SetTime(fmi2Component c, fmi2Real time)
-    {
-        if (not(c))
-            return fmi2Error;
-        as(c)->time = time;
+fmi2Status fmi2GetDerivatives(fmi2Component c, fmi2Real derivatives[], size_t nx)
+{
+    return guarded(c, "fmi2GetDerivatives", [&](Instance& i) {
+        if (nx != i.state.size())
+            throw std::invalid_argument("expected 13 derivatives, got " + std::to_string(nx));
+        const StateType dx_dt = i.derivatives();
+        std::copy(dx_dt.begin(), dx_dt.end(), derivatives);
         return fmi2OK;
-    }
+    });
+}
 
-    fmi2Status fmi2SetContinuousStates(fmi2Component c, const fmi2Real x[], size_t nx)
-    {
-        return guarded(c, "fmi2SetContinuousStates", [&](Instance& i) {
-            if (nx != i.state.size())
-                throw std::invalid_argument("expected 13 states, got " + std::to_string(nx));
-            std::copy(x, x + nx, i.state.begin());
-            return fmi2OK;
-        });
-    }
+fmi2Status fmi2GetEventIndicators(fmi2Component c, fmi2Real[], size_t ni)
+{
+    return c and ni == 0 ? fmi2OK : fmi2Error;
+}
 
-    fmi2Status fmi2GetContinuousStates(fmi2Component c, fmi2Real x[], size_t nx)
-    {
-        return guarded(c, "fmi2GetContinuousStates", [&](Instance& i) {
-            if (nx != i.state.size())
-                throw std::invalid_argument("expected 13 states, got " + std::to_string(nx));
-            std::copy(i.state.begin(), i.state.end(), x);
-            return fmi2OK;
-        });
-    }
-
-    fmi2Status fmi2GetDerivatives(fmi2Component c, fmi2Real derivatives[], size_t nx)
-    {
-        return guarded(c, "fmi2GetDerivatives", [&](Instance& i) {
-            if (nx != i.state.size())
-                throw std::invalid_argument("expected 13 derivatives, got " + std::to_string(nx));
-            const StateType dx_dt = i.derivatives();
-            std::copy(dx_dt.begin(), dx_dt.end(), derivatives);
-            return fmi2OK;
-        });
-    }
-
-    fmi2Status fmi2GetEventIndicators(fmi2Component c, fmi2Real[], size_t ni)
-    {
-        return c and ni == 0 ? fmi2OK : fmi2Error;
-    }
-
-    fmi2Status fmi2GetNominalsOfContinuousStates(fmi2Component c, fmi2Real x_nominal[], size_t nx)
-    {
-        if (not(c) or nx != 13)
-            return fmi2Error;
-        std::fill(x_nominal, x_nominal + nx, 1.0);
-        return fmi2OK;
-    }
+fmi2Status fmi2GetNominalsOfContinuousStates(fmi2Component c, fmi2Real x_nominal[], size_t nx)
+{
+    if (not(c) or nx != 13)
+        return fmi2Error;
+    std::fill(x_nominal, x_nominal + nx, 1.0);
+    return fmi2OK;
+}
 }

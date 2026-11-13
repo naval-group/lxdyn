@@ -11,25 +11,28 @@
 #include <ssc/data_source.hpp>
 #include <ssc/interpolation.hpp>
 
-class InterpolationModule : public ssc::data_source::DataSourceModule
-{
-    public:
-        InterpolationModule(ssc::data_source::DataSource* const data_source,
-                            const std::string& module_name,
-                            const std::string& xname_,
-                            const std::string& yname_,
-                            const std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep>& I_);
+class InterpolationModule : public ssc::data_source::DataSourceModule {
+public:
+    InterpolationModule(
+        ssc::data_source::DataSource* const data_source,
+        const std::string& module_name,
+        const std::string& xname_,
+        const std::string& yname_,
+        const std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep>& I_);
 
-        InterpolationModule(const InterpolationModule& rhs, ssc::data_source::DataSource* const data_source);
+    InterpolationModule(
+        const InterpolationModule& rhs,
+        ssc::data_source::DataSource* const data_source);
 
-        ssc::data_source::DataSourceModule* clone() const override;
-        ssc::data_source::DataSourceModule* clone(ssc::data_source::DataSource* const data_source) const override;
-        void update() const override;
+    ssc::data_source::DataSourceModule* clone() const override;
+    ssc::data_source::DataSourceModule* clone(
+        ssc::data_source::DataSource* const data_source) const override;
+    void update() const override;
 
-    private:
-        std::string xname;
-        std::string yname;
-        std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep> I;
+private:
+    std::string xname;
+    std::string yname;
+    std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep> I;
 };
 
 #endif /* INTERPOLATIONMODULE_HPP_ */

@@ -1,28 +1,33 @@
 #include "JSONSerializerTest.hpp"
+
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
 #include "JSONSerializer.hpp"
 #include "SimServerInputs.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
-#include <algorithm>
-#include <vector>
-#include <iostream>
 
-JSONSerializerTest::JSONSerializerTest(): a(ssc::random_data_generator::DataGenerator(42)), yaml(
-        "{\"Dt\": 12\n"
-        ",\"states\":\n"
-        "    [ {\"t\": 9.123 , \"x\": 1.123, \"y\": 2.123, \"z\": 3.123, \"u\": 4.123, \"v\": 5.123, \"w\": 6.123, \"p\": 7.123, \"q\": 8.123, \"r\": 9.123, \"qr\": 10.123, \"qi\": 11.123, \"qj\": 12.123, \"qk\": 13.132}\n"
-        "    , {\"t\": 10.123, \"x\": 33.98, \"y\": 34.98, \"z\": 35.98, \"u\": 36.98, \"v\": 37.98, \"w\": 38.98, \"p\": 39.98, \"q\": 40.98, \"r\": 41.98, \"qr\": 42.98, \"qi\": 43.98, \"qj\": 44.98, \"qk\": 45.132}\n"
-        "    , {\"t\": 51.123, \"x\": 52.32, \"y\": 53.32, \"z\": 54.32, \"u\": 55.32, \"v\": 56.32, \"w\": 57.32, \"p\": 58.32, \"q\": 59.32, \"r\": 60.32, \"qr\": 61.32, \"qi\": 62.32, \"qj\": 63.32, \"qk\": 64.132}]\n"
-        ",\"commands\":\n"
-        " {   \"a\": 3,\n"
-        "    \"b\": 5,\n"
-        "    \"c\": -12.3}}")
+JSONSerializerTest::JSONSerializerTest()
+    : a(ssc::random_data_generator::DataGenerator(42))
+    , yaml(
+          "{\"Dt\": 12\n"
+          ",\"states\":\n"
+          "    [ {\"t\": 9.123 , \"x\": 1.123, \"y\": 2.123, \"z\": 3.123, \"u\": 4.123, \"v\": 5.123, \"w\": 6.123, \"p\": 7.123, \"q\": 8.123, \"r\": 9.123, \"qr\": 10.123, \"qi\": 11.123, \"qj\": 12.123, \"qk\": 13.132}\n"
+          "    , {\"t\": 10.123, \"x\": 33.98, \"y\": 34.98, \"z\": 35.98, \"u\": 36.98, \"v\": 37.98, \"w\": 38.98, \"p\": 39.98, \"q\": 40.98, \"r\": 41.98, \"qr\": 42.98, \"qi\": 43.98, \"qj\": 44.98, \"qk\": 45.132}\n"
+          "    , {\"t\": 51.123, \"x\": 52.32, \"y\": 53.32, \"z\": 54.32, \"u\": 55.32, \"v\": 56.32, \"w\": 57.32, \"p\": 58.32, \"q\": 59.32, \"r\": 60.32, \"qr\": 61.32, \"qi\": 62.32, \"qj\": 63.32, \"qk\": 64.132}]\n"
+          ",\"commands\":\n"
+          " {   \"a\": 3,\n"
+          "    \"b\": 5,\n"
+          "    \"c\": -12.3}}")
 {
 }
 
 TEST_F(JSONSerializerTest, can_parse_simple_history)
 {
-    const double t_list[5] = {0,0.1,0.2,0.3,0.4};
-    const double x0=90, y0=91, z0=92, u0=93, v0=94, w0=95, p0=96, q0=97, r0=98, qr0=99, qi0=100, qj0=101, qk0=102;
+    const double t_list[5] = {0, 0.1, 0.2, 0.3, 0.4};
+    const double x0 = 90, y0 = 91, z0 = 92, u0 = 93, v0 = 94, w0 = 95, p0 = 96, q0 = 97, r0 = 98,
+                 qr0 = 99, qi0 = 100, qj0 = 101, qk0 = 102;
     const double state_step = -20;
     const size_t size_test = 5;
 
@@ -31,22 +36,21 @@ TEST_F(JSONSerializerTest, can_parse_simple_history)
     ASSERT_EQ(1234.5, history.Dt);
     ASSERT_EQ(size_test, history.states.size());
 
-    for(size_t i = 0; i < size_test ; ++i)
-    {
+    for (size_t i = 0; i < size_test; ++i) {
         ASSERT_EQ(t_list[i], history.states[i].t);
-        ASSERT_EQ(x0+((double)i)*state_step, history.states[i].x);
-        ASSERT_EQ(y0+((double)i)*state_step, history.states[i].y);
-        ASSERT_EQ(z0+((double)i)*state_step, history.states[i].z);
-        ASSERT_EQ(u0+((double)i)*state_step, history.states[i].u);
-        ASSERT_EQ(v0+((double)i)*state_step, history.states[i].v);
-        ASSERT_EQ(w0+((double)i)*state_step, history.states[i].w);
-        ASSERT_EQ(p0+((double)i)*state_step, history.states[i].p);
-        ASSERT_EQ(q0+((double)i)*state_step, history.states[i].q);
-        ASSERT_EQ(r0+((double)i)*state_step, history.states[i].r);
-        ASSERT_EQ(qr0+((double)i)*state_step, history.states[i].qr);
-        ASSERT_EQ(qi0+((double)i)*state_step, history.states[i].qi);
-        ASSERT_EQ(qj0+((double)i)*state_step, history.states[i].qj);
-        ASSERT_EQ(qk0+((double)i)*state_step, history.states[i].qk);
+        ASSERT_EQ(x0 + ((double)i) * state_step, history.states[i].x);
+        ASSERT_EQ(y0 + ((double)i) * state_step, history.states[i].y);
+        ASSERT_EQ(z0 + ((double)i) * state_step, history.states[i].z);
+        ASSERT_EQ(u0 + ((double)i) * state_step, history.states[i].u);
+        ASSERT_EQ(v0 + ((double)i) * state_step, history.states[i].v);
+        ASSERT_EQ(w0 + ((double)i) * state_step, history.states[i].w);
+        ASSERT_EQ(p0 + ((double)i) * state_step, history.states[i].p);
+        ASSERT_EQ(q0 + ((double)i) * state_step, history.states[i].q);
+        ASSERT_EQ(r0 + ((double)i) * state_step, history.states[i].r);
+        ASSERT_EQ(qr0 + ((double)i) * state_step, history.states[i].qr);
+        ASSERT_EQ(qi0 + ((double)i) * state_step, history.states[i].qi);
+        ASSERT_EQ(qj0 + ((double)i) * state_step, history.states[i].qj);
+        ASSERT_EQ(qk0 + ((double)i) * state_step, history.states[i].qk);
     }
 }
 
@@ -60,8 +64,14 @@ TEST_F(JSONSerializerTest, can_parse_commands)
 TEST_F(JSONSerializerTest, can_parse_requested_output)
 {
     YamlSimServerInputs yinfos = deserialize(test_data::JSON_message_with_requested_output());
-    ASSERT_TRUE(std::find(yinfos.requested_output.begin(), yinfos.requested_output.end(), "Fx(force,body,NED)") != yinfos.requested_output.end());
-    ASSERT_TRUE(std::find(yinfos.requested_output.begin(), yinfos.requested_output.end(), "By(body)") != yinfos.requested_output.end());
+    ASSERT_TRUE(
+        std::find(
+            yinfos.requested_output.begin(),
+            yinfos.requested_output.end(),
+            "Fx(force,body,NED)") != yinfos.requested_output.end());
+    ASSERT_TRUE(
+        std::find(yinfos.requested_output.begin(), yinfos.requested_output.end(), "By(body)") !=
+        yinfos.requested_output.end());
 }
 
 TEST_F(JSONSerializerTest, Dt_should_not_be_compulsory)

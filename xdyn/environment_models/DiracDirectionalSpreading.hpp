@@ -13,38 +13,42 @@
 /** \brief No directional spreading: 1 in a particular direction theta0 & zero elsewhere?
  *  \ingroup wave_models
  *  \section ex1 Example
- *  \snippet environment_models/unit_tests/DiracDirectionalSpreadingTest.cpp DiracDirectionalSpreadingTest example
+ *  \snippet environment_models/unit_tests/DiracDirectionalSpreadingTest.cpp
+ * DiracDirectionalSpreadingTest example
  *  \section ex2 Expected output
- *  \snippet environment_models/unit_tests/DiracDirectionalSpreadingTest.cpp DiracDirectionalSpreadingTest expected output
+ *  \snippet environment_models/unit_tests/DiracDirectionalSpreadingTest.cpp
+ * DiracDirectionalSpreadingTest expected output
  */
-class DiracDirectionalSpreading : public WaveDirectionalSpreading
-{
-    public:
-        explicit DiracDirectionalSpreading(const double psi0 //!< Primary wave direction (NED, "coming from") in radians
-                                 );
+class DiracDirectionalSpreading : public WaveDirectionalSpreading {
+public:
+    explicit DiracDirectionalSpreading(
+        const double psi0  //!< Primary wave direction (NED, "coming from") in radians
+    );
 
-        /**  \author cady
-          *  \date Jul 31, 2014, 12:20:52 PM
-          *  \brief Wave density by direction.
-          *  \details Equals one if psi=psi0 & 0 otherwise.
-          *  \returns Density (between 0 and 1, no unit)
-          */
-        double operator()(const double psi //!< Primary wave direction in radians.
-                         ) const override;
+    /**  \author cady
+     *  \date Jul 31, 2014, 12:20:52 PM
+     *  \brief Wave density by direction.
+     *  \details Equals one if psi=psi0 & 0 otherwise.
+     *  \returns Density (between 0 and 1, no unit)
+     */
+    double operator()(const double psi  //!< Primary wave direction in radians.
+    ) const override;
 
-        WaveDirectionalSpreading* clone() const override;
+    WaveDirectionalSpreading* clone() const override;
 
-        /**  \author cady
-          *  \date Jul 31, 2014, 12:20:52 PM
-          *  \details Returns a vector containing only psi0
-          *  \snippet environment_models/unit_tests/WaveSpectralDensityTest.cpp WaveSpectralDensityTest get_omega0_example
-          */
-        std::vector<double> get_directions(const size_t n,         //!< Ignored
-                                           const bool periodic = false //!< Ignored
-                                                   ) const override;
+    /**  \author cady
+     *  \date Jul 31, 2014, 12:20:52 PM
+     *  \details Returns a vector containing only psi0
+     *  \snippet environment_models/unit_tests/WaveSpectralDensityTest.cpp WaveSpectralDensityTest
+     * get_omega0_example
+     */
+    std::vector<double> get_directions(
+        const size_t n,              //!< Ignored
+        const bool periodic = false  //!< Ignored
+    ) const override;
 
-    private:
-        DiracDirectionalSpreading(); // Disabled
+private:
+    DiracDirectionalSpreading();  // Disabled
 };
 
 #endif /* DIRACDIRECTIONALSPREADING_HPP_ */

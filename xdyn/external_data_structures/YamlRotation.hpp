@@ -11,11 +11,9 @@
 #include <string>
 #include <vector>
 
-struct YamlRotation
-{
+struct YamlRotation {
     YamlRotation();
-    YamlRotation(const std::string& order_by_,
-                 const std::vector<std::string>& convention_);
+    YamlRotation(const std::string& order_by_, const std::vector<std::string>& convention_);
     std::string order_by;
     std::vector<std::string> convention;
 };

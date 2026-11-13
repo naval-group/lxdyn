@@ -6,13 +6,13 @@
  */
 
 #include "parse_controllers.hpp"
-#include "yaml_compat.h"
+
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
+#include "yaml_compat.h"
 
-void
-operator>>(const YAML::Node& node, YamlController& c)
+void operator>>(const YAML::Node& node, YamlController& c)
 {
     node["type"] >> c.type;
     node["name"] >> c.name;

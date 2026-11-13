@@ -3,19 +3,20 @@
 
 #include "ssc/exception_handling/Exception.hpp"
 
-namespace ssc
-{
-    namespace json
+namespace ssc {
+namespace json {
+class Exception : public ssc::exception_handling::Exception {
+public:
+    Exception(
+        const std::string& message,
+        const std::string& file,
+        const std::string& function,
+        const unsigned int line)
+        : ssc::exception_handling::Exception::Exception(message, file, function, line)
     {
-        class Exception: public ssc::exception_handling::Exception
-        {
-            public:
-                Exception(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) :
-                       ssc::exception_handling::Exception::Exception(message, file, function, line)
-                {
-                }
-        };
     }
-}
+};
+}  // namespace json
+}  // namespace ssc
 
 #endif

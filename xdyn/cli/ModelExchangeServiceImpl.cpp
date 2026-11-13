@@ -5,37 +5,39 @@
  *      Author: cady
  */
 #include "ModelExchangeServiceImpl.hpp"
-#include "ErrorReporter.hpp"
-#include "xdyn/core/BodyStates.hpp"
-#include "xdyn/observers_and_api/SimServerInputs.hpp"
-#include "xdyn/external_data_structures/YamlSimServerInputs.hpp"
+
 #include <cmath>
 #include <sstream>
 #include <tuple>
 
-ModelExchangeServiceImpl::ModelExchangeServiceImpl(const XdynForME& xdyn_, ErrorReporter& error_outputter_):
-simserver(xdyn_),
-error_outputter(error_outputter_)
-{}
+#include "ErrorReporter.hpp"
+#include "xdyn/core/BodyStates.hpp"
+#include "xdyn/external_data_structures/YamlSimServerInputs.hpp"
+#include "xdyn/observers_and_api/SimServerInputs.hpp"
 
-YamlSimServerInputs from_grpc(grpc::ServerContext* , const ModelExchangeRequestEuler* request)
+ModelExchangeServiceImpl::ModelExchangeServiceImpl(
+    const XdynForME& xdyn_,
+    ErrorReporter& error_outputter_)
+    : simserver(xdyn_), error_outputter(error_outputter_)
+{
+}
+
+YamlSimServerInputs from_grpc(grpc::ServerContext*, const ModelExchangeRequestEuler* request)
 {
     YamlSimServerInputs server_inputs;
     ssc::kinematics::EulerAngles angles;
     YamlRotation rot;
     rot.order_by = "angle";
     rot.convention = {"z", "y'", "x''"};
-    if (request)
-    {
-
-        server_inputs.Dt = 0; // Not used by XdynForME anyway
-        std::map<std::string, double> commands(request->commands().begin(),
-                request->commands().end());
+    if (request) {
+        server_inputs.Dt = 0;  // Not used by XdynForME anyway
+        std::map<std::string, double> commands(
+            request->commands().begin(),
+            request->commands().end());
         server_inputs.commands = commands;
         const size_t n = static_cast<size_t>(request->states().t_size());
         server_inputs.states.resize(n);
-        for (size_t i = 0 ; i < n ; ++i)
-        {
+        for (size_t i = 0; i < n; ++i) {
             const int int_i = static_cast<int>(i);
             server_inputs.states[i].x = request->states().x(int_i);
             server_inputs.states[i].y = request->states().y(int_i);
@@ -55,26 +57,25 @@ YamlSimServerInputs from_grpc(grpc::ServerContext* , const ModelExchangeRequestE
             server_inputs.states[i].qj = std::get<2>(quaternion);
             server_inputs.states[i].qk = std::get<3>(quaternion);
         }
-        server_inputs.requested_output = std::vector<std::string>(request->requested_output().begin(),
-                                                                  request->requested_output().end());
+        server_inputs.requested_output = std::vector<std::string>(
+            request->requested_output().begin(),
+            request->requested_output().end());
     }
     return server_inputs;
 }
 
-YamlSimServerInputs from_grpc(grpc::ServerContext* , const ModelExchangeRequestQuaternion* request)
+YamlSimServerInputs from_grpc(grpc::ServerContext*, const ModelExchangeRequestQuaternion* request)
 {
     YamlSimServerInputs server_inputs;
-    if (request)
-    {
-
-        server_inputs.Dt = 0; // Not used by XdynForME anyway
-        std::map<std::string, double> commands(request->commands().begin(),
-                request->commands().end());
+    if (request) {
+        server_inputs.Dt = 0;  // Not used by XdynForME anyway
+        std::map<std::string, double> commands(
+            request->commands().begin(),
+            request->commands().end());
         server_inputs.commands = commands;
         const size_t n = static_cast<size_t>(request->states().t_size());
         server_inputs.states.resize(n);
-        for (size_t i = 0 ; i < n ; ++i)
-        {
+        for (size_t i = 0; i < n; ++i) {
             const int int_i = static_cast<int>(i);
             server_inputs.states[i].x = request->states().x(int_i);
             server_inputs.states[i].y = request->states().y(int_i);
@@ -90,13 +91,15 @@ YamlSimServerInputs from_grpc(grpc::ServerContext* , const ModelExchangeRequestQ
             server_inputs.states[i].qj = request->states().qj(int_i);
             server_inputs.states[i].qk = request->states().qk(int_i);
         }
-        server_inputs.requested_output = std::vector<std::string>(request->requested_output().begin(),
-                                                                  request->requested_output().end());
+        server_inputs.requested_output = std::vector<std::string>(
+            request->requested_output().begin(),
+            request->requested_output().end());
     }
     return server_inputs;
 }
 
-grpc::Status to_grpc(grpc::ServerContext* , const YamlState& state_derivatives, ModelExchangeResponse* response)
+grpc::Status
+to_grpc(grpc::ServerContext*, const YamlState& state_derivatives, ModelExchangeResponse* response)
 {
     ModelExchangeStateDerivatives* d_dt = new ModelExchangeStateDerivatives();
     d_dt->set_x(state_derivatives.x);
@@ -117,35 +120,37 @@ grpc::Status to_grpc(grpc::ServerContext* , const YamlState& state_derivatives, 
     d_dt->set_psi(state_derivatives.psi);
     d_dt->set_t(state_derivatives.t);
     response->set_allocated_d_dt(d_dt);
-    for(const auto& obs:state_derivatives.extra_observations)
-    {
+    for (const auto& obs : state_derivatives.extra_observations) {
         response->mutable_extra_observations()->operator[](obs.first) = obs.second;
     }
     return grpc::Status::OK;
 }
 
 grpc::Status ModelExchangeServiceImpl::dx_dt_euler_321(
-        grpc::ServerContext* context,
-        const ModelExchangeRequestEuler* request,
-        ModelExchangeResponse* response)
+    grpc::ServerContext* context,
+    const ModelExchangeRequestEuler* request,
+    ModelExchangeResponse* response)
 {
     return dx_dt(context, request, response);
 }
 
 grpc::Status ModelExchangeServiceImpl::dx_dt_quaternion(
-        grpc::ServerContext* context,
-        const ModelExchangeRequestQuaternion* request,
-        ModelExchangeResponse* response)
+    grpc::ServerContext* context,
+    const ModelExchangeRequestQuaternion* request,
+    ModelExchangeResponse* response)
 {
     return dx_dt(context, request, response);
 }
 
-template <> void check_states_size<ModelExchangeRequestEuler>(const ModelExchangeRequestEuler* request)
+template <>
+void check_states_size<ModelExchangeRequestEuler>(const ModelExchangeRequestEuler* request)
 {
     check_euler_states_size(request);
 }
 
-template <> void check_states_size<ModelExchangeRequestQuaternion>(const ModelExchangeRequestQuaternion* request)
+template <>
+void check_states_size<ModelExchangeRequestQuaternion>(
+    const ModelExchangeRequestQuaternion* request)
 {
     check_quaternion_states_size(request);
 }

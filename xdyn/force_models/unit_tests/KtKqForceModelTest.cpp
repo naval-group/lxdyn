@@ -6,34 +6,32 @@
  */
 
 #include "KtKqForceModelTest.hpp"
+
 #include "KtKqForceModel.hpp"
+#include "gmock/gmock.h"
+#include "xdyn/core/BodyBuilder.hpp"
 #include "xdyn/exceptions/NumericalErrorException.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
-#include "xdyn/core/BodyBuilder.hpp"
-
-#include "gmock/gmock.h"
 using ::testing::ElementsAreArray;
 
 #include <cmath>
 #include <memory>
 #define PI M_PI
 
-const double DEG2RAD = atan(1)/45.;
+const double DEG2RAD = atan(1) / 45.;
 constexpr double EPS = 1E-6;
 
 #define BODY "body 1"
 
-KtKqForceModelTest::KtKqForceModelTest() : a(ssc::random_data_generator::DataGenerator(9876))
-{
-}
+KtKqForceModelTest::KtKqForceModelTest() : a(ssc::random_data_generator::DataGenerator(9876)) {}
 
 TEST_F(KtKqForceModelTest, parser)
 {
     const auto k = KtKqForceModel::parse(test_data::kt_kq());
     ASSERT_EQ("port side propeller", k.name);
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.angle.phi);
-    ASSERT_DOUBLE_EQ(-10*DEG2RAD, k.position_of_propeller_frame.angle.theta);
-    ASSERT_DOUBLE_EQ(-1*DEG2RAD, k.position_of_propeller_frame.angle.psi);
+    ASSERT_DOUBLE_EQ(-10 * DEG2RAD, k.position_of_propeller_frame.angle.theta);
+    ASSERT_DOUBLE_EQ(-1 * DEG2RAD, k.position_of_propeller_frame.angle.psi);
     ASSERT_DOUBLE_EQ(-4, k.position_of_propeller_frame.coordinates.x);
     ASSERT_DOUBLE_EQ(-2, k.position_of_propeller_frame.coordinates.y);
     ASSERT_DOUBLE_EQ(2, k.position_of_propeller_frame.coordinates.z);
@@ -43,9 +41,51 @@ TEST_F(KtKqForceModelTest, parser)
     ASSERT_DOUBLE_EQ(0.7, k.thrust_deduction_factor);
     ASSERT_DOUBLE_EQ(0.9, k.wake_coefficient);
     ASSERT_DOUBLE_EQ(2, k.diameter);
-    ASSERT_THAT(k.J, ElementsAreArray({-1.00000E+00,-8.00000E-01,-5.00000E-01,-2.50000E-01,-1.00000E-03,1.00000E-03, 2.00000E-01, 4.00000E-01, 6.00000E-01, 7.00000E-01, 8.00000E-01,1.00000E+00}));
-    ASSERT_THAT(k.Kt, ElementsAreArray({-4.50000E-01,-2.50000E-01,-1.90000E-01,-2.00000E-01,-2.00000E-01,3.25000E-01, 2.80000E-01, 2.33000E-01, 1.85000E-01, 1.62000E-01,1.36000E-01,8.50000E-02}));
-    ASSERT_THAT(k.Kq, ElementsAreArray({-4.80000E-02,-3.30000E-02,-2.20000E-02,-2.50000E-02,-2.80000E-02,3.40000E-02, 3.26000E-02, 2.97000E-02, 2.55000E-02, 2.30000E-02, 2.040000E-02,1.50000E-02}));
+    ASSERT_THAT(
+        k.J,
+        ElementsAreArray(
+            {-1.00000E+00,
+             -8.00000E-01,
+             -5.00000E-01,
+             -2.50000E-01,
+             -1.00000E-03,
+             1.00000E-03,
+             2.00000E-01,
+             4.00000E-01,
+             6.00000E-01,
+             7.00000E-01,
+             8.00000E-01,
+             1.00000E+00}));
+    ASSERT_THAT(
+        k.Kt,
+        ElementsAreArray(
+            {-4.50000E-01,
+             -2.50000E-01,
+             -1.90000E-01,
+             -2.00000E-01,
+             -2.00000E-01,
+             3.25000E-01,
+             2.80000E-01,
+             2.33000E-01,
+             1.85000E-01,
+             1.62000E-01,
+             1.36000E-01,
+             8.50000E-02}));
+    ASSERT_THAT(
+        k.Kq,
+        ElementsAreArray(
+            {-4.80000E-02,
+             -3.30000E-02,
+             -2.20000E-02,
+             -2.50000E-02,
+             -2.80000E-02,
+             3.40000E-02,
+             3.26000E-02,
+             2.97000E-02,
+             2.55000E-02,
+             2.30000E-02,
+             2.040000E-02,
+             1.50000E-02}));
 }
 
 TEST_F(KtKqForceModelTest, force)
@@ -55,13 +95,13 @@ TEST_F(KtKqForceModelTest, force)
     // Create environnement
     EnvironmentAndFrames env;
     env.rho = 1024;
-    env.rot = YamlRotation("angle", {"z","y'","x''"});
+    env.rot = YamlRotation("angle", {"z", "y'", "x''"});
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
+    // Create propeller model
     const KtKqForceModel w(input, b->get_name(), env);
 
     ASSERT_EQ("Kt(J) & Kq(J)", w.model_name());
@@ -70,15 +110,15 @@ TEST_F(KtKqForceModelTest, force)
     auto states = b->get_states();
     states.u.record(0, 50);
     // Define a command rpm
-    std::map<std::string,double> commands;
-    commands["rpm"] = 5*(2*PI);
+    std::map<std::string, double> commands;
+    commands["rpm"] = 5 * (2 * PI);
 
-    Wrench propeller_wrench=w.get_force(states, a.random<double>(), env, commands);
+    Wrench propeller_wrench = w.get_force(states, a.random<double>(), env, commands);
 
-    ASSERT_NEAR(0.3*1024*25*16*0.779242603138131, propeller_wrench.X(), EPS);
+    ASSERT_NEAR(0.3 * 1024 * 25 * 16 * 0.779242603138131, propeller_wrench.X(), EPS);
     ASSERT_EQ(0, propeller_wrench.Y());
     ASSERT_EQ(0, propeller_wrench.Z());
-    ASSERT_NEAR(-1024*25*32*0.0950221346793814, propeller_wrench.K(), EPS);
+    ASSERT_NEAR(-1024 * 25 * 32 * 0.0950221346793814, propeller_wrench.K(), EPS);
     ASSERT_EQ(0, propeller_wrench.M());
     ASSERT_EQ(0, propeller_wrench.N());
 }
@@ -90,20 +130,22 @@ TEST_F(KtKqForceModelTest, clarify_exception_message_for_Kt_Kq_interpolation_err
     // Create environnement
     EnvironmentAndFrames env;
     env.rho = 1024;
-    env.rot = YamlRotation("angle", {"z","y'","x''"});
+    env.rot = YamlRotation("angle", {"z", "y'", "x''"});
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
+    // Create propeller model
     const KtKqForceModel w(input, b->get_name(), env);
 
     // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
     // Define a command rpm
-    std::map<std::string,double> commands;
-    commands["rpm"] = 2*PI*0.025;
-    EXPECT_THROW( w.get_force(states, a.random<double>(), env, commands).X(), NumericalErrorException);
+    std::map<std::string, double> commands;
+    commands["rpm"] = 2 * PI * 0.025;
+    EXPECT_THROW(
+        w.get_force(states, a.random<double>(), env, commands).X(),
+        NumericalErrorException);
 }

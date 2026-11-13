@@ -4,12 +4,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class KinematicTreeTest : public ::testing::Test
-{
-    protected:
-        KinematicTreeTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class KinematicTreeTest : public ::testing::Test {
+protected:
+    KinematicTreeTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* KINEMATICTREETEST_HPP_ */
+#endif /* KINEMATICTREETEST_HPP_ */

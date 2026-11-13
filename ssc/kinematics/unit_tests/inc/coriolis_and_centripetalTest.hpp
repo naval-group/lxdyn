@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class coriolis_and_centripetalTest : public ::testing::Test
-{
-    protected:
-        coriolis_and_centripetalTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class coriolis_and_centripetalTest : public ::testing::Test {
+protected:
+    coriolis_and_centripetalTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* CORIOLIS_AND_CENTRIPETALTEST_HPP_ */
+#endif /* CORIOLIS_AND_CENTRIPETALTEST_HPP_ */

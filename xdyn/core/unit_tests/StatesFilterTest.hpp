@@ -8,14 +8,14 @@
 #ifndef STATESFILTERTEST_HPP_
 #define STATESFILTERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class StatesFilterTest : public ::testing::Test
-{
-    protected:
-        StatesFilterTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class StatesFilterTest : public ::testing::Test {
+protected:
+    StatesFilterTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* STATESFILTERTEST_HPP_ */
+#endif /* STATESFILTERTEST_HPP_ */

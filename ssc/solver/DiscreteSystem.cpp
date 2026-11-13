@@ -1,4 +1,5 @@
 #include "ssc/solver/DiscreteSystem.hpp"
+
 #include <cmath>
 
 ssc::solver::DiscreteSystem::DiscreteSystem(const double date_of_first_call_, const double dt_)
@@ -6,22 +7,23 @@ ssc::solver::DiscreteSystem::DiscreteSystem(const double date_of_first_call_, co
 {
 }
 
-void ssc::solver::DiscreteSystem::schedule_update(const double t, Scheduler &scheduler)
+void ssc::solver::DiscreteSystem::schedule_update(const double t, Scheduler& scheduler)
 {
-    Scheduler::Callback binded_callback
-        = std::bind(&DiscreteSystem::callback, this, std::placeholders::_1, std::placeholders::_2);
+    Scheduler::Callback binded_callback =
+        std::bind(&DiscreteSystem::callback, this, std::placeholders::_1, std::placeholders::_2);
     scheduler.schedule_discrete_state_update(t, binded_callback);
 }
 
-void ssc::solver::DiscreteSystem::callback(Scheduler &scheduler, ContinuousSystem& system)
+void ssc::solver::DiscreteSystem::callback(Scheduler& scheduler, ContinuousSystem& system)
 {
     const double tcurrent = scheduler.get_time();
     update_discrete_states(tcurrent, system);
     const double tnext = get_date_of_next_update(tcurrent);
-    if (tnext > tcurrent) schedule_update(tnext, scheduler);
+    if (tnext > tcurrent)
+        schedule_update(tnext, scheduler);
 }
 
-void ssc::solver::DiscreteSystem::initialize(Scheduler &scheduler, ContinuousSystem& system)
+void ssc::solver::DiscreteSystem::initialize(Scheduler& scheduler, ContinuousSystem& system)
 {
     callback(scheduler, system);
 }

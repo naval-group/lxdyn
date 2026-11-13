@@ -4,92 +4,98 @@
 #include <functional>
 #include <optional>
 
-#include "xdyn/core/ForceModel.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
+#include "xdyn/core/ForceModel.hpp"
 
-class HoltropMennenForceModel : public ForceModel
-{
-    public:
-        struct Input
-        {
-            double Lwl{};
-            double Lpp{};
-            double B{};
-            double Ta{};
-            double Tf{};
-            double Vol{};
-            double lcb{};
-            std::optional<double> S;
-            double Abt{};
-            double hb{};
-            double Cm{};
-            double Cwp{};
-            std::optional<double> iE; // WARNING: iE must be in degrees
-            double At{};
-            double Sapp{};
-            double Cstern{};
-            std::optional<double> hull_form_coeff;
-            double app_form_coeff{};
-            bool apply_on_ship_speed_direction{false}; // This parameter is used to apply the force on the ship's speed direction rather than the X-axis.
-        };
-        struct DerivedData
-        {
-                explicit DerivedData(const Input& base_data);
-                double c17;
-                double c15;
-                double c7;
-                double c4;
-                double T;
-                double Pb;
-                double c14;
-                // Dependencies of rank 1
-                double c5;
-                double m3;
-                double Cb;
-                double Cp;
-                double c3;
-                // Dependencies of rank 2
-                double c2;
-                double Ca;
-                double S;
-                double c16;
-                double Lr;
-                double lambda;
-                double iE;
-                // Dependencies of rank 3
-                double c1;
-                double m1;
-                double hull_form_coeff;
-
-            private:
-                DerivedData(); // Deactivated
-        };
-
-        HoltropMennenForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
-        static Input parse(const std::string& yaml);
-        static std::string model_name();
-
-        // Frictional resistance over the hull
-        double Rf(const BodyStates& states, const EnvironmentAndFrames& env) const;
-        // Frictional resistance over the appendages
-        double Rapp(const BodyStates& states, const EnvironmentAndFrames& env) const;
-        // Wave-making resistance
-        double Rw(const BodyStates& states, const EnvironmentAndFrames& env) const;
-        // Bulbous bow influence
-        double Rb(const BodyStates& states, const EnvironmentAndFrames& env) const;
-        // Immersed transom stern influence
-        double Rtr(const BodyStates& states, const EnvironmentAndFrames& env) const;
-        // Correlation term between model and full scale
-        double Ra(const BodyStates& states, const EnvironmentAndFrames& env) const;
+class HoltropMennenForceModel : public ForceModel {
+public:
+    struct Input {
+        double Lwl{};
+        double Lpp{};
+        double B{};
+        double Ta{};
+        double Tf{};
+        double Vol{};
+        double lcb{};
+        std::optional<double> S;
+        double Abt{};
+        double hb{};
+        double Cm{};
+        double Cwp{};
+        std::optional<double> iE;  // WARNING: iE must be in degrees
+        double At{};
+        double Sapp{};
+        double Cstern{};
+        std::optional<double> hull_form_coeff;
+        double app_form_coeff{};
+        bool apply_on_ship_speed_direction{
+            false};  // This parameter is used to apply the force on the ship's speed direction
+                     // rather than the X-axis.
+    };
+    struct DerivedData {
+        explicit DerivedData(const Input& base_data);
+        double c17;
+        double c15;
+        double c7;
+        double c4;
+        double T;
+        double Pb;
+        double c14;
+        // Dependencies of rank 1
+        double c5;
+        double m3;
+        double Cb;
+        double Cp;
+        double c3;
+        // Dependencies of rank 2
+        double c2;
+        double Ca;
+        double S;
+        double c16;
+        double Lr;
+        double lambda;
+        double iE;
+        // Dependencies of rank 3
+        double c1;
+        double m1;
+        double hull_form_coeff;
 
     private:
-        const double d{-0.9};
-        const Input input;
-        const DerivedData derived;
-        const double gravity_force;
-        double Rw_a(const double Fn, const double m4) const;
-        double Rw_b(const double Fn, const double m4) const;
+        DerivedData();  // Deactivated
+    };
+
+    HoltropMennenForceModel(
+        const Input& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const override;
+    static Input parse(const std::string& yaml);
+    static std::string model_name();
+
+    // Frictional resistance over the hull
+    double Rf(const BodyStates& states, const EnvironmentAndFrames& env) const;
+    // Frictional resistance over the appendages
+    double Rapp(const BodyStates& states, const EnvironmentAndFrames& env) const;
+    // Wave-making resistance
+    double Rw(const BodyStates& states, const EnvironmentAndFrames& env) const;
+    // Bulbous bow influence
+    double Rb(const BodyStates& states, const EnvironmentAndFrames& env) const;
+    // Immersed transom stern influence
+    double Rtr(const BodyStates& states, const EnvironmentAndFrames& env) const;
+    // Correlation term between model and full scale
+    double Ra(const BodyStates& states, const EnvironmentAndFrames& env) const;
+
+private:
+    const double d{-0.9};
+    const Input input;
+    const DerivedData derived;
+    const double gravity_force;
+    double Rw_a(const double Fn, const double m4) const;
+    double Rw_b(const double Fn, const double m4) const;
 };
 
 #endif /* FORCE_MODELS_INC_HOLTROPMENNENFORCEMODEL_HPP_ */

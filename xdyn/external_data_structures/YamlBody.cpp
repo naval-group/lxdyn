@@ -8,16 +8,6 @@
 #include "YamlBody.hpp"
 
 YamlFilteredStates::YamlFilteredStates()
-    : x("")
-    , y("")
-    , z("")
-    , u("")
-    , v("")
-    , w("")
-    , p("")
-    , q("")
-    , r("")
-    , phi("")
-    , theta("")
-    , psi("")
-{}
+    : x(""), y(""), z(""), u(""), v(""), w(""), p(""), q(""), r(""), phi(""), theta(""), psi("")
+{
+}

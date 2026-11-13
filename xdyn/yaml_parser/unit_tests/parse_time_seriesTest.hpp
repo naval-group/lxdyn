@@ -8,14 +8,14 @@
 #ifndef PARSE_TIME_SERIESTEST_HPP_
 #define PARSE_TIME_SERIESTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class parse_time_seriesTest : public ::testing::Test
-{
-    protected:
-        parse_time_seriesTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class parse_time_seriesTest : public ::testing::Test {
+protected:
+    parse_time_seriesTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* PARSE_TIME_SERIESTEST_HPP_ */
+#endif /* PARSE_TIME_SERIESTEST_HPP_ */

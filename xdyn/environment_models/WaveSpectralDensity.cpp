@@ -5,101 +5,104 @@
  *      Author: cady
  */
 #include "WaveSpectralDensity.hpp"
-#include "discretize.hpp"
+
+#include <boost/math/tools/roots.hpp>
+#include <cmath>  // For isnan
+#include <limits>
+
 #include "SumOfWaveSpectralDensities.hpp"
 #include "WaveNumberFunctor.hpp"
-#include "xdyn/exceptions/InvalidInputException.hpp"
+#include "discretize.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
-#include <boost/math/tools/roots.hpp>
-#include <cmath> // For isnan
-
-#include <limits>
+#include "xdyn/exceptions/InvalidInputException.hpp"
 
 SumOfWaveSpectralDensities WaveSpectralDensity::operator+(const WaveSpectralDensity& w) const
 {
     return SumOfWaveSpectralDensities(*this, w);
 }
 
-std::vector<double> WaveSpectralDensity::get_angular_frequencies(const double omega_min, //!< Minimum angular frequency (in rad/s)
-                                                                 const double omega_max, //!< Minimum angular frequency (in rad/s)
-                                                                 const size_t n,         //!< Number of angular frequencies to return
-                                                                 const bool equal_energy_bins,      //!< Choose omegas so the integral of S between two successive omegas is constant
-                                                                 const bool periodic,               //!< Pick frequencies whose wavelength divides the repetition size
-                                                                 const std::vector<double>& sizes    //!< Repetition sizes in metres, largest first
-                                                                ) const
+std::vector<double> WaveSpectralDensity::get_angular_frequencies(
+    const double omega_min,        //!< Minimum angular frequency (in rad/s)
+    const double omega_max,        //!< Minimum angular frequency (in rad/s)
+    const size_t n,                //!< Number of angular frequencies to return
+    const bool equal_energy_bins,  //!< Choose omegas so the integral of S between two successive
+                                   //!< omegas is constant
+    const bool periodic,  //!< Pick frequencies whose wavelength divides the repetition size
+    const std::vector<double>& sizes  //!< Repetition sizes in metres, largest first
+) const
 {
-    if (std::isinf(omega_min))
-    {
+    if (std::isinf(omega_min)) {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "omega_min is infinite");
     }
-    if (std::isinf(omega_max))
-    {
+    if (std::isinf(omega_max)) {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "omega_max is infinite");
     }
-    if (omega_min<=0)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "omega_min = " << omega_min << ": should be positive.");
+    if (omega_min <= 0) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "omega_min = " << omega_min << ": should be positive.");
     }
-    if (omega_max<=0)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "omega_max = " << omega_max << ": should be positive.");
+    if (omega_max <= 0) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "omega_max = " << omega_max << ": should be positive.");
     }
-    if (omega_max<omega_min)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "omega_max (=" << omega_max << ") < omega_min (=" << omega_min);
+    if (omega_max < omega_min) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "omega_max (=" << omega_max << ") < omega_min (=" << omega_min);
     }
-    if (n==0)
-    {
+    if (n == 0) {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "nfreq == 0");
     }
-    if (n==1)
-    {
-        if (omega_min != omega_max)
-        {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Asked for a single frequency (nfreq = 1), but omega_min (=" << omega_min
-                    << ") != omega_max (=" << omega_max << ")");
+    if (n == 1) {
+        if (omega_min != omega_max) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InvalidInputException,
+                "Asked for a single frequency (nfreq = 1), but omega_min (="
+                    << omega_min << ") != omega_max (=" << omega_max << ")");
         }
         return std::vector<double>(1, omega_min);
     }
-    if (omega_min==omega_max)
-    {
-        if (n != 1)
-        {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "omega_min = omega_max (=" << omega_min
-                    << ") but nfreq != 1");
+    if (omega_min == omega_max) {
+        if (n != 1) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InvalidInputException,
+                "omega_min = omega_max (=" << omega_min << ") but nfreq != 1");
         }
         return std::vector<double>(1, omega_min);
     }
-    if (periodic)
-    {
-        if (sizes.empty())
-        {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Space-periodic waves need at least one repetition size.");
+    if (periodic) {
+        if (sizes.empty()) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InvalidInputException,
+                "Space-periodic waves need at least one repetition size.");
         }
         // Deep-water dispersion omega^2 = g*k with k = 2*i*pi/L: an integer number of wavelengths
         // fits the repetition size L, which is what makes the field repeat along that axis.
         std::vector<double> omega;
-        omega.reserve(sizes.size()*n);
-        for (const double size:sizes)
-        {
-            for (size_t i = 1 ; i <= n ; ++i)
-            {
-                omega.push_back(std::sqrt(2*double(i)*M_PI*9.81/size));
+        omega.reserve(sizes.size() * n);
+        for (const double size : sizes) {
+            for (size_t i = 1; i <= n; ++i) {
+                omega.push_back(std::sqrt(2 * double(i) * M_PI * 9.81 / size));
             }
         }
         return omega;
     }
     std::vector<double> omega(n, 0);
     const double Domega = omega_max - omega_min;
-    for (size_t i = 1 ; i <= n ; ++i)
-    {
-        omega[i-1] = omega_min + double(i-1)/double(n-1)*Domega;
+    for (size_t i = 1; i <= n; ++i) {
+        omega[i - 1] = omega_min + double(i - 1) / double(n - 1) * Domega;
     }
-    if (equal_energy_bins)
-    {
+    if (equal_energy_bins) {
         std::vector<double> S(n, 0);
-        for (size_t i = 0 ; i < n ; ++i)
-        {
+        for (size_t i = 0; i < n; ++i) {
             S[i] = this->operator()(omega[i]);
         }
         omega = equal_area_abscissae(omega, S);
@@ -107,38 +110,44 @@ std::vector<double> WaveSpectralDensity::get_angular_frequencies(const double om
     return omega;
 }
 
-double WaveSpectralDensity::get_wave_number(const double omega //!< Angular frequency (in radians)
-                                           ) const
+double WaveSpectralDensity::get_wave_number(
+    const double omega  //!< Angular frequency (in radians)
+) const
 {
-    return omega*omega/9.81;
+    return omega * omega / 9.81;
 }
 
-double WaveSpectralDensity::get_wave_number(const double omega, //!< Angular frequency (in radians)
-                                            const double h      //!< Depth (in meters)
-                                           ) const
+double WaveSpectralDensity::get_wave_number(
+    const double omega,  //!< Angular frequency (in radians)
+    const double h       //!< Depth (in meters)
+) const
 {
-    if (std::isinf(omega))
-    {
-        THROW(__PRETTY_FUNCTION__, InternalErrorException, "Cannot compute wave number for omega = inf");
+    if (std::isinf(omega)) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InternalErrorException,
+            "Cannot compute wave number for omega = inf");
     }
-    if (omega == 0)
-    {
+    if (omega == 0) {
         return 0;
     }
     WaveNumberFunctor f(h, omega);
-    const double guess = get_wave_number(omega); // Tried Guo's formula (2002) as initial guess, but it slows things down by almost 100%
+    const double guess = get_wave_number(omega);  // Tried Guo's formula (2002) as initial guess,
+                                                  // but it slows things down by almost 100%
     const double min = guess;
-    const double max = 3.5*guess;
+    const double max = 3.5 * guess;
     int digits = std::numeric_limits<double>::digits / 2;
     const double k = boost::math::tools::halley_iterate(f, guess, min, max, digits);
-    if (std::isnan(k))
-    {
+    if (std::isnan(k)) {
         COUT(omega);
         COUT(guess);
         COUT(min);
         COUT(max);
         COUT(digits);
-        THROW(__PRETTY_FUNCTION__, InternalErrorException, "Halley iterate for wave number k converged to NaN");
+        THROW(
+            __PRETTY_FUNCTION__,
+            InternalErrorException,
+            "Halley iterate for wave number k converged to NaN");
     }
     return k;
 }

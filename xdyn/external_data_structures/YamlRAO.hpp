@@ -6,8 +6,8 @@
 #ifndef YAMLRAO_HPP_
 #define YAMLRAO_HPP_
 
-#include <string>
 #include <optional>
+#include <string>
 
 #include "xdyn/external_data_structures/YamlCoordinates.hpp"
 /*
@@ -19,15 +19,18 @@
        << "    z: {value: 1.418, unit: m}\n"
        << "mirror for 180 to 360: true\n";
  */
-struct YamlRAO
-{
-    enum class TypeOfRao {DIFFRACTION_RAO, FROUDE_KRYLOV_RAO};
-    std::string           hdb_filename;
-    std::string           precal_filename;
-    YamlCoordinates       calculation_point;
-    bool                  mirror{false};
+struct YamlRAO {
+    enum class TypeOfRao
+    {
+        DIFFRACTION_RAO,
+        FROUDE_KRYLOV_RAO
+    };
+    std::string hdb_filename;
+    std::string precal_filename;
+    YamlCoordinates calculation_point;
+    bool mirror{false};
     std::optional<bool> use_encounter_period;
-    TypeOfRao             type_of_rao{TypeOfRao::DIFFRACTION_RAO};
+    TypeOfRao type_of_rao{TypeOfRao::DIFFRACTION_RAO};
 };
 
 #endif /* YAMLRAO_HPP_ */

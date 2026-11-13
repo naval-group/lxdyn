@@ -2,44 +2,47 @@
 #define GRPCSIZECHECKERSHPP
 
 #include <grpcpp/grpcpp.h>
+
 #include <functional>
 
+#include "ErrorReporter.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "ErrorReporter.hpp"
 
 grpc::Status to_gRPC_status(const ErrorReporter& error_outputter);
 grpc::Status run_and_report_errors_as_gRPC_status(const std::function<void(void)>& f);
 
 #define SIZE size()
-#define PASTER(x,y) x ## _ ## y
-#define EVALUATOR(x,y)  PASTER(x,y)
+#define PASTER(x, y) x##_##y
+#define EVALUATOR(x, y) PASTER(x, y)
 #define STATE_SIZE(state) EVALUATOR(state, SIZE)
-#define CHECK_SIZE(state) if (states.STATE_SIZE(state) != states.t_size())\
-{\
-    const size_t n1 = states.STATE_SIZE(state);\
-    const size_t n2 = states.t_size();\
-    THROW(__PRETTY_FUNCTION__, InvalidInputException, "State '"\
-                                                      << #state\
-                                                      << "' has size "\
-                                                      << n1\
-                                                      << ", whereas 't' has size "\
-                                                      << n2\
-                                                      << ": this is a problem in the client code (caller of xdyn), not a problem with xdyn. Please ensure that '"\
-                                                      << #state\
-                                                      << "' and 't' have the same size in the request's 'States' type."\
-                                                      << std::endl);\
-}
-#define CHECK_T_NOT_EMPTY() if (states.t_size() == 0)\
-{\
-    THROW(__PRETTY_FUNCTION__, InvalidInputException, "The state history provided to xdyn is empty ('t' has size 0): we need at least one value for each state to set the initial conditions.");\
-}
-#define CHECK_REQUEST_POINTER() if (!request)\
-{\
-    THROW(__PRETTY_FUNCTION__, InternalErrorException, "'request' is a NULL pointer.");\
-}
+#define CHECK_SIZE(state)                                                                                                   \
+    if (states.STATE_SIZE(state) != states.t_size()) {                                                                      \
+        const size_t n1 = states.STATE_SIZE(state);                                                                         \
+        const size_t n2 = states.t_size();                                                                                  \
+        THROW(                                                                                                              \
+            __PRETTY_FUNCTION__,                                                                                            \
+            InvalidInputException,                                                                                          \
+            "State '"                                                                                                       \
+                << #state << "' has size " << n1 << ", whereas 't' has size " << n2                                         \
+                << ": this is a problem in the client code (caller of xdyn), not a problem with xdyn. Please ensure that '" \
+                << #state << "' and 't' have the same size in the request's 'States' type."                                 \
+                << std::endl);                                                                                              \
+    }
+#define CHECK_T_NOT_EMPTY()                                                                                                                            \
+    if (states.t_size() == 0) {                                                                                                                        \
+        THROW(                                                                                                                                         \
+            __PRETTY_FUNCTION__,                                                                                                                       \
+            InvalidInputException,                                                                                                                     \
+            "The state history provided to xdyn is empty ('t' has size 0): we need at least one value for each state to set the initial conditions."); \
+    }
+#define CHECK_REQUEST_POINTER()                                                             \
+    if (!request) {                                                                         \
+        THROW(__PRETTY_FUNCTION__, InternalErrorException, "'request' is a NULL pointer."); \
+    }
 
-template <typename Request> void check_euler_states_size(const Request* request)
+template <typename Request>
+void check_euler_states_size(const Request* request)
 {
     CHECK_REQUEST_POINTER()
     const auto& states = request->states();
@@ -58,7 +61,8 @@ template <typename Request> void check_euler_states_size(const Request* request)
     CHECK_T_NOT_EMPTY()
 }
 
-template <typename Request> void check_quaternion_states_size(const Request* request)
+template <typename Request>
+void check_quaternion_states_size(const Request* request)
 {
     CHECK_REQUEST_POINTER()
     const auto& states = request->states();

@@ -1,14 +1,15 @@
 #include "stl_io_hdf5Test.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/external_file_formats/stl_reader.hpp"
+
 #include "xdyn/external_file_formats/stl_io_hdf5.hpp"
+#include "xdyn/external_file_formats/stl_reader.hpp"
+#include "xdyn/test_data_generator/stl_data.hpp"
 
 TEST_F(stl_io_hdf5Test, should_be_able_to_create_the_correct_number_of_points_and_triangles)
 {
     const VectorOfVectorOfPoints facets = read_stl(test_data::single_facet());
     const SVectorOfVectorOfPoints sv(facets);
-    ASSERT_EQ(3,sv.nPoints);
-    ASSERT_EQ(1,sv.nTriangles);
+    ASSERT_EQ(3, sv.nPoints);
+    ASSERT_EQ(1, sv.nTriangles);
 }
 
 TEST_F(stl_io_hdf5Test, should_be_able_to_export_triangulated_mesh)
@@ -18,7 +19,7 @@ TEST_F(stl_io_hdf5Test, should_be_able_to_export_triangulated_mesh)
     {
         writeMeshToHdf5File(fileName, "mesh", facets);
     }
-    EXPECT_EQ(0,remove(fileName.c_str()));
+    EXPECT_EQ(0, remove(fileName.c_str()));
 }
 
 TEST_F(stl_io_hdf5Test, should_be_able_to_read_triangulated_mesh_with_one_facet)
@@ -41,7 +42,7 @@ TEST_F(stl_io_hdf5Test, should_be_able_to_read_triangulated_mesh_with_one_facet)
         ASSERT_DOUBLE_EQ(4.5, facetsRead[0][2][1]);
         ASSERT_DOUBLE_EQ(6.7, facetsRead[0][2][2]);
     }
-    EXPECT_EQ(0,remove(fileName.c_str()));
+    EXPECT_EQ(0, remove(fileName.c_str()));
 }
 
 TEST_F(stl_io_hdf5Test, should_be_able_to_read_triangulated_mesh_with_several_facets)
@@ -84,5 +85,5 @@ TEST_F(stl_io_hdf5Test, should_be_able_to_read_triangulated_mesh_with_several_fa
         ASSERT_DOUBLE_EQ(+0.5, facetsRead[2][2][1]);
         ASSERT_DOUBLE_EQ(+0.0, facetsRead[2][2][2]);
     }
-    EXPECT_EQ(0,remove(fileName.c_str()));
+    EXPECT_EQ(0, remove(fileName.c_str()));
 }

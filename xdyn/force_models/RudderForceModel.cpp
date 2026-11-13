@@ -6,115 +6,131 @@
  */
 
 #include "RudderForceModel.hpp"
-#include "xdyn/core/yaml2eigen.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
-
-#include "xdyn/yaml_parser/parse_unit_value.hpp"
-#include "xdyn/yaml_parser/yaml_compat.h"
 
 #include <cmath>
+
+#include "xdyn/core/yaml2eigen.hpp"
+#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/yaml_parser/parse_unit_value.hpp"
+#include "xdyn/yaml_parser/yaml_compat.h"
 #define PI M_PI
 
-#include<algorithm> // for std::max used in get_force
+#include <algorithm>  // for std::max used in get_force
 
-std::string RudderForceModel::model_name() {return "propeller+rudder";}
+std::string RudderForceModel::model_name()
+{
+    return "propeller+rudder";
+}
 
 RudderForceModel::RudderModel::RudderModel(
-    const Yaml& parameters_, const double rho_, const double nu_) :
-        Ar(parameters_.Ar),
-        D(parameters_.diameter),
-        Kr(),
-        chord(Ar/parameters_.b),
-        lambda(parameters_.effective_aspect_ratio_factor * parameters_.b*parameters_.b / Ar),
-        lift_coeff(parameters_.lift_coeff),
-        drag_coeff(parameters_.drag_coeff),
-        rho(rho_),
-        nu(nu_),
-        position_of_the_rudder_frame_in_the_body_frame(
-            parameters_.position_of_the_rudder_frame_in_the_body_frame.x,
-            parameters_.position_of_the_rudder_frame_in_the_body_frame.y,
-            parameters_.position_of_the_rudder_frame_in_the_body_frame.z)
+    const Yaml& parameters_,
+    const double rho_,
+    const double nu_)
+    : Ar(parameters_.Ar)
+    , D(parameters_.diameter)
+    , Kr()
+    , chord(Ar / parameters_.b)
+    , lambda(parameters_.effective_aspect_ratio_factor * parameters_.b * parameters_.b / Ar)
+    , lift_coeff(parameters_.lift_coeff)
+    , drag_coeff(parameters_.drag_coeff)
+    , rho(rho_)
+    , nu(nu_)
+    , position_of_the_rudder_frame_in_the_body_frame(
+          parameters_.position_of_the_rudder_frame_in_the_body_frame.x,
+          parameters_.position_of_the_rudder_frame_in_the_body_frame.y,
+          parameters_.position_of_the_rudder_frame_in_the_body_frame.z)
 {
-    const double distance_between_rudder_and_screw = std::abs(position_of_the_rudder_frame_in_the_body_frame(0)-parameters_.position_of_propeller_frame.coordinates.x);
-    Kr = 0.5+0.5/(1+0.15/std::abs(distance_between_rudder_and_screw/parameters_.diameter));
+    const double distance_between_rudder_and_screw = std::abs(
+        position_of_the_rudder_frame_in_the_body_frame(0) -
+        parameters_.position_of_propeller_frame.coordinates.x);
+    Kr =
+        0.5 + 0.5 / (1 + 0.15 / std::abs(distance_between_rudder_and_screw / parameters_.diameter));
 }
 
 double RudderForceModel::RudderModel::get_angle_of_attack(
-    const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-    const double fluid_angle   //!< Angle of the fluid at the rudder location in the ship's reference frame (0 if the fluid is propagating along -X, positive if fluid is coming from starboard)
-    ) const
+    const double rudder_angle,  //!< Rudder angle (in radian): positive if rudder on port side
+    const double fluid_angle  //!< Angle of the fluid at the rudder location in the ship's reference
+                              //!< frame (0 if the fluid is propagating along -X, positive if fluid
+                              //!< is coming from starboard)
+) const
 {
-    return rudder_angle-fluid_angle;
+    return rudder_angle - fluid_angle;
 }
 
 double RudderForceModel::RudderModel::get_Cd(
-    const double Vs, //!< Norm of the speed of the ship relative to the fluid
-    const double Cl  //!< Rudder lift coefficient (non-dimensional)
-    ) const
+    const double Vs,  //!< Norm of the speed of the ship relative to the fluid
+    const double Cl   //!< Rudder lift coefficient (non-dimensional)
+) const
 {
-    // Reynolds number of the rudder (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 78 eq. 1.2.12)
+    // Reynolds number of the rudder (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag,
+    // p. 78 eq. 1.2.12)
     const double Rn = Vs * chord / nu;
     // ITTC resistance coefficient , "Marine rudders and Control Surfaces" p.31 eq. 3.18
-    const double Cf = 0.075 / pow((log(Rn)/log(10.0)-2),2);
-    // Resistance coefficient (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 78 (§ "for Cd0"))
+    const double Cf = 0.075 / pow((log(Rn) / log(10.0) - 2), 2);
+    // Resistance coefficient (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 78
+    // (§ "for Cd0"))
     const double Cd0 = 2.5 * Cf;
-    // Rudder drag coefficient (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 78 eq. 1.2.9)
-    return 1.1 * Cl*Cl / (PI * lambda) + Cd0;
+    // Rudder drag coefficient (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 78
+    // eq. 1.2.9)
+    return 1.1 * Cl * Cl / (PI * lambda) + Cd0;
 }
 
 double RudderForceModel::RudderModel::get_Cl(
-    const double alpha_wake //!< Angle of rudder wrt the fluid (in radian)
-    ) const
+    const double alpha_wake  //!< Angle of rudder wrt the fluid (in radian)
+) const
 {
     return 2 * PI * lambda * (lambda + 1) / (lambda + 2) / (lambda + 2) * sin(alpha_wake);
 }
 
 double RudderForceModel::RudderModel::get_lift(
-    const double Vs,//!< Norm of the speed of the ship relative to the fluid
-    const double Cl,//!< Rudder lift coefficient (non-dimensional)
-    const double alpha, //!< Angle between the propeller's wake & the rudder (in radian)
-    const double area   //!< Rudder area (in or outside wake) in m^2
-    ) const
+    const double Vs,     //!< Norm of the speed of the ship relative to the fluid
+    const double Cl,     //!< Rudder lift coefficient (non-dimensional)
+    const double alpha,  //!< Angle between the propeller's wake & the rudder (in radian)
+    const double area    //!< Rudder area (in or outside wake) in m^2
+) const
 {
-    return 0.5 * rho * area * Vs*Vs * Cl * cos(alpha) * lift_coeff;
+    return 0.5 * rho * area * Vs * Vs * Cl * cos(alpha) * lift_coeff;
 }
 
 double RudderForceModel::RudderModel::get_drag(
-    const double Vs,//!< Norm of the speed of the ship relative to the fluid
-    const double Cl,//!< Rudder lift coefficient (non-dimensional)
-    const double area   //!< Rudder area (in or outside wake) in m^2
-    ) const
+    const double Vs,   //!< Norm of the speed of the ship relative to the fluid
+    const double Cl,   //!< Rudder lift coefficient (non-dimensional)
+    const double area  //!< Rudder area (in or outside wake) in m^2
+) const
 {
-    return 0.5 * rho * area * Vs*Vs * Cl * drag_coeff;
+    return 0.5 * rho * area * Vs * Vs * Cl * drag_coeff;
 }
 
 ssc::kinematics::Vector6d RudderForceModel::RudderModel::get_force(
-    const double lift, //!< Norm of the lift (in N)
-    const double drag, //!< Norm of the drag (in N)
-    const double angle //!< Angle between the fluid & the rudder (in radian)
-    ) const
+    const double lift,  //!< Norm of the lift (in N)
+    const double drag,  //!< Norm of the drag (in N)
+    const double angle  //!< Angle between the fluid & the rudder (in radian)
+) const
 {
     ssc::kinematics::Vector6d ret = ssc::kinematics::Vector6d::Zero();
-    ret(0)=- lift * sin (angle) - drag * cos (angle);
-    ret(1)=+ lift * cos (angle) - drag * sin (angle);
+    ret(0) = -lift * sin(angle) - drag * cos(angle);
+    ret(1) = +lift * cos(angle) - drag * sin(angle);
 
-    return ret;//rudder force at rudder location in body frame
+    return ret;  // rudder force at rudder location in body frame
 }
 
 RudderForceModel::InOutWake<ssc::kinematics::Point> RudderForceModel::RudderModel::get_vs(
-    const double CTh, //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
-    const double Va,  //!< Projection of the ship speed (relative to the current) on the X-axis of the ship's reference frame (m/s)
-    const double v    //!< Projection of the ship speed (relative to the current) on the Y-axis of the ship's reference frame (m/s)
-    ) const
+    const double CTh,  //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix,
+                       //!< Seehafen Verlag p. 84, eq. 1.2.20
+    const double Va,   //!< Projection of the ship speed (relative to the current) on the X-axis of
+                       //!< the ship's reference frame (m/s)
+    const double v  //!< Projection of the ship speed (relative to the current) on the Y-axis of the
+                    //!< ship's reference frame (m/s)
+) const
 {
     RudderForceModel::InOutWake<ssc::kinematics::Point> Vs;
     // Reduction factor (cf. "Marine rudders and Control Surfaces", p.371, eq 11.1)
     // Because 13.71742 = pow(0.5/0.135,2) and 1 - 0.135 * sqrt(pow(0.5/0.135,2)) = 0.5
-    const double RF = CTh>13.71742 ? 0.5 : 1 - 0.135 * sqrt(CTh);
+    const double RF = CTh > 13.71742 ? 0.5 : 1 - 0.135 * sqrt(CTh);
     // Vchange = Vbollard - Va (cf. "Marine rudders and Control Surfaces", p.51, eq 3.38)
-    const double Vchange = Va*(sqrt(1+ CTh) - 1);
+    const double Vchange = Va * (sqrt(1 + CTh) - 1);
     // Ship speed (relative to the current) in the ship's reference frame (m/s)
-    Vs.in_wake.x() = (Va+Kr*Vchange) * RF;
+    Vs.in_wake.x() = (Va + Kr * Vchange) * RF;
     Vs.in_wake.y() = v;
     Vs.outside_wake.x() = Va;
     Vs.outside_wake.y() = v;
@@ -122,17 +138,18 @@ RudderForceModel::InOutWake<ssc::kinematics::Point> RudderForceModel::RudderMode
 }
 
 double RudderForceModel::RudderModel::get_fluid_angle(
-    const ssc::kinematics::Point& Vs   //!< Ship speed relative to the fluid, inside & outside wake
-    ) const
+    const ssc::kinematics::Point& Vs  //!< Ship speed relative to the fluid, inside & outside wake
+) const
 {
     return atan2(Vs.y(), Vs.x());
 }
 
 RudderForceModel::InOutWake<ssc::kinematics::Vector6d> RudderForceModel::RudderModel::get_wrench(
-    const double rudder_angle,                                      //!< Rudder angle (in radian): positive if rudder on port side
-    const RudderForceModel::InOutWake<ssc::kinematics::Point>& Vs,  //!< Speed of the ship relative to the fluid (in m/s)
-    const RudderForceModel::InOutWake<double>& area                 //!< Rudder area (in or outside wake) in m^2
-    ) const
+    const double rudder_angle,  //!< Rudder angle (in radian): positive if rudder on port side
+    const RudderForceModel::InOutWake<ssc::kinematics::Point>&
+        Vs,  //!< Speed of the ship relative to the fluid (in m/s)
+    const RudderForceModel::InOutWake<double>& area  //!< Rudder area (in or outside wake) in m^2
+) const
 {
     RudderForceModel::InOutWake<ssc::kinematics::Vector6d> ret;
     ret.in_wake = get_wrench(rudder_angle, Vs.in_wake, area.in_wake);
@@ -141,12 +158,12 @@ RudderForceModel::InOutWake<ssc::kinematics::Vector6d> RudderForceModel::RudderM
 }
 
 ssc::kinematics::Vector6d RudderForceModel::RudderModel::get_wrench(
-    const double rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-    const ssc::kinematics::Point& Vs,           //!< Speed of the ship relative to the fluid (in m/s)
-    const double area          //!< Rudder area (in or outside wake) in m^2
-    ) const
+    const double rudder_angle,  //!< Rudder angle (in radian): positive if rudder on port side
+    const ssc::kinematics::Point& Vs,  //!< Speed of the ship relative to the fluid (in m/s)
+    const double area                  //!< Rudder area (in or outside wake) in m^2
+) const
 {
-    const double fluid_angle=get_fluid_angle(Vs);
+    const double fluid_angle = get_fluid_angle(Vs);
     const double alpha = get_angle_of_attack(rudder_angle, fluid_angle);
     const double Cl = get_Cl(alpha);
     const double lift = get_lift(Vs.v.norm(), Cl, alpha, area);
@@ -156,31 +173,42 @@ ssc::kinematics::Vector6d RudderForceModel::RudderModel::get_wrench(
 }
 
 RudderForceModel::InOutWake<double> RudderForceModel::RudderModel::get_Ar(
-    const double CTh //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
-    ) const
+    const double CTh  //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual", J. Brix,
+                      //!< Seehafen Verlag p. 84, eq. 1.2.20
+) const
 {
     InOutWake<double> ar;
-    // Jet speed coefficient, "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 96 eq. 1.2.44
-    const double Cj = 1 + Kr * (sqrt(1 + CTh) -1);
+    // Jet speed coefficient, "Manoeuvring Technical Manual", J. Brix, Seehafen Verlag p. 96
+    // eq. 1.2.44
+    const double Cj = 1 + Kr * (sqrt(1 + CTh) - 1);
     const double Dwake = D * sqrt((1 + 0.5 * (sqrt(1 + CTh) - 1)) / Cj);
-    ar.in_wake = std::min(Ar, chord*Dwake);
-    ar.outside_wake = Ar-ar.in_wake;
+    ar.in_wake = std::min(Ar, chord * Dwake);
+    ar.outside_wake = Ar - ar.in_wake;
     return ar;
 }
 
 RudderForceModel::RudderForceModel(
     const Yaml& input_,
     const std::string& body_name_,
-    const EnvironmentAndFrames& env) :
-        ForceModel(input_.name,{"rpm","P/D","beta"},input_.position_of_propeller_frame, body_name_, env),
-        propulsionModel(WageningenControlledForceModel(input_, body_name_, env)),
-        rudderModel(input_, env.rho, env.nu),
-        w(input_.wake_coefficient),
-        m_propeller_wrench_internal_frame_at_P(new Wrench(ssc::kinematics::Point(input_.position_of_propeller_frame.frame,0,0,0), input_.position_of_propeller_frame.frame)),
-        m_propeller_wrench_body_frame_at_Ob(new Wrench(ssc::kinematics::Point(body_name,0,0,0), body_name)),
-        m_propeller_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED",0,0,0), "NED")),
-        m_rudder_wrench_body_frame_at_Ob(new Wrench(ssc::kinematics::Point(body_name,0,0,0), body_name)),
-        m_rudder_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED",0,0,0), "NED"))
+    const EnvironmentAndFrames& env)
+    : ForceModel(
+          input_.name,
+          {"rpm", "P/D", "beta"},
+          input_.position_of_propeller_frame,
+          body_name_,
+          env)
+    , propulsionModel(WageningenControlledForceModel(input_, body_name_, env))
+    , rudderModel(input_, env.rho, env.nu)
+    , w(input_.wake_coefficient)
+    , m_propeller_wrench_internal_frame_at_P(new Wrench(
+          ssc::kinematics::Point(input_.position_of_propeller_frame.frame, 0, 0, 0),
+          input_.position_of_propeller_frame.frame))
+    , m_propeller_wrench_body_frame_at_Ob(
+          new Wrench(ssc::kinematics::Point(body_name, 0, 0, 0), body_name))
+    , m_propeller_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED", 0, 0, 0), "NED"))
+    , m_rudder_wrench_body_frame_at_Ob(
+          new Wrench(ssc::kinematics::Point(body_name, 0, 0, 0), body_name))
+    , m_rudder_wrench_NED_frame_at_G(new Wrench(ssc::kinematics::Point("NED", 0, 0, 0), "NED"))
 {
 }
 
@@ -188,15 +216,16 @@ ssc::kinematics::Vector6d RudderForceModel::get_rudder_force(
     const BodyStates& states,
     const double t,
     const EnvironmentAndFrames& env,
-    const std::map<std::string,double>& commands,
-    const double T
-    ) const
+    const std::map<std::string, double>& commands,
+    const double T) const
 {
     // Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p. 96, eq. 1.2.41
     const double Va = propulsionModel.get_advance_speed_in_body_frame(states, t, env);
-    const double DVa = rudderModel.get_D()*Va;
-    // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
-    const double CTh = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa*DVa);
+    const double DVa = rudderModel.get_D() * Va;
+    // Thrust loading coefficient, Cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag p.
+    // 84, eq. 1.2.20
+    const double CTh =
+        std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa * DVa);
 
     const double rudder_angle = commands.at("beta");
     const InOutWake<ssc::kinematics::Point> Vs = rudderModel.get_vs(CTh, Va, (double)states.v());
@@ -211,49 +240,74 @@ Eigen::Vector3d RudderForceModel::RudderModel::get_rudder_frame_location() const
     return position_of_the_rudder_frame_in_the_body_frame;
 }
 
-
 Wrench RudderForceModel::get_force(
-    const BodyStates& states, const double t,
+    const BodyStates& states,
+    const double t,
     const EnvironmentAndFrames& env,
-    const std::map<std::string,double>& commands) const
+    const std::map<std::string, double>& commands) const
 {
     // propeller tensor in propeller frame expressed at the propeller location
-    const Wrench propeller_wrench_propeller_frame_at_P = propulsionModel.get_force(states, t, env, commands);
-    // propeller pure thrust (no thrust deduction, no moment) tensor in propeller frame expressed at the propeller location
-    const Wrench pure_thrust_wrench_propeller_frame_at_P = propulsionModel.get_pure_thrust_force(states, t, env, commands);
+    const Wrench propeller_wrench_propeller_frame_at_P =
+        propulsionModel.get_force(states, t, env, commands);
+    // propeller pure thrust (no thrust deduction, no moment) tensor in propeller frame expressed at
+    // the propeller location
+    const Wrench pure_thrust_wrench_propeller_frame_at_P =
+        propulsionModel.get_pure_thrust_force(states, t, env, commands);
     // get propeller frame
     const std::string propeller_frame = propeller_wrench_propeller_frame_at_P.get_frame();
     // Check if the internal frame is accessible
     can_find_internal_frame(env.k);
     // propeller tensor in body frame expressed at the propeller location
-    const Wrench propeller_wrench_body_frame_at_P = propeller_wrench_propeller_frame_at_P.change_frame(body_name,env.k);
-    // propeller pure thrust (no thrust deduction, no moment) tensor in body frame expressed at the propeller location. 
-    const Wrench pure_thrust_wrench_body_frame_at_P = pure_thrust_wrench_propeller_frame_at_P.change_frame(body_name,env.k);
+    const Wrench propeller_wrench_body_frame_at_P =
+        propeller_wrench_propeller_frame_at_P.change_frame(body_name, env.k);
+    // propeller pure thrust (no thrust deduction, no moment) tensor in body frame expressed at the
+    // propeller location.
+    const Wrench pure_thrust_wrench_body_frame_at_P =
+        pure_thrust_wrench_propeller_frame_at_P.change_frame(body_name, env.k);
     // rudder forces and moments in body frame expressed at the rudder location
-    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)std::max(pure_thrust_wrench_body_frame_at_P.X(),0.));
+    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(
+        states,
+        t,
+        env,
+        commands,
+        (double)std::max(pure_thrust_wrench_body_frame_at_P.X(), 0.));
     // rudder tensor in body frame expressed at the rudder location
     /*
-    Negative propeller thrust means that the propeller wake is forward and therefore there is no acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would fails the calculation of CTh (negative square root calculation).
+    Negative propeller thrust means that the propeller wake is forward and therefore there is no
+    acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would
+    fails the calculation of CTh (negative square root calculation).
     */
-    const Wrench rudder_wrench_body_frame_at_R(ssc::kinematics::Point(body_name, rudderModel.get_rudder_frame_location()), body_name, rudder_force);
+    const Wrench rudder_wrench_body_frame_at_R(
+        ssc::kinematics::Point(body_name, rudderModel.get_rudder_frame_location()),
+        body_name,
+        rudder_force);
     // rudder tensor in body frame expressed at the propeller location
-    const Wrench rudder_wrench_body_frame_at_P=rudder_wrench_body_frame_at_R.transport_to(ssc::kinematics::Point(propeller_frame,0,0,0),env.k);
+    const Wrench rudder_wrench_body_frame_at_P = rudder_wrench_body_frame_at_R.transport_to(
+        ssc::kinematics::Point(propeller_frame, 0, 0, 0),
+        env.k);
     // rudder+propeller wrench in body frame expressed at the propeller location
-    const Wrench rudderAndPropeller_wrench_body_frame_at_P = rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;
+    const Wrench rudderAndPropeller_wrench_body_frame_at_P =
+        rudder_wrench_body_frame_at_P + propeller_wrench_body_frame_at_P;
 
     // Save propeller torser in internal frame
-    *m_propeller_wrench_internal_frame_at_P=propeller_wrench_propeller_frame_at_P;
-    
+    *m_propeller_wrench_internal_frame_at_P = propeller_wrench_propeller_frame_at_P;
+
     // Compute and save propeller torsers in body and NED frame
-    const Wrench propeller_wrench_body_frame_at_Ob(propeller_wrench_body_frame_at_P.transport_to(ssc::kinematics::Point(body_name,0,0,0),env.k));
-    *m_propeller_wrench_body_frame_at_Ob=propeller_wrench_body_frame_at_Ob;
-    const Wrench propeller_wrench_NED_frame_at_G(propeller_wrench_body_frame_at_Ob.change_point_and_frame(states.G,"NED", env.k));
-    *m_propeller_wrench_NED_frame_at_G=propeller_wrench_NED_frame_at_G;
+    const Wrench propeller_wrench_body_frame_at_Ob(propeller_wrench_body_frame_at_P.transport_to(
+        ssc::kinematics::Point(body_name, 0, 0, 0),
+        env.k));
+    *m_propeller_wrench_body_frame_at_Ob = propeller_wrench_body_frame_at_Ob;
+    const Wrench propeller_wrench_NED_frame_at_G(
+        propeller_wrench_body_frame_at_Ob.change_point_and_frame(states.G, "NED", env.k));
+    *m_propeller_wrench_NED_frame_at_G = propeller_wrench_NED_frame_at_G;
     // Compute and save rudder torsers in body and NED frame
-    const Wrench rudder_wrench_body_frame_at_Ob(rudder_wrench_body_frame_at_P.transport_to(ssc::kinematics::Point(body_name,0,0,0),env.k));
-    *m_rudder_wrench_body_frame_at_Ob=rudder_wrench_body_frame_at_Ob;
-    const Wrench rudder_wrench_NED_frame_at_G(rudder_wrench_body_frame_at_Ob.change_point_and_frame(states.G,"NED", env.k));
-    *m_rudder_wrench_NED_frame_at_G=rudder_wrench_NED_frame_at_G;
+    const Wrench rudder_wrench_body_frame_at_Ob(rudder_wrench_body_frame_at_P.transport_to(
+        ssc::kinematics::Point(body_name, 0, 0, 0),
+        env.k));
+    *m_rudder_wrench_body_frame_at_Ob = rudder_wrench_body_frame_at_Ob;
+    const Wrench rudder_wrench_NED_frame_at_G(
+        rudder_wrench_body_frame_at_Ob.change_point_and_frame(states.G, "NED", env.k));
+    *m_rudder_wrench_NED_frame_at_G = rudder_wrench_NED_frame_at_G;
 
     return rudderAndPropeller_wrench_body_frame_at_P;
 }
@@ -262,13 +316,14 @@ RudderForceModel::Yaml RudderForceModel::parse(const std::string& yaml)
 {
     YAML::Node node = YAML::Load(yaml);
     Yaml ret;
-    static_cast<WageningenControlledForceModel::Yaml&>(ret) = WageningenControlledForceModel::parse(yaml);
+    static_cast<WageningenControlledForceModel::Yaml&>(ret) =
+        WageningenControlledForceModel::parse(yaml);
 
     xdyn::yaml_parser::parse_uv(node["rudder area"], ret.Ar);
     xdyn::yaml_parser::parse_uv(node["rudder height"], ret.b);
-    node["effective aspect ratio factor"]    >> ret.effective_aspect_ratio_factor;
-    node["lift tuning coefficient"]          >> ret.lift_coeff;
-    node["drag tuning coefficient"]          >> ret.drag_coeff;
+    node["effective aspect ratio factor"] >> ret.effective_aspect_ratio_factor;
+    node["lift tuning coefficient"] >> ret.lift_coeff;
+    node["drag tuning coefficient"] >> ret.drag_coeff;
     node["position of rudder in body frame"] >> ret.position_of_the_rudder_frame_in_the_body_frame;
 
     return ret;
@@ -280,46 +335,166 @@ double RudderForceModel::RudderModel::get_D() const
 }
 
 void RudderForceModel::extra_observations(Observer& observer) const
-{   
-    std::string new_force_name=name + "(propeller)";
+{
+    std::string new_force_name = name + "(propeller)";
     // Write the propeller tensor in propeller frame at propeller location
-    observer.write_before_solver_step(m_propeller_wrench_internal_frame_at_P->X(),DataAddressing({"efforts",body_name,new_force_name,name,"Fx"},std::string("Fx(")+new_force_name+","+body_name+","+name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_internal_frame_at_P->Y(),DataAddressing({"efforts",body_name,new_force_name,name,"Fy"},std::string("Fy(")+new_force_name+","+body_name+","+name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_internal_frame_at_P->Z(),DataAddressing({"efforts",body_name,new_force_name,name,"Fz"},std::string("Fz(")+new_force_name+","+body_name+","+name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_internal_frame_at_P->K(),DataAddressing({"efforts",body_name,new_force_name,name,"Mx"},std::string("Mx(")+new_force_name+","+body_name+","+name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_internal_frame_at_P->M(),DataAddressing({"efforts",body_name,new_force_name,name,"My"},std::string("My(")+new_force_name+","+body_name+","+name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_internal_frame_at_P->N(),DataAddressing({"efforts",body_name,new_force_name,name,"Mz"},std::string("Mz(")+new_force_name+","+body_name+","+name+")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_internal_frame_at_P->X(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, name, "Fx"},
+            std::string("Fx(") + new_force_name + "," + body_name + "," + name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_internal_frame_at_P->Y(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, name, "Fy"},
+            std::string("Fy(") + new_force_name + "," + body_name + "," + name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_internal_frame_at_P->Z(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, name, "Fz"},
+            std::string("Fz(") + new_force_name + "," + body_name + "," + name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_internal_frame_at_P->K(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, name, "Mx"},
+            std::string("Mx(") + new_force_name + "," + body_name + "," + name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_internal_frame_at_P->M(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, name, "My"},
+            std::string("My(") + new_force_name + "," + body_name + "," + name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_internal_frame_at_P->N(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, name, "Mz"},
+            std::string("Mz(") + new_force_name + "," + body_name + "," + name + ")"));
 
     // Write the propeller tensor in body frame at body frame origin
-    observer.write_before_solver_step(m_propeller_wrench_body_frame_at_Ob->X(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Fx"},std::string("Fx(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_body_frame_at_Ob->Y(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Fy"},std::string("Fy(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_body_frame_at_Ob->Z(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Fz"},std::string("Fz(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_body_frame_at_Ob->K(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Mx"},std::string("Mx(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_body_frame_at_Ob->M(),DataAddressing({"efforts",body_name,new_force_name,body_name,"My"},std::string("My(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_propeller_wrench_body_frame_at_Ob->N(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Mz"},std::string("Mz(")+new_force_name+","+body_name+","+body_name+")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_body_frame_at_Ob->X(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Fx"},
+            std::string("Fx(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_body_frame_at_Ob->Y(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Fy"},
+            std::string("Fy(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_body_frame_at_Ob->Z(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Fz"},
+            std::string("Fz(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_body_frame_at_Ob->K(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Mx"},
+            std::string("Mx(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_body_frame_at_Ob->M(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "My"},
+            std::string("My(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_body_frame_at_Ob->N(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Mz"},
+            std::string("Mz(") + new_force_name + "," + body_name + "," + body_name + ")"));
 
     // Write the propeller tensor in NED frame at CoG
-    observer.write_before_solver_step(m_propeller_wrench_NED_frame_at_G->X(),DataAddressing({"efforts",body_name,new_force_name,"NED","Fx"},std::string("Fx(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_propeller_wrench_NED_frame_at_G->Y(),DataAddressing({"efforts",body_name,new_force_name,"NED","Fy"},std::string("Fy(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_propeller_wrench_NED_frame_at_G->Z(),DataAddressing({"efforts",body_name,new_force_name,"NED","Fz"},std::string("Fz(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_propeller_wrench_NED_frame_at_G->K(),DataAddressing({"efforts",body_name,new_force_name,"NED","Mx"},std::string("Mx(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_propeller_wrench_NED_frame_at_G->M(),DataAddressing({"efforts",body_name,new_force_name,"NED","My"},std::string("My(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_propeller_wrench_NED_frame_at_G->N(),DataAddressing({"efforts",body_name,new_force_name,"NED","Mz"},std::string("Mz(")+new_force_name+","+body_name+","+"NED"+")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_NED_frame_at_G->X(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Fx"},
+            std::string("Fx(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_NED_frame_at_G->Y(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Fy"},
+            std::string("Fy(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_NED_frame_at_G->Z(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Fz"},
+            std::string("Fz(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_NED_frame_at_G->K(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Mx"},
+            std::string("Mx(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_NED_frame_at_G->M(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "My"},
+            std::string("My(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_propeller_wrench_NED_frame_at_G->N(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Mz"},
+            std::string("Mz(") + new_force_name + "," + body_name + "," + "NED" + ")"));
 
-    new_force_name= name + "(rudder)";
+    new_force_name = name + "(rudder)";
     // Write the rudder tensor in body frame at body frame origin
-    observer.write_before_solver_step(m_rudder_wrench_body_frame_at_Ob->X(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Fx"},std::string("Fx(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_rudder_wrench_body_frame_at_Ob->Y(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Fy"},std::string("Fy(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_rudder_wrench_body_frame_at_Ob->Z(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Fz"},std::string("Fz(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_rudder_wrench_body_frame_at_Ob->K(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Mx"},std::string("Mx(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_rudder_wrench_body_frame_at_Ob->M(),DataAddressing({"efforts",body_name,new_force_name,body_name,"My"},std::string("My(")+new_force_name+","+body_name+","+body_name+")"));
-    observer.write_before_solver_step(m_rudder_wrench_body_frame_at_Ob->N(),DataAddressing({"efforts",body_name,new_force_name,body_name,"Mz"},std::string("Mz(")+new_force_name+","+body_name+","+body_name+")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_body_frame_at_Ob->X(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Fx"},
+            std::string("Fx(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_body_frame_at_Ob->Y(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Fy"},
+            std::string("Fy(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_body_frame_at_Ob->Z(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Fz"},
+            std::string("Fz(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_body_frame_at_Ob->K(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Mx"},
+            std::string("Mx(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_body_frame_at_Ob->M(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "My"},
+            std::string("My(") + new_force_name + "," + body_name + "," + body_name + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_body_frame_at_Ob->N(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, body_name, "Mz"},
+            std::string("Mz(") + new_force_name + "," + body_name + "," + body_name + ")"));
 
     // Write the rudder tensor in NED frame at CoG
-    observer.write_before_solver_step(m_rudder_wrench_NED_frame_at_G->X(),DataAddressing({"efforts",body_name,new_force_name,"NED","Fx"},std::string("Fx(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_rudder_wrench_NED_frame_at_G->Y(),DataAddressing({"efforts",body_name,new_force_name,"NED","Fy"},std::string("Fy(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_rudder_wrench_NED_frame_at_G->Z(),DataAddressing({"efforts",body_name,new_force_name,"NED","Fz"},std::string("Fz(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_rudder_wrench_NED_frame_at_G->K(),DataAddressing({"efforts",body_name,new_force_name,"NED","Mx"},std::string("Mx(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_rudder_wrench_NED_frame_at_G->M(),DataAddressing({"efforts",body_name,new_force_name,"NED","My"},std::string("My(")+new_force_name+","+body_name+","+"NED"+")"));
-    observer.write_before_solver_step(m_rudder_wrench_NED_frame_at_G->N(),DataAddressing({"efforts",body_name,new_force_name,"NED","Mz"},std::string("Mz(")+new_force_name+","+body_name+","+"NED"+")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_NED_frame_at_G->X(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Fx"},
+            std::string("Fx(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_NED_frame_at_G->Y(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Fy"},
+            std::string("Fy(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_NED_frame_at_G->Z(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Fz"},
+            std::string("Fz(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_NED_frame_at_G->K(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Mx"},
+            std::string("Mx(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_NED_frame_at_G->M(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "My"},
+            std::string("My(") + new_force_name + "," + body_name + "," + "NED" + ")"));
+    observer.write_before_solver_step(
+        m_rudder_wrench_NED_frame_at_G->N(),
+        DataAddressing(
+            {"efforts", body_name, new_force_name, "NED", "Mz"},
+            std::string("Mz(") + new_force_name + "," + body_name + "," + "NED" + ")"));
 }

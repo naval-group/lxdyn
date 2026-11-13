@@ -11,16 +11,14 @@ using namespace ssc::data_source;
 
 void ssc::data_source::coerce(std::list<double>& ret, const std::vector<bool>& thing_to_convert)
 {
-    for (const bool b : thing_to_convert)
-    {
+    for (const bool b : thing_to_convert) {
         coerce(ret, b);
     }
 }
 
 void ssc::data_source::decoerce(std::list<double>& ret, bool& thing_to_convert)
 {
-    if (ret.empty())
-    {
+    if (ret.empty()) {
         THROW(__PRETTY_FUNCTION__, CoercionException, "List is empty.");
     }
     thing_to_convert = (bool)ret.front();
@@ -29,18 +27,16 @@ void ssc::data_source::decoerce(std::list<double>& ret, bool& thing_to_convert)
 
 void ssc::data_source::decoerce(std::list<double>& ret, std::vector<bool>& thing_to_convert)
 {
-    if (ret.size() < thing_to_convert.size())
-    {
-        THROW(__PRETTY_FUNCTION__, CoercionException, "List containing new values should contain at least as many elements as vector to update");
+    if (ret.size() < thing_to_convert.size()) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            CoercionException,
+            "List containing new values should contain at least as many elements as vector to update");
     }
     const size_t n = thing_to_convert.size();
-    for (size_t i = 0 ; i < n ; ++i)
-    {
+    for (size_t i = 0; i < n; ++i) {
         bool b;
         decoerce(ret, b);
         thing_to_convert.at(i) = b;
     }
 }
-
-
-

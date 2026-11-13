@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class ParabolicInterpolationTest : public ::testing::Test
-{
-    protected:
-        ParabolicInterpolationTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class ParabolicInterpolationTest : public ::testing::Test {
+protected:
+    ParabolicInterpolationTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* PARABOLICINTERPOLATIONTEST_HPP_ */
+#endif /* PARABOLICINTERPOLATIONTEST_HPP_ */

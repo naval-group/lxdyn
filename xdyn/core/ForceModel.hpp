@@ -8,11 +8,9 @@
 #ifndef FORCEMODEL_HPP_
 #define FORCEMODEL_HPP_
 
+#include <boost/utility/enable_if.hpp>
 #include <map>
 #include <optional>
-
-#include <boost/utility/enable_if.hpp>
-
 #include <ssc/kinematics.hpp>
 
 #include "xdyn/core/EnvironmentAndFrames.hpp"
@@ -22,47 +20,68 @@
 #include "xdyn/external_data_structures/YamlPosition.hpp"
 #include "yaml-cpp/exceptions.h"
 
-namespace ssc { namespace data_source { class DataSource;}}
+namespace ssc {
+namespace data_source {
+class DataSource;
+}
+}  // namespace ssc
 struct BodyStates;
 struct YamlRotation;
 
 class ForceModel;
 using ForcePtr = std::shared_ptr<ForceModel>;
 using ListOfForces = std::vector<ForcePtr>;
-using ForceParser = std::function<std::optional<ForcePtr>(const YamlModel&, const std::string&, const EnvironmentAndFrames&)>;
+using ForceParser = std::function<
+    std::optional<ForcePtr>(const YamlModel&, const std::string&, const EnvironmentAndFrames&)>;
 
 class Observer;
 
 // SFINAE test for 'parse' method
-template<typename T>
-struct HasParse
-{
+template <typename T>
+struct HasParse {
     using yes = char[1];
     using no = char[2];
-    template<typename U> static yes &check(decltype(&U::parse));
-    template<typename U> static no &check(...);
+    template <typename U>
+    static yes& check(decltype(&U::parse));
+    template <typename U>
+    static no& check(...);
     static constexpr bool value = sizeof(check<T>(nullptr)) == sizeof(yes);
 };
 
-
 /**
- * @brief This allows us to observe the force before integration without calculating the model unnecessarily
+ * @brief This allows us to observe the force before integration without calculating the model
+ * unnecessarily
  */
-class Memoization
-{
-    public:
-        Memoization() = delete;
-        explicit Memoization(const std::function<Wrench(const BodyStates&, const double, const EnvironmentAndFrames&, const std::map<std::string,double>&)>& callback);
-        Wrench run_if_not_cached(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>&);
+class Memoization {
+public:
+    Memoization() = delete;
+    explicit Memoization(
+        const std::function<Wrench(
+            const BodyStates&,
+            const double,
+            const EnvironmentAndFrames&,
+            const std::map<std::string, double>&)>& callback);
+    Wrench run_if_not_cached(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>&);
 
-
-    private:
-        bool is_cached(const double t, const std::vector<double>& states, const std::vector<double>& current_command_values) const;
-        double date_of_latest_force_in_body_frame;
-        std::vector<double> state_used_for_last_evaluation;
-        std::vector<double> commands_used_for_last_evaluation;
-        std::function<Wrench(const BodyStates&, const double, const EnvironmentAndFrames&, const std::map<std::string,double>&)> callback;
-        Wrench cached_force;
+private:
+    bool is_cached(
+        const double t,
+        const std::vector<double>& states,
+        const std::vector<double>& current_command_values) const;
+    double date_of_latest_force_in_body_frame;
+    std::vector<double> state_used_for_last_evaluation;
+    std::vector<double> commands_used_for_last_evaluation;
+    std::function<Wrench(
+        const BodyStates&,
+        const double,
+        const EnvironmentAndFrames&,
+        const std::map<std::string, double>&)>
+        callback;
+    Wrench cached_force;
 };
 
 /** \brief These force models read commands from a DataSource.
@@ -74,87 +93,118 @@ class Memoization
  *  \section ex2 Expected output
  *  \snippet core/unit_tests/ForceModelTest.cpp ForceModelTest expected output
  */
-class ForceModel
-{
-    public:
-        ForceModel(const std::string& name, const std::vector<std::string>& commands, const YamlPosition& internal_frame, const std::string& body_name_, const EnvironmentAndFrames& env);
-        ForceModel(const std::string& name, const std::vector<std::string>& commands, const std::string& body_name_, const EnvironmentAndFrames& env);
-        virtual ~ForceModel() = default;
-        ssc::kinematics::Wrench operator()(const BodyStates& states, const double t, const EnvironmentAndFrames& env, ssc::data_source::DataSource& command_listener);
-        ssc::kinematics::Wrench operator()(const BodyStates& states, const double t, const EnvironmentAndFrames& env);
-        virtual Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const = 0;
-        std::string get_name() const;
-        virtual double get_Tmax() const; // Can be overloaded if model needs access to History (not a problem, just has to say how much history to keep)
-        std::string get_body_name() const;
-        virtual bool is_a_surface_force_model() const;
-        std::vector<std::string> get_command_names() const;
+class ForceModel {
+public:
+    ForceModel(
+        const std::string& name,
+        const std::vector<std::string>& commands,
+        const YamlPosition& internal_frame,
+        const std::string& body_name_,
+        const EnvironmentAndFrames& env);
+    ForceModel(
+        const std::string& name,
+        const std::vector<std::string>& commands,
+        const std::string& body_name_,
+        const EnvironmentAndFrames& env);
+    virtual ~ForceModel() = default;
+    ssc::kinematics::Wrench operator()(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        ssc::data_source::DataSource& command_listener);
+    ssc::kinematics::Wrench
+    operator()(const BodyStates& states, const double t, const EnvironmentAndFrames& env);
+    virtual Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const = 0;
+    std::string get_name() const;
+    virtual double get_Tmax() const;  // Can be overloaded if model needs access to History (not a
+                                      // problem, just has to say how much history to keep)
+    std::string get_body_name() const;
+    virtual bool is_a_surface_force_model() const;
+    std::vector<std::string> get_command_names() const;
 
-        template<typename ForceType>
-        static typename boost::enable_if<HasParse<ForceType>, ForceParser>::type build_parser()
-        {
-            auto parser = [](
-                const YamlModel& yaml,
-                const std::string& body_name,
-                const EnvironmentAndFrames& env) -> std::optional<ForcePtr>
-                {
-                    std::optional<ForcePtr> ret;
-                    if (yaml.model == ForceType::model_name())
-                    {
-                        std::string context = "Invalid input data for model '" + ForceType::model_name() + "'.";
-                        try
-                        {
-                            ret = ForcePtr(new ForceType(ForceType::parse(yaml.yaml), body_name, env));
-                        }
-                        catch (const InvalidInputException& exception)
-                        {
-                            THROW(__PRETTY_FUNCTION__, InvalidInputException, context << std::endl << exception.get_message() << std::endl << "Model containing error is defined line "
-                                    << yaml.index_of_first_line_in_global_yaml << " of the YAML file." << std::endl);
-                        }
-                        catch (const YAML::Exception& exception)
-                        {
-                            const size_t line_number = yaml.index_of_first_line_in_global_yaml;
-                            THROW(__PRETTY_FUNCTION__, InvalidInputException, context << std::endl << "Model containing error is defined line "
-                                    << line_number << " of the YAML file." << std::endl << "The error was: " << exception.msg);
-                        }
-                    }
-                    return ret;
-                    };
-            return parser;
-        }
-
-        template <typename ForceType>
-        static typename boost::disable_if<HasParse<ForceType>, ForceParser>::type build_parser()
-        {
-            auto parser = [](const YamlModel& yaml, const std::string& body, const EnvironmentAndFrames& env) -> std::optional<ForcePtr>
-            {
-                std::optional<ForcePtr> ret;
-                if (yaml.model == ForceType::model_name())
-                {
-                    ret = ForcePtr(new ForceType(body, env));
+    template <typename ForceType>
+    static typename boost::enable_if<HasParse<ForceType>, ForceParser>::type build_parser()
+    {
+        auto parser = [](const YamlModel& yaml,
+                         const std::string& body_name,
+                         const EnvironmentAndFrames& env) -> std::optional<ForcePtr> {
+            std::optional<ForcePtr> ret;
+            if (yaml.model == ForceType::model_name()) {
+                std::string context =
+                    "Invalid input data for model '" + ForceType::model_name() + "'.";
+                try {
+                    ret = ForcePtr(new ForceType(ForceType::parse(yaml.yaml), body_name, env));
+                } catch (const InvalidInputException& exception) {
+                    THROW(
+                        __PRETTY_FUNCTION__,
+                        InvalidInputException,
+                        context << std::endl
+                                << exception.get_message() << std::endl
+                                << "Model containing error is defined line "
+                                << yaml.index_of_first_line_in_global_yaml << " of the YAML file."
+                                << std::endl);
+                } catch (const YAML::Exception& exception) {
+                    const size_t line_number = yaml.index_of_first_line_in_global_yaml;
+                    THROW(
+                        __PRETTY_FUNCTION__,
+                        InvalidInputException,
+                        context << std::endl
+                                << "Model containing error is defined line " << line_number
+                                << " of the YAML file." << std::endl
+                                << "The error was: " << exception.msg);
                 }
-                return ret;
-            };
-            return parser;
-        }
+            }
+            return ret;
+        };
+        return parser;
+    }
 
-        void feed(Observer& observer, ssc::kinematics::KinematicsPtr& k, ssc::data_source::DataSource& command_listener, const double t) const;
-        virtual void extra_observations(Observer& observer) const;
-    protected:
-        std::vector<std::string> commands;
-        std::string name;
-        std::string body_name;
-        void can_find_internal_frame(const ssc::kinematics::KinematicsPtr& k) const;
+    template <typename ForceType>
+    static typename boost::disable_if<HasParse<ForceType>, ForceParser>::type build_parser()
+    {
+        auto parser = [](const YamlModel& yaml,
+                         const std::string& body,
+                         const EnvironmentAndFrames& env) -> std::optional<ForcePtr> {
+            std::optional<ForcePtr> ret;
+            if (yaml.model == ForceType::model_name()) {
+                ret = ForcePtr(new ForceType(body, env));
+            }
+            return ret;
+        };
+        return parser;
+    }
 
-    private:
-        ForceModel(); // Deactivated
-        double get_command(const std::string& command_name, ssc::data_source::DataSource& command_listener, const double t) const;
-        std::map<std::string,double> get_commands(ssc::data_source::DataSource& command_listener, const double t) const;
+    void feed(
+        Observer& observer,
+        ssc::kinematics::KinematicsPtr& k,
+        ssc::data_source::DataSource& command_listener,
+        const double t) const;
+    virtual void extra_observations(Observer& observer) const;
 
-        bool has_internal_frame;
-        std::string known_reference_frame;
-        ssc::kinematics::Wrench latest_force_in_body_frame;
-        Memoization memo;
+protected:
+    std::vector<std::string> commands;
+    std::string name;
+    std::string body_name;
+    void can_find_internal_frame(const ssc::kinematics::KinematicsPtr& k) const;
 
+private:
+    ForceModel();  // Deactivated
+    double get_command(
+        const std::string& command_name,
+        ssc::data_source::DataSource& command_listener,
+        const double t) const;
+    std::map<std::string, double> get_commands(
+        ssc::data_source::DataSource& command_listener,
+        const double t) const;
+
+    bool has_internal_frame;
+    std::string known_reference_frame;
+    ssc::kinematics::Wrench latest_force_in_body_frame;
+    Memoization memo;
 };
 
 #endif /* FORCEMODEL_HPP_ */

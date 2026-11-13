@@ -10,8 +10,7 @@
 
 #include <string>
 
-struct YamlSpeed
-{
+struct YamlSpeed {
     YamlSpeed();
     std::string frame;
     double u{0};

@@ -8,14 +8,14 @@
 #ifndef WAGENINGENCONTROLLEDFORCEMODELTEST_HPP_
 #define WAGENINGENCONTROLLEDFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class WageningenControlledForceModelTest : public ::testing::Test
-{
-    protected:
-        WageningenControlledForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class WageningenControlledForceModelTest : public ::testing::Test {
+protected:
+    WageningenControlledForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* WAGENINGENCONTROLLEDFORCEMODELTEST_HPP_ */
+#endif /* WAGENINGENCONTROLLEDFORCEMODELTEST_HPP_ */

@@ -1,12 +1,16 @@
 #include "StatesFilter.hpp"
+
 #include "BodyStates.hpp"
-#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_data_structures/YamlBody.hpp"
 #include "xdyn/hdb_interpolators/History.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-FilteredStates::FilteredStates(const StatesFilter& filters, const AbstractStates<History>& states, const YamlRotation& rot)
+FilteredStates::FilteredStates(
+    const StatesFilter& filters,
+    const AbstractStates<History>& states,
+    const YamlRotation& rot)
     : phi(filters.get_filtered_phi(states, rot))
     , theta(filters.get_filtered_theta(states, rot))
     , psi(filters.get_filtered_psi(states, rot))
@@ -27,43 +31,45 @@ FilteredStates::FilteredStates(const StatesFilter& filters, const AbstractStates
     qk = filters.get_filtered_qk(states);
 }
 
-class MovingAverage : public StateFilter
-{
-    public:
-        explicit MovingAverage(const double duration_in_seconds_) : duration_in_seconds(duration_in_seconds_)
-        {}
+class MovingAverage : public StateFilter {
+public:
+    explicit MovingAverage(const double duration_in_seconds_)
+        : duration_in_seconds(duration_in_seconds_)
+    {
+    }
 
-        double filter(const History& h) const override
-        {
-            return h.average(duration_in_seconds);
-        }
+    double filter(const History& h) const override
+    {
+        return h.average(duration_in_seconds);
+    }
 
-        double get_Tmax() const override
-        {
-            return duration_in_seconds;
-        }
+    double get_Tmax() const override
+    {
+        return duration_in_seconds;
+    }
 
-    private:
-        const double duration_in_seconds;
+private:
+    const double duration_in_seconds;
 };
 
 std::shared_ptr<StateFilter> StateFilter::build(const std::string& yaml)
 {
-    if (yaml.empty())
-    {
+    if (yaml.empty()) {
         return std::shared_ptr<StateFilter>(new MovingAverage(0));
     }
     YAML::Node node = YAML::Load(yaml);
     std::string type_of_filter;
     node["type of filter"] >> type_of_filter;
 
-    if (type_of_filter == "moving average")
-    {
+    if (type_of_filter == "moving average") {
         double duration_in_seconds = 0;
         node["duration in seconds"] >> duration_in_seconds;
         return std::shared_ptr<StateFilter>(new MovingAverage(duration_in_seconds));
     }
-    THROW(__PRETTY_FUNCTION__, InvalidInputException, "Unknown filter '" << type_of_filter << "': known state filters are: 'moving average'.");
+    THROW(
+        __PRETTY_FUNCTION__,
+        InvalidInputException,
+        "Unknown filter '" << type_of_filter << "': known state filters are: 'moving average'.");
     return std::shared_ptr<StateFilter>(new MovingAverage(0));
 }
 
@@ -80,7 +86,8 @@ StatesFilter::StatesFilter(const YamlFilteredStates& input)
     , phi(StateFilter::build(input.phi))
     , theta(StateFilter::build(input.theta))
     , psi(StateFilter::build(input.psi))
-{}
+{
+}
 
 double StatesFilter::get_Tmax() const
 {
@@ -142,7 +149,6 @@ double StatesFilter::get_filtered_r(const AbstractStates<History>& history) cons
     return r->filter(history.r);
 }
 
-
 double StatesFilter::get_filtered_qr(const AbstractStates<History>& history) const
 {
     return history.qr();
@@ -163,28 +169,40 @@ double StatesFilter::get_filtered_qk(const AbstractStates<History>& history) con
     return history.qk();
 }
 
-ssc::kinematics::EulerAngles get_filtered_euler_angle(const std::shared_ptr<StateFilter>& filter, const AbstractStates<History>& history, const YamlRotation& rotations);
-ssc::kinematics::EulerAngles get_filtered_euler_angle(const std::shared_ptr<StateFilter>& filter, const AbstractStates<History>& history, const YamlRotation& rotations)
+ssc::kinematics::EulerAngles get_filtered_euler_angle(
+    const std::shared_ptr<StateFilter>& filter,
+    const AbstractStates<History>& history,
+    const YamlRotation& rotations);
+ssc::kinematics::EulerAngles get_filtered_euler_angle(
+    const std::shared_ptr<StateFilter>& filter,
+    const AbstractStates<History>& history,
+    const YamlRotation& rotations)
 {
     const double qr = filter->filter(history.qr);
     const double qi = filter->filter(history.qi);
     const double qj = filter->filter(history.qj);
     const double qk = filter->filter(history.qk);
     const ssc::kinematics::RotationMatrix R = Eigen::Quaternion<double>(qr, qi, qj, qk).matrix();
-    return  BodyStates::convert(R, rotations);
+    return BodyStates::convert(R, rotations);
 }
 
-double StatesFilter::get_filtered_phi(const AbstractStates<History>& history, const YamlRotation& rotations) const
+double StatesFilter::get_filtered_phi(
+    const AbstractStates<History>& history,
+    const YamlRotation& rotations) const
 {
     return get_filtered_euler_angle(phi, history, rotations).phi;
 }
 
-double StatesFilter::get_filtered_theta(const AbstractStates<History>& history, const YamlRotation& rotations) const
+double StatesFilter::get_filtered_theta(
+    const AbstractStates<History>& history,
+    const YamlRotation& rotations) const
 {
     return get_filtered_euler_angle(theta, history, rotations).theta;
 }
 
-double StatesFilter::get_filtered_psi(const AbstractStates<History>& history, const YamlRotation& rotations) const
+double StatesFilter::get_filtered_psi(
+    const AbstractStates<History>& history,
+    const YamlRotation& rotations) const
 {
     return get_filtered_euler_angle(psi, history, rotations).psi;
 }

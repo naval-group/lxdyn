@@ -5,36 +5,38 @@
  *      Author: cady
  */
 #include "ManeuveringForceModelTest.hpp"
+
+#include <cmath>
+
 #include "ManeuveringForceModel.hpp"
 #include "ManeuveringInternal.hpp"
+#include "gmock/gmock.h"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
-#include "gmock/gmock.h"
-
-#include <cmath>
 #define PI M_PI
 
 using namespace maneuvering;
-using namespace testing; // So we can use 'ElementsAre' unqualified
+using namespace testing;  // So we can use 'ElementsAre' unqualified
 
-ManeuveringForceModelTest::ManeuveringForceModelTest() : a(ssc::random_data_generator::DataGenerator(87542))
+ManeuveringForceModelTest::ManeuveringForceModelTest()
+    : a(ssc::random_data_generator::DataGenerator(87542))
 {
 }
 
 TEST_F(ManeuveringForceModelTest, can_parse_frame_of_reference)
 {
-//! [ManeuveringForceModelTest example]
+    //! [ManeuveringForceModelTest example]
     const auto data = ManeuveringForceModel::parse(test_data::maneuvering());
-//! [ManeuveringForceModelTest example]
-//! [ManeuveringForceModelTest expected output]
-    ASSERT_DOUBLE_EQ(0.696,         data.frame_of_reference.coordinates.x);
-    ASSERT_DOUBLE_EQ(0,             data.frame_of_reference.coordinates.y);
-    ASSERT_DOUBLE_EQ(1.418,         data.frame_of_reference.coordinates.z);
-    ASSERT_DOUBLE_EQ(0.7,           data.frame_of_reference.angle.phi);
-    ASSERT_DOUBLE_EQ(-166.*PI/180., data.frame_of_reference.angle.theta);
-    ASSERT_DOUBLE_EQ(125.*PI/180.,  data.frame_of_reference.angle.psi);
-//! [ManeuveringForceModelTest expected output]
+    //! [ManeuveringForceModelTest example]
+    //! [ManeuveringForceModelTest expected output]
+    ASSERT_DOUBLE_EQ(0.696, data.frame_of_reference.coordinates.x);
+    ASSERT_DOUBLE_EQ(0, data.frame_of_reference.coordinates.y);
+    ASSERT_DOUBLE_EQ(1.418, data.frame_of_reference.coordinates.z);
+    ASSERT_DOUBLE_EQ(0.7, data.frame_of_reference.angle.phi);
+    ASSERT_DOUBLE_EQ(-166. * PI / 180., data.frame_of_reference.angle.theta);
+    ASSERT_DOUBLE_EQ(125. * PI / 180., data.frame_of_reference.angle.psi);
+    //! [ManeuveringForceModelTest expected output]
 }
 
 TEST_F(ManeuveringForceModelTest, can_parse_X_Y_Z_K_M_N)
@@ -57,7 +59,7 @@ TEST_F(ManeuveringForceModelTest, can_parse_model_name)
 TEST_F(ManeuveringForceModelTest, can_parse_commands)
 {
     auto data = ManeuveringForceModel::parse(test_data::maneuvering());
-    ASSERT_THAT(data.commands, ElementsAre("a","b","c"));
+    ASSERT_THAT(data.commands, ElementsAre("a", "b", "c"));
 }
 
 TEST_F(ManeuveringForceModelTest, internal_constant)
@@ -72,7 +74,7 @@ TEST_F(ManeuveringForceModelTest, internal_constant)
 
 TEST_F(ManeuveringForceModelTest, internal_cos)
 {
-    const auto c = make_cos(make_constant(PI/3.));
+    const auto c = make_cos(make_constant(PI / 3.));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
@@ -92,7 +94,7 @@ TEST_F(ManeuveringForceModelTest, internal_abs)
 
 TEST_F(ManeuveringForceModelTest, internal_sin)
 {
-    const auto c = make_sin(make_constant(PI/6.));
+    const auto c = make_sin(make_constant(PI / 6.));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
@@ -122,7 +124,7 @@ TEST_F(ManeuveringForceModelTest, internal_sqrt)
 
 TEST_F(ManeuveringForceModelTest, internal_sum)
 {
-    const auto c = make_sum(make_cos(make_constant(PI/3.)),make_sin(make_constant(PI/6.)));
+    const auto c = make_sum(make_cos(make_constant(PI / 3.)), make_sin(make_constant(PI / 6.)));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
@@ -132,9 +134,10 @@ TEST_F(ManeuveringForceModelTest, internal_sum)
 
 TEST_F(ManeuveringForceModelTest, internal_pow)
 {
-    const double theta = a.random<double>().between(-PI,PI);
-    const auto c = make_sum(make_pow(make_cos(make_constant(theta)), make_constant(2)),
-                            make_pow(make_sin(make_constant(theta)), make_constant(2)));
+    const double theta = a.random<double>().between(-PI, PI);
+    const auto c = make_sum(
+        make_pow(make_cos(make_constant(theta)), make_constant(2)),
+        make_pow(make_sin(make_constant(theta)), make_constant(2)));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
@@ -144,62 +147,62 @@ TEST_F(ManeuveringForceModelTest, internal_pow)
 
 TEST_F(ManeuveringForceModelTest, internal_exp)
 {
-    const double x = a.random<double>().between(-10,10);
+    const double x = a.random<double>().between(-10, 10);
     const auto c = make_log(make_exp(make_constant(x)));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
     const double t = a.random<double>();
-    ASSERT_NEAR(x, f(states, ds, t),1e-12);
+    ASSERT_NEAR(x, f(states, ds, t), 1e-12);
 }
 
 TEST_F(ManeuveringForceModelTest, internal_difference)
 {
-    const double x = a.random<double>().between(-10,10);
-    const double y = a.random<double>().between(-10,10);
-    const auto c = make_difference(make_constant(x),make_constant(y));
+    const double x = a.random<double>().between(-10, 10);
+    const double y = a.random<double>().between(-10, 10);
+    const auto c = make_difference(make_constant(x), make_constant(y));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
     const double t = a.random<double>();
-    ASSERT_DOUBLE_EQ(x-y, f(states, ds, t));
+    ASSERT_DOUBLE_EQ(x - y, f(states, ds, t));
 }
 
 TEST_F(ManeuveringForceModelTest, internal_divide)
 {
-    const double x = a.random<double>().between(-10,10);
-    const double y = a.random<double>().between(10,20);
-    const auto c = make_divide(make_constant(x),make_constant(y));
+    const double x = a.random<double>().between(-10, 10);
+    const double y = a.random<double>().between(10, 20);
+    const auto c = make_divide(make_constant(x), make_constant(y));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
     const double t = a.random<double>();
-    ASSERT_DOUBLE_EQ(x/y, f(states, ds, t));
+    ASSERT_DOUBLE_EQ(x / y, f(states, ds, t));
 }
 
 TEST_F(ManeuveringForceModelTest, internal_multiply)
 {
-    const double x = a.random<double>().between(-10,10);
-    const double y = a.random<double>().between(10,20);
-    const auto c = make_multiply(make_constant(x),make_constant(y));
+    const double x = a.random<double>().between(-10, 10);
+    const double y = a.random<double>().between(10, 20);
+    const auto c = make_multiply(make_constant(x), make_constant(y));
     const auto f = c->get_lambda();
     BodyStates states;
     ssc::data_source::DataSource ds;
     const double t = a.random<double>();
-    ASSERT_DOUBLE_EQ(x*y, f(states, ds, t));
+    ASSERT_DOUBLE_EQ(x * y, f(states, ds, t));
 }
 
 TEST_F(ManeuveringForceModelTest, internal_state)
 {
-    const auto xx = make_state_x(make_constant(5),YamlRotation());
-    const auto yy = make_state_y(make_constant(5),YamlRotation());
-    const auto zz = make_state_z(make_constant(5),YamlRotation());
-    const auto uu = make_state_u(make_constant(5),YamlRotation());
-    const auto vv = make_state_v(make_constant(5),YamlRotation());
-    const auto ww = make_state_w(make_constant(5),YamlRotation());
-    const auto pp = make_state_p(make_constant(5),YamlRotation());
-    const auto qq = make_state_q(make_constant(5),YamlRotation());
-    const auto rr = make_state_r(make_constant(5),YamlRotation());
+    const auto xx = make_state_x(make_constant(5), YamlRotation());
+    const auto yy = make_state_y(make_constant(5), YamlRotation());
+    const auto zz = make_state_z(make_constant(5), YamlRotation());
+    const auto uu = make_state_u(make_constant(5), YamlRotation());
+    const auto vv = make_state_v(make_constant(5), YamlRotation());
+    const auto ww = make_state_w(make_constant(5), YamlRotation());
+    const auto pp = make_state_p(make_constant(5), YamlRotation());
+    const auto qq = make_state_q(make_constant(5), YamlRotation());
+    const auto rr = make_state_r(make_constant(5), YamlRotation());
     const auto x = xx->get_lambda();
     const auto y = yy->get_lambda();
     const auto z = zz->get_lambda();
@@ -219,26 +222,26 @@ TEST_F(ManeuveringForceModelTest, internal_state)
     states.p.record(0, 7);
     states.q.record(0, 8);
     states.r.record(0, 9);
-    states.x.record(10, 2*1);
-    states.y.record(10, 2*2);
-    states.z.record(10, 2*3);
-    states.u.record(10, 2*4);
-    states.v.record(10, 2*5);
-    states.w.record(10, 2*6);
-    states.p.record(10, 2*7);
-    states.q.record(10, 2*8);
-    states.r.record(10, 2*9);
+    states.x.record(10, 2 * 1);
+    states.y.record(10, 2 * 2);
+    states.z.record(10, 2 * 3);
+    states.u.record(10, 2 * 4);
+    states.v.record(10, 2 * 5);
+    states.w.record(10, 2 * 6);
+    states.p.record(10, 2 * 7);
+    states.q.record(10, 2 * 8);
+    states.r.record(10, 2 * 9);
     ssc::data_source::DataSource ds;
     const double t = 10;
-    ASSERT_DOUBLE_EQ(1.5*1, x(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*2, y(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*3, z(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*4, u(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*5, v(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*6, w(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*7, p(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*8, q(states, ds, t));
-    ASSERT_DOUBLE_EQ(1.5*9, r(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 1, x(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 2, y(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 3, z(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 4, u(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 5, v(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 6, w(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 7, p(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 8, q(states, ds, t));
+    ASSERT_DOUBLE_EQ(1.5 * 9, r(states, ds, t));
 }
 
 TEST_F(ManeuveringForceModelTest, internal_time)
@@ -290,7 +293,7 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_simple_maneuvering_model)
                              "M: 0\n"
                              "N: 0\n";
     const auto env = get_env_with_default_rotation_convention();
-    ManeuveringForceModel force(ManeuveringForceModel::parse(yaml),"some body", env);
+    ManeuveringForceModel force(ManeuveringForceModel::parse(yaml), "some body", env);
     ASSERT_EQ("maneuvering", force.model_name());
     auto states = get_body("some body")->get_states();
     const double t = 10;
@@ -341,11 +344,9 @@ def man(x,y,z,u,v,w,p,q,r):
        v_= v/Vs
        r_= r/Vs*L
        X_= Xu*u_ + Xuu*u_**2 + Xuuu*u_**3 + Xvv*v_**2 + Xrr*r_**2 + Xvr*fabs(v_)*fabs(r_)
-       Y_= Yv*v_ + Yvv*v_*fabs(v_) + Yvvv*v_**3 + Yvrr*v_*r_**2 + Yr*r_ + Yrr*r_*fabs(r_) + Yrrr*r_**3 + Yrvv*r_*v_**2
-       N_= Nv*v_ + Nvv*v_*fabs(v_) + Nvvv*v_**3 + Nvrr*v_*r_**2 + Nr*r_ + Nrr*r_*fabs(r_) + Nrrr*r_**3 + Nrvv*r_*v_**2
-       X= 0.5*rho*Vs**2*L**2*X_
-       Y= 0.5*rho*Vs**2*L**2*Y_
-       Z= 0
+       Y_= Yv*v_ + Yvv*v_*fabs(v_) + Yvvv*v_**3 + Yvrr*v_*r_**2 + Yr*r_ + Yrr*r_*fabs(r_) +
+Yrrr*r_**3 + Yrvv*r_*v_**2 N_= Nv*v_ + Nvv*v_*fabs(v_) + Nvvv*v_**3 + Nvrr*v_*r_**2 + Nr*r_ +
+Nrr*r_*fabs(r_) + Nrrr*r_**3 + Nrvv*r_*v_**2 X= 0.5*rho*Vs**2*L**2*X_ Y= 0.5*rho*Vs**2*L**2*Y_ Z= 0
        K= 0
        M= 0
        N= 0.5*rho*Vs**2*L**3*N_
@@ -386,7 +387,7 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model_with_same_
     command_listener.set("test(b)", 0.);
     command_listener.set("test(c)", 0.);
 
-    ManeuveringForceModel force(data,"TestShip", env);
+    ManeuveringForceModel force(data, "TestShip", env);
     const auto F = force(states, t, env, command_listener);
 
     ASSERT_EQ("TestShip", F.get_frame());
@@ -423,7 +424,7 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model_with_same_
     command_listener.set("test(b)", 0.);
     command_listener.set("test(c)", 0.);
 
-    ManeuveringForceModel force(data,"TestShip", env);
+    ManeuveringForceModel force(data, "TestShip", env);
     const auto F = force(states, t, env, command_listener);
 
     ASSERT_EQ("TestShip", F.get_frame());
@@ -441,9 +442,10 @@ to the function defined above:
 from math import cos, sin
 import numpy as np
 
-rotX = lambda alpha: np.array([[1.0, 0.0, 0.0], [0.0, +cos(alpha), -sin(alpha)], [0.0, +sin(alpha), +cos(alpha)]])
-rotY = lambda alpha: np.array([[+cos(alpha), 0.0, +sin(alpha)], [0.0, 1.0, 0.0], [-sin(alpha), 0.0, +cos(alpha)]])
-rotZ = lambda alpha: np.array([[+cos(alpha), -sin(alpha), 0.0], [+sin(alpha), +cos(alpha), 0.0], [0.0, 0.0, 1.0]])
+rotX = lambda alpha: np.array([[1.0, 0.0, 0.0], [0.0, +cos(alpha), -sin(alpha)], [0.0, +sin(alpha),
++cos(alpha)]]) rotY = lambda alpha: np.array([[+cos(alpha), 0.0, +sin(alpha)], [0.0, 1.0, 0.0],
+[-sin(alpha), 0.0, +cos(alpha)]]) rotZ = lambda alpha: np.array([[+cos(alpha), -sin(alpha), 0.0],
+[+sin(alpha), +cos(alpha), 0.0], [0.0, 0.0, 1.0]])
 
 def get_force_and_torque(x, y, z, u, v, w, p, q, r, phi, theta, psi, tx, ty, tz):
     man_results = man(x, y, z, u, v, w, p, q, r)
@@ -485,7 +487,7 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model)
     command_listener.set("test(b)", 0.);
     command_listener.set("test(c)", 0.);
 
-    ManeuveringForceModel force(data,"TestShip", env);
+    ManeuveringForceModel force(data, "TestShip", env);
     const auto F = force(states, t, env, command_listener);
 
     ASSERT_EQ("TestShip", F.get_frame());
@@ -522,7 +524,7 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model2)
     command_listener.set("test(b)", 0.);
     command_listener.set("test(c)", 0.);
 
-    ManeuveringForceModel force(data,"TestShip", env);
+    ManeuveringForceModel force(data, "TestShip", env);
     const auto F = force(states, t, env, command_listener);
 
     ASSERT_EQ("TestShip", F.get_frame());
@@ -578,32 +580,33 @@ TEST_F(ManeuveringForceModelTest, can_use_euler_angles_in_maneuvering_with_same_
 
     ssc::data_source::DataSource command_listener;
 
-    ManeuveringForceModel force(data,"TestShip", env);
+    ManeuveringForceModel force(data, "TestShip", env);
     const auto F = force(states, t, env, command_listener);
     ASSERT_DOUBLE_EQ(angles.phi, F.X());
     ASSERT_DOUBLE_EQ(angles.theta, F.Y());
     ASSERT_DOUBLE_EQ(angles.psi, F.Z());
     ASSERT_DOUBLE_EQ(states.qr(), F.K());
     ASSERT_DOUBLE_EQ(states.qi(), F.M());
-    ASSERT_DOUBLE_EQ(states.qj()+states.qk(), F.N());
+    ASSERT_DOUBLE_EQ(states.qj() + states.qk(), F.N());
 }
 
-/*  The following test data was generated using this Python code (the input quaternion should be normalized):
+/*  The following test data was generated using this Python code (the input quaternion should be
+normalized):
 
 from math import cos, sin
 from scipy.spatial.transform import Rotation
 import numpy as np
 
-rotX = lambda alpha: np.array([[1.0, 0.0, 0.0], [0.0, +cos(alpha), -sin(alpha)], [0.0, +sin(alpha), +cos(alpha)]])
-rotY = lambda alpha: np.array([[+cos(alpha), 0.0, +sin(alpha)], [0.0, 1.0, 0.0], [-sin(alpha), 0.0, +cos(alpha)]])
-rotZ = lambda alpha: np.array([[+cos(alpha), -sin(alpha), 0.0], [+sin(alpha), +cos(alpha), 0.0], [0.0, 0.0, 1.0]])
+rotX = lambda alpha: np.array([[1.0, 0.0, 0.0], [0.0, +cos(alpha), -sin(alpha)], [0.0, +sin(alpha),
++cos(alpha)]]) rotY = lambda alpha: np.array([[+cos(alpha), 0.0, +sin(alpha)], [0.0, 1.0, 0.0],
+[-sin(alpha), 0.0, +cos(alpha)]]) rotZ = lambda alpha: np.array([[+cos(alpha), -sin(alpha), 0.0],
+[+sin(alpha), +cos(alpha), 0.0], [0.0, 0.0, 1.0]])
 
 def get_force_and_torque(x, y, z, u, v, w, p, q, r, qr, qi, qj, qk, phi, theta, psi, tx, ty, tz):
     rotation_fom_quaternions = Rotation.from_quat([qk, qj, qi, qr]).as_euler('ZYX')
 
-    F_local = np.array([[rotation_fom_quaternions[0]], [rotation_fom_quaternions[1]], [rotation_fom_quaternions[2]]])
-    rot = rotZ(psi) @ rotY(theta) @ rotX(phi)
-    F = rot @ F_local
+    F_local = np.array([[rotation_fom_quaternions[0]], [rotation_fom_quaternions[1]],
+[rotation_fom_quaternions[2]]]) rot = rotZ(psi) @ rotY(theta) @ rotX(phi) F = rot @ F_local
 
     T_local = np.array([[qr], [qi], [qj + qk]])
     OM = np.array([[tx], [ty], [tz]])
@@ -651,7 +654,7 @@ TEST_F(ManeuveringForceModelTest, can_use_euler_angles_in_maneuvering)
 
     ssc::data_source::DataSource command_listener;
 
-    ManeuveringForceModel force(data,"TestShip", env);
+    ManeuveringForceModel force(data, "TestShip", env);
     const auto F = force(states, t, env, command_listener);
     ASSERT_NEAR(1.917565962059328, F.X(), 1e-14);
     ASSERT_NEAR(-0.8788836899394064, F.Y(), 1e-14);
@@ -665,6 +668,6 @@ TEST_F(ManeuveringForceModelTest, can_get_Tmax)
 {
     const auto data = ManeuveringForceModel::parse(test_data::man_with_delay());
     const auto env = get_env_with_default_rotation_convention();
-    ManeuveringForceModel force(data,"ball", env);
+    ManeuveringForceModel force(data, "ball", env);
     ASSERT_DOUBLE_EQ(10, force.get_Tmax());
 }

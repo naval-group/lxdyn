@@ -1,10 +1,12 @@
 #include "WebSocketObserverTest.hpp"
-#include "ssc/websocket/string2vector.hpp"
-#include "ssc/websocket/WebSocketException.hpp"
-#include "ssc/websocket/WebSocketClient.hpp"
-#include "ssc/websocket/WebSocketServer.hpp"
-#include <memory>
+
 #include <iostream>
+#include <memory>
+
+#include "ssc/websocket/WebSocketClient.hpp"
+#include "ssc/websocket/WebSocketException.hpp"
+#include "ssc/websocket/WebSocketServer.hpp"
+#include "ssc/websocket/string2vector.hpp"
 
 #define ADDRESS "127.0.0.1"
 #define WEBSOCKET_ADDRESS "ws://" ADDRESS
@@ -12,8 +14,7 @@ constexpr int WEBSOCKET_PORT = 9002;
 
 using namespace ssc::websocket;
 
-struct ListOfStringMessages : public MessageHandler
-{
+struct ListOfStringMessages : public MessageHandler {
     void operator()(const Message& msg) override
     {
         messages.push_back(msg.get_payload());
@@ -22,8 +23,7 @@ struct ListOfStringMessages : public MessageHandler
     std::vector<std::string> messages;
 };
 
-struct ListOfDoubleMessages : public MessageHandler
-{
+struct ListOfDoubleMessages : public MessageHandler {
     void operator()(const Message& msg) override
     {
         const auto v = msg.get_binary_payload<double>();
@@ -49,7 +49,7 @@ TEST_F(WebSocketObserverTest, WebSocketEndpoint_should_be_able_to_send_a_string)
     const std::string s3 = a.random<std::string>();
     ListOfStringMessages message_handler;
     std::shared_ptr<Server> w = std::make_shared<Server>(message_handler, WEBSOCKET_PORT);
-    { // Creating a scope ensures that the message is actually sent at the end of the scope
+    {  // Creating a scope ensures that the message is actually sent at the end of the scope
         Client endpoint(WEBSOCKET_ADDRESS, WEBSOCKET_PORT);
         endpoint.send_text(s1);
         endpoint.send_text(s2);
@@ -66,8 +66,10 @@ TEST_F(WebSocketObserverTest, WebSocketEndpoint_should_be_able_to_send_a_vector_
     ListOfDoubleMessages message_handler;
     std::shared_ptr<Server> w = std::make_shared<Server>(message_handler, WEBSOCKET_PORT);
     {
-        std::vector<double> v(3,0.0);
-        v[0]=1.0;v[1]=2.0;v[2]=3.0;
+        std::vector<double> v(3, 0.0);
+        v[0] = 1.0;
+        v[1] = 2.0;
+        v[2] = 3.0;
         Client endpoint(WEBSOCKET_ADDRESS, WEBSOCKET_PORT);
         endpoint.send_binary(v);
     }

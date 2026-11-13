@@ -8,14 +8,14 @@
 #ifndef GRAVITYFORCEMODELTEST_HPP_
 #define GRAVITYFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class GravityForceModelTest : public ::testing::Test
-{
-    protected:
-        GravityForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class GravityForceModelTest : public ::testing::Test {
+protected:
+    GravityForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* GRAVITYFORCEMODELTEST_HPP_ */
+#endif /* GRAVITYFORCEMODELTEST_HPP_ */

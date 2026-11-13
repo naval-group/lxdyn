@@ -8,23 +8,24 @@
 #ifndef PARSE_TIME_SERIES_HPP_
 #define PARSE_TIME_SERIES_HPP_
 
-#include "xdyn/external_data_structures/YamlTimeSeries.hpp"
 #include <yaml-cpp/yaml.h>
 
+#include "xdyn/external_data_structures/YamlTimeSeries.hpp"
+
 /**  \brief Parses the commands for use by controlled forces.
-  *  \snippet yaml_parser/unit_tests/parse_time_seriesTest.cpp parse_command_yaml example
-  */
+ *  \snippet yaml_parser/unit_tests/parse_time_seriesTest.cpp parse_command_yaml example
+ */
 std::vector<YamlTimeSeries> parse_command_yaml(
-    const std::string& yaml //!< YAML data
-    );
+    const std::string& yaml  //!< YAML data
+);
 
 /**  \brief Parses the setpoints for use by the controllers (for controlled forces).
-  *  \snippet yaml_parser/unit_tests/parse_setpointsTest.cpp parse_setpoint_yaml example
-  */
+ *  \snippet yaml_parser/unit_tests/parse_setpointsTest.cpp parse_setpoint_yaml example
+ */
 std::vector<YamlTimeSeries> parse_setpoint_yaml(
-    const std::string& yaml //!< YAML data
-    );
+    const std::string& yaml  //!< YAML data
+);
 
-void operator >> (const YAML::Node& node, YamlTimeSeries& c);
+void operator>>(const YAML::Node& node, YamlTimeSeries& c);
 
 #endif /* PARSE_TIME_SERIES_HPP_ */

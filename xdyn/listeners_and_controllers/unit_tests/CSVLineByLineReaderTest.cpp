@@ -1,11 +1,10 @@
 #include "CSVLineByLineReaderTest.hpp"
+
 #include "CSVYaml.hpp"
 #include "TempFile.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
-CSVLineByLineReaderTest::CSVLineByLineReaderTest() :  a(29081981)
-{
-}
+CSVLineByLineReaderTest::CSVLineByLineReaderTest() : a(29081981) {}
 
 void happy_case(TempFile& csv);
 void happy_case(TempFile& csv)
@@ -130,7 +129,9 @@ TEST_F(CSVLineByLineReaderTest, can_get_correct_value_for_time_between_timestamp
     ASSERT_DOUBLE_EQ(778, values["port side propeller(beta)"]);
 }
 
-TEST_F(CSVLineByLineReaderTest, can_get_correct_value_before_first_timestamp_and_after_last_timestamp)
+TEST_F(
+    CSVLineByLineReaderTest,
+    can_get_correct_value_before_first_timestamp_and_after_last_timestamp)
 {
     happy_case(csv);
     CSVLineByLineReader reader = get_reader();
@@ -170,8 +171,7 @@ void check_positive_linear_spaced_requests(CSVLineByLineReader& reader)
     ASSERT_DOUBLE_EQ(10, values["port side propeller(rpm)"]);
     ASSERT_DOUBLE_EQ(15, values["port side propeller(beta)"]);
     // Check values after last timestamps
-    for (size_t i=0;i<10;++i)
-    {
+    for (size_t i = 0; i < 10; ++i) {
         values = reader.get_values(0.4 + static_cast<double>(i));
         ASSERT_DOUBLE_EQ(10, values["port side propeller(rpm)"]);
         ASSERT_DOUBLE_EQ(15, values["port side propeller(beta)"]);
@@ -193,7 +193,9 @@ TEST_F(CSVLineByLineReaderTest, can_get_correct_value_with_linear_increasing_tim
     check_positive_linear_spaced_requests(reader);
 }
 
-TEST_F(CSVLineByLineReaderTest, can_get_correct_value_with_linear_increasing_time_starting_with_negative_times)
+TEST_F(
+    CSVLineByLineReaderTest,
+    can_get_correct_value_with_linear_increasing_time_starting_with_negative_times)
 {
     linear_increasing_time_starting_with_negative_times(csv);
     CSVLineByLineReader reader = get_reader();
@@ -214,8 +216,7 @@ TEST_F(CSVLineByLineReaderTest, empty_file)
     empty(csv);
     CSVLineByLineReader reader = get_reader();
     std::unordered_map<std::string, double> values;
-    for (size_t i = 0 ; i < 1000 ; ++i)
-    {
+    for (size_t i = 0; i < 1000; ++i) {
         values = reader.get_values(a.random<double>());
         ASSERT_DOUBLE_EQ(0, values["port side propeller(rpm)"]);
         ASSERT_DOUBLE_EQ(0, values["port side propeller(beta)"]);
@@ -271,8 +272,7 @@ TEST_F(CSVLineByLineReaderTest, initial_date_should_be_correct)
 {
     happy_case(csv);
     CSVLineByLineReader reader = get_reader();
-    for (int i = 0 ; i < 1000; ++i)
-    {
+    for (int i = 0; i < 1000; ++i) {
         reader.get_values(a.random<double>());
         ASSERT_DOUBLE_EQ(0.2, reader.get_initial_date());
     }

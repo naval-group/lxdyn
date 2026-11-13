@@ -11,73 +11,78 @@
 #include "AbstractWageningen.hpp"
 
 /** \details This class was created to define the propeller model used in the MMG model
- * 
+ *
  *  It was originally based on the 3 DOF MMG model as described in
- * H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
- * 
+ * H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering
+ * predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014,
+ * doi: 10.1007/s00773-014-0293-y.
+ *
  * More recently, it has been extended to 4 DOF, as described in
- * R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174, Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
- * 
+ * R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at
+ * different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174,
+ * Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
+ *
  *  \addtogroup ForceModels
  *  \ingroup module
- *  \section 
+ *  \section
  *  \snippet module/unit_tests/MMGPropellerForceModelTest.cpp
  */
-class MMGPropellerForceModel : public AbstractWageningen
-{
-    public:
-        struct Yaml : public AbstractWageningen::Yaml
-        {
-            double k0{};
-            double k1{};
-            double k2{};
-            double C0{};
-            double C1{};
-            std::vector<double> C2;
-            YamlCoordinates application_point;
-        };
-        MMGPropellerForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        static Yaml parse(const std::string& yaml);
+class MMGPropellerForceModel : public AbstractWageningen {
+public:
+    struct Yaml : public AbstractWageningen::Yaml {
+        double k0{};
+        double k1{};
+        double k2{};
+        double C0{};
+        double C1{};
+        std::vector<double> C2;
+        YamlCoordinates application_point;
+    };
+    MMGPropellerForceModel(
+        const Yaml& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    static Yaml parse(const std::string& yaml);
 
-        /// inherited function to compute K_T given J
-        double get_Kt(const std::map<std::string,double>& commands, const double J) const override;
-        /// inherited function to compute K_Q which is always null here
-        double get_Kq(const std::map<std::string,double>& commands, const double J) const override;
-        /// inherited function to compute the wake factor
-        double get_wake_factor(const BodyStates& states) const override;
-        static std::string model_name();
-        /// Throw an error message if J is outside its domain of validity
-        void check(const double J) const;
-        /// Correct J if it is outside its domain of validity
-        double saturate(const double J) const;
-        /// Returns the coordinates of the propeller location in MMG frame
-        Eigen::Vector3d get_propeller_position_in_MMG_frame() const;
-        /// Returns the coordinates of the MMG frame in body frame
-        Eigen::Vector3d get_MMG_frame_position_in_body_frame() const;
-        /// Returns coordinates of the CoG in MMG frame
-        Eigen::Vector3d get_CoG_position_in_MMG_frame(const BodyStates &states) const;
-        /// Wrap an angle into]-PI,PI]
-        static double wrapToPi(double x);
+    /// inherited function to compute K_T given J
+    double get_Kt(const std::map<std::string, double>& commands, const double J) const override;
+    /// inherited function to compute K_Q which is always null here
+    double get_Kq(const std::map<std::string, double>& commands, const double J) const override;
+    /// inherited function to compute the wake factor
+    double get_wake_factor(const BodyStates& states) const override;
+    static std::string model_name();
+    /// Throw an error message if J is outside its domain of validity
+    void check(const double J) const;
+    /// Correct J if it is outside its domain of validity
+    double saturate(const double J) const;
+    /// Returns the coordinates of the propeller location in MMG frame
+    Eigen::Vector3d get_propeller_position_in_MMG_frame() const;
+    /// Returns the coordinates of the MMG frame in body frame
+    Eigen::Vector3d get_MMG_frame_position_in_body_frame() const;
+    /// Returns coordinates of the CoG in MMG frame
+    Eigen::Vector3d get_CoG_position_in_MMG_frame(const BodyStates& states) const;
+    /// Wrap an angle into]-PI,PI]
+    static double wrapToPi(double x);
 
-    private:
-        /// constant term in the second-order polynomial MMG propeller model
-        double m_k0;
-        /// linear term in the second-order polynomial MMG propeller model
-        double m_k1;
-        /// quadratic term in the second-order polynomial MMG propeller model
-        double m_k2;
-        /// Experimental constants for wake factor tuning with leeway
-        double m_C0;
-        /// Experimental constants for wake factor tuning with leeway
-        double m_C1;
-        /// Experimental constants for wake factor tuning with leeway. First value for $\beta_P<0$, second value for $\beta_P>0$
-        std::vector<double> m_C2;
-        /// propeller location in MMG frame
-        Eigen::Vector3d m_position_of_propeller_in_MMG_frame;
-        /// coordinates of the MMG origin in body frame
-        Eigen::Vector3d m_position_of_MMG_frame_in_body_frame;
-        /// maximum J value to have K_T>=0
-        double m_Jmax;
-
+private:
+    /// constant term in the second-order polynomial MMG propeller model
+    double m_k0;
+    /// linear term in the second-order polynomial MMG propeller model
+    double m_k1;
+    /// quadratic term in the second-order polynomial MMG propeller model
+    double m_k2;
+    /// Experimental constants for wake factor tuning with leeway
+    double m_C0;
+    /// Experimental constants for wake factor tuning with leeway
+    double m_C1;
+    /// Experimental constants for wake factor tuning with leeway. First value for $\beta_P<0$,
+    /// second value for $\beta_P>0$
+    std::vector<double> m_C2;
+    /// propeller location in MMG frame
+    Eigen::Vector3d m_position_of_propeller_in_MMG_frame;
+    /// coordinates of the MMG origin in body frame
+    Eigen::Vector3d m_position_of_MMG_frame_in_body_frame;
+    /// maximum J value to have K_T>=0
+    double m_Jmax;
 };
 #endif /* MMGPROPELLERFORCEMODEL_HPP */

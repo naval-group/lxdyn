@@ -8,46 +8,46 @@
 #ifndef RESULTANTFORCECOMPUTER_HPP_
 #define RESULTANTFORCECOMPUTER_HPP_
 
-#include "xdyn/core/ForceModel.hpp"
+#include "GZTypes.hpp"
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
-#include "GZTypes.hpp"
+#include "xdyn/core/ForceModel.hpp"
 
 class Sim;
 class GravityForceModel;
 class HydrostaticForceModel;
 
-namespace GZ
-{
-    struct MinMax
-    {
-        MinMax(const double min_, const double max_) : min(min_), max(max_) {}
-        double min;
-        double max;
-    };
+namespace GZ {
+struct MinMax {
+    MinMax(const double min_, const double max_) : min(min_), max(max_) {}
+    double min;
+    double max;
+};
 
-    class ResultantForceComputer
-    {
-        public:
-            explicit ResultantForceComputer(const Sim& sim, const double dz = 1e-6, const double theta = 1e-6);
-            ::GZ::Resultant resultant(const ::GZ::State& point);
-            Eigen::Matrix2d K(const Eigen::Vector3d& X);
+class ResultantForceComputer {
+public:
+    explicit ResultantForceComputer(
+        const Sim& sim,
+        const double dz = 1e-6,
+        const double theta = 1e-6);
+    ::GZ::Resultant resultant(const ::GZ::State& point);
+    Eigen::Matrix2d K(const Eigen::Vector3d& X);
 
-            MinMax get_zmin_zmax(const double phi);
+    MinMax get_zmin_zmax(const double phi);
 
-        private:
-            Eigen::Matrix2d dF(const Eigen::Vector3d& X);
+private:
+    Eigen::Matrix2d dF(const Eigen::Vector3d& X);
 
-            BodyPtr body;
-            EnvironmentAndFrames env;
-            std::shared_ptr<GravityForceModel> gravity;
-            ForcePtr hydrostatic;
-            double current_instant{0};
-            ssc::kinematics::Point G;
-            double dz;
-            double dtheta;
-    };
-}
+    BodyPtr body;
+    EnvironmentAndFrames env;
+    std::shared_ptr<GravityForceModel> gravity;
+    ForcePtr hydrostatic;
+    double current_instant{0};
+    ssc::kinematics::Point G;
+    double dz;
+    double dtheta;
+};
+}  // namespace GZ
 
 std::ostream& operator<<(std::ostream& os, const GZ::MinMax& m);
 

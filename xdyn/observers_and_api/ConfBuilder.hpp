@@ -8,17 +8,16 @@
 #ifndef OBSERVERS_AND_API_INC_CONFBUILDER_HPP_
 #define OBSERVERS_AND_API_INC_CONFBUILDER_HPP_
 
-#include "xdyn/core/Sim.hpp"
 #include <string>
 
-class ConfBuilder
-{
-    public :
-        explicit ConfBuilder(const std::string& yaml_model);
-        ConfBuilder(const std::string& yaml_model, const VectorOfVectorOfPoints& mesh);
+#include "xdyn/core/Sim.hpp"
 
-        Sim sim;
-        const double Tmax;
+class ConfBuilder {
+public:
+    explicit ConfBuilder(const std::string& yaml_model);
+    ConfBuilder(const std::string& yaml_model, const VectorOfVectorOfPoints& mesh);
 
+    Sim sim;
+    const double Tmax;
 };
 #endif /* OBSERVERS_AND_API_INC_CONFBUILDER_HPP_ */

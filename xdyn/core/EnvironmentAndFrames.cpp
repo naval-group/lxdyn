@@ -6,59 +6,55 @@
  */
 
 #include "EnvironmentAndFrames.hpp"
-#include "SurfaceElevationInterface.hpp"
-#include "Observer.hpp"
-#include "xdyn/exceptions/InvalidInputException.hpp"
 
 #include <memory>
 #include <ssc/kinematics.hpp>
+
+#include "Observer.hpp"
+#include "SurfaceElevationInterface.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 using namespace ssc::kinematics;
 
-EnvironmentAndFrames::EnvironmentAndFrames() :
-                                               k(std::make_shared<Kinematics>())
+EnvironmentAndFrames::EnvironmentAndFrames() : k(std::make_shared<Kinematics>())
 {
-    if (rho<0.0)
-    {
+    if (rho < 0.0) {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "rho can not be negative");
     }
-    if (rho_air && rho_air<0.0)
-    {
+    if (rho_air && rho_air < 0.0) {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "Air density cannot be negative");
     }
-    if (nu<0.0)
-    {
+    if (nu < 0.0) {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "nu can not be negative");
     }
-    if (g<0.0)
-    {
+    if (g < 0.0) {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "g can not be negative");
     }
 }
 
 void EnvironmentAndFrames::feed(
-        Observer& observer, double t,
-        const std::vector<BodyPtr>& bodies, const StateType& state) const
+    Observer& observer,
+    double t,
+    const std::vector<BodyPtr>& bodies,
+    const StateType& state) const
 {
-    try
-    {
-        if (w.get())
-        {
-            for (size_t i = 0 ; i < bodies.size() ; ++i)
-            {
-                bodies[i]->update_kinematics(state,k);
+    try {
+        if (w.get()) {
+            for (size_t i = 0; i < bodies.size(); ++i) {
+                bodies[i]->update_kinematics(state, k);
             }
             const auto kk = w->get_waves_on_mesh_as_a_grid(k, t);
-            if(kk.z.size()!=0)
-            {
-                const auto address = DataAddressing(std::vector<std::string>{"waveElevation"},"waves");
+            if (kk.z.size() != 0) {
+                const auto address =
+                    DataAddressing(std::vector<std::string>{"waveElevation"}, "waves");
                 observer.write_before_solver_step(kk, address);
             }
         }
-    }
-    catch (const ssc::kinematics::KinematicsException& e)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException,
-                "In the YAML file (section [environment models/model/output/frame of reference]): the output reference frame is not defined (" << e.get_message() << ")");
+    } catch (const ssc::kinematics::KinematicsException& e) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "In the YAML file (section [environment models/model/output/frame of reference]): the output reference frame is not defined ("
+                << e.get_message() << ")");
     }
 }
 
@@ -69,24 +65,25 @@ void EnvironmentAndFrames::set_rho_air(const double value)
 
 double EnvironmentAndFrames::get_rho_air() const
 {
-    if(not(rho_air.has_value()))
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException,"The value of air density was requested, but was not specified in the input YAML file. Make sure the key 'air rho' is present in the 'environmental constants' section.");
+    if (not(rho_air.has_value())) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "The value of air density was requested, but was not specified in the input YAML file. Make sure the key 'air rho' is present in the 'environmental constants' section.");
     }
     return rho_air.value();
 }
 
-Eigen::Vector3d EnvironmentAndFrames::get_UWCurrent(const Eigen::Vector3d& position, const double t) const
+Eigen::Vector3d EnvironmentAndFrames::get_UWCurrent(const Eigen::Vector3d& position, const double t)
+    const
 {
-    if (not UWCurrent)
-    {
+    if (not UWCurrent) {
         return Eigen::Vector3d::Zero();
     }
     // The current models measure depth from the free surface, which is z=0 when no wave model is
     // defined: querying w unconditionally would segfault on a current without waves.
     double free_surface_height = 0.;
-    if (w.use_count())
-    {
+    if (w.use_count()) {
         free_surface_height = w->get_and_check_wave_height({position(0)}, {position(1)}, t).at(0);
     }
     return UWCurrent->get_UWCurrent(position, t, free_surface_height);

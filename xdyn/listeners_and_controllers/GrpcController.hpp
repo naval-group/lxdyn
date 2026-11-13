@@ -10,19 +10,21 @@
 
 #include "Controller.hpp"
 #include "xdyn/grpc/GrpcControllerInterface.hpp"
-class GrpcController : public Controller
-{
-  public:
-    static GrpcController *build (const double tstart,
-                                  const std::string& name,
-                                  const std::string &yaml, ssc::solver::ContinuousSystem& sys);
-    std::vector<std::string> get_command_names () const override;
+class GrpcController : public Controller {
+public:
+    static GrpcController* build(
+        const double tstart,
+        const std::string& name,
+        const std::string& yaml,
+        ssc::solver::ContinuousSystem& sys);
+    std::vector<std::string> get_command_names() const override;
 
-  private:
-    GrpcController () = delete;
-    GrpcController (const double tstart,
-                    const std::string& name,
-                    const std::shared_ptr<GrpcControllerInterface> &grpc);
+private:
+    GrpcController() = delete;
+    GrpcController(
+        const double tstart,
+        const std::string& name,
+        const std::shared_ptr<GrpcControllerInterface>& grpc);
     /**
      * @brief Updates the controller output value in the datasource.
      *
@@ -33,11 +35,11 @@ class GrpcController : public Controller
      * @param system The continuous system. Used to retrieve the continuous
      * states.
      */
-    void update_discrete_states (const double time,
-                                 ssc::solver::ContinuousSystem& system) override;
-    void add_controller_outputs_to_data_source (
-        const double time, ssc::solver::ContinuousSystem& sys,
-        const std::vector<double> &setpoints);
+    void update_discrete_states(const double time, ssc::solver::ContinuousSystem& system) override;
+    void add_controller_outputs_to_data_source(
+        const double time,
+        ssc::solver::ContinuousSystem& sys,
+        const std::vector<double>& setpoints);
 
     std::shared_ptr<GrpcControllerInterface> grpc;
     std::string name;

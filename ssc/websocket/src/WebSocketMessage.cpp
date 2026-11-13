@@ -6,17 +6,14 @@
  */
 
 #include "ssc/websocket/WebSocketMessage.hpp"
+
 #include "WebSocketMessageImpl.hpp"
 
 using namespace ssc::websocket;
 
-Message::Message()
-    :pimpl(new WebSocketMessageImpl())
-{}
+Message::Message() : pimpl(new WebSocketMessageImpl()) {}
 
-Message::Message(const WebSocketMessageImpl& pimpl_)
-    :pimpl(new WebSocketMessageImpl(pimpl_))
-{}
+Message::Message(const WebSocketMessageImpl& pimpl_) : pimpl(new WebSocketMessageImpl(pimpl_)) {}
 
 void Message::send_text(const std::string& payload) const
 {

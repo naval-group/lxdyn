@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class CSVFileReaderTest : public ::testing::Test
-{
-    protected:
-        CSVFileReaderTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class CSVFileReaderTest : public ::testing::Test {
+protected:
+    CSVFileReaderTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* VALIDATEAGAINSTCSVTEST_HPP_ */
+#endif /* VALIDATEAGAINSTCSVTEST_HPP_ */

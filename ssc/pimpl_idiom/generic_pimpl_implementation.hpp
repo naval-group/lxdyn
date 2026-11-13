@@ -10,21 +10,30 @@
 
 #include <utility>
 
-template<typename T>
-Pimpl<T>::Pimpl() : m{ new T{} } { }
+template <typename T>
+Pimpl<T>::Pimpl() : m{new T{}}
+{
+}
 
-template<typename T>
-template<typename ...Args>
-Pimpl<T>::Pimpl( Args&& ...args )
-    : m{ new T{ std::forward<Args>(args)... } } { }
+template <typename T>
+template <typename... Args>
+Pimpl<T>::Pimpl(Args&&... args) : m{new T{std::forward<Args>(args)...}}
+{
+}
 
-template<typename T>
+template <typename T>
 Pimpl<T>::~Pimpl() = default;
 
-template<typename T>
-T* Pimpl<T>::operator->() { return m.get(); }
+template <typename T>
+T* Pimpl<T>::operator->()
+{
+    return m.get();
+}
 
-template<typename T>
-T& Pimpl<T>::operator*() { return *m.get(); }
+template <typename T>
+T& Pimpl<T>::operator*()
+{
+    return *m.get();
+}
 
 #endif /* GENERIC_PIMPL_IMPLEMENTATION_HPP_ */

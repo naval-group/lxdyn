@@ -11,11 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class string2vectorTest : public ::testing::Test
-{
-    protected:
-        string2vectorTest();
-        ssc::random_data_generator::DataGenerator a;
+class string2vectorTest : public ::testing::Test {
+protected:
+    string2vectorTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* VECTOR2STRINGTEST_HPP_ */
+#endif /* VECTOR2STRINGTEST_HPP_ */

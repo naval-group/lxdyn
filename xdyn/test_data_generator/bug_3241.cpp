@@ -1,5 +1,6 @@
-#include "yaml_data.hpp"
 #include <sstream>
+
+#include "yaml_data.hpp"
 
 std::string test_data::bug_3241()
 {

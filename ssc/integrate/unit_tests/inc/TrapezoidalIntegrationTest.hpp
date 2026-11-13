@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class TrapezoidalIntegrationTest : public ::testing::Test
-{
-    protected:
-        TrapezoidalIntegrationTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class TrapezoidalIntegrationTest : public ::testing::Test {
+protected:
+    TrapezoidalIntegrationTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* TRAPEZOIDALINTEGRATIONTEST_HPP_ */
+#endif /* TRAPEZOIDALINTEGRATIONTEST_HPP_ */

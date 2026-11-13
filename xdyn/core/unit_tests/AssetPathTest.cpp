@@ -3,9 +3,10 @@
  */
 
 #include "AssetPathTest.hpp"
-#include "xdyn/core/AssetPath.hpp"
 
 #include <filesystem>
+
+#include "xdyn/core/AssetPath.hpp"
 
 // The root is process-wide, so a test that sets it has to hand it back.
 void AssetPathTest::TearDown()
@@ -57,7 +58,9 @@ TEST_F(AssetPathTest, the_environment_wins_over_the_yaml)
 
 TEST_F(AssetPathTest, the_root_falls_back_to_the_directory_of_the_first_yaml)
 {
-    ASSERT_EQ("scenarios", xdyn::assets_root("", "", {"scenarios/tutorial.yml", "elsewhere/waves.yml"}));
+    ASSERT_EQ(
+        "scenarios",
+        xdyn::assets_root("", "", {"scenarios/tutorial.yml", "elsewhere/waves.yml"}));
 }
 
 TEST_F(AssetPathTest, a_yaml_in_the_working_directory_yields_no_root)

@@ -16,20 +16,15 @@ void check_controller_output_is_not_defined_in_a_command(
     const std::string& controller_command_name,
     const std::vector<YamlTimeSeries>& commands_input);
 
-void check_command_names(
-    const std::vector<YamlTimeSeries>& commands_input);
+void check_command_names(const std::vector<YamlTimeSeries>& commands_input);
 
-void check_state_name(
-    const std::string& state_name);
+void check_state_name(const std::string& state_name);
 
-void check_for_duplicated_controller_names(
-    const std::vector<YamlController>& controller_yaml);
+void check_for_duplicated_controller_names(const std::vector<YamlController>& controller_yaml);
 
-void check_for_mesh_declaration_if_needed_by_force_models(
-    const std::vector<YamlBody>& bodies);
+void check_for_mesh_declaration_if_needed_by_force_models(const std::vector<YamlBody>& bodies);
 
-void check_for_redundant_models(
-    const std::vector<YamlBody>& bodies);
+void check_for_redundant_models(const std::vector<YamlBody>& bodies);
 
 bool check_for_gravity_model_declaration_if_needed_by_force_models(
     const std::vector<YamlBody>& bodies);

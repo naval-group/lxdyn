@@ -10,19 +10,20 @@
 
 #include "ssc/exception_handling/Exception.hpp"
 
-namespace ssc
-{
-    namespace interpolation
+namespace ssc {
+namespace interpolation {
+class SplinesException : public ::ssc::exception_handling::Exception {
+public:
+    SplinesException(
+        const std::string& message,
+        const std::string& file,
+        const std::string& function,
+        const unsigned int line)
+        : Exception(message, file, function, line)
     {
-        class SplinesException : public ::ssc::exception_handling::Exception
-        {
-            public:
-                SplinesException(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) :
-                    Exception(message, file, function, line)
-                {
-                }
-        };
     }
-}
+};
+}  // namespace interpolation
+}  // namespace ssc
 
-#endif  /* SPLINESEXCEPTION_HPP_ */
+#endif /* SPLINESEXCEPTION_HPP_ */

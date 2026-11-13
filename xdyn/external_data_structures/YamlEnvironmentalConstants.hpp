@@ -10,8 +10,7 @@
 
 #include <optional>
 
-struct YamlEnvironmentalConstants
-{
+struct YamlEnvironmentalConstants {
     double g{0};
     double rho{0};
     std::optional<double> rho_air;

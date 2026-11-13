@@ -8,11 +8,10 @@
 #ifndef YAMLCOORDINATES_HPP_
 #define YAMLCOORDINATES_HPP_
 
-struct YamlCoordinates
-{
+struct YamlCoordinates {
     YamlCoordinates();
     YamlCoordinates(const double x, const double y, const double z);
-    virtual ~YamlCoordinates()= default;
+    virtual ~YamlCoordinates() = default;
     double x;
     double y;
     double z;

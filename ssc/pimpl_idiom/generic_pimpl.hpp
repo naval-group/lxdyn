@@ -12,16 +12,18 @@
 
 #include <memory>
 
-template<typename T> class Pimpl
-{
-    private:
-        std::unique_ptr<T> m;
-    public:
-        Pimpl();
-        template<typename ...Args> explicit Pimpl( Args&& ... );
-        ~Pimpl();
-        T* operator->();
-        T& operator*();
+template <typename T>
+class Pimpl {
+private:
+    std::unique_ptr<T> m;
+
+public:
+    Pimpl();
+    template <typename... Args>
+    explicit Pimpl(Args&&...);
+    ~Pimpl();
+    T* operator->();
+    T& operator*();
 };
 
 #endif /* GENERIC_PIMPL_HPP_ */

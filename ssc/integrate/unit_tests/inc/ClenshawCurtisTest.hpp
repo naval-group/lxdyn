@@ -11,11 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class ClenshawCurtisTest : public ::testing::Test
-{
-    protected:
-        ClenshawCurtisTest();
-        ssc::random_data_generator::DataGenerator a;
+class ClenshawCurtisTest : public ::testing::Test {
+protected:
+    ClenshawCurtisTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* CLENSHAWCURTISTEST_HPP_ */
+#endif /* CLENSHAWCURTISTEST_HPP_ */

@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class kahan_sumTest : public ::testing::Test
-{
-    protected:
-        kahan_sumTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class kahan_sumTest : public ::testing::Test {
+protected:
+    kahan_sumTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* KAHAN_SUMTEST_HPP_ */
+#endif /* KAHAN_SUMTEST_HPP_ */

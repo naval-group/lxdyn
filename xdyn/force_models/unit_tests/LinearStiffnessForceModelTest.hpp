@@ -1,14 +1,14 @@
 #ifndef LINEARSTIFFNESSFORCEMODELTEST_HPP_
 #define LINEARSTIFFNESSFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class LinearStiffnessForceModelTest : public ::testing::Test
-{
-    protected:
-        LinearStiffnessForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class LinearStiffnessForceModelTest : public ::testing::Test {
+protected:
+    LinearStiffnessForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* LINEARSTIFFNESSFORCEMODELTEST_HPP_ */
+#endif /* LINEARSTIFFNESSFORCEMODELTEST_HPP_ */

@@ -11,13 +11,11 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class VectorOfEquallySpacedNumbersTest : public ::testing::Test
-{
-    protected:
-        VectorOfEquallySpacedNumbersTest();
-        ssc::random_data_generator::DataGenerator a;
-        const double eps{1E-10};
-
+class VectorOfEquallySpacedNumbersTest : public ::testing::Test {
+protected:
+    VectorOfEquallySpacedNumbersTest();
+    ssc::random_data_generator::DataGenerator a;
+    const double eps{1E-10};
 };
 
-#endif  /* VECTOROFEQUALLYSPACEDNUMBERSTEST_HPP_ */
+#endif /* VECTOROFEQUALLYSPACEDNUMBERSTEST_HPP_ */

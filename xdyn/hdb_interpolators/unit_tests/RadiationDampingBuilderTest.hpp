@@ -8,14 +8,14 @@
 #ifndef DAMPINGMATRIXINTERPOLATORTEST_HPP_
 #define DAMPINGMATRIXINTERPOLATORTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class RadiationDampingBuilderTest : public ::testing::Test
-{
-    protected:
-        RadiationDampingBuilderTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class RadiationDampingBuilderTest : public ::testing::Test {
+protected:
+    RadiationDampingBuilderTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* DAMPINGMATRIXINTERPOLATORTEST_HPP_ */
+#endif /* DAMPINGMATRIXINTERPOLATORTEST_HPP_ */

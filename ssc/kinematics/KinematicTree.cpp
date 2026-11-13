@@ -6,12 +6,13 @@
  */
 
 #include "ssc/kinematics/KinematicTree.hpp"
-#include "ssc/kinematics/KinematicsException.hpp"
+
+#include <algorithm>  // std::reverse
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <algorithm> // std::reverse
 #include <map>
 
+#include "ssc/kinematics/KinematicsException.hpp"
 
 using namespace ssc::kinematics;
 
@@ -19,120 +20,137 @@ using Weight = float;
 using WeightProperty = boost::property<boost::edge_weight_t, Weight>;
 using NameProperty = boost::property<boost::vertex_name_t, std::string>;
 
-using Graph = boost::adjacency_list < boost::listS, boost::vecS, boost::undirectedS,
-NameProperty, WeightProperty >;
+using Graph = boost::
+    adjacency_list<boost::listS, boost::vecS, boost::undirectedS, NameProperty, WeightProperty>;
 
-using Vertex = boost::graph_traits < Graph >::vertex_descriptor;
+using Vertex = boost::graph_traits<Graph>::vertex_descriptor;
 
-using IndexMap = boost::property_map < Graph, boost::vertex_index_t >::type;
-using NameMap = boost::property_map < Graph, boost::vertex_name_t >::type;
+using IndexMap = boost::property_map<Graph, boost::vertex_index_t>::type;
+using NameMap = boost::property_map<Graph, boost::vertex_name_t>::type;
 
-using PredecessorMap = boost::iterator_property_map < Vertex*, IndexMap, Vertex, Vertex& >;
-using DistanceMap = boost::iterator_property_map < Weight*, IndexMap, Weight, Weight& >;
-using VertexMapIter = std::map<std::string,Vertex>::const_iterator;
+using PredecessorMap = boost::iterator_property_map<Vertex*, IndexMap, Vertex, Vertex&>;
+using DistanceMap = boost::iterator_property_map<Weight*, IndexMap, Weight, Weight&>;
+using VertexMapIter = std::map<std::string, Vertex>::const_iterator;
 
-class KinematicTree::Impl
-{
-    public:
-        void add(const std::string& frame_A, const std::string& frame_B)
-        {
-            const Vertex A = get_vertex(frame_A);
-            const Vertex B = get_vertex(frame_B);
-            boost::add_edge(A, B, 1, g);
+class KinematicTree::Impl {
+public:
+    void add(const std::string& frame_A, const std::string& frame_B)
+    {
+        const Vertex A = get_vertex(frame_A);
+        const Vertex B = get_vertex(frame_B);
+        boost::add_edge(A, B, 1, g);
+    }
+
+    PathType get_path(const std::string& frame_A, const std::string& frame_B)
+    {
+        if (frame_A == frame_B)
+            return PathType(1, std::make_pair(frame_A, frame_B));
+        const std::pair<Vertex, Vertex> edge = get_edge(frame_A, frame_B);
+        std::vector<std::string> path = dijkstra(edge);
+
+        if (path.empty()) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                KinematicsException,
+                std::string("Unable to compute transform from ") + frame_A + " to " + frame_B +
+                    ": maybe the graph is not connected?");
         }
-
-        PathType get_path(const std::string& frame_A, const std::string& frame_B)
-        {
-            if (frame_A == frame_B) return PathType(1,std::make_pair(frame_A,frame_B));
-            const std::pair<Vertex,Vertex> edge = get_edge(frame_A, frame_B);
-            std::vector<std::string> path = dijkstra(edge);
-
-            if (path.empty())
-            {
-                THROW(__PRETTY_FUNCTION__, KinematicsException,
-                std::string("Unable to compute transform from ") + frame_A + " to " + frame_B + ": maybe the graph is not connected?");
-            }
-            if (path.size() < 2) return PathType(1, std::make_pair(frame_A,frame_B));
-            PathType ret;
-            for (size_t i = 0 ; i < path.size()-1 ; ++i)
-            {
-                ret.push_back(std::make_pair(path[i], path[i+1]));
-            }
-            ret.push_back(std::make_pair(path.back(), frame_B));
-            return ret;
+        if (path.size() < 2)
+            return PathType(1, std::make_pair(frame_A, frame_B));
+        PathType ret;
+        for (size_t i = 0; i < path.size() - 1; ++i) {
+            ret.push_back(std::make_pair(path[i], path[i + 1]));
         }
+        ret.push_back(std::make_pair(path.back(), frame_B));
+        return ret;
+    }
 
-    private:
+private:
+    Vertex get_vertex(const std::string& vertex_name)
+    {
+        const VertexMapIter that_vertex = name_to_vertex.find(vertex_name);
+        if (that_vertex == name_to_vertex.end())
+            return new_vertex(vertex_name);
+        return that_vertex->second;
+    }
 
-        Vertex get_vertex(const std::string& vertex_name)
-        {
-            const VertexMapIter that_vertex = name_to_vertex.find(vertex_name);
-            if (that_vertex == name_to_vertex.end())  return new_vertex(vertex_name);
-                                                      return that_vertex->second;
+    std::pair<Vertex, Vertex> get_edge(const std::string& vertex1, const std::string& vertex2) const
+    {
+        const VertexMapIter itA = name_to_vertex.find(vertex1);
+        if (itA == name_to_vertex.end()) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                KinematicsException,
+                std::string("Unable to find '") + vertex1 + "' in map.");
         }
-
-        std::pair<Vertex,Vertex> get_edge(const std::string& vertex1, const std::string& vertex2) const
-        {
-            const VertexMapIter itA = name_to_vertex.find(vertex1);
-            if (itA == name_to_vertex.end()) {THROW(__PRETTY_FUNCTION__, KinematicsException, std::string("Unable to find '") + vertex1 + "' in map.");}
-            const VertexMapIter itB = name_to_vertex.find(vertex2);
-            if (itB == name_to_vertex.end()) {THROW(__PRETTY_FUNCTION__, KinematicsException, std::string("Unable to find '") + vertex2 + "' in map.");}
-            return std::make_pair(itA->second, itB->second);
+        const VertexMapIter itB = name_to_vertex.find(vertex2);
+        if (itB == name_to_vertex.end()) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                KinematicsException,
+                std::string("Unable to find '") + vertex2 + "' in map.");
         }
+        return std::make_pair(itA->second, itB->second);
+    }
 
-        Vertex new_vertex(const std::string& vertex_name)
+    Vertex new_vertex(const std::string& vertex_name)
+    {
+        const Vertex V = boost::add_vertex(vertex_name, g);
+        name_to_vertex.insert(std::make_pair(vertex_name, V));
+        return V;
+    }
+
+    std::vector<std::string> get_path(
+        const Vertex& destination,
+        const PredecessorMap& predecessor_map)
+    {
+        std::vector<std::string> path;
+        NameMap nameMap = boost::get(boost::vertex_name, g);
+        // We want to start at the destination and work our way back to the source
+        Vertex v = destination;
+        for (Vertex u =
+                 predecessor_map[v];  // Start by setting 'u' to the destination node's predecessor
+                                      // Keep tracking the path until we get to the source
+             u != v;
+             v = u, u = predecessor_map[v])  // Set the current vertex to the current predecessor,
+                                             // and the predecessor to one level up
         {
-            const Vertex V = boost::add_vertex(vertex_name, g);
-            name_to_vertex.insert(std::make_pair(vertex_name, V));
-            return V;
+            std::pair<Graph::edge_descriptor, bool> edgePair = boost::edge(u, v, g);
+            Graph::edge_descriptor edge = edgePair.first;
+            path.push_back(nameMap[boost::source(edge, g)]);
         }
+        std::reverse(path.begin(), path.end());
+        return path;
+    }
 
-        std::vector<std::string> get_path(const Vertex& destination, const PredecessorMap& predecessor_map)
-        {
-            std::vector<std::string> path;
-            NameMap nameMap = boost::get(boost::vertex_name, g);
-            // We want to start at the destination and work our way back to the source
-            Vertex v = destination;
-            for(Vertex u = predecessor_map[v]; // Start by setting 'u' to the destination node's predecessor
-                // Keep tracking the path until we get to the source
-                u != v;
-                v = u, u = predecessor_map[v]) // Set the current vertex to the current predecessor, and the predecessor to one level up
-            {
-                std::pair<Graph::edge_descriptor, bool> edgePair = boost::edge(u, v, g);
-                Graph::edge_descriptor edge = edgePair.first;
-                path.push_back(nameMap[boost::source(edge, g)]);
-            }
-            std::reverse(path.begin(), path.end());
-            return path;
-        }
+    PredecessorMap get_predecessor_map(std::vector<Vertex>& predecessors, const Vertex& start)
+    {
+        std::vector<Weight> distances(boost::num_vertices(g));  // To store distances
+        IndexMap indexMap = boost::get(boost::vertex_index, g);
+        PredecessorMap predecessor_map(&predecessors[0], indexMap);
+        DistanceMap distanceMap(&distances[0], indexMap);
 
-        PredecessorMap get_predecessor_map(std::vector<Vertex>& predecessors, const Vertex& start)
-        {
-            std::vector<Weight> distances(boost::num_vertices(g)); // To store distances
-            IndexMap indexMap = boost::get(boost::vertex_index, g);
-            PredecessorMap predecessor_map(&predecessors[0], indexMap);
-            DistanceMap distanceMap(&distances[0], indexMap);
+        // Compute shortest paths from 'start' to all vertices, and store the output in predecessors
+        // and distances
+        boost::dijkstra_shortest_paths(
+            g,
+            start,
+            boost::distance_map(distanceMap).predecessor_map(predecessor_map));
+        return predecessor_map;
+    }
 
-            // Compute shortest paths from 'start' to all vertices, and store the output in predecessors and distances
-            boost::dijkstra_shortest_paths(g, start, boost::distance_map(distanceMap).predecessor_map(predecessor_map));
-            return predecessor_map;
-        }
+    std::vector<std::string> dijkstra(const std::pair<Vertex, Vertex>& edge)
+    {
+        std::vector<Vertex> predecessors(boost::num_vertices(g));  // To store parents
+        PredecessorMap predecessor_map = get_predecessor_map(predecessors, edge.first);
+        return get_path(edge.second, predecessor_map);
+    }
 
-        std::vector<std::string> dijkstra(const std::pair<Vertex,Vertex>& edge)
-        {
-            std::vector<Vertex> predecessors(boost::num_vertices(g)); // To store parents
-            PredecessorMap predecessor_map = get_predecessor_map(predecessors, edge.first);
-            return get_path(edge.second, predecessor_map);
-        }
-
-        Graph g;
-        std::map<std::string,Vertex> name_to_vertex;
+    Graph g;
+    std::map<std::string, Vertex> name_to_vertex;
 };
 
-
-KinematicTree::KinematicTree() : pimpl(new Impl())
-{
-}
+KinematicTree::KinematicTree() : pimpl(new Impl()) {}
 
 void KinematicTree::add(const std::string& frame_A, const std::string& frame_B)
 {

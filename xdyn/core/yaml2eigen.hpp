@@ -8,8 +8,8 @@
 #ifndef YAML2EIGEN_HPP_
 #define YAML2EIGEN_HPP_
 
-#include <ssc/kinematics.hpp>
 #include <Eigen/Dense>
+#include <ssc/kinematics.hpp>
 #include <string>
 #include <vector>
 
@@ -28,14 +28,20 @@ ssc::kinematics::RotationMatrix angle2matrix(const YamlAngle& a, const YamlRotat
 /** \brief Utility function used by angle2matrix
  *  \returns True if 'convention' == [first,second,third]
  */
-bool match(const std::vector<std::string>& convention, const std::string& first, const std::string& second, const std::string& third);
+bool match(
+    const std::vector<std::string>& convention,
+    const std::string& first,
+    const std::string& second,
+    const std::string& third);
 
 ssc::kinematics::Point make_point(const YamlPoint& point);
 ssc::kinematics::Point make_point(const YamlCoordinates& point, const std::string& frame);
-ssc::kinematics::Transform make_transform(const YamlPosition& position_of_frame_relative_to_another, const std::string& to_frame, const YamlRotation& rotations);
+ssc::kinematics::Transform make_transform(
+    const YamlPosition& position_of_frame_relative_to_another,
+    const std::string& to_frame,
+    const YamlRotation& rotations);
 
-
-void convert_matrix_from_aquaplus_to_xdyn_frame(Eigen::Matrix<double,6,6>& matrix);
-Eigen::Matrix<double,6,6> make_matrix6x6(const YamlDynamics6x6Matrix& M);
+void convert_matrix_from_aquaplus_to_xdyn_frame(Eigen::Matrix<double, 6, 6>& matrix);
+Eigen::Matrix<double, 6, 6> make_matrix6x6(const YamlDynamics6x6Matrix& M);
 
 #endif /* YAML2EIGEN_HPP_ */

@@ -8,15 +8,14 @@
 #ifndef DIRACDIRECTIONALSPREADINGTEST_HPP_
 #define DIRACDIRECTIONALSPREADINGTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class DiracDirectionalSpreadingTest : public ::testing::Test
-{
-    protected:
-        DiracDirectionalSpreadingTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class DiracDirectionalSpreadingTest : public ::testing::Test {
+protected:
+    DiracDirectionalSpreadingTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* DIRACDIRECTIONALSPREADINGTEST_HPP_ */
+#endif /* DIRACDIRECTIONALSPREADINGTEST_HPP_ */

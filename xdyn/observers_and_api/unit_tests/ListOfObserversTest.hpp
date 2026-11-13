@@ -3,8 +3,6 @@
 
 #include "gtest/gtest.h"
 
-class ListOfObserversTest : public ::testing::Test
-{
-};
+class ListOfObserversTest : public ::testing::Test {};
 
 #endif

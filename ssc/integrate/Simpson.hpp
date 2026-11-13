@@ -12,9 +12,6 @@
 
 #include "ssc/integrate/Integrator.hpp"
 
-
-
-
 /** \author cec
  *  \ingroup quadpack
  *  \brief This class was created to
@@ -25,23 +22,20 @@
  *  \section ex2 Expected output
  *  \snippet quadpack/unit_tests/src/SimpsonTest.cpp SimpsonTest expected output
  */
-namespace ssc
-{
-    namespace integrate
-    {
-        class Simpson : public Integrator
-        {
-            public:
-                Simpson();
-                explicit Simpson(const Function& f);
-                ~Simpson() override;
+namespace ssc {
+namespace integrate {
+class Simpson : public Integrator {
+public:
+    Simpson();
+    explicit Simpson(const Function& f);
+    ~Simpson() override;
 
-            private:
-                class Impl;
-                std::unique_ptr<Impl> pimpl;
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
-        };
-    }
-}
+private:
+    class Impl;
+    std::unique_ptr<Impl> pimpl;
+    double integrate_impl(const Function& f, double a, double b, double eps = 1e-6) override;
+};
+}  // namespace integrate
+}  // namespace ssc
 
 #endif /* SIMPSON_HPP_ */

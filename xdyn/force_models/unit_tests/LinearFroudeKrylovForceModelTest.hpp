@@ -8,15 +8,15 @@
 #ifndef LINEARFROUDEKRYLOVFORCEMODELTEST_HPP_
 #define LINEARFROUDEKRYLOVFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class LinearFroudeKrylovForceModelTest : public ::testing::Test
-{
-    protected:
-        LinearFroudeKrylovForceModelTest();
-        double small_relative_error(const double val) const;
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class LinearFroudeKrylovForceModelTest : public ::testing::Test {
+protected:
+    LinearFroudeKrylovForceModelTest();
+    double small_relative_error(const double val) const;
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* LINEARFROUDEKRYLOVFORCEMODELTEST_HPP_ */
+#endif /* LINEARFROUDEKRYLOVFORCEMODELTEST_HPP_ */

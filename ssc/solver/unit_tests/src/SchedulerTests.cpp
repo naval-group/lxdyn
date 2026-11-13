@@ -9,10 +9,7 @@
 
 #include "ssc/solver/Scheduler.hpp"
 
-SchedulerTests::SchedulerTests()
-    : a(ssc::random_data_generator::DataGenerator(36))
-{
-}
+SchedulerTests::SchedulerTests() : a(ssc::random_data_generator::DataGenerator(36)) {}
 
 TEST_F(SchedulerTests, can_initialize_scheduler_with_quarter_second_steps)
 {
@@ -23,8 +20,7 @@ TEST_F(SchedulerTests, can_initialize_scheduler_with_quarter_second_steps)
 
     ASSERT_EQ(t0, scheduler.get_time());
     ASSERT_EQ(true, scheduler.has_more_time_events());
-    for (int i = 1; i <= N; ++i)
-    {
+    for (int i = 1; i <= N; ++i) {
         scheduler.advance_to_next_time_event();
         ASSERT_EQ(t0 + i * dt, scheduler.get_time());
     }
@@ -41,8 +37,7 @@ TEST_F(SchedulerTests, can_initialize_scheduler_with_tend_not_a_multiple_of_dt)
 
     ASSERT_EQ(t0, scheduler.get_time());
     ASSERT_EQ(true, scheduler.has_more_time_events());
-    for (int i = 1; i <= N; ++i)
-    {
+    for (int i = 1; i <= N; ++i) {
         scheduler.advance_to_next_time_event();
         ASSERT_EQ(t0 + i * dt, scheduler.get_time());
     }
@@ -60,21 +55,19 @@ TEST_F(SchedulerTests, can_add_time_events_before_iterating_throught_scheduler)
     ssc::solver::Scheduler scheduler(t0, t0 + (N + 0.5) * dt, dt);
 
     scheduler.add_time_event(t0 - 0.1 * dt);
-    scheduler.add_time_event(t0 + 2 * N * dt); // should not be added because > tend
+    scheduler.add_time_event(t0 + 2 * N * dt);  // should not be added because > tend
     scheduler.add_time_event(t0 + (N / 2. + 0.5) * dt);
 
     scheduler.advance_to_next_time_event();
     ASSERT_EQ(t0 - 0.1 * dt, scheduler.get_time());
 
-    for (int i = 1; i <= N / 2; ++i)
-    {
+    for (int i = 1; i <= N / 2; ++i) {
         scheduler.advance_to_next_time_event();
         ASSERT_EQ(t0 + i * dt, scheduler.get_time());
     }
     scheduler.advance_to_next_time_event();
     ASSERT_EQ(t0 + (N / 2. + 0.5) * dt, scheduler.get_time());
-    for (int i = N / 2 + 1; i <= N; ++i)
-    {
+    for (int i = N / 2 + 1; i <= N; ++i) {
         scheduler.advance_to_next_time_event();
         ASSERT_EQ(t0 + i * dt, scheduler.get_time());
     }
@@ -92,23 +85,21 @@ TEST_F(SchedulerTests, can_add_time_events_while_iterating_thought_scheduler)
     ssc::solver::Scheduler scheduler(t0, t0 + N * dt, dt);
 
     ASSERT_EQ(t0, scheduler.get_time());
-    for (int i = 1; i <= N / 2; ++i)
-    {
+    for (int i = 1; i <= N / 2; ++i) {
         scheduler.advance_to_next_time_event();
         ASSERT_EQ(t0 + i * dt, scheduler.get_time());
     }
 
     scheduler.add_time_event(t0 + (N / 2. + 0.5) * dt);
-    scheduler.add_time_event(t0 + 2 * N * dt); // should not be added because > tend
+    scheduler.add_time_event(t0 + 2 * N * dt);  // should not be added because > tend
     scheduler.add_time_event(t0);
-    scheduler.add_time_event(t0 + (3 * N - 0.01) * dt); // should not be added because > tend
+    scheduler.add_time_event(t0 + (3 * N - 0.01) * dt);  // should not be added because > tend
 
     scheduler.advance_to_next_time_event();
     ASSERT_EQ(t0, scheduler.get_time());
     scheduler.advance_to_next_time_event();
     ASSERT_EQ(t0 + (N / 2. + 0.5) * dt, scheduler.get_time());
-    for (int i = N / 2 + 1; i <= N; ++i)
-    {
+    for (int i = N / 2 + 1; i <= N; ++i) {
         scheduler.advance_to_next_time_event();
         ASSERT_EQ(t0 + i * dt, scheduler.get_time());
     }
@@ -134,8 +125,7 @@ TEST_F(SchedulerTests, cannot_add_a_time_event_already_in_the_scheduler)
 
     ASSERT_EQ(t0, scheduler.get_time());
     ASSERT_EQ(true, scheduler.has_more_time_events());
-    for (int i = 1; i <= N; ++i)
-    {
+    for (int i = 1; i <= N; ++i) {
         scheduler.advance_to_next_time_event();
         ASSERT_EQ(t0 + i * dt, scheduler.get_time());
     }

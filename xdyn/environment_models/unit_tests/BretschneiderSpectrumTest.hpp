@@ -8,15 +8,14 @@
 #ifndef BRETSCHNEIDERSPECTRUMTEST_HPP_
 #define BRETSCHNEIDERSPECTRUMTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class BretschneiderSpectrumTest : public ::testing::Test
-{
-    protected:
-        BretschneiderSpectrumTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class BretschneiderSpectrumTest : public ::testing::Test {
+protected:
+    BretschneiderSpectrumTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* BRETSCHNEIDERSPECTRUMTEST_HPP_ */
+#endif /* BRETSCHNEIDERSPECTRUMTEST_HPP_ */

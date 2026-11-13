@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class SimpsonTest : public ::testing::Test
-{
-    protected:
-        SimpsonTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class SimpsonTest : public ::testing::Test {
+protected:
+    SimpsonTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* SIMPSONTEST_HPP_ */
+#endif /* SIMPSONTEST_HPP_ */

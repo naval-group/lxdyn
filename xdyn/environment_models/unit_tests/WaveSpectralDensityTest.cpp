@@ -6,29 +6,30 @@
  */
 
 #include "WaveSpectralDensityTest.hpp"
+
 #include "WaveSpectralDensity.hpp"
 
-WaveSpectralDensityTest::WaveSpectralDensityTest() : a(ssc::random_data_generator::DataGenerator(3215))
+WaveSpectralDensityTest::WaveSpectralDensityTest()
+    : a(ssc::random_data_generator::DataGenerator(3215))
 {
 }
 
-class DummyWaveSpectralDensity : public WaveSpectralDensity
-{
-    public:
-        double operator()(const double omega) const override
-        {
-            return omega;
-        }
-        WaveSpectralDensity* clone() const override
-        {
-            return new DummyWaveSpectralDensity(*this);
-        }
+class DummyWaveSpectralDensity : public WaveSpectralDensity {
+public:
+    double operator()(const double omega) const override
+    {
+        return omega;
+    }
+    WaveSpectralDensity* clone() const override
+    {
+        return new DummyWaveSpectralDensity(*this);
+    }
 };
 
 TEST_F(WaveSpectralDensityTest, bug_detected_by_FS)
 {
     DummyWaveSpectralDensity wsd;
-    const auto omega = wsd.get_angular_frequencies(1,1,1, false);
+    const auto omega = wsd.get_angular_frequencies(1, 1, 1, false);
     ASSERT_EQ(1, omega.size());
     ASSERT_DOUBLE_EQ(1, omega.front());
 }

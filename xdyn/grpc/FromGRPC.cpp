@@ -12,22 +12,43 @@ WaveRequest FromGRPC::to_wave_request(const RequiredWaveInformationResponse& res
     WaveRequest ret;
     ret.dynamic_pressures.t = response.dynamic_pressures().t();
     ret.dynamic_pressures.x.reserve(static_cast<size_t>(response.dynamic_pressures().x_size()));
-    std::copy(response.dynamic_pressures().x().begin(), response.dynamic_pressures().x().end(), std::back_inserter(ret.dynamic_pressures.x));
+    std::copy(
+        response.dynamic_pressures().x().begin(),
+        response.dynamic_pressures().x().end(),
+        std::back_inserter(ret.dynamic_pressures.x));
     ret.dynamic_pressures.y.reserve(static_cast<size_t>(response.dynamic_pressures().y_size()));
-    std::copy(response.dynamic_pressures().y().begin(), response.dynamic_pressures().y().end(), std::back_inserter(ret.dynamic_pressures.y));
+    std::copy(
+        response.dynamic_pressures().y().begin(),
+        response.dynamic_pressures().y().end(),
+        std::back_inserter(ret.dynamic_pressures.y));
     ret.elevations.t = response.elevations().t();
     ret.elevations.x.reserve(static_cast<size_t>(response.elevations().x_size()));
-    std::copy(response.elevations().x().begin(), response.elevations().x().end(), std::back_inserter(ret.elevations.x));
+    std::copy(
+        response.elevations().x().begin(),
+        response.elevations().x().end(),
+        std::back_inserter(ret.elevations.x));
     ret.elevations.y.reserve(static_cast<size_t>(response.elevations().y_size()));
-    std::copy(response.elevations().y().begin(), response.elevations().y().end(), std::back_inserter(ret.elevations.y));
+    std::copy(
+        response.elevations().y().begin(),
+        response.elevations().y().end(),
+        std::back_inserter(ret.elevations.y));
     ret.need_spectrum = response.need_spectrum();
     ret.orbital_velocities.t = response.orbital_velocities().t();
     ret.orbital_velocities.x.reserve(static_cast<size_t>(response.orbital_velocities().x_size()));
-    std::copy(response.orbital_velocities().x().begin(), response.orbital_velocities().x().end(), std::back_inserter(ret.orbital_velocities.x));
+    std::copy(
+        response.orbital_velocities().x().begin(),
+        response.orbital_velocities().x().end(),
+        std::back_inserter(ret.orbital_velocities.x));
     ret.orbital_velocities.y.reserve(static_cast<size_t>(response.orbital_velocities().y_size()));
-    std::copy(response.orbital_velocities().y().begin(), response.orbital_velocities().y().end(), std::back_inserter(ret.orbital_velocities.y));
+    std::copy(
+        response.orbital_velocities().y().begin(),
+        response.orbital_velocities().y().end(),
+        std::back_inserter(ret.orbital_velocities.y));
     ret.orbital_velocities.z.reserve(static_cast<size_t>(response.orbital_velocities().z_size()));
-    std::copy(response.orbital_velocities().z().begin(), response.orbital_velocities().z().end(), std::back_inserter(ret.orbital_velocities.z));
+    std::copy(
+        response.orbital_velocities().z().begin(),
+        response.orbital_velocities().z().end(),
+        std::back_inserter(ret.orbital_velocities.z));
     ret.spectrum.t = response.spectrum().t();
     ret.spectrum.x = response.spectrum().x();
     ret.spectrum.y = response.spectrum().y();

@@ -8,11 +8,11 @@
 #ifndef ENVIRONMENT_MODELS_UNIT_TESTS_UNIFORMWINDVELOCITYPROFILETEST_HPP_
 #define ENVIRONMENT_MODELS_UNIT_TESTS_UNIFORMWINDVELOCITYPROFILETEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class WindMeanVelocityProfileTest : public ::testing::Test
-{
+#include "gtest/gtest.h"
+
+class WindMeanVelocityProfileTest : public ::testing::Test {
 public:
     WindMeanVelocityProfileTest();
     ssc::random_data_generator::DataGenerator a;

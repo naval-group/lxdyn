@@ -10,8 +10,6 @@
 
 #include "gtest/gtest.h"
 
-class PrecalParserTest : public ::testing::Test
-{
-};
+class PrecalParserTest : public ::testing::Test {};
 
-#endif  /* PRECALPARSERTEST_HPP_ */
+#endif /* PRECALPARSERTEST_HPP_ */

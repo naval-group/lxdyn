@@ -10,25 +10,23 @@
 
 #include "Splines.hpp"
 
-namespace ssc
-{
-    namespace interpolation
-    {
-        /** \author cec
-         *  \brief This class was created to choose a linear runout for cubic splines
-         *  \details It has the following responsibility:
-         *  - Implement the get_endpoint_value method
-         */
-        class NaturalSplines : public Splines
-        {
-            public:
-                NaturalSplines();
-                NaturalSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
-                ~NaturalSplines() override = default;
-            private:
-                double get_endpoint_value() const override;
-        };
-    }
-}
+namespace ssc {
+namespace interpolation {
+/** \author cec
+ *  \brief This class was created to choose a linear runout for cubic splines
+ *  \details It has the following responsibility:
+ *  - Implement the get_endpoint_value method
+ */
+class NaturalSplines : public Splines {
+public:
+    NaturalSplines();
+    NaturalSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
+    ~NaturalSplines() override = default;
+
+private:
+    double get_endpoint_value() const override;
+};
+}  // namespace interpolation
+}  // namespace ssc
 
 #endif /* NATURALSPLINES_HPP_ */

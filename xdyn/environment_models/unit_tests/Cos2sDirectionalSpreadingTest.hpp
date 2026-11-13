@@ -8,15 +8,14 @@
 #ifndef COS2SDIRECTIONALSPREADINGTEST_HPP_
 #define COS2SDIRECTIONALSPREADINGTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class Cos2sDirectionalSpreadingTest : public ::testing::Test
-{
-    protected:
-        Cos2sDirectionalSpreadingTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class Cos2sDirectionalSpreadingTest : public ::testing::Test {
+protected:
+    Cos2sDirectionalSpreadingTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* COS2SDIRECTIONALSPREADINGTEST_HPP_ */
+#endif /* COS2SDIRECTIONALSPREADINGTEST_HPP_ */

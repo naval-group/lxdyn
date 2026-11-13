@@ -8,8 +8,9 @@
 #ifndef TRAPEZOIDALINTEGRATION_HPP_
 #define TRAPEZOIDALINTEGRATION_HPP_
 
-#include "ssc/integrate/Integrator.hpp"
 #include <memory>
+
+#include "ssc/integrate/Integrator.hpp"
 
 /** \author cec
  *  \brief This class was created to
@@ -17,28 +18,27 @@
  *  \details It has the following responsibilities:
  *  - Resp. 1 ...
  *  \section ex1 Example
- *  \snippet quadpack/unit_tests/src/TrapezoidalIntegrationTest.cpp TrapezoidalIntegrationTest example
+ *  \snippet quadpack/unit_tests/src/TrapezoidalIntegrationTest.cpp TrapezoidalIntegrationTest
+ * example
  *  \section ex2 Expected output
- *  \snippet quadpack/unit_tests/src/TrapezoidalIntegrationTest.cpp TrapezoidalIntegrationTest expected output
+ *  \snippet quadpack/unit_tests/src/TrapezoidalIntegrationTest.cpp TrapezoidalIntegrationTest
+ * expected output
  */
-namespace ssc
-{
-    namespace integrate
-    {
-        class TrapezoidalIntegration : public Integrator
-        {
-            public:
-                TrapezoidalIntegration();
-                explicit TrapezoidalIntegration(const Function& f);
-                ~TrapezoidalIntegration() override;
-                double integrate_n_steps(double a, double b, size_t n) const;
+namespace ssc {
+namespace integrate {
+class TrapezoidalIntegration : public Integrator {
+public:
+    TrapezoidalIntegration();
+    explicit TrapezoidalIntegration(const Function& f);
+    ~TrapezoidalIntegration() override;
+    double integrate_n_steps(double a, double b, size_t n) const;
 
-            private:
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
-                class Impl;
-                std::unique_ptr<Impl> pimpl;
-        };
-    }
-}
+private:
+    double integrate_impl(const Function& f, double a, double b, double eps = 1e-6) override;
+    class Impl;
+    std::unique_ptr<Impl> pimpl;
+};
+}  // namespace integrate
+}  // namespace ssc
 
 #endif /* TRAPEZOIDALINTEGRATION_HPP_ */

@@ -1,10 +1,9 @@
 #include "BoostAsioTest.hpp"
+
 #include <boost/asio.hpp>
 #include <chrono>
 
-BoostAsioTest::BoostAsioTest() : a(ssc::random_data_generator::DataGenerator(546545))
-{
-}
+BoostAsioTest::BoostAsioTest() : a(ssc::random_data_generator::DataGenerator(546545)) {}
 
 TEST_F(BoostAsioTest, should_be_able_to_use_boost_asio_timer_synchronously)
 {
@@ -14,9 +13,7 @@ TEST_F(BoostAsioTest, should_be_able_to_use_boost_asio_timer_synchronously)
 }
 
 void dummyFunction(const boost::system::error_code& /*e*/);
-void dummyFunction(const boost::system::error_code& /*e*/)
-{
-}
+void dummyFunction(const boost::system::error_code& /*e*/) {}
 
 TEST_F(BoostAsioTest, should_be_able_to_use_boost_asio_timer_asynchronously)
 {

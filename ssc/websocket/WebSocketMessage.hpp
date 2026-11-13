@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #ifndef WEBSOCKETMESSAGE_HPP_
 #define WEBSOCKETMESSAGE_HPP_
 
@@ -16,35 +15,33 @@
 
 struct WebSocketMessageImpl;
 
-namespace ssc
-{
-    namespace websocket
+namespace ssc {
+namespace websocket {
+struct Message {
+    Message();
+    explicit Message(const WebSocketMessageImpl& pimpl);
+    void send_text(const std::string& payload) const;
+    template <typename T>
+    void send_binary(const std::vector<T> vector) const
     {
-        struct Message
-        {
-            Message();
-            explicit Message(const WebSocketMessageImpl& pimpl);
-            void send_text(const std::string& payload) const;
-            template<typename T>
-            void send_binary(const std::vector<T> vector) const
-            {
-                const std::string s = convert_vector_to_string(vector);
-                send_binary_string(s);
-            }
-
-            std::string get_payload() const;
-
-            template <typename T> std::vector<T> get_binary_payload() const
-            {
-                const std::string payload = get_payload();
-                return convert_string_to_vector<T>(payload);
-            }
-
-            private:
-                std::shared_ptr<WebSocketMessageImpl> pimpl;
-                void send_binary_string(const std::string& s) const;
-        };
+        const std::string s = convert_vector_to_string(vector);
+        send_binary_string(s);
     }
-}
 
-#endif  /* WEBSOCKETMESSAGE_HPP_ */
+    std::string get_payload() const;
+
+    template <typename T>
+    std::vector<T> get_binary_payload() const
+    {
+        const std::string payload = get_payload();
+        return convert_string_to_vector<T>(payload);
+    }
+
+private:
+    std::shared_ptr<WebSocketMessageImpl> pimpl;
+    void send_binary_string(const std::string& s) const;
+};
+}  // namespace websocket
+}  // namespace ssc
+
+#endif /* WEBSOCKETMESSAGE_HPP_ */

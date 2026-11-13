@@ -6,13 +6,13 @@
  */
 
 #include "XdynForME.hpp"
-#include "SimulationServerObserver.hpp"
-#include "xdyn/exceptions/InternalErrorException.hpp"
+
 #include <tuple>
 
-XdynForME::XdynForME(const std::string& yaml_model) :builder(yaml_model)
-{
-}
+#include "SimulationServerObserver.hpp"
+#include "xdyn/exceptions/InternalErrorException.hpp"
+
+XdynForME::XdynForME(const std::string& yaml_model) : builder(yaml_model) {}
 
 double XdynForME::get_Tmax() const
 {
@@ -30,7 +30,8 @@ std::tuple<double, double, double> get_euler_derivative(const StateType& state)
     YamlRotation rot;
     rot.order_by = "angle";
     rot.convention = {"z", "y'", "x''"};
-    const ssc::kinematics::RotationMatrix R = Eigen::Quaternion<double>(state[9],state[10],state[11],state[12]).matrix();
+    const ssc::kinematics::RotationMatrix R =
+        Eigen::Quaternion<double>(state[9], state[10], state[11], state[12]).matrix();
     const ssc::kinematics::EulerAngles angles = BodyStates::convert(R, rot);
     const double cos_phi = std::cos(angles.phi);
     const double sin_phi = std::sin(angles.phi);
@@ -39,9 +40,9 @@ std::tuple<double, double, double> get_euler_derivative(const StateType& state)
     const double p = state[6];
     const double q = state[7];
     const double r = state[8];
-    const double dphi_dt = p + sin_phi*tan_theta *q + cos_phi*tan_theta*r;
-    const double dtheta_dt = cos_phi*q - sin_phi*r;
-    const double dpsi_dt = sin_phi/cos_theta*q + cos_phi/cos_theta*r;
+    const double dphi_dt = p + sin_phi * tan_theta * q + cos_phi * tan_theta * r;
+    const double dtheta_dt = cos_phi * q - sin_phi * r;
+    const double dpsi_dt = sin_phi / cos_theta * q + cos_phi / cos_theta * r;
     return std::tuple<double, double, double>(dphi_dt, dtheta_dt, dpsi_dt);
 }
 
@@ -55,15 +56,24 @@ YamlState XdynForME::handle(const SimServerInputs& request)
     // Here we use a CoSimulationObserver, but only for the requested extra observations.
     SimulationServerObserver observer(request.requested_output);
     builder.sim.dx_dt(request.state_at_t, dx_dt, t);
-    observer.observe_before_solver_step(builder.sim, request.t, std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >());
-    observer.observe_after_solver_step(builder.sim, request.t, std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >());
+    observer.observe_before_solver_step(
+        builder.sim,
+        request.t,
+        std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>());
+    observer.observe_after_solver_step(
+        builder.sim,
+        request.t,
+        std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>());
     observer.flush();
 
     YamlState state_derivatives;
     state_derivatives.t = request.t;
-    if (dx_dt.size() != 13)
-    {
-        THROW(__PRETTY_FUNCTION__, InternalErrorException, "Size of state derivatives is invalid: expected a state vector of size 13 (x, y, z, u, v, w, p, q, r, qr, qi, qj, qk) but got a vector of size " << dx_dt.size());
+    if (dx_dt.size() != 13) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InternalErrorException,
+            "Size of state derivatives is invalid: expected a state vector of size 13 (x, y, z, u, v, w, p, q, r, qr, qi, qj, qk) but got a vector of size "
+                << dx_dt.size());
     }
     state_derivatives.x = dx_dt[0];
     state_derivatives.y = dx_dt[1];
@@ -82,8 +92,7 @@ YamlState XdynForME::handle(const SimServerInputs& request)
     state_derivatives.phi = std::get<0>(angles);
     state_derivatives.theta = std::get<1>(angles);
     state_derivatives.psi = std::get<2>(angles);
-    if (not(observer.get().empty()))
-    {
+    if (not(observer.get().empty())) {
         state_derivatives.extra_observations = observer.get().at(0).extra_observations;
     }
 

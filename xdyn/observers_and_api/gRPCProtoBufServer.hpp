@@ -1,11 +1,11 @@
 #ifndef OBSERVERS_AND_API_INC_GRPCPROTOBUFSERVER_HPP_
 #define OBSERVERS_AND_API_INC_GRPCPROTOBUFSERVER_HPP_
 
-#include <memory>
 #include <grpcpp/impl/codegen/service_type.h>
 
-class gRPCProtoBufServer
-{
+#include <memory>
+
+class gRPCProtoBufServer {
 public:
     explicit gRPCProtoBufServer(const std::shared_ptr<grpc::Service>& handler);
     virtual ~gRPCProtoBufServer() = default;

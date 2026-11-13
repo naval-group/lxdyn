@@ -8,18 +8,20 @@
 #ifndef PIDCONTROLLERTEST_HPP_
 #define PIDCONTROLLERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class PIDControllerTest : public ::testing::Test
-{
-    protected:
-        PIDControllerTest();
-        ssc::random_data_generator::DataGenerator a;
-        std::string pid_specific_yaml(const double Kp, const double Ki, const double Kd,
-                                      const std::string& setpoint_name,
-                                      const std::string& command_name
-                                      );
+#include "gtest/gtest.h"
+
+class PIDControllerTest : public ::testing::Test {
+protected:
+    PIDControllerTest();
+    ssc::random_data_generator::DataGenerator a;
+    std::string pid_specific_yaml(
+        const double Kp,
+        const double Ki,
+        const double Kd,
+        const std::string& setpoint_name,
+        const std::string& command_name);
 };
 
-#endif  /* PIDCONTROLLERTEST_HPP_ */
+#endif /* PIDCONTROLLERTEST_HPP_ */

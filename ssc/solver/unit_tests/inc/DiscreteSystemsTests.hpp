@@ -4,12 +4,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class DiscreteSystemsTests : public ::testing::Test
-{
-    protected:
-        DiscreteSystemsTests();
-        ssc::random_data_generator::DataGenerator a;
-
+class DiscreteSystemsTests : public ::testing::Test {
+protected:
+    DiscreteSystemsTests();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* DISCRETE_SYSTEMS_TESTS_HPP_ */
+#endif /* DISCRETE_SYSTEMS_TESTS_HPP_ */

@@ -5,18 +5,18 @@
  *      Author: cady
  */
 #include "StatesFilterTest.hpp"
+
+#include <cmath>
+
 #include "StatesFilter.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_data_structures/AbstractStates.hpp"
 #include "xdyn/external_data_structures/YamlBody.hpp"
 #include "xdyn/external_data_structures/YamlRotation.hpp"
 #include "xdyn/hdb_interpolators/History.hpp"
-#include <cmath>
 #define PI M_PI
 
-StatesFilterTest::StatesFilterTest() :  a(ssc::random_data_generator::DataGenerator(556677))
-{
-}
+StatesFilterTest::StatesFilterTest() : a(ssc::random_data_generator::DataGenerator(556677)) {}
 
 TEST_F(StatesFilterTest, should_throw_if_type_of_filter_is_unknown)
 {
@@ -79,11 +79,11 @@ TEST_F(StatesFilterTest, should_be_able_to_filter_all_states)
     input.r = "type of filter: moving average\n"
               "duration in seconds : 9";
     input.phi = "type of filter: moving average\n"
-              "duration in seconds : 1";
+                "duration in seconds : 1";
     input.theta = "type of filter: moving average\n"
-              "duration in seconds : 1";
+                  "duration in seconds : 1";
     input.psi = "type of filter: moving average\n"
-              "duration in seconds : 1";
+                "duration in seconds : 1";
     const StatesFilter filters(input);
     AbstractStates<History> states(10);
     states.x.record(0, 1);
@@ -137,9 +137,9 @@ TEST_F(StatesFilterTest, should_be_able_to_filter_all_states)
     ASSERT_DOUBLE_EQ(25.5, filters.get_filtered_q(states));
     ASSERT_DOUBLE_EQ(28.5, filters.get_filtered_r(states));
     const YamlRotation rot("angle", {"z", "y'", "x''"});
-    ASSERT_NEAR(PI/2, filters.get_filtered_phi(states, rot), eps);
+    ASSERT_NEAR(PI / 2, filters.get_filtered_phi(states, rot), eps);
     ASSERT_NEAR(0, filters.get_filtered_theta(states, rot), eps);
-    ASSERT_NEAR(PI/2, filters.get_filtered_psi(states, rot), eps);
+    ASSERT_NEAR(PI / 2, filters.get_filtered_psi(states, rot), eps);
 }
 
 TEST_F(StatesFilterTest, no_yaml_means_no_filter)
@@ -178,10 +178,10 @@ TEST_F(StatesFilterTest, can_get_Tmax)
     input.r = "type of filter: moving average\n"
               "duration in seconds : 9";
     input.phi = "type of filter: moving average\n"
-              "duration in seconds : 1";
+                "duration in seconds : 1";
     input.theta = "type of filter: moving average\n"
-              "duration in seconds : 1";
+                  "duration in seconds : 1";
     input.psi = "type of filter: moving average\n"
-              "duration in seconds : 1";
+                "duration in seconds : 1";
     ASSERT_DOUBLE_EQ(9, StatesFilter(input).get_Tmax());
 }

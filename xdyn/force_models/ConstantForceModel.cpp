@@ -5,16 +5,19 @@
  *      Author: cady
  */
 
-
 #include "ConstantForceModel.hpp"
 
-#include "xdyn/core/Body.hpp"
-#include <ssc/macros.hpp>
 #include <ssc/kinematics.hpp>
+#include <ssc/macros.hpp>
+
+#include "xdyn/core/Body.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-std::string ConstantForceModel::model_name() {return "constant force";}
+std::string ConstantForceModel::model_name()
+{
+    return "constant force";
+}
 
 ConstantForceModel::Input ConstantForceModel::parse(const std::string& yaml)
 {
@@ -33,20 +36,28 @@ ConstantForceModel::Input ConstantForceModel::parse(const std::string& yaml)
     return ret;
 }
 
-ConstantForceModel::ConstantForceModel(const ConstantForceModel::Input& input, const std::string& body_name_, const EnvironmentAndFrames& env) :
-        ForceModel(model_name(), {}, YamlPosition(YamlCoordinates(input.x, input.y, input.z),YamlAngle(),input.frame), body_name_, env),
-        force(),
-        torque()
+ConstantForceModel::ConstantForceModel(
+    const ConstantForceModel::Input& input,
+    const std::string& body_name_,
+    const EnvironmentAndFrames& env)
+    : ForceModel(
+          model_name(),
+          {},
+          YamlPosition(YamlCoordinates(input.x, input.y, input.z), YamlAngle(), input.frame),
+          body_name_,
+          env)
+    , force()
+    , torque()
 {
-    force << input.X
-           , input.Y
-           , input.Z;
-    torque << input.K
-            , input.M
-            , input.N;
+    force << input.X, input.Y, input.Z;
+    torque << input.K, input.M, input.N;
 }
 
-Wrench ConstantForceModel::get_force(const BodyStates&, const double, const EnvironmentAndFrames&, const std::map<std::string,double>&) const
+Wrench ConstantForceModel::get_force(
+    const BodyStates&,
+    const double,
+    const EnvironmentAndFrames&,
+    const std::map<std::string, double>&) const
 {
-    return Wrench(ssc::kinematics::Point(name,0,0,0), name, force, torque);
+    return Wrench(ssc::kinematics::Point(name, 0, 0, 0), name, force, torque);
 }

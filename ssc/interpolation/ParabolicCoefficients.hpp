@@ -8,22 +8,19 @@
 #ifndef PARABOLICCOEFFICIENTS_HPP_
 #define PARABOLICCOEFFICIENTS_HPP_
 
-namespace ssc
-{
-    namespace interpolation
-    {
-        struct ParabolicCoefficients
-        {
-            public:
-                ParabolicCoefficients(const double& a_, const double& b_, const double& c_);
-                double a;
-                double b;
-                double c;
+namespace ssc {
+namespace interpolation {
+struct ParabolicCoefficients {
+public:
+    ParabolicCoefficients(const double& a_, const double& b_, const double& c_);
+    double a;
+    double b;
+    double c;
 
-            private:
-                ParabolicCoefficients();
-        };
-    }
-}
+private:
+    ParabolicCoefficients();
+};
+}  // namespace interpolation
+}  // namespace ssc
 
 #endif /* PARABOLICCOEFFICIENTS_HPP_ */

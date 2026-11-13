@@ -19,25 +19,22 @@
  *  \section ex2 Expected output
  *  \snippet integrate/unit_tests/src/QuadPackTest.cpp QuadPackTest expected output
  */
-namespace ssc
-{
-    namespace integrate
-    {
-        class GaussKronrod : public QuadPack
-        {
-            public:
-                GaussKronrod();
-                explicit GaussKronrod(const Function& f_);
-                ~GaussKronrod() override;
-                GaussKronrod(const GaussKronrod& rhs);
-                GaussKronrod& operator=(const GaussKronrod& rhs);
+namespace ssc {
+namespace integrate {
+class GaussKronrod : public QuadPack {
+public:
+    GaussKronrod();
+    explicit GaussKronrod(const Function& f_);
+    ~GaussKronrod() override;
+    GaussKronrod(const GaussKronrod& rhs);
+    GaussKronrod& operator=(const GaussKronrod& rhs);
 
-            private:
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
-                int* iwork;
-                double* work;
-        };
-    }
-}
+private:
+    double integrate_impl(const Function& f, double a, double b, double eps = 1e-6) override;
+    int* iwork;
+    double* work;
+};
+}  // namespace integrate
+}  // namespace ssc
 
 #endif /* GAUSSKRONROD_HPP_ */
