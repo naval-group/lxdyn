@@ -11,7 +11,8 @@
 
 ```sh
 zig build test                 # unit tests, then SSC's run_ssc_tests
-mise run lint                  # no tabs in xdyn/
+mise run format                # clang-format the C and C++; lint fails without it
+mise run lint                  # tabs and clang-format in the C and C++, zig fmt on the build files
 mise run python:lint           # if you touched Python
 mise run python:test           # if you touched xdyn_wrapper_python/
 mise run integration           # if you touched the CLI or the YAML parser
