@@ -15,6 +15,9 @@ install
 
 *.swp
 __pycache__
+/postprocessing/**/*.h5
+/postprocessing/**/*.hdf5
+/postprocessing/**/*.csv
 /xdyn_grpc/xdyngrpc/_proto/
 /.venv/
 /.direnv/
