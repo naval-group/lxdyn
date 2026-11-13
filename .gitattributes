@@ -1,10 +1,9 @@
-# used to remove files from deployment using `git archive`
-# git files
+# export-ignore keeps these out of `git archive`, which makes GitHub's source archives
 .gitattributes export-ignore
 .gitignore export-ignore
-integration_tests/xdyn/issue_196_test.raodb.ini eol=crlf
+# The last matching line wins, so the CRLF rules come after `*`
 * text=auto eol=lf
 *.sh        text eol=lf
-*.vcproj    text eol=crlf
-*.{cmd,[cC][mM][dD]} text eol=crlf
-*.{bat,[bB][aA][tT]} text eol=crlf
+*.[bB][aA][tT] text eol=crlf
+# Checked out CRLF so the scenario parses a PRECAL_R file as Windows writes it
+integration_tests/xdyn/issue_196_test.raodb.ini eol=crlf
