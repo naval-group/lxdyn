@@ -6,20 +6,16 @@
  */
 
 #include "Integrator.hpp"
+
 #include "IntegratorException.hpp"
 
-ssc::integrate::Integrator::Integrator() :  function_defined(false)
-{
-}
+ssc::integrate::Integrator::Integrator() : function_defined(false) {}
 
-ssc::integrate::Integrator::Integrator(const Function& f_) : f(f_), function_defined(true)
-{
-}
+ssc::integrate::Integrator::Integrator(const Function& f_) : f(f_), function_defined(true) {}
 
 double ssc::integrate::Integrator::integrate_f(double a, double b, double eps)
 {
-    if (not(function_defined))
-    {
+    if (not(function_defined)) {
         THROW(__PRETTY_FUNCTION__, IntegratorException, "Function is not defined.");
     }
     return integrate_impl(f, a, b, eps);

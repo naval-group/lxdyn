@@ -4,27 +4,26 @@
 #include "xdyn/core/Observer.hpp"
 #include "xdyn/external_data_structures/YamlState.hpp"
 
-class SimulationServerObserver : public Observer
-{
-    public:
-        explicit SimulationServerObserver(const std::vector<std::string>& extra_fields_to_serialize);
+class SimulationServerObserver : public Observer {
+public:
+    explicit SimulationServerObserver(const std::vector<std::string>& extra_fields_to_serialize);
 
-        std::vector<YamlState> get() const;
+    std::vector<YamlState> get() const;
 
-    protected:
-        using Observer::get_serializer;
-        using Observer::get_initializer;
-        std::function<void()> get_serializer(const double val, const DataAddressing& address) override;
+protected:
+    using Observer::get_initializer;
+    using Observer::get_serializer;
+    std::function<void()> get_serializer(const double val, const DataAddressing& address) override;
 
-        YamlState current_state;
-        std::vector<YamlState> states;
+    YamlState current_state;
+    std::vector<YamlState> states;
 
-    private:
-        std::function<void()> get_initializer(const double val, const DataAddressing& address) override;
+private:
+    std::function<void()> get_initializer(const double val, const DataAddressing& address) override;
 
-        void flush_after_initialization() override;
-        void flush_after_write() override;
-        void flush_value_during_write() override;
+    void flush_after_initialization() override;
+    void flush_after_write() override;
+    void flush_value_during_write() override;
 };
 
 #endif /* OBSERVERS_AND_API_INC_SIMULATIONSERVEROBSERVER_HPP_ */

@@ -10,9 +10,8 @@
 
 #include "hdb_parser_internal_data_structures.hpp"
 
-namespace hdb
-{
-    AST parse(const std::string& contents);
+namespace hdb {
+AST parse(const std::string& contents);
 }
 
 #endif /* HDB_TO_AST_HPP_ */

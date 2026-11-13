@@ -3,14 +3,13 @@
 
 #include <string>
 
-namespace test_data
-{
-    /**\brief Return an example of a Precal file with kilo units*/
-    std::string precal();
+namespace test_data {
+/**\brief Return an example of a Precal file with kilo units*/
+std::string precal();
 
-    /**\brief Return an example of a Precal file with SI units*/
-    std::string precal_with_si_unit();
-}
+/**\brief Return an example of a Precal file with SI units*/
+std::string precal_with_si_unit();
+}  // namespace test_data
 
 std::string glossary_of_terms();
 std::string general();
@@ -29,6 +28,5 @@ std::string labels();
 std::string dimensions();
 std::string signals();
 std::string raos();
-
 
 #endif

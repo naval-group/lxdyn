@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #ifndef WEBSOCKETSERVER_HPP_
 #define WEBSOCKETSERVER_HPP_
 
@@ -14,30 +13,29 @@
 #include "ssc/websocket/WebSocketClient.hpp"
 #include "ssc/websocket/WebSocketMessage.hpp"
 
-namespace ssc
-{
-    namespace websocket
-    {
-        // What should we do when we receive a message?
-        struct MessageHandler
-        {
-            virtual ~MessageHandler() = default;
-            virtual void operator()(const Message&) = 0;
-        };
+namespace ssc {
+namespace websocket {
+// What should we do when we receive a message?
+struct MessageHandler {
+    virtual ~MessageHandler() = default;
+    virtual void operator()(const Message&) = 0;
+};
 
-        class Server
-        {
-            public:
-                Server(MessageHandler& message_handler, const short unsigned int port, const bool verbose = false);
-                explicit Server(const short unsigned int port, const bool verbose = false);
-                ~Server();
+class Server {
+public:
+    Server(
+        MessageHandler& message_handler,
+        const short unsigned int port,
+        const bool verbose = false);
+    explicit Server(const short unsigned int port, const bool verbose = false);
+    ~Server();
 
-            private:
-                struct Impl;
-                std::unique_ptr<Impl> pimpl;
-                Server();
-        };
-    }
-}
+private:
+    struct Impl;
+    std::unique_ptr<Impl> pimpl;
+    Server();
+};
+}  // namespace websocket
+}  // namespace ssc
 
-#endif  /* WEBSOCKETSERVER_HPP_ */
+#endif /* WEBSOCKETSERVER_HPP_ */

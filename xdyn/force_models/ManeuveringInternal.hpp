@@ -5,363 +5,389 @@
  *      Author: cady
  */
 
-
 #ifndef MANEUVERINGINTERNAL_HPP_
 #define MANEUVERINGINTERNAL_HPP_
 
 #include <functional>
-
 #include <ssc/data_source.hpp>
 
 #include "xdyn/core/BodyStates.hpp"
 
+namespace maneuvering {
+using Function =
+    std::function<double(const BodyStates&, ssc::data_source::DataSource&, const double)>;
+class Node;
 
-namespace maneuvering
+using NodePtr = std::shared_ptr<Node>;
+
+class AbstractNodeVisitor;
+
+class Node {
+public:
+    explicit Node(const std::vector<NodePtr>& children);
+    virtual ~Node() = default;
+    virtual Function get_lambda() const = 0;
+    std::vector<NodePtr> get_children() const;
+    virtual void accept(AbstractNodeVisitor& visitor) const = 0;
+    virtual double get_max() const = 0;
+    virtual double get_min() const = 0;
+
+protected:
+    std::vector<NodePtr> children;
+
+private:
+    Node();
+};
+
+class Nullary : public Node {
+public:
+    Nullary();
+};
+
+class Binary : public Node {
+public:
+    Binary(const NodePtr& lhs, const NodePtr& rhs);
+
+protected:
+    NodePtr get_lhs() const;
+    NodePtr get_rhs() const;
+
+private:
+    Binary();
+};
+
+class Constant : public Nullary {
+public:
+    explicit Constant(const double val);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+
+private:
+    double val;
+};
+
+class Unary : public Node {
+public:
+    explicit Unary(const NodePtr& operand);
+
+    NodePtr get_operand() const;
+};
+
+class Cos : public Unary {
+public:
+    explicit Cos(const NodePtr& operand);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Sin : public Unary {
+public:
+    explicit Sin(const NodePtr& operand);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Abs : public Unary {
+public:
+    explicit Abs(const NodePtr& operand);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Log : public Unary {
+public:
+    explicit Log(const NodePtr& operand);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Sum : public Binary {
+public:
+    Sum(const NodePtr& lhs, const NodePtr& rhs);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Pow : public Binary {
+public:
+    Pow(const NodePtr& lhs, const NodePtr& rhs);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Exp : public Unary {
+public:
+    explicit Exp(const NodePtr& operand);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Sqrt : public Unary {
+public:
+    explicit Sqrt(const NodePtr& operand);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Difference : public Binary {
+public:
+    Difference(const NodePtr& lhs, const NodePtr& rhs);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Divide : public Binary {
+public:
+    Divide(const NodePtr& lhs, const NodePtr& rhs);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+class Multiply : public Binary {
+public:
+    Multiply(const NodePtr& lhs, const NodePtr& rhs);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
+
+enum class StateType
 {
-    using Function = std::function<double(const BodyStates&, ssc::data_source::DataSource&, const double)>;
-    class Node;
+    X,
+    Y,
+    Z,
+    U,
+    V,
+    W,
+    P,
+    Q,
+    R,
+    QR,
+    QI,
+    QJ,
+    QK,
+    PHI,
+    THETA,
+    PSI
+};
 
-    using NodePtr = std::shared_ptr<Node>;
-
-    class AbstractNodeVisitor;
-
-    class Node
+template <StateType S>
+class State : public Unary {
+public:
+    State(const NodePtr& operand, const YamlRotation& rot_) : Unary(operand), rot(rot_) {}
+    Function get_lambda() const override
     {
-        public:
-            explicit Node(const std::vector<NodePtr>& children);
-            virtual ~Node() = default;
-            virtual Function get_lambda() const = 0;
-            std::vector<NodePtr> get_children() const;
-            virtual void accept(AbstractNodeVisitor& visitor) const = 0;
-            virtual double get_max() const = 0;
-            virtual double get_min() const = 0;
-
-        protected:
-            std::vector<NodePtr> children;
-
-        private:
-            Node();
-    };
-
-    class Nullary : public Node
-    {
-        public:
-            Nullary();
-    };
-
-    class Binary : public Node
-    {
-        public:
-            Binary(const NodePtr& lhs, const NodePtr& rhs);
-
-        protected:
-            NodePtr get_lhs() const;
-            NodePtr get_rhs() const;
-
-        private:
-            Binary();
-    };
-
-    class Constant : public Nullary
-    {
-        public:
-            explicit Constant(const double val);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-
-        private:
-            double val;
-    };
-
-    class Unary : public Node
-    {
-        public:
-            explicit Unary(const NodePtr& operand);
-
-            NodePtr get_operand() const;
-    };
-
-    class Cos : public Unary
-    {
-        public:
-            explicit Cos(const NodePtr& operand);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Sin : public Unary
-    {
-        public:
-            explicit Sin(const NodePtr& operand);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Abs : public Unary
-    {
-        public:
-            explicit Abs(const NodePtr& operand);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Log : public Unary
-    {
-        public:
-            explicit Log(const NodePtr& operand);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Sum : public Binary
-    {
-        public:
-            Sum(const NodePtr& lhs, const NodePtr& rhs);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Pow : public Binary
-    {
-        public:
-            Pow(const NodePtr& lhs, const NodePtr& rhs);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Exp : public Unary
-    {
-        public:
-            explicit Exp(const NodePtr& operand);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Sqrt : public Unary
-    {
-        public:
-            explicit Sqrt(const NodePtr& operand);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Difference : public Binary
-    {
-        public:
-            Difference(const NodePtr& lhs, const NodePtr& rhs);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Divide : public Binary
-    {
-        public:
-            Divide(const NodePtr& lhs, const NodePtr& rhs);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    class Multiply : public Binary
-    {
-        public:
-            Multiply(const NodePtr& lhs, const NodePtr& rhs);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
-
-    enum class StateType {X, Y, Z, U, V, W, P, Q, R, QR, QI, QJ, QK, PHI, THETA, PSI};
-
-    template <StateType S> class State : public Unary
-    {
-        public:
-            State(const NodePtr& operand, const YamlRotation& rot_) : Unary(operand), rot(rot_)
-            {}
-            Function get_lambda() const override
-            {
-                return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)->double
-                        {
-                            const auto op = get_operand()->get_lambda();
-                            ssc::kinematics::RotationMatrix R;
-                            ssc::kinematics::EulerAngles angles;
-                            if ((S == StateType::PHI) or (S == StateType::THETA) or (S == StateType::PSI))
-                            {
-                                R = Eigen::Quaternion<double>(states.qr(t-op(states,ds,t)),states.qi(t-op(states,ds,t)),states.qj(t-op(states,ds,t)),states.qk(t-op(states,ds,t))).matrix();
-                                angles = BodyStates::convert(R, rot);
-                            }
-                            switch(S)
-                            {
-                                case StateType::X :    return states.x(t-op(states,ds,t)); break;
-                                case StateType::Y :    return states.y(t-op(states,ds,t)); break;
-                                case StateType::Z :    return states.z(t-op(states,ds,t)); break;
-                                case StateType::U :    return states.u(t-op(states,ds,t)); break;
-                                case StateType::V :    return states.v(t-op(states,ds,t)); break;
-                                case StateType::W :    return states.w(t-op(states,ds,t)); break;
-                                case StateType::P :    return states.p(t-op(states,ds,t)); break;
-                                case StateType::Q :    return states.q(t-op(states,ds,t)); break;
-                                case StateType::R :    return states.r(t-op(states,ds,t)); break;
-                                case StateType::QR :   return states.qr(t-op(states,ds,t));break;
-                                case StateType::QI :   return states.qi(t-op(states,ds,t));break;
-                                case StateType::QJ :   return states.qj(t-op(states,ds,t));break;
-                                case StateType::QK :   return states.qk(t-op(states,ds,t));break;
-                                case StateType::PHI:   return angles.phi;                  break;
-                                case StateType::THETA: return angles.theta;                break;
-                                case StateType::PSI:   return angles.psi;                  break;
-                            }
-                            return op(states,ds,t);
-                        };
+        return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
+                   -> double {
+            const auto op = get_operand()->get_lambda();
+            ssc::kinematics::RotationMatrix R;
+            ssc::kinematics::EulerAngles angles;
+            if ((S == StateType::PHI) or (S == StateType::THETA) or (S == StateType::PSI)) {
+                R = Eigen::Quaternion<double>(
+                        states.qr(t - op(states, ds, t)),
+                        states.qi(t - op(states, ds, t)),
+                        states.qj(t - op(states, ds, t)),
+                        states.qk(t - op(states, ds, t)))
+                        .matrix();
+                angles = BodyStates::convert(R, rot);
             }
-
-
-            double get_max() const override
-            {
-                return 1e15;
+            switch (S) {
+                case StateType::X:
+                    return states.x(t - op(states, ds, t));
+                    break;
+                case StateType::Y:
+                    return states.y(t - op(states, ds, t));
+                    break;
+                case StateType::Z:
+                    return states.z(t - op(states, ds, t));
+                    break;
+                case StateType::U:
+                    return states.u(t - op(states, ds, t));
+                    break;
+                case StateType::V:
+                    return states.v(t - op(states, ds, t));
+                    break;
+                case StateType::W:
+                    return states.w(t - op(states, ds, t));
+                    break;
+                case StateType::P:
+                    return states.p(t - op(states, ds, t));
+                    break;
+                case StateType::Q:
+                    return states.q(t - op(states, ds, t));
+                    break;
+                case StateType::R:
+                    return states.r(t - op(states, ds, t));
+                    break;
+                case StateType::QR:
+                    return states.qr(t - op(states, ds, t));
+                    break;
+                case StateType::QI:
+                    return states.qi(t - op(states, ds, t));
+                    break;
+                case StateType::QJ:
+                    return states.qj(t - op(states, ds, t));
+                    break;
+                case StateType::QK:
+                    return states.qk(t - op(states, ds, t));
+                    break;
+                case StateType::PHI:
+                    return angles.phi;
+                    break;
+                case StateType::THETA:
+                    return angles.theta;
+                    break;
+                case StateType::PSI:
+                    return angles.psi;
+                    break;
             }
+            return op(states, ds, t);
+        };
+    }
 
-            double get_min() const override
-            {
-                return -1e15;
-            }
-            void accept(AbstractNodeVisitor& visitor) const override;
-            YamlRotation rot;
-    };
-
-    class Time : public Nullary
+    double get_max() const override
     {
-        public:
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            double get_max() const override;
-            double get_min() const override;
-    };
+        return 1e15;
+    }
 
-    class UnknownIdentifier : public Nullary
+    double get_min() const override
     {
-        public:
-            explicit UnknownIdentifier(const std::string& identifier_name);
-            Function get_lambda() const override;
-            void accept(AbstractNodeVisitor& visitor) const override;
-            std::string get_name() const;
-            double get_max() const override;
-            double get_min() const override;
+        return -1e15;
+    }
+    void accept(AbstractNodeVisitor& visitor) const override;
+    YamlRotation rot;
+};
 
-        private:
-            UnknownIdentifier();
-            std::string identifier_name;
-    };
+class Time : public Nullary {
+public:
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    double get_max() const override;
+    double get_min() const override;
+};
 
-    class AbstractNodeVisitor
-    {
-        public:
-            virtual ~AbstractNodeVisitor()= default;
-            virtual void visit(const UnknownIdentifier& f) = 0;
-            virtual void visit(const Time& f) = 0;
-            virtual void visit(const State<StateType::X>& f) = 0;
-            virtual void visit(const State<StateType::Y>& f) = 0;
-            virtual void visit(const State<StateType::Z>& f) = 0;
-            virtual void visit(const State<StateType::U>& f) = 0;
-            virtual void visit(const State<StateType::V>& f) = 0;
-            virtual void visit(const State<StateType::W>& f) = 0;
-            virtual void visit(const State<StateType::P>& f) = 0;
-            virtual void visit(const State<StateType::Q>& f) = 0;
-            virtual void visit(const State<StateType::R>& f) = 0;
-            virtual void visit(const State<StateType::PHI>& f) = 0;
-            virtual void visit(const State<StateType::THETA>& f) = 0;
-            virtual void visit(const State<StateType::PSI>& f) = 0;
-            virtual void visit(const State<StateType::QR>& f) = 0;
-            virtual void visit(const State<StateType::QI>& f) = 0;
-            virtual void visit(const State<StateType::QJ>& f) = 0;
-            virtual void visit(const State<StateType::QK>& f) = 0;
-            virtual void visit(const Binary& f) = 0;
-            virtual void visit(const Unary& f) = 0;
-            virtual void visit(const Constant& f) = 0;
-    };
+class UnknownIdentifier : public Nullary {
+public:
+    explicit UnknownIdentifier(const std::string& identifier_name);
+    Function get_lambda() const override;
+    void accept(AbstractNodeVisitor& visitor) const override;
+    std::string get_name() const;
+    double get_max() const override;
+    double get_min() const override;
 
-    NodePtr make_constant(const double val);
-    NodePtr make_cos(const NodePtr& operand);
-    NodePtr make_sin(const NodePtr& operand);
-    NodePtr make_abs(const NodePtr& operand);
-    NodePtr make_log(const NodePtr& operand);
-    NodePtr make_sum(const NodePtr& lhs, const NodePtr& rhs);
-    NodePtr make_pow(const NodePtr& lhs, const NodePtr& rhs);
-    NodePtr make_exp(const NodePtr& operand);
-    NodePtr make_sqrt(const NodePtr& operand);
-    NodePtr make_difference(const NodePtr& lhs, const NodePtr& rhs);
-    NodePtr make_divide(const NodePtr& lhs, const NodePtr& rhs);
-    NodePtr make_multiply(const NodePtr& lhs, const NodePtr& rhs);
-    NodePtr make_state_x(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_y(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_z(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_u(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_v(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_w(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_p(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_q(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_r(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_phi(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_theta(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_psi(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_qr(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_qi(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_qj(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_state_qk(const NodePtr& operand, const YamlRotation& rot);
-    NodePtr make_time();
-    NodePtr make_unknown_identifier(const std::string& identifier_name);
+private:
+    UnknownIdentifier();
+    std::string identifier_name;
+};
 
-    class FindTmax : public AbstractNodeVisitor
-    {
-        public:
-            double get_Tmax() const;
-            void visit(const UnknownIdentifier& f) override;
-            void visit(const Time& f) override;
-            void visit(const State<StateType::X>& f) override;
-            void visit(const State<StateType::Y>& f) override;
-            void visit(const State<StateType::Z>& f) override;
-            void visit(const State<StateType::U>& f) override;
-            void visit(const State<StateType::V>& f) override;
-            void visit(const State<StateType::W>& f) override;
-            void visit(const State<StateType::P>& f) override;
-            void visit(const State<StateType::Q>& f) override;
-            void visit(const State<StateType::R>& f) override;
-            void visit(const State<StateType::PHI>& f) override;
-            void visit(const State<StateType::THETA>& f) override;
-            void visit(const State<StateType::PSI>& f) override;
-            void visit(const State<StateType::QR>& f) override;
-            void visit(const State<StateType::QI>& f) override;
-            void visit(const State<StateType::QJ>& f) override;
-            void visit(const State<StateType::QK>& f) override;
-            void visit(const Binary& f) override;
-            void visit(const Unary& f) override;
-            void visit(const Constant& f) override;
+class AbstractNodeVisitor {
+public:
+    virtual ~AbstractNodeVisitor() = default;
+    virtual void visit(const UnknownIdentifier& f) = 0;
+    virtual void visit(const Time& f) = 0;
+    virtual void visit(const State<StateType::X>& f) = 0;
+    virtual void visit(const State<StateType::Y>& f) = 0;
+    virtual void visit(const State<StateType::Z>& f) = 0;
+    virtual void visit(const State<StateType::U>& f) = 0;
+    virtual void visit(const State<StateType::V>& f) = 0;
+    virtual void visit(const State<StateType::W>& f) = 0;
+    virtual void visit(const State<StateType::P>& f) = 0;
+    virtual void visit(const State<StateType::Q>& f) = 0;
+    virtual void visit(const State<StateType::R>& f) = 0;
+    virtual void visit(const State<StateType::PHI>& f) = 0;
+    virtual void visit(const State<StateType::THETA>& f) = 0;
+    virtual void visit(const State<StateType::PSI>& f) = 0;
+    virtual void visit(const State<StateType::QR>& f) = 0;
+    virtual void visit(const State<StateType::QI>& f) = 0;
+    virtual void visit(const State<StateType::QJ>& f) = 0;
+    virtual void visit(const State<StateType::QK>& f) = 0;
+    virtual void visit(const Binary& f) = 0;
+    virtual void visit(const Unary& f) = 0;
+    virtual void visit(const Constant& f) = 0;
+};
 
-        private:
-            double Tmax{0};
-    };
-}
+NodePtr make_constant(const double val);
+NodePtr make_cos(const NodePtr& operand);
+NodePtr make_sin(const NodePtr& operand);
+NodePtr make_abs(const NodePtr& operand);
+NodePtr make_log(const NodePtr& operand);
+NodePtr make_sum(const NodePtr& lhs, const NodePtr& rhs);
+NodePtr make_pow(const NodePtr& lhs, const NodePtr& rhs);
+NodePtr make_exp(const NodePtr& operand);
+NodePtr make_sqrt(const NodePtr& operand);
+NodePtr make_difference(const NodePtr& lhs, const NodePtr& rhs);
+NodePtr make_divide(const NodePtr& lhs, const NodePtr& rhs);
+NodePtr make_multiply(const NodePtr& lhs, const NodePtr& rhs);
+NodePtr make_state_x(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_y(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_z(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_u(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_v(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_w(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_p(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_q(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_r(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_phi(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_theta(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_psi(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_qr(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_qi(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_qj(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_state_qk(const NodePtr& operand, const YamlRotation& rot);
+NodePtr make_time();
+NodePtr make_unknown_identifier(const std::string& identifier_name);
 
+class FindTmax : public AbstractNodeVisitor {
+public:
+    double get_Tmax() const;
+    void visit(const UnknownIdentifier& f) override;
+    void visit(const Time& f) override;
+    void visit(const State<StateType::X>& f) override;
+    void visit(const State<StateType::Y>& f) override;
+    void visit(const State<StateType::Z>& f) override;
+    void visit(const State<StateType::U>& f) override;
+    void visit(const State<StateType::V>& f) override;
+    void visit(const State<StateType::W>& f) override;
+    void visit(const State<StateType::P>& f) override;
+    void visit(const State<StateType::Q>& f) override;
+    void visit(const State<StateType::R>& f) override;
+    void visit(const State<StateType::PHI>& f) override;
+    void visit(const State<StateType::THETA>& f) override;
+    void visit(const State<StateType::PSI>& f) override;
+    void visit(const State<StateType::QR>& f) override;
+    void visit(const State<StateType::QI>& f) override;
+    void visit(const State<StateType::QJ>& f) override;
+    void visit(const State<StateType::QK>& f) override;
+    void visit(const Binary& f) override;
+    void visit(const Unary& f) override;
+    void visit(const Constant& f) override;
 
+private:
+    double Tmax{0};
+};
+}  // namespace maneuvering
 
-#endif  /* MANEUVERINGINTERNAL_HPP_ */
+#endif /* MANEUVERINGINTERNAL_HPP_ */

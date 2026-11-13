@@ -10,24 +10,23 @@
 
 #include "xdyn/core/Observer.hpp"
 
-class MapObserver : public Observer
-{
-    public:
-        MapObserver() = default;
-        explicit MapObserver(const std::vector<std::string>& data);
-        std::map<std::string,std::vector<double> > get() const;
+class MapObserver : public Observer {
+public:
+    MapObserver() = default;
+    explicit MapObserver(const std::vector<std::string>& data);
+    std::map<std::string, std::vector<double>> get() const;
 
-    protected:
-        std::map<std::string,std::vector<double> > m;
+protected:
+    std::map<std::string, std::vector<double>> m;
 
-    private:
-        using Observer::get_serializer;
-        using Observer::get_initializer;
-        std::function<void()> get_serializer(const double val, const DataAddressing& address) override;
-        std::function<void()> get_initializer(const double val, const DataAddressing& address) override;
-        void flush_after_initialization() override;
-        void flush_after_write() override;
-        void flush_value_during_write() override;
+private:
+    using Observer::get_initializer;
+    using Observer::get_serializer;
+    std::function<void()> get_serializer(const double val, const DataAddressing& address) override;
+    std::function<void()> get_initializer(const double val, const DataAddressing& address) override;
+    void flush_after_initialization() override;
+    void flush_after_write() override;
+    void flush_value_during_write() override;
 };
 
 #endif /* MAPOBSERVER_HPP_ */

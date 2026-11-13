@@ -7,11 +7,9 @@
 extern "C" {
 #endif
 
-int h5_writeFileDescription(
-        char const * const fileName);
+int h5_writeFileDescription(char const* const fileName);
 
-int h5_writeFileDescriptionGivenAFileId(
-        hid_t file);
+int h5_writeFileDescriptionGivenAFileId(hid_t file);
 
 #ifdef __cplusplus
 }

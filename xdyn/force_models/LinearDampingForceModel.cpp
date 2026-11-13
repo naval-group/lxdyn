@@ -6,20 +6,30 @@
  */
 
 #include "LinearDampingForceModel.hpp"
+
+#include <Eigen/Dense>
+
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/yaml2eigen.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
-#include <Eigen/Dense>
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-std::string LinearDampingForceModel::model_name() {return "linear damping";}
+std::string LinearDampingForceModel::model_name()
+{
+    return "linear damping";
+}
 
-LinearDampingForceModel::LinearDampingForceModel(const Eigen::Matrix<double,6,6>& D_, const std::string& body_name_, const EnvironmentAndFrames& env) :
-        DampingForceModel("linear damping", body_name_, env, D_)
+LinearDampingForceModel::LinearDampingForceModel(
+    const Eigen::Matrix<double, 6, 6>& D_,
+    const std::string& body_name_,
+    const EnvironmentAndFrames& env)
+    : DampingForceModel("linear damping", body_name_, env, D_)
 {
 }
 
-Eigen::Matrix<double, 6, 1> LinearDampingForceModel::get_force_and_torque(const Eigen::Matrix<double,6,6>& D, const Eigen::Matrix<double, 6, 1>& W) const
+Eigen::Matrix<double, 6, 1> LinearDampingForceModel::get_force_and_torque(
+    const Eigen::Matrix<double, 6, 6>& D,
+    const Eigen::Matrix<double, 6, 1>& W) const
 {
     return (Eigen::Matrix<double, 6, 1>)(-D * W);
 }
@@ -28,13 +38,17 @@ LinearDampingForceModel::Input LinearDampingForceModel::parse(const std::string&
 {
     YAML::Node node = YAML::Load(yaml);
     YamlDynamics6x6Matrix M;
-    try
-    {
-        parse_YamlDynamics6x6Matrix(node["damping matrix at the center of gravity projected in the body frame"], M, false);
-    }
-    catch(const InvalidInputException& e)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "In node 'damping matrix at the center of gravity projected in the body frame': " << e.get_message());
+    try {
+        parse_YamlDynamics6x6Matrix(
+            node["damping matrix at the center of gravity projected in the body frame"],
+            M,
+            false);
+    } catch (const InvalidInputException& e) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "In node 'damping matrix at the center of gravity projected in the body frame': "
+                << e.get_message());
     }
     return make_matrix6x6(M);
 }

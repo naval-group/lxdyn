@@ -1,14 +1,14 @@
 #include "JsonObserverTest.hpp"
+
+#include <ssc/solver/steppers.hpp>
+
 #include "JsonObserver.hpp"
 #include "ListOfObservers.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
-#include <ssc/solver/steppers.hpp>
 
-JsonObserverTest::JsonObserverTest() : a(ssc::random_data_generator::DataGenerator(666))
-{
-}
+JsonObserverTest::JsonObserverTest() : a(ssc::random_data_generator::DataGenerator(666)) {}
 
 TEST_F(JsonObserverTest, should_be_able_to_create_an_observer)
 {
@@ -21,13 +21,10 @@ TEST_F(JsonObserverTest, should_be_able_to_create_an_observer)
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (const auto& output:yaml)
-    {
-        if (output.format == "json")
-        {
-            if (not output.filename.empty())
-            {
-                //EXPECT_EQ(0,remove(output.filename.c_str()));
+    for (const auto& output : yaml) {
+        if (output.format == "json") {
+            if (not output.filename.empty()) {
+                // EXPECT_EQ(0,remove(output.filename.c_str()));
             }
         }
     }
@@ -44,13 +41,10 @@ TEST_F(JsonObserverTest, should_be_able_to_create_an_observer_with_waves)
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (const auto& output:yaml)
-    {
-        if (output.format == "json")
-        {
-            if (not output.filename.empty())
-            {
-                //EXPECT_EQ(0,remove(output.filename.c_str()));
+    for (const auto& output : yaml) {
+        if (output.format == "json") {
+            if (not output.filename.empty()) {
+                // EXPECT_EQ(0,remove(output.filename.c_str()));
             }
         }
     }

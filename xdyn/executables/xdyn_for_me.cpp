@@ -1,13 +1,13 @@
-#include "parse_XdynForMECommandLineArguments.hpp"
-#include "XdynForMECommandLineArguments.hpp"
-#include "ModelExchangeServiceImpl.hpp"
-#include "JSONWebSocketServer.hpp"
+#include <ssc/text_file_reader.hpp>
+
 #include "ErrorReporter.hpp"
+#include "JSONWebSocketServer.hpp"
+#include "ModelExchangeServiceImpl.hpp"
+#include "XdynForMECommandLineArguments.hpp"
+#include "parse_XdynForMECommandLineArguments.hpp"
 #include "xdyn/core/AssetPath.hpp"
 #include "xdyn/observers_and_api/XdynForME.hpp"
 #include "xdyn/observers_and_api/gRPCProtoBufServer.hpp"
-
-#include <ssc/text_file_reader.hpp>
 
 void start_ws_server(const XdynForMECommandLineArguments& input_data);
 void start_ws_server(const XdynForMECommandLineArguments& input_data)
@@ -28,46 +28,50 @@ void start_grpc_server(const XdynForMECommandLineArguments& input_data, const st
     server.start(input_data.port);
 }
 
-int main(int argc, char** argv) // NOLINT(bugprone-exception-escape): --debug leaves exceptions uncaught for the debugger
+int main(int argc, char** argv)  // NOLINT(bugprone-exception-escape): --debug leaves exceptions
+                                 // uncaught for the debugger
 {
     XdynForMECommandLineArguments input_data;
-    if (argc==1) return fill_input_or_display_help(argv[0], input_data);
+    if (argc == 1)
+        return fill_input_or_display_help(argv[0], input_data);
     int error = 0;
     ErrorReporter error_outputter;
-    error_outputter.run_and_report_errors_without_yaml_dump([&error,&argc,&argv,&input_data]{error = get_input_data(argc, argv, input_data);});
-    xdyn::set_assets_root(xdyn::assets_root(input_data.assets_path,
-                                            xdyn::assets_root_from_environment(),
-                                            input_data.yaml_filenames));
+    error_outputter.run_and_report_errors_without_yaml_dump(
+        [&error, &argc, &argv, &input_data] { error = get_input_data(argc, argv, input_data); });
+    xdyn::set_assets_root(
+        xdyn::assets_root(
+            input_data.assets_path,
+            xdyn::assets_root_from_environment(),
+            input_data.yaml_filenames));
     std::string yaml_input;
-    error_outputter.run_and_report_errors_without_yaml_dump([&yaml_input,&input_data](){yaml_input = ssc::text_file_reader::TextFileReader(input_data.yaml_filenames).get_contents();});
-    if (error)
-    {
+    error_outputter.run_and_report_errors_without_yaml_dump([&yaml_input, &input_data]() {
+        yaml_input =
+            ssc::text_file_reader::TextFileReader(input_data.yaml_filenames).get_contents();
+    });
+    if (error) {
         return error;
     }
-    if (input_data.show_help)
-    {
+    if (input_data.show_help) {
         return 0;
     }
-    const auto run_ws = [input_data](){
-    {
-        start_ws_server(input_data);
-    }};
-    const std::function< void(void) > run_grpc = [input_data, yaml_input](){
-    {
-        start_grpc_server(input_data, yaml_input);
-    }};
-    const std::function< void(void) > run = input_data.grpc ? run_grpc : run_ws;
-    if (input_data.catch_exceptions)
-    {
+    const auto run_ws = [input_data]() {
+        {
+            start_ws_server(input_data);
+        }
+    };
+    const std::function<void(void)> run_grpc = [input_data, yaml_input]() {
+        {
+            start_grpc_server(input_data, yaml_input);
+        }
+    };
+    const std::function<void(void)> run = input_data.grpc ? run_grpc : run_ws;
+    if (input_data.catch_exceptions) {
         error_outputter.run_and_report_errors_with_yaml_dump(run, yaml_input);
-    }
-    else
-    {
+    } else {
         run();
     }
     google::protobuf::ShutdownProtobufLibrary();
-    if (error_outputter.contains_errors())
-    {
+    if (error_outputter.contains_errors()) {
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

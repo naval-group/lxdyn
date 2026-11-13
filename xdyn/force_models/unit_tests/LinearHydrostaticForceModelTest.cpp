@@ -6,15 +6,18 @@
  */
 
 #include "LinearHydrostaticForceModelTest.hpp"
-#include "LinearHydrostaticForceModel.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
-#include "gmock/gmock.h"
+
 #include <cmath>
+
+#include "LinearHydrostaticForceModel.hpp"
+#include "gmock/gmock.h"
+#include "xdyn/test_data_generator/yaml_data.hpp"
 #define PI M_PI
 
-using namespace testing; // So we can use 'ElementsAre' unqualified
+using namespace testing;  // So we can use 'ElementsAre' unqualified
 
-LinearHydrostaticForceModelTest::LinearHydrostaticForceModelTest() : a(ssc::random_data_generator::DataGenerator(8615615))
+LinearHydrostaticForceModelTest::LinearHydrostaticForceModelTest()
+    : a(ssc::random_data_generator::DataGenerator(8615615))
 {
 }
 
@@ -22,9 +25,9 @@ TEST_F(LinearHydrostaticForceModelTest, parser_test)
 {
     const auto input = LinearHydrostaticForceModel::parse(test_data::linear_hydrostatics());
     ASSERT_DOUBLE_EQ(-2, input.z_eq);
-    ASSERT_DOUBLE_EQ(1*PI/180., input.theta_eq);
-    ASSERT_DOUBLE_EQ(-3*PI/180., input.phi_eq);
-    ASSERT_THAT(input.K1, ElementsAre(1,0,0));
-    ASSERT_THAT(input.K2, ElementsAre(0,1,0));
-    ASSERT_THAT(input.K3, ElementsAre(0,0,1));
+    ASSERT_DOUBLE_EQ(1 * PI / 180., input.theta_eq);
+    ASSERT_DOUBLE_EQ(-3 * PI / 180., input.phi_eq);
+    ASSERT_THAT(input.K1, ElementsAre(1, 0, 0));
+    ASSERT_THAT(input.K2, ElementsAre(0, 1, 0));
+    ASSERT_THAT(input.K3, ElementsAre(0, 0, 1));
 }

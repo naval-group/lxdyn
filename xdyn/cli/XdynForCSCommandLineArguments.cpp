@@ -5,12 +5,9 @@
  *      Author: cady
  */
 
-
 #include "XdynForCSCommandLineArguments.hpp"
 
-XdynForCSCommandLineArguments::XdynForCSCommandLineArguments() :  address("127.0.0.1")
-{
-}
+XdynForCSCommandLineArguments::XdynForCSCommandLineArguments() : address("127.0.0.1") {}
 
 bool XdynForCSCommandLineArguments::empty() const
 {

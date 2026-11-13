@@ -6,37 +6,43 @@
  */
 
 #include "SumOfWaveDirectionalSpreadings.hpp"
-#include "SumOfWaveSpectralDensities.hpp"
 
 #include <list>
 #include <set>
 
+#include "SumOfWaveSpectralDensities.hpp"
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w) : terms(std::vector<std::shared_ptr<WaveDirectionalSpreading> >(1, std::shared_ptr<WaveDirectionalSpreading>(w.clone())))
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w)
+    : terms(
+          std::vector<std::shared_ptr<WaveDirectionalSpreading>>(
+              1,
+              std::shared_ptr<WaveDirectionalSpreading>(w.clone())))
 {
 }
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w1, const WaveDirectionalSpreading& w2)
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(
+    const WaveDirectionalSpreading& w1,
+    const WaveDirectionalSpreading& w2)
 {
     terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(w1.clone()));
     terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(w2.clone()));
 }
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const std::vector<WaveDirectionalSpreading>& ws)
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(
+    const std::vector<WaveDirectionalSpreading>& ws)
 {
-    for (auto t = ws.begin() ; t != ws.end() ; ++t)
-    {
+    for (auto t = ws.begin(); t != ws.end(); ++t) {
         terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(t->clone()));
     }
 }
 
-
-double SumOfWaveDirectionalSpreadings::operator()(const double omega //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
-                                  ) const
+double SumOfWaveDirectionalSpreadings::operator()(
+    const double
+        omega  //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
+) const
 {
     double ret = 0;
-    for (auto t = terms.begin() ; t != terms.end() ; ++t)
-    {
+    for (auto t = terms.begin(); t != terms.end(); ++t) {
         ret += (*t)->operator()(omega);
     }
     return ret;
@@ -48,14 +54,16 @@ WaveDirectionalSpreading* SumOfWaveDirectionalSpreadings::clone() const
 }
 
 /**  \brief Returns n angular frequencies between omega_min (included)
-  *         and omega_max (also included)
-  *  \snippet environment_models/unit_tests/WaveSpectralDensityTest.cpp WaveSpectralDensityTest get_omega0_example
-  */
-std::vector<double> SumOfWaveDirectionalSpreadings::get_directions(const size_t n, const bool periodic) const
+ *         and omega_max (also included)
+ *  \snippet environment_models/unit_tests/WaveSpectralDensityTest.cpp WaveSpectralDensityTest
+ * get_omega0_example
+ */
+std::vector<double> SumOfWaveDirectionalSpreadings::get_directions(
+    const size_t n,
+    const bool periodic) const
 {
     std::set<double> S;
-    for (auto t = terms.begin() ; t != terms.end() ; ++t)
-    {
+    for (auto t = terms.begin(); t != terms.end(); ++t) {
         std::vector<double> f = (*t)->get_directions(n, periodic);
         S.insert(f.begin(), f.end());
     }

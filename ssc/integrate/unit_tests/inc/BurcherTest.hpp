@@ -11,11 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class BurcherTest : public ::testing::Test
-{
-    protected:
-        BurcherTest();
-        ssc::random_data_generator::DataGenerator a;
+class BurcherTest : public ::testing::Test {
+protected:
+    BurcherTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* BURCHERTEST_HPP_ */
+#endif /* BURCHERTEST_HPP_ */

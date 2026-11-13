@@ -6,21 +6,28 @@
  */
 
 #include "PowerLawWindVelocityProfile.hpp"
+
+#include <cmath>
+
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
-#include <cmath>
 
-
-PowerLawWindVelocityProfile::PowerLawWindVelocityProfile(const Input& input) : WindMeanVelocityProfile(input), alpha(input.alpha), z_ref(input.z_ref)
+PowerLawWindVelocityProfile::PowerLawWindVelocityProfile(const Input& input)
+    : WindMeanVelocityProfile(input), alpha(input.alpha), z_ref(input.z_ref)
 {
-    if(z_ref <= 0)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "the reference height must be strictly positive");
+    if (z_ref <= 0) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "the reference height must be strictly positive");
     }
 }
 
-std::string PowerLawWindVelocityProfile::model_name() {return "power law wind profile";}
+std::string PowerLawWindVelocityProfile::model_name()
+{
+    return "power law wind profile";
+}
 
 PowerLawWindVelocityProfile::Input PowerLawWindVelocityProfile::parse(const std::string& yaml_input)
 {
@@ -34,6 +41,8 @@ PowerLawWindVelocityProfile::Input PowerLawWindVelocityProfile::parse(const std:
 double PowerLawWindVelocityProfile::get_wind_velocity(const double z) const
 {
     // -z because the NED frame has negative z above sea level
-    if(z <= 0) return velocity * std::pow(-z / z_ref, alpha);
-    else return 0.;
+    if (z <= 0)
+        return velocity * std::pow(-z / z_ref, alpha);
+    else
+        return 0.;
 }

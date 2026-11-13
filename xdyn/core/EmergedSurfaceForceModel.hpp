@@ -12,15 +12,17 @@
 
 /** \brief This class implemented SurfaceForceModel's begin & end methods
  */
-class EmergedSurfaceForceModel : public SurfaceForceModel
-{
-    public:
-        EmergedSurfaceForceModel(const std::string& name, const std::string& body_name, const EnvironmentAndFrames& env);
+class EmergedSurfaceForceModel : public SurfaceForceModel {
+public:
+    EmergedSurfaceForceModel(
+        const std::string& name,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
 
-    private:
-        EmergedSurfaceForceModel();
-        FacetIterator begin(const MeshIntersectorPtr& intersector) const override;
-        FacetIterator end(const MeshIntersectorPtr& intersector) const override;
+private:
+    EmergedSurfaceForceModel();
+    FacetIterator begin(const MeshIntersectorPtr& intersector) const override;
+    FacetIterator end(const MeshIntersectorPtr& intersector) const override;
 };
 
 #endif /* EMERGEDSURFACEFORCEMODEL_HPP_ */

@@ -57,166 +57,178 @@
 #ifndef DECODEUNIT_H_
 #define DECODEUNIT_H_
 
-#include <string>
 #include <istream>
-#include <sstream>
 #include <map>
+#include <sstream>
+#include <string>
 #include <vector>
 
-namespace ssc
-{
-    namespace decode_unit
+namespace ssc {
+namespace decode_unit {
+class UnitDecoder {
+public:
+    // classification of chars
+    enum e_char_type
     {
-        class UnitDecoder
-        {
-            public:
-                // classification of chars
-                enum e_char_type {
-                    k_unknown=-1,
-                    k_separator,
-                    k_letter,
-                    k_digit,
-                    k_percent,
-                    k_star,k_slash,k_caret,k_minus,
-                    k_leftpar,k_rightpar,
-                    k_underscore
-                };
+        k_unknown = -1,
+        k_separator,
+        k_letter,
+        k_digit,
+        k_percent,
+        k_star,
+        k_slash,
+        k_caret,
+        k_minus,
+        k_leftpar,
+        k_rightpar,
+        k_underscore
+    };
 
-                // classification of tokens
-                enum e_token_type {
-                    k_unknown_token=-1,
-                    k_word,
-                    k_integer,
-                    k_double,
-                    k_operation,
-                    k_leftparenthesis,
-                    k_rightparenthesis
-                };
+    // classification of tokens
+    enum e_token_type
+    {
+        k_unknown_token = -1,
+        k_word,
+        k_integer,
+        k_double,
+        k_operation,
+        k_leftparenthesis,
+        k_rightparenthesis
+    };
 
-            protected :
-                // The tokens
-                class Token
-                {
-                    public :
-                        virtual ~Token() = default;
-                        virtual e_token_type type();
-                        virtual std::string description();
-                        virtual std::string string_value();
-                        virtual int         int_value();
-                        virtual double      double_value();
-                };
+protected:
+    // The tokens
+    class Token {
+    public:
+        virtual ~Token() = default;
+        virtual e_token_type type();
+        virtual std::string description();
+        virtual std::string string_value();
+        virtual int int_value();
+        virtual double double_value();
+    };
 
-                class WordToken : public Token
-                {
-                    std::string m_word;
-                    public :
-                        explicit WordToken(std::string word);
-                        e_token_type type() override;
-                        std::string description() override;
-                        std::string string_value() override;
-                };
+    class WordToken : public Token {
+        std::string m_word;
 
-                class IntToken : public Token
-                {
-                    int m_num;
-                    public :
-                        explicit IntToken(int num);
-                        e_token_type type() override;
-                        std::string description() override;
-                        int    int_value() override;
-                        double double_value() override;
-                };
-                class DoubleToken : public Token {
-                    double m_num;
-                public :
-                    explicit DoubleToken(double num);
-                    e_token_type type() override;
-                    std::string description() override;
-                    double double_value() override;
-                };
+    public:
+        explicit WordToken(std::string word);
+        e_token_type type() override;
+        std::string description() override;
+        std::string string_value() override;
+    };
 
-                class OperationToken : public Token
-                {
-                    int m_op;
-                    public :
-                        explicit OperationToken(char op);
-                        e_token_type type() override;
-                        std::string description() override;
-                        int int_value() override;
-                };
+    class IntToken : public Token {
+        int m_num;
 
-                class LeftParToken : public Token
-                {
-                    public :
-                        e_token_type type() override;
-                        std::string description() override;
-                };
+    public:
+        explicit IntToken(int num);
+        e_token_type type() override;
+        std::string description() override;
+        int int_value() override;
+        double double_value() override;
+    };
+    class DoubleToken : public Token {
+        double m_num;
 
-                class RightParToken : public Token
-                {
-                    public :
-                        e_token_type type() override;
-                        std::string description() override;
-                };
+    public:
+        explicit DoubleToken(double num);
+        e_token_type type() override;
+        std::string description() override;
+        double double_value() override;
+    };
 
-            private :
-                std::istringstream m_stream;                 // source stream
-                int m_next_char;                             // next char to be decoded
-                decode_unit::UnitDecoder::Token *m_token;    // next token to be decoded
-                std::vector<e_char_type> m_char_table;       // classification of characters
-                                                             // (for lexical scanner)
-                std::map<std::string,double> m_known_units;  // dictionary of knows units
+    class OperationToken : public Token {
+        int m_op;
 
-                void advance(); // read one character
-                decode_unit::UnitDecoder::Token *scan();  // scan one token
-                decode_unit::UnitDecoder::LeftParToken   *scan_leftParenthesis();
-                decode_unit::UnitDecoder::RightParToken  *scan_rightParenthesis();
-                decode_unit::UnitDecoder::OperationToken *scan_operation();
-                decode_unit::UnitDecoder::WordToken      *scan_percent();
-                decode_unit::UnitDecoder::WordToken      *scan_word();
-                decode_unit::UnitDecoder::Token          *scan_digit();
-                bool isIntToken(Token *token);
-                bool isDblToken(Token *token);
-                bool isWordToken(Token *token);
-                bool isWordToken(Token *token, const char *value);
-                bool isOpToken(Token *token,char value);
-                void clear_token();
-                double decode_expression();
-                double decode_expression(std::vector<Token *> &tokens,int tbeg,int tend,bool imp);
-                double decode_implicit_op_expression(std::vector<Token *> &tokens,int tbeg,int tend);
-                double decode_parenthesis();
-                double decode_function();
-                double decode_word( Token *token );
+    public:
+        explicit OperationToken(char op);
+        e_token_type type() override;
+        std::string description() override;
+        int int_value() override;
+    };
 
-                //STATIC VARIABLES AND INITIALIZER FUNCTIONS
+    class LeftParToken : public Token {
+    public:
+        e_token_type type() override;
+        std::string description() override;
+    };
 
-                // classification of characters
-                // static std::vector<e_char_type> k_char_table;
+    class RightParToken : public Token {
+    public:
+        e_token_type type() override;
+        std::string description() override;
+    };
 
-                // known units and conversion factors
-                // static std::map<std::string,double> k_known_units;
+private:
+    std::istringstream m_stream;                  // source stream
+    int m_next_char;                              // next char to be decoded
+    decode_unit::UnitDecoder::Token* m_token;     // next token to be decoded
+    std::vector<e_char_type> m_char_table;        // classification of characters
+                                                  // (for lexical scanner)
+    std::map<std::string, double> m_known_units;  // dictionary of knows units
 
-                static std::map<std::string,double> get_base_units_for_bootstrapping();
-                static std::vector<e_char_type> get_char_table();
-                static std::map<std::string,double> get_known_units();
-                static void extend_with_short_metric_prefix(std::map<std::string,double> &units, const std::string& unit );
-                static void extend_with_long_metric_prefix(std::map<std::string,double> &units, const std::string& unit );
-                static void extend_with_short_metric_prefix(std::map<std::string,double> &units, const std::string& unit , double value );
-                static void extend_with_long_metric_prefix(std::map<std::string,double> &units, const std::string& unit , double value );
-            public :
-                explicit UnitDecoder(const std::string& unit);
-                UnitDecoder(const std::string& unit , std::map<std::string,double> &known_units);
-                UnitDecoder(const UnitDecoder&) = delete;
-                UnitDecoder& operator=(const UnitDecoder&) = delete;
-                ~UnitDecoder();
-                double decode();
-        };
+    void advance();                           // read one character
+    decode_unit::UnitDecoder::Token* scan();  // scan one token
+    decode_unit::UnitDecoder::LeftParToken* scan_leftParenthesis();
+    decode_unit::UnitDecoder::RightParToken* scan_rightParenthesis();
+    decode_unit::UnitDecoder::OperationToken* scan_operation();
+    decode_unit::UnitDecoder::WordToken* scan_percent();
+    decode_unit::UnitDecoder::WordToken* scan_word();
+    decode_unit::UnitDecoder::Token* scan_digit();
+    bool isIntToken(Token* token);
+    bool isDblToken(Token* token);
+    bool isWordToken(Token* token);
+    bool isWordToken(Token* token, const char* value);
+    bool isOpToken(Token* token, char value);
+    void clear_token();
+    double decode_expression();
+    double decode_expression(std::vector<Token*>& tokens, int tbeg, int tend, bool imp);
+    double decode_implicit_op_expression(std::vector<Token*>& tokens, int tbeg, int tend);
+    double decode_parenthesis();
+    double decode_function();
+    double decode_word(Token* token);
 
-        // main function to decode units
-        double decodeUnit( const std::string& unit );
-        double decodeUnit( const std::string& unit , std::map<std::string,double> &known_units );
+    // STATIC VARIABLES AND INITIALIZER FUNCTIONS
 
-    }
-}
+    // classification of characters
+    // static std::vector<e_char_type> k_char_table;
 
-#endif // DECODEUNIT_H_
+    // known units and conversion factors
+    // static std::map<std::string,double> k_known_units;
+
+    static std::map<std::string, double> get_base_units_for_bootstrapping();
+    static std::vector<e_char_type> get_char_table();
+    static std::map<std::string, double> get_known_units();
+    static void extend_with_short_metric_prefix(
+        std::map<std::string, double>& units,
+        const std::string& unit);
+    static void extend_with_long_metric_prefix(
+        std::map<std::string, double>& units,
+        const std::string& unit);
+    static void extend_with_short_metric_prefix(
+        std::map<std::string, double>& units,
+        const std::string& unit,
+        double value);
+    static void extend_with_long_metric_prefix(
+        std::map<std::string, double>& units,
+        const std::string& unit,
+        double value);
+
+public:
+    explicit UnitDecoder(const std::string& unit);
+    UnitDecoder(const std::string& unit, std::map<std::string, double>& known_units);
+    UnitDecoder(const UnitDecoder&) = delete;
+    UnitDecoder& operator=(const UnitDecoder&) = delete;
+    ~UnitDecoder();
+    double decode();
+};
+
+// main function to decode units
+double decodeUnit(const std::string& unit);
+double decodeUnit(const std::string& unit, std::map<std::string, double>& known_units);
+
+}  // namespace decode_unit
+}  // namespace ssc
+
+#endif  // DECODEUNIT_H_

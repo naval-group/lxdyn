@@ -10,14 +10,12 @@
 
 #include <string>
 
-#include "xdyn/environment_models/UWCurrentModel.hpp"
 #include "xdyn/environment_models/Seabed.hpp"
+#include "xdyn/environment_models/UWCurrentModel.hpp"
 
-class EkmanUWCurrentModel : public UWCurrentModel
-{
+class EkmanUWCurrentModel : public UWCurrentModel {
 public:
-    struct Input
-    {
+    struct Input {
         Seabed seabed{0.};
         double top_ekman_depth{};     ///< Top layer thickness (m)
         double bottom_ekman_depth{};  ///< Bottom layer thickness (m)
@@ -29,7 +27,10 @@ public:
     };
     explicit EkmanUWCurrentModel(const Input& input);
 
-    Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d& position, const double time, const double wave_height) const override;
+    Eigen::Vector3d get_UWCurrent(
+        const Eigen::Vector3d& position,
+        const double time,
+        const double wave_height) const override;
 
     static std::string model_name();
     static Input parse(const std::string&);
@@ -44,9 +45,11 @@ private:
     double wind_angle;
     double wind_stress;
 
-    Eigen::Vector3d get_top_layer_current(const Eigen::Vector3d&, const Eigen::Vector3d&, const double) const;
+    Eigen::Vector3d
+    get_top_layer_current(const Eigen::Vector3d&, const Eigen::Vector3d&, const double) const;
     Eigen::Vector3d get_middle_layer_current() const;
-    Eigen::Vector3d get_bottom_layer_current(const Eigen::Vector3d&, const Eigen::Vector3d&, const double) const;
+    Eigen::Vector3d
+    get_bottom_layer_current(const Eigen::Vector3d&, const Eigen::Vector3d&, const double) const;
 };
 
 #endif /* ENVIRONMENT_MODELS_INC_EKMANUWCURRENTMODEL_HPP_ */

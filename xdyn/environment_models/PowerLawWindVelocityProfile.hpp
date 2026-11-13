@@ -10,11 +10,9 @@
 
 #include "WindMeanVelocityProfile.hpp"
 
-class PowerLawWindVelocityProfile : public WindMeanVelocityProfile
-{
+class PowerLawWindVelocityProfile : public WindMeanVelocityProfile {
 public:
-    struct Input : public WindMeanVelocityProfile::Input
-    {
+    struct Input : public WindMeanVelocityProfile::Input {
         double alpha{};
         double z_ref{};
     };

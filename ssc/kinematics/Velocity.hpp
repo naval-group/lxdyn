@@ -10,54 +10,86 @@
 
 #include "ssc/kinematics/Point.hpp"
 
-namespace ssc
-{
-    namespace kinematics
+namespace ssc {
+namespace kinematics {
+using AngularVelocityVector = Point;
+using TranslationVelocityVector = Point;
+
+/** \author cec
+ *  \brief
+ *  \details
+ *  \ingroup kinematics
+ */
+class Velocity {
+public:
+    Velocity(const Point& p, const AngularVelocityVector& w);
+    Velocity(const Point& p, const TranslationVelocityVector& t, const AngularVelocityVector& w);
+    std::string get_frame() const;
+    Point get_point() const;
+    AngularVelocityVector get_angular_velocity() const;
+    TranslationVelocityVector get_translation_velocity() const;
+    Velocity change_point(const Point& P) const;
+
+    inline double& u()
     {
-        using AngularVelocityVector = Point;
-        using TranslationVelocityVector = Point;
-
-
-        /** \author cec
-         *  \brief
-         *  \details
-         *  \ingroup kinematics
-         */
-        class Velocity
-        {
-            public:
-                Velocity(const Point& p, const AngularVelocityVector& w);
-                Velocity(const Point& p, const TranslationVelocityVector& t, const AngularVelocityVector& w);
-                std::string get_frame() const;
-                Point get_point() const;
-                AngularVelocityVector get_angular_velocity() const;
-                TranslationVelocityVector get_translation_velocity() const;
-                Velocity change_point(const Point& P) const;
-
-                inline double& u() {return vP.x();}
-                inline double& v() {return vP.y();}
-                inline double& w() {return vP.z();}
-                inline double& p() {return omega.x();}
-                inline double& q() {return omega.y();}
-                inline double& r() {return omega.z();}
-                inline double u() const {return vP.x();}
-                inline double v() const {return vP.y();}
-                inline double w() const {return vP.z();}
-                inline double p() const {return omega.x();}
-                inline double q() const {return omega.y();}
-                inline double r() const {return omega.z();}
-
-                void swap(Velocity& other) noexcept;
-
-            private:
-                Velocity();
-                Point P;
-                TranslationVelocityVector vP;
-                AngularVelocityVector omega;
-        };
-
-        void swap(Velocity& a, Velocity& b) noexcept; // provide non-member for ADL
+        return vP.x();
     }
-}
+    inline double& v()
+    {
+        return vP.y();
+    }
+    inline double& w()
+    {
+        return vP.z();
+    }
+    inline double& p()
+    {
+        return omega.x();
+    }
+    inline double& q()
+    {
+        return omega.y();
+    }
+    inline double& r()
+    {
+        return omega.z();
+    }
+    inline double u() const
+    {
+        return vP.x();
+    }
+    inline double v() const
+    {
+        return vP.y();
+    }
+    inline double w() const
+    {
+        return vP.z();
+    }
+    inline double p() const
+    {
+        return omega.x();
+    }
+    inline double q() const
+    {
+        return omega.y();
+    }
+    inline double r() const
+    {
+        return omega.z();
+    }
 
-#endif // VELOCITY_HPP_
+    void swap(Velocity& other) noexcept;
+
+private:
+    Velocity();
+    Point P;
+    TranslationVelocityVector vP;
+    AngularVelocityVector omega;
+};
+
+void swap(Velocity& a, Velocity& b) noexcept;  // provide non-member for ADL
+}  // namespace kinematics
+}  // namespace ssc
+
+#endif  // VELOCITY_HPP_

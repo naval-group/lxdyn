@@ -6,42 +6,47 @@
  */
 
 #include "CsvObserver.hpp"
+
 #include <boost/algorithm/string.hpp>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 
-
-CsvObserver::CsvObserver(const std::string& filename) :
-        flush_during_write(true),
-        output_to_file(not(filename.empty())),
-        os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
+CsvObserver::CsvObserver(const std::string& filename)
+    : flush_during_write(true)
+    , output_to_file(not(filename.empty()))
+    , os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
 {
     os << std::scientific;
 }
 
-CsvObserver::CsvObserver(const std::string& filename, const std::vector<std::string>& d) :
-        Observer(d),
-        flush_during_write(true),
-        output_to_file(not(filename.empty())),
-        os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
+CsvObserver::CsvObserver(const std::string& filename, const std::vector<std::string>& d)
+    : Observer(d)
+    , flush_during_write(true)
+    , output_to_file(not(filename.empty()))
+    , os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
 {
     os << std::scientific;
 }
 
 CsvObserver::~CsvObserver()
 {
-    if (output_to_file) delete(&os);
+    if (output_to_file)
+        delete (&os);
 }
 
 std::function<void()> CsvObserver::get_serializer(const double val, const DataAddressing& d)
 {
-    return [this,val,d](){cache[d.name] = val;};
+    return [this, val, d]() { cache[d.name] = val; };
 }
 
 std::function<void()> CsvObserver::get_initializer(const double, const DataAddressing& address)
 {
-    return [this,address](){std::string title = address.name;boost::replace_all(title, ",", " ");os << title;};
+    return [this, address]() {
+        std::string title = address.name;
+        boost::replace_all(title, ",", " ");
+        os << title;
+    };
 }
 
 void CsvObserver::flush_after_initialization()
@@ -53,9 +58,9 @@ void CsvObserver::flush_after_initialization()
 void CsvObserver::flush_after_write()
 {
     const size_t n = requested_serializations.size();
-    if (!n) return;
-    for (size_t i = 0 ; i < n-1 ; ++i)
-    {
+    if (!n)
+        return;
+    for (size_t i = 0; i < n - 1; ++i) {
         os << cache[requested_serializations[i]] << ",";
     }
     os << cache[requested_serializations.back()];
@@ -64,5 +69,6 @@ void CsvObserver::flush_after_write()
 
 void CsvObserver::flush_value_during_write()
 {
-    if (flush_during_write) os << ',';
+    if (flush_during_write)
+        os << ',';
 }

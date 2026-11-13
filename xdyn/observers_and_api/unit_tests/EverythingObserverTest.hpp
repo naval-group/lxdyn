@@ -8,20 +8,19 @@
 #ifndef OBSERVERS_AND_API_UNIT_TESTS_INC_EVERYTHINGOBSERVERTEST_HPP_
 #define OBSERVERS_AND_API_UNIT_TESTS_INC_EVERYTHINGOBSERVERTEST_HPP_
 
-#include "gtest/gtest.h"
-#include <ssc/random_data_generator/DataGenerator.hpp>
-
 #include <map>
+#include <ssc/random_data_generator/DataGenerator.hpp>
 #include <string>
 #include <vector>
 
+#include "gtest/gtest.h"
+
 class ListOfObservers;
 
-class EverythingObserverTest : public ::testing::Test
-{
-    protected:
-        EverythingObserverTest();
-        ssc::random_data_generator::DataGenerator a;
+class EverythingObserverTest : public ::testing::Test {
+protected:
+    EverythingObserverTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
 #endif /* OBSERVERS_AND_API_UNIT_TESTS_INC_EVERYTHINGOBSERVERTEST_HPP_ */

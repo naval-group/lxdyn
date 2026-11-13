@@ -6,34 +6,50 @@
  */
 
 #include "RadiationDampingForceModelTest.hpp"
-#include "xdyn/force_models/RadiationDampingForceModel.hpp"
+
+#include <cmath>
+#include <ssc/integrate.hpp>
+
 #include "xdyn/core/BodyStates.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
-#include "xdyn/hdb_interpolators/unit_tests/hdb_test.hpp"
+#include "xdyn/force_models/RadiationDampingForceModel.hpp"
 #include "xdyn/hdb_interpolators/RadiationDampingBuilder.hpp"
+#include "xdyn/hdb_interpolators/unit_tests/hdb_test.hpp"
 #include "xdyn/test_data_generator/hdb_data.hpp"
 #include "xdyn/test_data_generator/precal_test_data.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
-
-#include <ssc/integrate.hpp>
-#include <cmath>
 #define PI M_PI
 #include <fstream>
 
 constexpr double EPS = 5E-2;
 
-RadiationDampingForceModelTest::RadiationDampingForceModelTest() : a(ssc::random_data_generator::DataGenerator(2121))
+RadiationDampingForceModelTest::RadiationDampingForceModelTest()
+    : a(ssc::random_data_generator::DataGenerator(2121))
 {
 }
 
-double compute_Ma_from_K(const double omega, const double A, const std::function<double(double)>& K, const double tau_min, const double tau_max);
-double compute_Ma_from_K(const double omega, const double A, const std::function<double(double)>& K, const double tau_min, const double tau_max)
+double compute_Ma_from_K(
+    const double omega,
+    const double A,
+    const std::function<double(double)>& K,
+    const double tau_min,
+    const double tau_max);
+double compute_Ma_from_K(
+    const double omega,
+    const double A,
+    const std::function<double(double)>& K,
+    const double tau_min,
+    const double tau_max)
 {
-    const std::function<double(double)> g = [omega, K](double tau){return K(tau)*sin(omega*tau);};
-    return A - (1/omega)*ssc::integrate::Simpson(g).integrate_f(tau_min, tau_max, 1e-2);
+    const std::function<double(double)> g = [omega, K](double tau) {
+        return K(tau) * sin(omega * tau);
+    };
+    return A - (1 / omega) * ssc::integrate::Simpson(g).integrate_f(tau_min, tau_max, 1e-2);
 }
 
-std::shared_ptr<HDBParser> RadiationDampingForceModelTest::get_hdb_data(const YamlRadiationDamping& yaml, const bool only_diagonal_terms) const
+std::shared_ptr<HDBParser> RadiationDampingForceModelTest::get_hdb_data(
+    const YamlRadiationDamping& yaml,
+    const bool only_diagonal_terms) const
 {
     std::vector<double> Br;
     std::vector<double> Ma;
@@ -41,11 +57,16 @@ std::shared_ptr<HDBParser> RadiationDampingForceModelTest::get_hdb_data(const Ya
     const double omega_max = 40;
     const size_t N = 460;
     const double A = 1000;
-    const auto omegas = RadiationDampingBuilder(TypeOfQuadrature::FILON,TypeOfQuadrature::GAUSS_KRONROD).build_exponential_intervals(omega_min, omega_max, N);
+    const auto omegas =
+        RadiationDampingBuilder(TypeOfQuadrature::FILON, TypeOfQuadrature::GAUSS_KRONROD)
+            .build_exponential_intervals(omega_min, omega_max, N);
     Br.reserve(omegas.size());
     Ma.reserve(omegas.size());
-    for (auto omega:omegas) Br.push_back(test_data::analytical_Br(omega));
-    for (auto omega:omegas) Ma.push_back(compute_Ma_from_K(omega, A, test_data::analytical_K, yaml.tau_min, yaml.tau_max));
+    for (auto omega : omegas)
+        Br.push_back(test_data::analytical_Br(omega));
+    for (auto omega : omegas)
+        Ma.push_back(
+            compute_Ma_from_K(omega, A, test_data::analytical_K, yaml.tau_min, yaml.tau_max));
     return std::shared_ptr<HDBParser>(new HDBParserForTests(omegas, Ma, Br, only_diagonal_terms));
 }
 
@@ -65,14 +86,15 @@ YamlRadiationDamping RadiationDampingForceModelTest::get_yaml_data(const bool sh
 
 TEST_F(RadiationDampingForceModelTest, parser)
 {
-    const YamlRadiationDamping r = RadiationDampingForceModel::parse(test_data::radiation_damping(),false).yaml;
+    const YamlRadiationDamping r =
+        RadiationDampingForceModel::parse(test_data::radiation_damping(), false).yaml;
     ASSERT_EQ("test_ship.hdb", r.hdb_filename);
     ASSERT_EQ(50, r.nb_of_points_for_retardation_function_discretization);
-    ASSERT_DOUBLE_EQ(30,r.omega_max);
-    ASSERT_EQ(0,r.omega_min);
+    ASSERT_DOUBLE_EQ(30, r.omega_max);
+    ASSERT_EQ(0, r.omega_min);
     ASSERT_TRUE(r.output_Br_and_K);
-    ASSERT_DOUBLE_EQ(10,r.tau_max);
-    ASSERT_DOUBLE_EQ(0.2094395,r.tau_min);
+    ASSERT_DOUBLE_EQ(10, r.tau_max);
+    ASSERT_DOUBLE_EQ(0.2094395, r.tau_min);
     ASSERT_EQ(TypeOfQuadrature::CLENSHAW_CURTIS, r.type_of_quadrature_for_convolution);
     ASSERT_EQ(TypeOfQuadrature::SIMPSON, r.type_of_quadrature_for_cos_transform);
     ASSERT_DOUBLE_EQ(0.696, r.calculation_point_in_body_frame.x);
@@ -92,8 +114,24 @@ void record(BodyStates& states, const double t, const double value)
     states.r.record(t, value);
 }
 
-void record(BodyStates& states, const double t, const double u, const double v, const double w, const double p, const double q, const double r);
-void record(BodyStates& states, const double t, const double u, const double v, const double w, const double p, const double q, const double r)
+void record(
+    BodyStates& states,
+    const double t,
+    const double u,
+    const double v,
+    const double w,
+    const double p,
+    const double q,
+    const double r);
+void record(
+    BodyStates& states,
+    const double t,
+    const double u,
+    const double v,
+    const double w,
+    const double p,
+    const double q,
+    const double r)
 {
     states.u.record(t, u);
     states.v.record(t, v);
@@ -103,22 +141,31 @@ void record(BodyStates& states, const double t, const double u, const double v, 
     states.r.record(t, r);
 }
 
-double record_sine(BodyStates& states, const double tstart, const double T, const unsigned int Nperiods, const unsigned int Nsteps);
-double record_sine(BodyStates& states, const double tstart, const double T, const unsigned int Nperiods, const unsigned int Nsteps)
+double record_sine(
+    BodyStates& states,
+    const double tstart,
+    const double T,
+    const unsigned int Nperiods,
+    const unsigned int Nsteps);
+double record_sine(
+    BodyStates& states,
+    const double tstart,
+    const double T,
+    const unsigned int Nperiods,
+    const unsigned int Nsteps)
 {
-    const double tend = tstart + T*Nperiods;
-    const double dt = (tend-tstart)/Nsteps;
-    for (unsigned int i = 0 ; i <= Nsteps ; i++)
-    {
-        double t = tstart + i*dt;
-        record(states, t, sin(2*PI*(t-tstart)/T));
+    const double tend = tstart + T * Nperiods;
+    const double dt = (tend - tstart) / Nsteps;
+    for (unsigned int i = 0; i <= Nsteps; i++) {
+        double t = tstart + i * dt;
+        record(states, t, sin(2 * PI * (t - tstart) / T));
     }
     return tend;
 }
 
 TEST_F(RadiationDampingForceModelTest, example)
 {
-//! [RadiationDampingForceModelTest example]
+    //! [RadiationDampingForceModelTest example]
     const auto yaml = get_yaml_data(false);
     RadiationDampingForceModel::Input input;
     input.parser = get_hdb_data(yaml);
@@ -129,26 +176,27 @@ TEST_F(RadiationDampingForceModelTest, example)
     ASSERT_EQ("radiation damping", F.model_name());
     BodyStates states(100);
     states.name = body_name;
-//! [RadiationDampingForceModelTest example]
-//! [RadiationDampingForceModelTest expected output]
+    //! [RadiationDampingForceModelTest example]
+    //! [RadiationDampingForceModelTest expected output]
     const double T = 10.0;
     record_sine(states, 0, T, 10, 100);
     const auto K = test_data::analytical_K;
-    std::function<double(double)> g = [K, T](double t){return K(t)*sin(-2*PI*t/T);};
-    const double Fexpected = -ssc::integrate::ClenshawCurtisCosine(g,0).integrate_f(yaml.tau_min,yaml.tau_max);
+    std::function<double(double)> g = [K, T](double t) { return K(t) * sin(-2 * PI * t / T); };
+    const double Fexpected =
+        -ssc::integrate::ClenshawCurtisCosine(g, 0).integrate_f(yaml.tau_min, yaml.tau_max);
 
     const auto Frad = F.get_force(states, 100, env, {});
-    ASSERT_DOUBLE_EQ(Frad.X(),Frad.Y());
-    ASSERT_DOUBLE_EQ(Frad.X(),Frad.Z());
-    ASSERT_DOUBLE_EQ(Frad.K(),Frad.M());
-    ASSERT_DOUBLE_EQ(Frad.M(),Frad.N());
+    ASSERT_DOUBLE_EQ(Frad.X(), Frad.Y());
+    ASSERT_DOUBLE_EQ(Frad.X(), Frad.Z());
+    ASSERT_DOUBLE_EQ(Frad.K(), Frad.M());
+    ASSERT_DOUBLE_EQ(Frad.M(), Frad.N());
     ASSERT_SMALL_RELATIVE_ERROR(Fexpected, Frad.X(), EPS);
     ASSERT_SMALL_RELATIVE_ERROR(Fexpected, Frad.Y(), EPS);
     ASSERT_SMALL_RELATIVE_ERROR(Fexpected, Frad.Z(), EPS);
     ASSERT_SMALL_RELATIVE_ERROR(Fexpected, Frad.K(), EPS);
     ASSERT_SMALL_RELATIVE_ERROR(Fexpected, Frad.M(), EPS);
     ASSERT_SMALL_RELATIVE_ERROR(Fexpected, Frad.N(), EPS);
-//! [RadiationDampingForceModelTest expected output]
+    //! [RadiationDampingForceModelTest expected output]
 }
 
 TEST_F(RadiationDampingForceModelTest, results_are_zero_for_constant_velocity)
@@ -169,10 +217,10 @@ TEST_F(RadiationDampingForceModelTest, results_are_zero_for_constant_velocity)
     record(states, 100, velocity);
 
     const auto Frad = F.get_force(states, 100, env, {});
-    ASSERT_DOUBLE_EQ(Frad.X(),Frad.Y());
-    ASSERT_DOUBLE_EQ(Frad.X(),Frad.Z());
-    ASSERT_DOUBLE_EQ(Frad.K(),Frad.M());
-    ASSERT_DOUBLE_EQ(Frad.M(),Frad.N());
+    ASSERT_DOUBLE_EQ(Frad.X(), Frad.Y());
+    ASSERT_DOUBLE_EQ(Frad.X(), Frad.Z());
+    ASSERT_DOUBLE_EQ(Frad.K(), Frad.M());
+    ASSERT_DOUBLE_EQ(Frad.M(), Frad.N());
     ASSERT_SMALL_RELATIVE_ERROR(0, Frad.X(), EPS);
     ASSERT_SMALL_RELATIVE_ERROR(0, Frad.Y(), EPS);
     ASSERT_SMALL_RELATIVE_ERROR(0, Frad.Z(), EPS);
@@ -181,15 +229,26 @@ TEST_F(RadiationDampingForceModelTest, results_are_zero_for_constant_velocity)
     ASSERT_SMALL_RELATIVE_ERROR(0, Frad.N(), EPS);
 }
 
-double record_offset_sine(BodyStates& states, const double tstart, const double T, const unsigned int Nperiods, const unsigned int Nsteps, const double offset);
-double record_offset_sine(BodyStates& states, const double tstart, const double T, const unsigned int Nperiods, const unsigned int Nsteps, const double offset)
+double record_offset_sine(
+    BodyStates& states,
+    const double tstart,
+    const double T,
+    const unsigned int Nperiods,
+    const unsigned int Nsteps,
+    const double offset);
+double record_offset_sine(
+    BodyStates& states,
+    const double tstart,
+    const double T,
+    const unsigned int Nperiods,
+    const unsigned int Nsteps,
+    const double offset)
 {
-    const double tend = tstart + T*Nperiods;
-    const double dt = (tend-tstart)/Nsteps;
-    for (unsigned int i = 0 ; i <= Nsteps ; i++)
-    {
-        double t = tstart + i*dt;
-        record(states, t, offset + sin(2*PI*(t-tstart)/T));
+    const double tend = tstart + T * Nperiods;
+    const double dt = (tend - tstart) / Nsteps;
+    for (unsigned int i = 0; i <= Nsteps; i++) {
+        double t = tstart + i * dt;
+        record(states, t, offset + sin(2 * PI * (t - tstart) / T));
     }
     return tend;
 }
@@ -229,7 +288,7 @@ TEST_F(RadiationDampingForceModelTest, should_print_debugging_information_if_req
 {
     std::stringstream debug;
     // Redirect cerr to our stringstream buffer or any other ostream
-    std::streambuf* orig =std::cerr.rdbuf(debug.rdbuf());
+    std::streambuf* orig = std::cerr.rdbuf(debug.rdbuf());
     ASSERT_TRUE(debug.str().empty());
     // Call the radiation damping model
     RadiationDampingForceModel::Input input;
@@ -241,11 +300,13 @@ TEST_F(RadiationDampingForceModelTest, should_print_debugging_information_if_req
     std::cerr.rdbuf(orig);
 }
 
-TEST_F(RadiationDampingForceModelTest, should_not_print_debugging_information_if_not_required_by_yaml_data)
+TEST_F(
+    RadiationDampingForceModelTest,
+    should_not_print_debugging_information_if_not_required_by_yaml_data)
 {
     std::stringstream debug;
     // Redirect cerr to our stringstream buffer or any other ostream
-    std::streambuf* orig =std::cerr.rdbuf(debug.rdbuf());
+    std::streambuf* orig = std::cerr.rdbuf(debug.rdbuf());
     // Call the radiation damping model
     RadiationDampingForceModel::Input input;
     input.yaml = get_yaml_data(false);
@@ -281,7 +342,7 @@ TEST_F(RadiationDampingForceModelTest, matrix_product_should_be_done_properly)
     const double t0 = 5.1047197500000001114;
 
     record(states, 0, 0);
-    record(states, tmax-t0-eps, 0);
+    record(states, tmax - t0 - eps, 0);
 
     const double u0 = 1;
     const double v0 = 2;
@@ -290,9 +351,9 @@ TEST_F(RadiationDampingForceModelTest, matrix_product_should_be_done_properly)
     const double q0 = 5;
     const double r0 = 6;
 
-    record(states, tmax-t0-eps/2, u0, v0, w0, p0, q0, r0);
-    record(states, tmax-t0+eps/2, u0, v0, w0, p0, q0, r0);
-    record(states, tmax-t0+eps, 0);
+    record(states, tmax - t0 - eps / 2, u0, v0, w0, p0, q0, r0);
+    record(states, tmax - t0 + eps / 2, u0, v0, w0, p0, q0, r0);
+    record(states, tmax - t0 + eps, 0);
     record(states, tmax, 0);
 
     const auto Frad = F.get_force(states, 0, env, {});
@@ -301,14 +362,23 @@ TEST_F(RadiationDampingForceModelTest, matrix_product_should_be_done_properly)
     // transform.
     const double k = -0.50135576185179109299;
     ASSERT_NEAR(test_data::analytical_K(t0), k, 3E-3);
-    const double conv = -(tmax-tmin )/100*k;
+    const double conv = -(tmax - tmin) / 100 * k;
 
-    ASSERT_NEAR(conv * (11*u0 + 12*v0 + 13*w0 + 14*p0 + 15*q0 + 16*r0), Frad.X(), EPS);
-    ASSERT_NEAR(conv * (21*u0 + 22*v0 + 23*w0 + 24*p0 + 25*q0 + 26*r0), Frad.Y(), EPS);
-    ASSERT_NEAR(conv * (31*u0 + 32*v0 + 33*w0 + 34*p0 + 35*q0 + 36*r0), Frad.Z(), EPS);
-    ASSERT_NEAR(conv * (41*u0 + 42*v0 + 43*w0 + 44*p0 + 45*q0 + 46*r0), Frad.K(), 10*EPS);
-    ASSERT_NEAR(conv * (51*u0 + 52*v0 + 53*w0 + 54*p0 + 55*q0 + 56*r0), Frad.M(), 10*EPS);
-    ASSERT_NEAR(conv * (61*u0 + 62*v0 + 63*w0 + 64*p0 + 65*q0 + 66*r0), Frad.N(), 10*EPS);
+    ASSERT_NEAR(conv * (11 * u0 + 12 * v0 + 13 * w0 + 14 * p0 + 15 * q0 + 16 * r0), Frad.X(), EPS);
+    ASSERT_NEAR(conv * (21 * u0 + 22 * v0 + 23 * w0 + 24 * p0 + 25 * q0 + 26 * r0), Frad.Y(), EPS);
+    ASSERT_NEAR(conv * (31 * u0 + 32 * v0 + 33 * w0 + 34 * p0 + 35 * q0 + 36 * r0), Frad.Z(), EPS);
+    ASSERT_NEAR(
+        conv * (41 * u0 + 42 * v0 + 43 * w0 + 44 * p0 + 45 * q0 + 46 * r0),
+        Frad.K(),
+        10 * EPS);
+    ASSERT_NEAR(
+        conv * (51 * u0 + 52 * v0 + 53 * w0 + 54 * p0 + 55 * q0 + 56 * r0),
+        Frad.M(),
+        10 * EPS);
+    ASSERT_NEAR(
+        conv * (61 * u0 + 62 * v0 + 63 * w0 + 64 * p0 + 65 * q0 + 66 * r0),
+        Frad.N(),
+        10 * EPS);
 }
 
 TEST_F(RadiationDampingForceModelTest, cannot_specify_both_hdb_and_precal_r_files)
@@ -329,7 +399,7 @@ TEST_F(RadiationDampingForceModelTest, cannot_specify_both_hdb_and_precal_r_file
                                      "    x: {value: 0.696, unit: m}\n"
                                      "    y: {value: 0, unit: m}\n"
                                      "    z: {value: 1.418, unit: m}\n";
-    ASSERT_THROW(RadiationDampingForceModel::parse(invalid_yaml,false), InvalidInputException);
+    ASSERT_THROW(RadiationDampingForceModel::parse(invalid_yaml, false), InvalidInputException);
 }
 
 TEST_F(RadiationDampingForceModelTest, should_be_able_to_use_precal_r_files_only)
@@ -349,7 +419,7 @@ TEST_F(RadiationDampingForceModelTest, should_be_able_to_use_precal_r_files_only
                                    "    x: {value: 0.696, unit: m}\n"
                                    "    y: {value: 0, unit: m}\n"
                                    "    z: {value: 1.418, unit: m}\n";
-    ASSERT_NO_THROW(RadiationDampingForceModel::parse(valid_yaml,false));
+    ASSERT_NO_THROW(RadiationDampingForceModel::parse(valid_yaml, false));
 }
 
 TEST_F(RadiationDampingForceModelTest, need_one_of_precal_r_or_hdb)
@@ -368,7 +438,7 @@ TEST_F(RadiationDampingForceModelTest, need_one_of_precal_r_or_hdb)
                                      "    x: {value: 0.696, unit: m}\n"
                                      "    y: {value: 0, unit: m}\n"
                                      "    z: {value: 1.418, unit: m}\n";
-    ASSERT_THROW(RadiationDampingForceModel::parse(invalid_yaml,false), InvalidInputException);
+    ASSERT_THROW(RadiationDampingForceModel::parse(invalid_yaml, false), InvalidInputException);
 }
 
 TEST_F(RadiationDampingForceModelTest, precal_r_filename_is_read_properly)
@@ -388,7 +458,9 @@ TEST_F(RadiationDampingForceModelTest, precal_r_filename_is_read_properly)
                                    "    x: {value: 0.696, unit: m}\n"
                                    "    y: {value: 0, unit: m}\n"
                                    "    z: {value: 1.418, unit: m}\n";
-    ASSERT_EQ("test_ship.ini", RadiationDampingForceModel::parse(valid_yaml,false).yaml.precal_r_filename);
+    ASSERT_EQ(
+        "test_ship.ini",
+        RadiationDampingForceModel::parse(valid_yaml, false).yaml.precal_r_filename);
 }
 
 TEST_F(RadiationDampingForceModelTest, can_use_data_from_precal_r)
@@ -410,7 +482,7 @@ TEST_F(RadiationDampingForceModelTest, can_use_data_from_precal_r)
                              "    z: {value: 1.418, unit: m}\n";
     std::ofstream precalr_file("data.raodb.ini");
     precalr_file << test_data::precal();
-    precalr_file.close(); // Read back below: must be flushed to disk first
+    precalr_file.close();  // Read back below: must be flushed to disk first
     RadiationDampingForceModel::Input input = RadiationDampingForceModel::parse(yaml);
     const EnvironmentAndFrames env;
     const std::string body_name = a.random<std::string>();

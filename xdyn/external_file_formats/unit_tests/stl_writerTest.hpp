@@ -8,15 +8,14 @@
 #ifndef STL_WRITERTEST_HPP_
 #define STL_WRITERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class stl_writerTest : public ::testing::Test
-{
-    protected:
-        stl_writerTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class stl_writerTest : public ::testing::Test {
+protected:
+    stl_writerTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* STL_WRITERTEST_HPP_ */
+#endif /* STL_WRITERTEST_HPP_ */

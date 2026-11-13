@@ -6,11 +6,14 @@
  */
 
 #include "DefaultWindModelTest.hpp"
-#include "DefaultWindModel.hpp"
+
 #include <Eigen/Dense>
 
-DefaultWindModelTest::DefaultWindModelTest () : a(ssc::random_data_generator::DataGenerator(54200))
-{}
+#include "DefaultWindModel.hpp"
+
+DefaultWindModelTest::DefaultWindModelTest() : a(ssc::random_data_generator::DataGenerator(54200))
+{
+}
 
 TEST_F(DefaultWindModelTest, returns_no_wind)
 {
@@ -18,8 +21,8 @@ TEST_F(DefaultWindModelTest, returns_no_wind)
     Eigen::Vector3d position;
     position << a.random<double>(), a.random<double>(), a.random<double>();
     const double time(a.random<double>());
-    const Eigen::Vector3d wind_vector(wind_model.get_wind(position,time));
-    ASSERT_DOUBLE_EQ(0.,wind_vector(0));
-    ASSERT_DOUBLE_EQ(0.,wind_vector(1));
-    ASSERT_DOUBLE_EQ(0.,wind_vector(2));
+    const Eigen::Vector3d wind_vector(wind_model.get_wind(position, time));
+    ASSERT_DOUBLE_EQ(0., wind_vector(0));
+    ASSERT_DOUBLE_EQ(0., wind_vector(1));
+    ASSERT_DOUBLE_EQ(0., wind_vector(2));
 }

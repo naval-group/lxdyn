@@ -2,10 +2,10 @@
 #define OBSERVERS_AND_API_UNIT_TESTS_JSONSERIALIZERTEST_HPP_
 
 #include <gtest/gtest.h>
+
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class JSONSerializerTest : public testing::Test
-{
+class JSONSerializerTest : public testing::Test {
 public:
     JSONSerializerTest();
 

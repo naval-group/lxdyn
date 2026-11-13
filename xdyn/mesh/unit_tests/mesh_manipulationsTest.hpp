@@ -8,17 +8,17 @@
 #ifndef MESH_MANIPULATIONSTEST_HPP_
 #define MESH_MANIPULATIONSTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
+
+#include "gtest/gtest.h"
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 
-class mesh_manipulationsTest : public ::testing::Test
-{
-    protected:
-        mesh_manipulationsTest();
+class mesh_manipulationsTest : public ::testing::Test {
+protected:
+    mesh_manipulationsTest();
 
-        Matrix3x get_rectangle(const double w, const double h) const;
-        ssc::random_data_generator::DataGenerator a;
+    Matrix3x get_rectangle(const double w, const double h) const;
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* MESH_MANIPULATIONSTEST_HPP_ */
+#endif /* MESH_MANIPULATIONSTEST_HPP_ */

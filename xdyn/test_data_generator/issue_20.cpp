@@ -4,10 +4,11 @@
  *  Created on: Feb 8, 2018
  *      Author: cady
  */
+#include <sstream>
+
 #include "hdb_data.hpp"
 #include "stl_data.hpp"
 #include "yaml_data.hpp"
-#include <sstream>
 
 std::string test_data::issue_20()
 {

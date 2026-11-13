@@ -12,13 +12,11 @@
 
 #include "xdyn/external_data_structures/YamlWaveOutput.hpp"
 
-struct YamlGRPC
-{
+struct YamlGRPC {
     std::string url;
     std::string rest_of_the_yaml;
     /// Defines what wave data is outputted during the simulation & how it is generated
     YamlWaveOutput output;
 };
-
 
 #endif /* EXTERNAL_DATA_STRUCTURES_INC_YAMLGRPC_HPP_ */

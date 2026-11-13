@@ -1,12 +1,17 @@
 #include "ssc/exception_handling/Exception.hpp"
+
 #include <sstream>
 
-::ssc::exception_handling::Exception::Exception(const std::string& message, const std::string& file, const std::string& function, const unsigned int line):
-        full_message(""),
-        short_message(message)
+::ssc::exception_handling::Exception::Exception(
+    const std::string& message,
+    const std::string& file,
+    const std::string& function,
+    const unsigned int line)
+    : full_message(""), short_message(message)
 {
     std::stringstream ss;
-    ss << "In file " << file << ", line " << line << ", function " << function << ": " << short_message;
+    ss << "In file " << file << ", line " << line << ", function " << function << ": "
+       << short_message;
     full_message = ss.str();
 }
 

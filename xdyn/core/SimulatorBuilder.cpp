@@ -6,132 +6,159 @@
  */
 
 #include "SimulatorBuilder.hpp"
+
+#include <memory>
+#include <ssc/text_file_reader.hpp>
+
 #include "AssetPath.hpp"
 #include "BodyBuilder.hpp"
 #include "update_kinematics.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 
-#include <memory>
-#include <ssc/text_file_reader.hpp>
-
-SimulatorBuilder::SimulatorBuilder(const YamlSimulatorInput& input_, const double t0_, const ssc::data_source::DataSource& command_listener_) :
-        input(input_),
-        builder(std::make_shared<BodyBuilder>(input.rotations)),
-        wave_parsers(std::make_shared<std::vector<WaveModelBuilderPtr> >()),
-        directional_spreading_parsers(std::make_shared<std::vector<DirectionalSpreadingBuilderPtr> >()),
-        spectrum_parsers(std::make_shared<std::vector<SpectrumBuilderPtr> >()),
-        command_listener(command_listener_),
-        t0(t0_)
+SimulatorBuilder::SimulatorBuilder(
+    const YamlSimulatorInput& input_,
+    const double t0_,
+    const ssc::data_source::DataSource& command_listener_)
+    : input(input_)
+    , builder(std::make_shared<BodyBuilder>(input.rotations))
+    , wave_parsers(std::make_shared<std::vector<WaveModelBuilderPtr>>())
+    , directional_spreading_parsers(std::make_shared<std::vector<DirectionalSpreadingBuilderPtr>>())
+    , spectrum_parsers(std::make_shared<std::vector<SpectrumBuilderPtr>>())
+    , command_listener(command_listener_)
+    , t0(t0_)
 {
 }
 
-std::vector<BodyPtr> SimulatorBuilder::get_bodies(const MeshMap& meshes, const std::vector<bool>& bodies_contain_surface_forces, std::map<std::string,double> history_length) const
+std::vector<BodyPtr> SimulatorBuilder::get_bodies(
+    const MeshMap& meshes,
+    const std::vector<bool>& bodies_contain_surface_forces,
+    std::map<std::string, double> history_length) const
 {
     std::vector<BodyPtr> ret;
     size_t i = 0;
-    for (const auto& body:input.bodies)
-    {
+    for (const auto& body : input.bodies) {
         const auto that_mesh = meshes.find(body.name);
-        if (that_mesh != meshes.end())
-        {
-            ret.push_back(builder->build(body, that_mesh->second, i,t0,input.rotations,history_length[body.name],bodies_contain_surface_forces.at(i)));
+        if (that_mesh != meshes.end()) {
+            ret.push_back(builder->build(
+                body,
+                that_mesh->second,
+                i,
+                t0,
+                input.rotations,
+                history_length[body.name],
+                bodies_contain_surface_forces.at(i)));
             i++;
-        }
-        else
-        {
-            THROW(__PRETTY_FUNCTION__, InternalErrorException, "Unable to find mesh for '" << body.name << "' in map.");
+        } else {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InternalErrorException,
+                "Unable to find mesh for '" << body.name << "' in map.");
         }
     }
     return ret;
 }
 
-void SimulatorBuilder::add_initial_transforms(const std::vector<BodyPtr>& bodies, ssc::kinematics::KinematicsPtr& k) const
+void SimulatorBuilder::add_initial_transforms(
+    const std::vector<BodyPtr>& bodies,
+    ssc::kinematics::KinematicsPtr& k) const
 {
     const StateType x = ::get_initial_states(input.rotations, input.bodies);
-    for (size_t i = 0; i < bodies.size(); ++i)
-    {
+    for (size_t i = 0; i < bodies.size(); ++i) {
         k->add(bodies.at(i)->get_transform_from_mesh_to_body());
         k->add(bodies.at(i)->get_transform_from_ned_to_body(x));
     }
 }
 
 EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
-{ 
+{
     EnvironmentAndFrames env;
     env.g = input.environmental_constants.g;
     env.rho = input.environmental_constants.rho;
-    if(input.environmental_constants.rho_air) env.set_rho_air(input.environmental_constants.rho_air.value());
+    if (input.environmental_constants.rho_air)
+        env.set_rho_air(input.environmental_constants.rho_air.value());
     env.nu = input.environmental_constants.nu;
     env.rot = input.rotations;
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
 
-    if (surface_elevation_parsers.empty())
-    {
-        THROW(__PRETTY_FUNCTION__, InternalErrorException, "No wave parser defined. Need to call SimulatorBuilder::can_parse<T> with e.g. T=DefaultWaveModel");
+    if (surface_elevation_parsers.empty()) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InternalErrorException,
+            "No wave parser defined. Need to call SimulatorBuilder::can_parse<T> with e.g. T=DefaultWaveModel");
     }
-    if (wind_model_parsers.empty())
-    {
-        THROW(__PRETTY_FUNCTION__, InternalErrorException, "No wind parser defined. Need to call SimulatorBuilder::can_parse<T> with e.g. T=DefaultWindModel");
+    if (wind_model_parsers.empty()) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InternalErrorException,
+            "No wind parser defined. Need to call SimulatorBuilder::can_parse<T> with e.g. T=DefaultWindModel");
     }
-    for (auto that_model=input.environment.begin() ; that_model != input.environment.end() ; ++that_model)
-    {
+    for (auto that_model = input.environment.begin(); that_model != input.environment.end();
+         ++that_model) {
         bool env_model_successfully_parsed = false;
-        for (auto that_parser=surface_elevation_parsers.begin() ; that_parser != surface_elevation_parsers.end() ; ++that_parser)
-        {
-            std::optional<SurfaceElevationPtr> w = (*that_parser)->try_to_parse(that_model->model, that_model->yaml);
-            if (w)
-            {
-                if (env.w)
-                {
-                    THROW(__PRETTY_FUNCTION__, InternalErrorException, "More than one wave model was defined.");
+        for (auto that_parser = surface_elevation_parsers.begin();
+             that_parser != surface_elevation_parsers.end();
+             ++that_parser) {
+            std::optional<SurfaceElevationPtr> w =
+                (*that_parser)->try_to_parse(that_model->model, that_model->yaml);
+            if (w) {
+                if (env.w) {
+                    THROW(
+                        __PRETTY_FUNCTION__,
+                        InternalErrorException,
+                        "More than one wave model was defined.");
                 }
                 env.w = w.value();
                 env_model_successfully_parsed = true;
             }
         }
-        for(const auto& parser:wind_model_parsers)
-        {
+        for (const auto& parser : wind_model_parsers) {
             std::optional<WindModelPtr> w = parser(*that_model);
-            if (w)
-            {
-                if(env.wind)
-                {
-                    THROW(__PRETTY_FUNCTION__, InternalErrorException, "More than one wind model was defined.");
+            if (w) {
+                if (env.wind) {
+                    THROW(
+                        __PRETTY_FUNCTION__,
+                        InternalErrorException,
+                        "More than one wind model was defined.");
                 }
                 env.wind = w.value();
                 env_model_successfully_parsed = true;
             }
         }
-        for(const auto& parser:UWCurrent_model_parsers)
-        {
+        for (const auto& parser : UWCurrent_model_parsers) {
             std::optional<UWCurrentModelPtr> c = parser(*that_model);
-            if (c)
-            {
-                if(env.UWCurrent)
-                {
-                    THROW(__PRETTY_FUNCTION__, InternalErrorException, "More than one underwater current model was defined.");
+            if (c) {
+                if (env.UWCurrent) {
+                    THROW(
+                        __PRETTY_FUNCTION__,
+                        InternalErrorException,
+                        "More than one underwater current model was defined.");
                 }
                 env.UWCurrent = c.value();
                 env_model_successfully_parsed = true;
             }
         }
-        if (not(env_model_successfully_parsed))
-        {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Simulator does not understand environment model '" << that_model->model << "'");
+        if (not(env_model_successfully_parsed)) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InvalidInputException,
+                "Simulator does not understand environment model '" << that_model->model << "'");
         }
     }
     return env;
 }
 
-std::map<std::string, double> SimulatorBuilder::get_max_history_length(const std::vector<ListOfForces>& forces_for_all_bodies) const
+std::map<std::string, double> SimulatorBuilder::get_max_history_length(
+    const std::vector<ListOfForces>& forces_for_all_bodies) const
 {
     std::map<std::string, double> ret;
-    for (const auto& forces:forces_for_all_bodies)
-    {
+    for (const auto& forces : forces_for_all_bodies) {
         double Tmax = 0;
-        for (const auto& force:forces) Tmax = std::max(Tmax, force->get_Tmax());
-        if (not(forces.empty())) ret[forces.front()->get_body_name()] = std::max(Tmax, ret[forces.front()->get_body_name()]);
+        for (const auto& force : forces)
+            Tmax = std::max(Tmax, force->get_Tmax());
+        if (not(forces.empty()))
+            ret[forces.front()->get_body_name()] =
+                std::max(Tmax, ret[forces.front()->get_body_name()]);
     }
     return ret;
 }
@@ -139,53 +166,61 @@ std::map<std::string, double> SimulatorBuilder::get_max_history_length(const std
 std::vector<ListOfForces> SimulatorBuilder::get_forces(const EnvironmentAndFrames& env) const
 {
     std::vector<ListOfForces> forces;
-    for (auto that_body=input.bodies.begin() ; that_body != input.bodies.end() ; ++that_body)
-    {
+    for (auto that_body = input.bodies.begin(); that_body != input.bodies.end(); ++that_body) {
         forces.push_back(forces_from(*that_body, env));
     }
     return forces;
 }
 
-ListOfForces SimulatorBuilder::forces_from(const YamlBody& body, const EnvironmentAndFrames& env) const
+ListOfForces SimulatorBuilder::forces_from(const YamlBody& body, const EnvironmentAndFrames& env)
+    const
 {
     ListOfForces ret;
-    for (auto that_force_model = body.external_forces.begin() ; that_force_model!= body.external_forces.end() ; ++that_force_model)
-    {
+    for (auto that_force_model = body.external_forces.begin();
+         that_force_model != body.external_forces.end();
+         ++that_force_model) {
         add(*that_force_model, ret, body.name, env);
     }
     return ret;
 }
 
-void SimulatorBuilder::add(const YamlModel& model, ListOfForces& L, const std::string& name, const EnvironmentAndFrames& env) const
+void SimulatorBuilder::add(
+    const YamlModel& model,
+    ListOfForces& L,
+    const std::string& name,
+    const EnvironmentAndFrames& env) const
 {
     bool parsed = false;
-    for (const auto& try_to_parse:force_parsers)
-    {
+    for (const auto& try_to_parse : force_parsers) {
         std::optional<ForcePtr> f = try_to_parse(model, name, env);
-        if (f)
-        {
-            if (parsed)
-            {
-                THROW(__PRETTY_FUNCTION__, InvalidInputException, "Two force models are both registered as '" << model.model << "'.");
+        if (f) {
+            if (parsed) {
+                THROW(
+                    __PRETTY_FUNCTION__,
+                    InvalidInputException,
+                    "Two force models are both registered as '" << model.model << "'.");
             }
             L.push_back(f.value());
             parsed = true;
         }
     }
-    if (not(parsed))
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Simulator does not know model '" << model.model << "': maybe the name is misspelt or you are using an outdated version of this simulator.");
+    if (not(parsed)) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "Simulator does not know model '"
+                << model.model
+                << "': maybe the name is misspelt or you are using an outdated version of this simulator.");
     }
 }
 
-std::vector<bool> SimulatorBuilder::are_there_surface_forces_acting_on_body(const std::vector<ListOfForces>& forces) const
+std::vector<bool> SimulatorBuilder::are_there_surface_forces_acting_on_body(
+    const std::vector<ListOfForces>& forces) const
 {
     std::vector<bool> ret;
-    for (const auto& forces_acting_on_body:forces)
-    {
+    for (const auto& forces_acting_on_body : forces) {
         bool has_surface_forces = false;
-        for (const auto& force:forces_acting_on_body)
-        {
+        for (const auto& force : forces_acting_on_body) {
             has_surface_forces |= force->is_a_surface_force_model();
         }
         ret.push_back(has_surface_forces);
@@ -198,7 +233,8 @@ Sim SimulatorBuilder::build(const MeshMap& meshes) const
     auto env = build_environment_and_frames();
     auto forces = get_forces(env);
     auto history_length = get_max_history_length(forces);
-    const auto bodies = get_bodies(meshes, are_there_surface_forces_acting_on_body(forces), history_length);
+    const auto bodies =
+        get_bodies(meshes, are_there_surface_forces_acting_on_body(forces), history_length);
     add_initial_transforms(bodies, env.k);
     return Sim(bodies, forces, env, get_initial_states(), command_listener);
 }
@@ -221,8 +257,7 @@ YamlSimulatorInput SimulatorBuilder::get_parsed_yaml() const
 MeshMap SimulatorBuilder::make_mesh_map() const
 {
     MeshMap ret;
-    for (auto that_body = input.bodies.begin() ; that_body != input.bodies.end() ; ++that_body)
-    {
+    for (auto that_body = input.bodies.begin(); that_body != input.bodies.end(); ++that_body) {
         ret[that_body->name] = get_mesh(*that_body);
     }
     return ret;
@@ -230,8 +265,7 @@ MeshMap SimulatorBuilder::make_mesh_map() const
 
 VectorOfVectorOfPoints SimulatorBuilder::get_mesh(const YamlBody& body) const
 {
-    if (not(body.mesh.empty()))
-    {
+    if (not(body.mesh.empty())) {
         const ssc::text_file_reader::TextFileReader reader(xdyn::resolve_asset(body.mesh));
         return read_stl(reader.get_contents());
     }

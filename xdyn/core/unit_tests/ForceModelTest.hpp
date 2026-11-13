@@ -8,14 +8,14 @@
 #ifndef FORCEMODELTEST_HPP_
 #define FORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class ForceModelTest : public ::testing::Test
-{
-    protected:
-        ForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class ForceModelTest : public ::testing::Test {
+protected:
+    ForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* FORCEMODELTEST_HPP_ */
+#endif /* FORCEMODELTEST_HPP_ */

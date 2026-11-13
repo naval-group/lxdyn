@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class SplinesTest : public ::testing::Test
-{
-    protected:
-        SplinesTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class SplinesTest : public ::testing::Test {
+protected:
+    SplinesTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* SPLINETEST_HPP_ */
+#endif /* SPLINETEST_HPP_ */

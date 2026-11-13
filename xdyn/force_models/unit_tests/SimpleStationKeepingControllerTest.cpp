@@ -6,15 +6,17 @@
  */
 
 #include "SimpleStationKeepingControllerTest.hpp"
-#include "SimpleStationKeepingController.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 #include <cmath>
+
+#include "SimpleStationKeepingController.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
 #define PI M_PI
 
 constexpr double EPS = 1E-14;
 
-SimpleStationKeepingControllerTest::SimpleStationKeepingControllerTest() : a(ssc::random_data_generator::DataGenerator(85552))
+SimpleStationKeepingControllerTest::SimpleStationKeepingControllerTest()
+    : a(ssc::random_data_generator::DataGenerator(85552))
 {
 }
 
@@ -33,45 +35,45 @@ TEST_F(SimpleStationKeepingControllerTest, parser)
 TEST_F(SimpleStationKeepingControllerTest, force_and_torque)
 {
     auto input = SimpleStationKeepingController::parse(test_data::simple_station_keeping());
-    input.T_x = 2*PI;
-    input.T_y = 2*PI/3;
-    input.T_psi = 2*PI/4;
+    input.T_x = 2 * PI;
+    input.T_y = 2 * PI / 3;
+    input.T_psi = 2 * PI / 4;
     EnvironmentAndFrames env;
-    env.rot = YamlRotation("angle", {"z","y'","x''"});
+    env.rot = YamlRotation("angle", {"z", "y'", "x''"});
     const SimpleStationKeepingController w(input, "body", env);
     ASSERT_EQ("simple station-keeping controller", w.model_name());
     BodyStates states;
     const double x = 0.456;
     const double y = 5.769;
     const double psi = 1.234;
-    states.qr.record(0,  cos(psi/2));
-    states.qi.record(0,  0);
-    states.qj.record(0,  0);
-    states.qk.record(0,  sin(psi/2));
+    states.qr.record(0, cos(psi / 2));
+    states.qi.record(0, 0);
+    states.qj.record(0, 0);
+    states.qk.record(0, sin(psi / 2));
     states.u.record(0, 8);
     states.v.record(0, 9);
     states.r.record(0, 10);
     states.x.record(0, x);
     states.y.record(0, y);
-    states.total_inertia = Eigen::Matrix<double,6,6>::Zero();
-    states.total_inertia(0,0) = 4;
-    states.total_inertia(1,1) = 5;
-    states.total_inertia(5,5) = 6;
+    states.total_inertia = Eigen::Matrix<double, 6, 6>::Zero();
+    states.total_inertia(0, 0) = 4;
+    states.total_inertia(1, 1) = 5;
+    states.total_inertia(5, 5) = 6;
 
-    std::map<std::string,double> commands;
+    std::map<std::string, double> commands;
     commands["x_co"] = 5;
     commands["y_co"] = 6;
     commands["psi_co"] = 7;
 
     const auto F = w.get_force(states, a.random<double>(), env, commands);
 
-    ASSERT_NEAR(4*1*(5-x)-2*0.9*4*1*8, F.X(), EPS);
+    ASSERT_NEAR(4 * 1 * (5 - x) - 2 * 0.9 * 4 * 1 * 8, F.X(), EPS);
     // Y and N tolerances: the expected values are ~2e2, so one ulp is ~3e-14 and the old
     // 3*EPS was barely one ulp. <cmath> results differ in the last ulp between standard
     // libraries, so allow a few tens of ulps of slack.
-    ASSERT_NEAR(5*9*(6-y)-2*0.85*5*3*9, F.Y(), 100 * EPS);
+    ASSERT_NEAR(5 * 9 * (6 - y) - 2 * 0.85 * 5 * 3 * 9, F.Y(), 100 * EPS);
     ASSERT_NEAR(0, F.Z(), EPS);
     ASSERT_NEAR(0, F.K(), EPS);
     ASSERT_NEAR(0, F.M(), EPS);
-    ASSERT_NEAR(6*16*(7-psi)-2*0.8*6*4*10, F.N(), 100 * EPS);
+    ASSERT_NEAR(6 * 16 * (7 - psi) - 2 * 0.8 * 6 * 4 * 10, F.N(), 100 * EPS);
 }

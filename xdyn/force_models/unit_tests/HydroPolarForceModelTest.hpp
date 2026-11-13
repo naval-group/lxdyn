@@ -3,9 +3,8 @@
 
 #include "gtest/gtest.h"
 
-class HydroPolarForceModelTest : public ::testing::Test
-{
-    public:
+class HydroPolarForceModelTest : public ::testing::Test {
+public:
 };
 
 #endif /* FORCE_MODELS_UNIT_TESTS_INC_HYDROPOLARFORCEMODELTEST_HPP_ */

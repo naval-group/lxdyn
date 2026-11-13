@@ -6,32 +6,34 @@
  */
 
 #include "low_level_hdb_parserTest.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/external_file_formats/hdb_to_ast.hpp"
-#include "xdyn/external_file_formats/hdb_parser_internal_data_structures.hpp"
+
 #include "xdyn/external_file_formats/hdb_grammar.hpp"
+#include "xdyn/external_file_formats/hdb_parser_internal_data_structures.hpp"
+#include "xdyn/external_file_formats/hdb_to_ast.hpp"
 #include "xdyn/external_file_formats/pretty_print_hdb.hpp"
+#include "xdyn/test_data_generator/hdb_data.hpp"
 
 using boost::spirit::ascii::blank;
 
-low_level_hdb_parserTest::low_level_hdb_parserTest() : a(ssc::random_data_generator::DataGenerator(212))
+low_level_hdb_parserTest::low_level_hdb_parserTest()
+    : a(ssc::random_data_generator::DataGenerator(212))
 {
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_string_key)
 {
     const hdb::AST hdb_file = hdb::parse("[test this] string");
-    ASSERT_EQ(1,hdb_file.string_keys.size());
-    ASSERT_EQ("test this",hdb_file.string_keys.at(0).header);
-    ASSERT_EQ("string",hdb_file.string_keys.at(0).value);
+    ASSERT_EQ(1, hdb_file.string_keys.size());
+    ASSERT_EQ("test this", hdb_file.string_keys.at(0).header);
+    ASSERT_EQ("string", hdb_file.string_keys.at(0).value);
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_value_key)
 {
     const hdb::AST hdb_file = hdb::parse("[FORWARD SPEED]   1.23");
-    ASSERT_EQ(1,hdb_file.value_keys.size());
-    ASSERT_EQ("FORWARD SPEED",hdb_file.value_keys.at(0).header);
-    ASSERT_EQ(1.23,hdb_file.value_keys.at(0).value);
+    ASSERT_EQ(1, hdb_file.value_keys.size());
+    ASSERT_EQ("FORWARD SPEED", hdb_file.value_keys.at(0).header);
+    ASSERT_EQ(1.23, hdb_file.value_keys.at(0).value);
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_list_of_doubles)
@@ -42,9 +44,9 @@ TEST_F(low_level_hdb_parserTest, can_parse_list_of_doubles)
     std::vector<double> d;
     const bool match = qi::phrase_parse(b, e, g.values, blank, d);
     ASSERT_TRUE(match);
-    ASSERT_EQ(2,d.size());
-    ASSERT_DOUBLE_EQ(12.1,d.front());
-    ASSERT_DOUBLE_EQ(12.3456789,d.back());
+    ASSERT_EQ(2, d.size());
+    ASSERT_DOUBLE_EQ(12.1, d.front());
+    ASSERT_DOUBLE_EQ(12.3456789, d.back());
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_key)
@@ -52,8 +54,8 @@ TEST_F(low_level_hdb_parserTest, can_parse_key)
     hdb::grammar g;
     const std::string s = "[sdgf sdfgsdgf sdfgsdg]";
     std::string actual;
-    qi::phrase_parse(s.begin(), s.end(), g.header,blank,actual);
-    ASSERT_EQ("sdgf sdfgsdgf sdfgsdg",actual);
+    qi::phrase_parse(s.begin(), s.end(), g.header, blank, actual);
+    ASSERT_EQ("sdgf sdfgsdgf sdfgsdg", actual);
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_section)
@@ -68,16 +70,16 @@ TEST_F(low_level_hdb_parserTest, can_parse_section)
                                4.00
                             )";
     hdb::VectorSection section;
-    qi::phrase_parse(s.begin(), s.end(), g.vector_section,blank,section);
+    qi::phrase_parse(s.begin(), s.end(), g.vector_section, blank, section);
 
     ASSERT_EQ("List_calculated_periods", section.header);
-    ASSERT_EQ(6,section.values.size());
-    ASSERT_DOUBLE_EQ(1,   section.values.at(0));
-    ASSERT_DOUBLE_EQ(2,   section.values.at(1));
-    ASSERT_DOUBLE_EQ(3,   section.values.at(2));
+    ASSERT_EQ(6, section.values.size());
+    ASSERT_DOUBLE_EQ(1, section.values.at(0));
+    ASSERT_DOUBLE_EQ(2, section.values.at(1));
+    ASSERT_DOUBLE_EQ(3, section.values.at(2));
     ASSERT_DOUBLE_EQ(3.5, section.values.at(3));
     ASSERT_DOUBLE_EQ(3.8, section.values.at(4));
-    ASSERT_DOUBLE_EQ(4,   section.values.at(5));
+    ASSERT_DOUBLE_EQ(4, section.values.at(5));
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_two_sections)
@@ -106,13 +108,13 @@ TEST_F(low_level_hdb_parserTest, can_parse_two_sections)
                                 180.0000
                             )";
     std::vector<hdb::VectorSection> sections;
-    qi::phrase_parse(s.begin(), s.end(), *(g.vector_section),blank,sections);
-    ASSERT_EQ(2,sections.size());
+    qi::phrase_parse(s.begin(), s.end(), *(g.vector_section), blank, sections);
+    ASSERT_EQ(2, sections.size());
     ASSERT_EQ("List_calculated_periods", sections.at(0).header);
     ASSERT_EQ("List_calculated_headings", sections.at(1).header);
-    ASSERT_EQ(6,sections.at(0).values.size());
-    ASSERT_EQ(13,sections.at(1).values.size());
-    ASSERT_DOUBLE_EQ(75,sections.at(1).values.at(5));
+    ASSERT_EQ(6, sections.at(0).values.size());
+    ASSERT_EQ(13, sections.at(1).values.size());
+    ASSERT_DOUBLE_EQ(75, sections.at(1).values.at(5));
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_string)
@@ -121,7 +123,7 @@ TEST_F(low_level_hdb_parserTest, can_parse_string)
     const std::string s = " sdfgsdfg 456ggf 4ggffs  ";
     std::string::const_iterator b = s.begin(), e = s.end();
     std::string string;
-    qi::phrase_parse(b, e, g.str,blank,string);
+    qi::phrase_parse(b, e, g.str, blank, string);
     ASSERT_EQ("sdfgsdfg 456ggf 4ggffs", string);
 }
 
@@ -129,11 +131,11 @@ TEST_F(low_level_hdb_parserTest, can_parse_one_string_keys)
 {
     hdb::grammar g;
     const std::string s = "[key 1] value 1\n";
-    std::vector<hdb::Key<std::string> > string_keys;
-    qi::phrase_parse(s.begin(), s.end(), *(g.string_key),blank,string_keys);
-    ASSERT_EQ(1,string_keys.size());
-    ASSERT_EQ("key 1",string_keys.at(0).header);
-    ASSERT_EQ("value 1",string_keys.at(0).value);
+    std::vector<hdb::Key<std::string>> string_keys;
+    qi::phrase_parse(s.begin(), s.end(), *(g.string_key), blank, string_keys);
+    ASSERT_EQ(1, string_keys.size());
+    ASSERT_EQ("key 1", string_keys.at(0).header);
+    ASSERT_EQ("value 1", string_keys.at(0).value);
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_several_string_keys)
@@ -141,13 +143,13 @@ TEST_F(low_level_hdb_parserTest, can_parse_several_string_keys)
     hdb::grammar g;
     const std::string s = "[   key 1 ]     value 1\n"
                           "[  key 2     ]   value 2    \n";
-    std::vector<hdb::Key<std::string> > string_keys;
-    qi::phrase_parse(s.begin(), s.end(), *(g.string_key),blank,string_keys);
-    ASSERT_EQ(2,string_keys.size());
-    ASSERT_EQ("key 1",string_keys.at(0).header);
-    ASSERT_EQ("value 1",string_keys.at(0).value);
-    ASSERT_EQ("key 2",string_keys.at(1).header);
-    ASSERT_EQ("value 2",string_keys.at(1).value);
+    std::vector<hdb::Key<std::string>> string_keys;
+    qi::phrase_parse(s.begin(), s.end(), *(g.string_key), blank, string_keys);
+    ASSERT_EQ(2, string_keys.size());
+    ASSERT_EQ("key 1", string_keys.at(0).header);
+    ASSERT_EQ("value 1", string_keys.at(0).value);
+    ASSERT_EQ("key 2", string_keys.at(1).header);
+    ASSERT_EQ("value 2", string_keys.at(1).value);
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_a_matrix_section)
@@ -162,7 +164,7 @@ TEST_F(low_level_hdb_parserTest, can_parse_a_matrix_section)
                               4.00  2.287093E+04 -2.404940E+01  1.989585E+04 -4.781980E+01  2.971014E+05  4.187755E+02
                             )";
     hdb::MatrixSection m;
-    qi::phrase_parse(s.begin(), s.end(), g.matrix_section,blank,m);
+    qi::phrase_parse(s.begin(), s.end(), g.matrix_section, blank, m);
     ASSERT_EQ("ADDED_MASS_LINE_1", m.header);
     ASSERT_EQ(6, m.values.size());
     ASSERT_EQ(7, m.values.at(0).size());
@@ -180,7 +182,7 @@ TEST_F(low_level_hdb_parserTest, can_parse_a_matrix_section)
     ASSERT_DOUBLE_EQ(9.087353E+00, m.values.at(0).at(6));
 
     const auto tree = hdb::parse(s);
-    ASSERT_EQ(1,tree.matrix_sections.size());
+    ASSERT_EQ(1, tree.matrix_sections.size());
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_a_list_of_matrix_sections)
@@ -203,12 +205,12 @@ TEST_F(low_level_hdb_parserTest, can_parse_a_list_of_matrix_sections)
                                  4.00  2.647226E+00  2.104009E+05 -2.568808E+01 -8.096014E+03  1.758119E+02  2.022041E+05
                             )";
     std::vector<hdb::ListOfMatrixSections> lists_of_sections;
-    qi::phrase_parse(s.begin(), s.end(), g.list_of_matrix_sections,blank,lists_of_sections);
+    qi::phrase_parse(s.begin(), s.end(), g.list_of_matrix_sections, blank, lists_of_sections);
 
     hdb::AST ast = hdb::parse(s);
 
-    ASSERT_EQ(1,ast.lists_of_matrix_sections.size());
-    ASSERT_EQ(2,ast.lists_of_matrix_sections.at(0).sections.size());
+    ASSERT_EQ(1, ast.lists_of_matrix_sections.size());
+    ASSERT_EQ(2, ast.lists_of_matrix_sections.at(0).sections.size());
 
     ASSERT_EQ(1, lists_of_sections.size());
     ASSERT_EQ("Added_mass_Radiation_Damping", lists_of_sections.at(0).header);
@@ -252,11 +254,11 @@ TEST_F(low_level_hdb_parserTest, can_parse_a_list_of_matrix_sections_with_just_o
                                  4.00  2.287093E+04 -2.404940E+01  1.989585E+04 -4.781980E+01  2.971014E+05  4.187755E+02
                             )";
     std::vector<hdb::ListOfMatrixSections> lists_of_sections;
-    qi::phrase_parse(s.begin(), s.end(), g.list_of_matrix_sections,blank,lists_of_sections);
-    ASSERT_EQ(1,lists_of_sections.size());
-    ASSERT_EQ("Added_mass_Radiation_Damping",lists_of_sections.front().header);
-    ASSERT_EQ(1,lists_of_sections.front().sections.size());
-    ASSERT_EQ("ADDED_MASS_LINE_1",lists_of_sections.front().sections.front().header);
+    qi::phrase_parse(s.begin(), s.end(), g.list_of_matrix_sections, blank, lists_of_sections);
+    ASSERT_EQ(1, lists_of_sections.size());
+    ASSERT_EQ("Added_mass_Radiation_Damping", lists_of_sections.front().header);
+    ASSERT_EQ(1, lists_of_sections.front().sections.size());
+    ASSERT_EQ("ADDED_MASS_LINE_1", lists_of_sections.front().sections.front().header);
 }
 
 TEST_F(low_level_hdb_parserTest, can_parse_a_list_of_matrix_sections_with_id)
@@ -295,7 +297,7 @@ TEST_F(low_level_hdb_parserTest, can_parse_a_list_of_matrix_sections_with_id)
     ASSERT_DOUBLE_EQ(2.217378E+02, l.sections_with_id.at(0).values.at(0).at(4));
     ASSERT_DOUBLE_EQ(2.450282E+04, l.sections_with_id.at(0).values.at(0).at(5));
     ASSERT_DOUBLE_EQ(1.831288E+03, l.sections_with_id.at(0).values.at(0).at(6));
-    ASSERT_EQ(2,l.sections_with_id.size());
+    ASSERT_EQ(2, l.sections_with_id.size());
     EXPECT_EQ("INCIDENCE_EFM_MOD_001", l.sections_with_id.at(1).header);
     ASSERT_DOUBLE_EQ(5.260016E+04, l.sections_with_id.at(1).values.at(5).at(2));
     EXPECT_DOUBLE_EQ(15, l.sections_with_id.at(1).id);
@@ -331,11 +333,11 @@ TEST_F(low_level_hdb_parserTest, can_parse_file_to_internal_data_structure)
     ASSERT_EQ(1, hdb_file.string_keys.size());
     ASSERT_EQ("AQUA+", hdb_file.string_keys.front().value);
     ASSERT_EQ(5, hdb_file.value_keys.size());
-    ASSERT_DOUBLE_EQ(0,hdb_file.value_keys.at(0).value);
-    ASSERT_DOUBLE_EQ(6,hdb_file.value_keys.at(1).value);
-    ASSERT_DOUBLE_EQ(13,hdb_file.value_keys.at(2).value);
-    ASSERT_DOUBLE_EQ(0,hdb_file.value_keys.at(3).value);
-    ASSERT_DOUBLE_EQ(180,hdb_file.value_keys.at(4).value);
+    ASSERT_DOUBLE_EQ(0, hdb_file.value_keys.at(0).value);
+    ASSERT_DOUBLE_EQ(6, hdb_file.value_keys.at(1).value);
+    ASSERT_DOUBLE_EQ(13, hdb_file.value_keys.at(2).value);
+    ASSERT_DOUBLE_EQ(0, hdb_file.value_keys.at(3).value);
+    ASSERT_DOUBLE_EQ(180, hdb_file.value_keys.at(4).value);
     ASSERT_EQ(1, hdb_file.lists_of_matrix_sections.size());
     ASSERT_EQ(3, hdb_file.lists_of_matrix_sections_with_id.size());
     ASSERT_EQ(2, hdb_file.vector_sections.size());

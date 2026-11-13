@@ -12,11 +12,11 @@ struct YamlSimServerInputs;
 
 #include <map>
 #include <string>
+
 #include "xdyn/core/State.hpp"
 #include "xdyn/external_data_structures/YamlController.hpp"
 
-struct SimServerInputs
-{
+struct SimServerInputs {
     SimServerInputs(const YamlSimServerInputs& server_inputs, const double max_history_length);
     explicit SimServerInputs(const double Dt);
     double t;
@@ -27,8 +27,9 @@ struct SimServerInputs
     std::map<std::string, double> commands;
     std::vector<std::string> requested_output;
     std::vector<YamlController> controllers;
-    private: SimServerInputs(); // Disabled
-};
 
+private:
+    SimServerInputs();  // Disabled
+};
 
 #endif /* OBSERVERS_AND_API_INC_SIMSERVERINPUTS_HPP_ */

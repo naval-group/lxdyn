@@ -6,59 +6,58 @@
  */
 
 #include "HDBParserTest.hpp"
+
+#include <cmath>
+
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/hdb_interpolators/HDBParser.hpp"
 #include "xdyn/test_data_generator/hdb_data.hpp"
-
-#include <cmath>
 #define PI M_PI
 constexpr double EPS = 1E-10;
 
-HDBParserTest::HDBParserTest() : a(ssc::random_data_generator::DataGenerator(833332))
-{
-}
+HDBParserTest::HDBParserTest() : a(ssc::random_data_generator::DataGenerator(833332)) {}
 
 TEST_F(HDBParserTest, can_get_added_mass)
 {
     const HDBParser builder = HDBParser::from_string(test_data::test_ship_hdb());
     const auto Ma = builder.get_added_mass_array();
-    ASSERT_EQ(6,Ma.size());
-    ASSERT_DOUBLE_EQ(1,Ma.at(0).first);
-    ASSERT_EQ(6,Ma.at(0).second.size());
-    ASSERT_DOUBLE_EQ(1.097184E+04,Ma.at(0).second.at(0).at(0));
-    ASSERT_DOUBLE_EQ(-4.443533E+01,Ma.at(0).second.at(3).at(4));
+    ASSERT_EQ(6, Ma.size());
+    ASSERT_DOUBLE_EQ(1, Ma.at(0).first);
+    ASSERT_EQ(6, Ma.at(0).second.size());
+    ASSERT_DOUBLE_EQ(1.097184E+04, Ma.at(0).second.at(0).at(0));
+    ASSERT_DOUBLE_EQ(-4.443533E+01, Ma.at(0).second.at(3).at(4));
 
-    ASSERT_DOUBLE_EQ(2,Ma.at(1).first);
-    ASSERT_EQ(6,Ma.at(1).second.size());
-    ASSERT_DOUBLE_EQ(-2.102286E+04,Ma.at(1).second.at(1).at(3));
-    ASSERT_DOUBLE_EQ(2.702315E+05,Ma.at(1).second.at(2).at(4));
+    ASSERT_DOUBLE_EQ(2, Ma.at(1).first);
+    ASSERT_EQ(6, Ma.at(1).second.size());
+    ASSERT_DOUBLE_EQ(-2.102286E+04, Ma.at(1).second.at(1).at(3));
+    ASSERT_DOUBLE_EQ(2.702315E+05, Ma.at(1).second.at(2).at(4));
 
-    ASSERT_DOUBLE_EQ(3,Ma.at(2).first);
-    ASSERT_EQ(6,Ma.at(2).second.size());
-    ASSERT_DOUBLE_EQ(-7.183531E+01,Ma.at(2).second.at(5).at(0));
-    ASSERT_DOUBLE_EQ(-8.938050E+01,Ma.at(2).second.at(2).at(1));
+    ASSERT_DOUBLE_EQ(3, Ma.at(2).first);
+    ASSERT_EQ(6, Ma.at(2).second.size());
+    ASSERT_DOUBLE_EQ(-7.183531E+01, Ma.at(2).second.at(5).at(0));
+    ASSERT_DOUBLE_EQ(-8.938050E+01, Ma.at(2).second.at(2).at(1));
 
-    ASSERT_DOUBLE_EQ(3.5,Ma.at(3).first);
-    ASSERT_EQ(6,Ma.at(3).second.size());
+    ASSERT_DOUBLE_EQ(3.5, Ma.at(3).first);
+    ASSERT_EQ(6, Ma.at(3).second.size());
 
-    ASSERT_DOUBLE_EQ(3.8,Ma.at(4).first);
-    ASSERT_EQ(6,Ma.at(4).second.size());
+    ASSERT_DOUBLE_EQ(3.8, Ma.at(4).first);
+    ASSERT_EQ(6, Ma.at(4).second.size());
 
-    ASSERT_DOUBLE_EQ(4,Ma.at(5).first);
-    ASSERT_EQ(6,Ma.at(5).second.size());
+    ASSERT_DOUBLE_EQ(4, Ma.at(5).first);
+    ASSERT_EQ(6, Ma.at(5).second.size());
 }
 
 TEST_F(HDBParserTest, can_retrieve_radiation_damping)
 {
     const HDBParser builder = HDBParser::from_string(test_data::test_ship_hdb());
     const auto Br = builder.get_radiation_damping_array();
-    ASSERT_EQ(6,Br.size());
-    ASSERT_DOUBLE_EQ(1,  Br.at(0).first);
-    ASSERT_DOUBLE_EQ(2,  Br.at(1).first);
-    ASSERT_DOUBLE_EQ(3,  Br.at(2).first);
-    ASSERT_DOUBLE_EQ(3.5,Br.at(3).first);
-    ASSERT_DOUBLE_EQ(3.8,Br.at(4).first);
-    ASSERT_DOUBLE_EQ(4,  Br.at(5).first);
+    ASSERT_EQ(6, Br.size());
+    ASSERT_DOUBLE_EQ(1, Br.at(0).first);
+    ASSERT_DOUBLE_EQ(2, Br.at(1).first);
+    ASSERT_DOUBLE_EQ(3, Br.at(2).first);
+    ASSERT_DOUBLE_EQ(3.5, Br.at(3).first);
+    ASSERT_DOUBLE_EQ(3.8, Br.at(4).first);
+    ASSERT_DOUBLE_EQ(4, Br.at(5).first);
 
     ASSERT_DOUBLE_EQ(6.771553E+03, Br.at(0).second.at(0).at(0));
     ASSERT_DOUBLE_EQ(2.194728E+05, Br.at(1).second.at(1).at(1));
@@ -78,22 +77,22 @@ TEST_F(HDBParserTest, can_retrieve_initial_values)
     const auto M1 = data.get_added_mass(1);
     ASSERT_EQ(6, M1.cols());
     ASSERT_EQ(6, M1.rows());
-    ASSERT_DOUBLE_EQ(-1.503212E+04, (double)M1(2,0));
-    ASSERT_DOUBLE_EQ(-1.618101E+02, (double)M1(2,1));
-    ASSERT_DOUBLE_EQ(1.781351E+05, (double)M1(2,2));
-    ASSERT_DOUBLE_EQ(1.053934E+02, (double)M1(2,3));
-    ASSERT_DOUBLE_EQ(3.267841E+05, (double)M1(2,4));
-    ASSERT_DOUBLE_EQ(6.774041E+02, (double)M1(2,5));
+    ASSERT_DOUBLE_EQ(-1.503212E+04, (double)M1(2, 0));
+    ASSERT_DOUBLE_EQ(-1.618101E+02, (double)M1(2, 1));
+    ASSERT_DOUBLE_EQ(1.781351E+05, (double)M1(2, 2));
+    ASSERT_DOUBLE_EQ(1.053934E+02, (double)M1(2, 3));
+    ASSERT_DOUBLE_EQ(3.267841E+05, (double)M1(2, 4));
+    ASSERT_DOUBLE_EQ(6.774041E+02, (double)M1(2, 5));
 
     const auto M2 = data.get_added_mass(2);
     ASSERT_EQ(6, M2.cols());
     ASSERT_EQ(6, M2.rows());
-    ASSERT_DOUBLE_EQ(3.032333E+01, (double)M2(3,0));
-    ASSERT_DOUBLE_EQ(-2.332197E+04, (double)M2(3,1));
-    ASSERT_DOUBLE_EQ(5.924372E+01, (double)M2(3,2));
-    ASSERT_DOUBLE_EQ(2.132689E+05, (double)M2(3,3));
-    ASSERT_DOUBLE_EQ(-2.994200E+02, (double)M2(3,4));
-    ASSERT_DOUBLE_EQ(-3.943479E+04, (double)M2(3,5));
+    ASSERT_DOUBLE_EQ(3.032333E+01, (double)M2(3, 0));
+    ASSERT_DOUBLE_EQ(-2.332197E+04, (double)M2(3, 1));
+    ASSERT_DOUBLE_EQ(5.924372E+01, (double)M2(3, 2));
+    ASSERT_DOUBLE_EQ(2.132689E+05, (double)M2(3, 3));
+    ASSERT_DOUBLE_EQ(-2.994200E+02, (double)M2(3, 4));
+    ASSERT_DOUBLE_EQ(-3.943479E+04, (double)M2(3, 5));
     //! [HDBDataTest expected output]
 }
 
@@ -120,70 +119,68 @@ TEST_F(HDBParserTest, can_retrieve_added_mass_at_Tp_0)
     // 1.00  -1.859354E+05 -9.713239E+02 +3.161598E+05 +8.541685E+02 +4.817756E+06 +3.160583E+03
     // 1.00  -5.462172E+01 +5.712155E+04 -5.937933E+01 -1.028317E+05 +1.836449E+03 +2.822413E+06
 
-    ASSERT_NEAR(+1.097184E+04, M(0,0), EPS);
-    ASSERT_NEAR(+4.534383E+01, M(0,1), EPS);
-    ASSERT_NEAR(-1.489058E+04, M(0,2), EPS);
-    ASSERT_NEAR(-6.476872E+01, M(0,3), EPS);
-    ASSERT_NEAR(-1.887115E+05, M(0,4), EPS);
-    ASSERT_NEAR(-9.087353E+00, M(0,5), EPS);
-    ASSERT_NEAR(-5.372426E+00, M(1,0), EPS);
-    ASSERT_NEAR(+1.039658E+05, M(1,1), EPS);
-    ASSERT_NEAR(-1.038983E+01, M(1,2), EPS);
-    ASSERT_NEAR(-1.798326E+04, M(1,3), EPS);
-    ASSERT_NEAR(+1.127642E+02, M(1,4), EPS);
-    ASSERT_NEAR(+6.116315E+04, M(1,5), EPS);
-    ASSERT_NEAR(-1.503212E+04, M(2,0), EPS);
-    ASSERT_NEAR(-1.618101E+02, M(2,1), EPS);
-    ASSERT_NEAR(+1.781351E+05, M(2,2), EPS);
-    ASSERT_NEAR(+1.053934E+02, M(2,3), EPS);
-    ASSERT_NEAR(+3.267841E+05, M(2,4), EPS);
-    ASSERT_NEAR(+6.774041E+02, M(2,5), EPS);
-    ASSERT_NEAR(+4.917638E+00, M(3,0), EPS);
-    ASSERT_NEAR(-2.588053E+04, M(3,1), EPS);
-    ASSERT_NEAR(+3.457921E+01, M(3,2), EPS);
-    ASSERT_NEAR(+2.133712E+05, M(3,3), EPS);
-    ASSERT_NEAR(-4.443533E+01, M(3,4), EPS);
-    ASSERT_NEAR(-7.469054E+04, M(3,5), EPS);
-    ASSERT_NEAR(-1.859354E+05, M(4,0), EPS);
-    ASSERT_NEAR(-9.713239E+02, M(4,1), EPS);
-    ASSERT_NEAR(+3.161598E+05, M(4,2), EPS);
-    ASSERT_NEAR(+8.541685E+02, M(4,3), EPS);
-    ASSERT_NEAR(+4.817756E+06, M(4,4), EPS);
-    ASSERT_NEAR(+3.160583E+03, M(4,5), EPS);
-    ASSERT_NEAR(-5.462172E+01, M(5,0), EPS);
-    ASSERT_NEAR(+5.712155E+04, M(5,1), EPS);
-    ASSERT_NEAR(-5.937933E+01, M(5,2), EPS);
-    ASSERT_NEAR(-1.028317E+05, M(5,3), EPS);
-    ASSERT_NEAR(+1.836449E+03, M(5,4), EPS);
-    ASSERT_NEAR(+2.822413E+06, M(5,5), EPS);
+    ASSERT_NEAR(+1.097184E+04, M(0, 0), EPS);
+    ASSERT_NEAR(+4.534383E+01, M(0, 1), EPS);
+    ASSERT_NEAR(-1.489058E+04, M(0, 2), EPS);
+    ASSERT_NEAR(-6.476872E+01, M(0, 3), EPS);
+    ASSERT_NEAR(-1.887115E+05, M(0, 4), EPS);
+    ASSERT_NEAR(-9.087353E+00, M(0, 5), EPS);
+    ASSERT_NEAR(-5.372426E+00, M(1, 0), EPS);
+    ASSERT_NEAR(+1.039658E+05, M(1, 1), EPS);
+    ASSERT_NEAR(-1.038983E+01, M(1, 2), EPS);
+    ASSERT_NEAR(-1.798326E+04, M(1, 3), EPS);
+    ASSERT_NEAR(+1.127642E+02, M(1, 4), EPS);
+    ASSERT_NEAR(+6.116315E+04, M(1, 5), EPS);
+    ASSERT_NEAR(-1.503212E+04, M(2, 0), EPS);
+    ASSERT_NEAR(-1.618101E+02, M(2, 1), EPS);
+    ASSERT_NEAR(+1.781351E+05, M(2, 2), EPS);
+    ASSERT_NEAR(+1.053934E+02, M(2, 3), EPS);
+    ASSERT_NEAR(+3.267841E+05, M(2, 4), EPS);
+    ASSERT_NEAR(+6.774041E+02, M(2, 5), EPS);
+    ASSERT_NEAR(+4.917638E+00, M(3, 0), EPS);
+    ASSERT_NEAR(-2.588053E+04, M(3, 1), EPS);
+    ASSERT_NEAR(+3.457921E+01, M(3, 2), EPS);
+    ASSERT_NEAR(+2.133712E+05, M(3, 3), EPS);
+    ASSERT_NEAR(-4.443533E+01, M(3, 4), EPS);
+    ASSERT_NEAR(-7.469054E+04, M(3, 5), EPS);
+    ASSERT_NEAR(-1.859354E+05, M(4, 0), EPS);
+    ASSERT_NEAR(-9.713239E+02, M(4, 1), EPS);
+    ASSERT_NEAR(+3.161598E+05, M(4, 2), EPS);
+    ASSERT_NEAR(+8.541685E+02, M(4, 3), EPS);
+    ASSERT_NEAR(+4.817756E+06, M(4, 4), EPS);
+    ASSERT_NEAR(+3.160583E+03, M(4, 5), EPS);
+    ASSERT_NEAR(-5.462172E+01, M(5, 0), EPS);
+    ASSERT_NEAR(+5.712155E+04, M(5, 1), EPS);
+    ASSERT_NEAR(-5.937933E+01, M(5, 2), EPS);
+    ASSERT_NEAR(-1.028317E+05, M(5, 3), EPS);
+    ASSERT_NEAR(+1.836449E+03, M(5, 4), EPS);
+    ASSERT_NEAR(+2.822413E+06, M(5, 5), EPS);
 }
 
 TEST_F(HDBParserTest, can_retrieve_angular_frequencies_for_radiation_damping)
 {
     const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
     const auto angular_frequencies = data.get_angular_frequencies();
-    ASSERT_EQ(6,        angular_frequencies.size());
-    ASSERT_EQ(2*PI/1.,  angular_frequencies.at(5));
-    ASSERT_EQ(2*PI/2.,  angular_frequencies.at(4));
-    ASSERT_EQ(2*PI/3.,  angular_frequencies.at(3));
-    ASSERT_EQ(2*PI/3.5, angular_frequencies.at(2));
-    ASSERT_EQ(2*PI/3.8, angular_frequencies.at(1));
-    ASSERT_EQ(2*PI/4.,  angular_frequencies.at(0));
+    ASSERT_EQ(6, angular_frequencies.size());
+    ASSERT_EQ(2 * PI / 1., angular_frequencies.at(5));
+    ASSERT_EQ(2 * PI / 2., angular_frequencies.at(4));
+    ASSERT_EQ(2 * PI / 3., angular_frequencies.at(3));
+    ASSERT_EQ(2 * PI / 3.5, angular_frequencies.at(2));
+    ASSERT_EQ(2 * PI / 3.8, angular_frequencies.at(1));
+    ASSERT_EQ(2 * PI / 4., angular_frequencies.at(0));
 }
 
 TEST_F(HDBParserTest, can_retrieve_vectors_for_each_element_in_radiation_damping_matrix)
 {
     const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        for (size_t j = 0 ; j < 6 ; ++j)
-        {
-            ASSERT_EQ(6, data.get_radiation_damping_coeff(i,j).size());
+    for (size_t i = 0; i < 6; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
+            ASSERT_EQ(6, data.get_radiation_damping_coeff(i, j).size());
         }
     }
-    const auto v = data.get_radiation_damping_coeff(1,2);
+    const auto v = data.get_radiation_damping_coeff(1, 2);
     ASSERT_DOUBLE_EQ(-1.590935E+02, v.at(5));
-    ASSERT_DOUBLE_EQ( 2.595528E+02, v.at(4));
+    ASSERT_DOUBLE_EQ(2.595528E+02, v.at(4));
     ASSERT_DOUBLE_EQ(-1.614637E+02, v.at(3));
     ASSERT_DOUBLE_EQ(-1.376756E+02, v.at(2));
     ASSERT_DOUBLE_EQ(-1.215545E+02, v.at(1));
@@ -193,43 +190,43 @@ TEST_F(HDBParserTest, can_retrieve_vectors_for_each_element_in_radiation_damping
 TEST_F(HDBParserTest, can_retrieve_vector_of_vectors_for_RAOs)
 {
     const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
-    const std::array<std::vector<std::vector<double> >,6 > module = data.get_froude_krylov_module_tables();
-    const std::array<std::vector<std::vector<double> >,6 > phase = data.get_froude_krylov_phase_tables();
-    const std::array<std::vector<std::vector<double> >,6 > drift = data.get_wave_drift_tables();
-    ASSERT_EQ(6,std::get<0>(module).size());
-    ASSERT_EQ(6,std::get<1>(module).size());
-    ASSERT_EQ(6,std::get<2>(module).size());
-    ASSERT_EQ(6,std::get<3>(module).size());
-    ASSERT_EQ(6,std::get<4>(module).size());
-    ASSERT_EQ(6,std::get<5>(module).size());
-    ASSERT_EQ(6,std::get<0>(phase).size());
-    ASSERT_EQ(6,std::get<1>(phase).size());
-    ASSERT_EQ(6,std::get<2>(phase).size());
-    ASSERT_EQ(6,std::get<3>(phase).size());
-    ASSERT_EQ(6,std::get<4>(phase).size());
-    ASSERT_EQ(6,std::get<5>(phase).size());
-    ASSERT_EQ(6,std::get<0>(drift).size());
-    ASSERT_EQ(6,std::get<1>(drift).size());
-    ASSERT_EQ(6,std::get<2>(drift).size());
-    ASSERT_EQ(6,std::get<3>(drift).size());
-    ASSERT_EQ(6,std::get<4>(drift).size());
-    ASSERT_EQ(6,std::get<5>(drift).size());
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        for (size_t j = 0 ; j < 6 ; ++j)
-        {
+    const std::array<std::vector<std::vector<double>>, 6> module =
+        data.get_froude_krylov_module_tables();
+    const std::array<std::vector<std::vector<double>>, 6> phase =
+        data.get_froude_krylov_phase_tables();
+    const std::array<std::vector<std::vector<double>>, 6> drift = data.get_wave_drift_tables();
+    ASSERT_EQ(6, std::get<0>(module).size());
+    ASSERT_EQ(6, std::get<1>(module).size());
+    ASSERT_EQ(6, std::get<2>(module).size());
+    ASSERT_EQ(6, std::get<3>(module).size());
+    ASSERT_EQ(6, std::get<4>(module).size());
+    ASSERT_EQ(6, std::get<5>(module).size());
+    ASSERT_EQ(6, std::get<0>(phase).size());
+    ASSERT_EQ(6, std::get<1>(phase).size());
+    ASSERT_EQ(6, std::get<2>(phase).size());
+    ASSERT_EQ(6, std::get<3>(phase).size());
+    ASSERT_EQ(6, std::get<4>(phase).size());
+    ASSERT_EQ(6, std::get<5>(phase).size());
+    ASSERT_EQ(6, std::get<0>(drift).size());
+    ASSERT_EQ(6, std::get<1>(drift).size());
+    ASSERT_EQ(6, std::get<2>(drift).size());
+    ASSERT_EQ(6, std::get<3>(drift).size());
+    ASSERT_EQ(6, std::get<4>(drift).size());
+    ASSERT_EQ(6, std::get<5>(drift).size());
+    for (size_t i = 0; i < 6; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             ASSERT_EQ(13, module.at(i).at(j).size());
             ASSERT_EQ(13, phase.at(i).at(j).size());
             ASSERT_EQ(13, drift.at(i).at(j).size());
         }
     }
-    ASSERT_DOUBLE_EQ(3.098978E5,module.at(2).at(4).at(3));
-    ASSERT_DOUBLE_EQ(7.774210E4,module.at(1).at(3).at(2));
-    ASSERT_DOUBLE_EQ(1.459181E4,module.at(5).at(2).at(6));
-    ASSERT_DOUBLE_EQ(-2.004334,phase.at(2).at(4).at(3));
-    ASSERT_DOUBLE_EQ(3.041773,phase.at(1).at(3).at(2));
-    ASSERT_DOUBLE_EQ(8.036613E-3,phase.at(5).at(2).at(6));
-    ASSERT_DOUBLE_EQ(3.847296E+04,drift.at(0).at(0).at(0));
+    ASSERT_DOUBLE_EQ(3.098978E5, module.at(2).at(4).at(3));
+    ASSERT_DOUBLE_EQ(7.774210E4, module.at(1).at(3).at(2));
+    ASSERT_DOUBLE_EQ(1.459181E4, module.at(5).at(2).at(6));
+    ASSERT_DOUBLE_EQ(-2.004334, phase.at(2).at(4).at(3));
+    ASSERT_DOUBLE_EQ(3.041773, phase.at(1).at(3).at(2));
+    ASSERT_DOUBLE_EQ(8.036613E-3, phase.at(5).at(2).at(6));
+    ASSERT_DOUBLE_EQ(3.847296E+04, drift.at(0).at(0).at(0));
 }
 
 TEST_F(HDBParserTest, can_retrieve_omegas_for_RAOs)
@@ -271,11 +268,10 @@ TEST_F(HDBParserTest, can_retrieve_psis_for_RAOs)
     ASSERT_EQ(13, psi1.size());
     ASSERT_EQ(13, psi2.size());
     ASSERT_EQ(13, psi3.size());
-    for (size_t i = 0 ; i < 13 ; ++i)
-    {
-        ASSERT_DOUBLE_EQ(PI/180.*15.*(double)i, psi1[i]);
-        ASSERT_DOUBLE_EQ(PI/180.*15.*(double)i, psi2[i]);
-        ASSERT_DOUBLE_EQ(PI/180.*15.*(double)i, psi3[i]);
+    for (size_t i = 0; i < 13; ++i) {
+        ASSERT_DOUBLE_EQ(PI / 180. * 15. * (double)i, psi1[i]);
+        ASSERT_DOUBLE_EQ(PI / 180. * 15. * (double)i, psi2[i]);
+        ASSERT_DOUBLE_EQ(PI / 180. * 15. * (double)i, psi3[i]);
     }
 }
 
@@ -292,7 +288,9 @@ TEST_F(HDBParserTest, can_get_forward_speed)
     ASSERT_DOUBLE_EQ(data.get_forward_speed(), 0.);
 }
 
-TEST_F(HDBParserTest, should_be_able_to_have_different_periods_for_added_mass_and_List_calculated_periods)
+TEST_F(
+    HDBParserTest,
+    should_be_able_to_have_different_periods_for_added_mass_and_List_calculated_periods)
 {
     ASSERT_NO_THROW(HDBParser::from_string(test_data::hdb_issue_184()));
 }
@@ -300,29 +298,29 @@ TEST_F(HDBParserTest, should_be_able_to_have_different_periods_for_added_mass_an
 TEST_F(HDBParserTest, can_retrieve_froude_krylov_modules_and_phases)
 {
     const HDBParser data = HDBParser::from_string(test_data::big_hdb());
-    const std::array<std::vector<std::vector<double> >,6 > module = data.get_froude_krylov_module_tables();
-    const std::array<std::vector<std::vector<double> >,6 > phase = data.get_froude_krylov_phase_tables();
-    ASSERT_EQ(47,std::get<0>(module).size());
-    ASSERT_EQ(47,std::get<1>(module).size());
-    ASSERT_EQ(47,std::get<2>(module).size());
-    ASSERT_EQ(47,std::get<3>(module).size());
-    ASSERT_EQ(47,std::get<4>(module).size());
-    ASSERT_EQ(47,std::get<5>(module).size());
-    ASSERT_EQ(47,std::get<0>(phase).size());
-    ASSERT_EQ(47,std::get<1>(phase).size());
-    ASSERT_EQ(47,std::get<2>(phase).size());
-    ASSERT_EQ(47,std::get<3>(phase).size());
-    ASSERT_EQ(47,std::get<4>(phase).size());
-    ASSERT_EQ(47,std::get<5>(phase).size());
-    for (size_t i = 0 ; i < 6 ; ++i)
-    {
-        for (size_t j = 0 ; j < 6 ; ++j)
-        {
+    const std::array<std::vector<std::vector<double>>, 6> module =
+        data.get_froude_krylov_module_tables();
+    const std::array<std::vector<std::vector<double>>, 6> phase =
+        data.get_froude_krylov_phase_tables();
+    ASSERT_EQ(47, std::get<0>(module).size());
+    ASSERT_EQ(47, std::get<1>(module).size());
+    ASSERT_EQ(47, std::get<2>(module).size());
+    ASSERT_EQ(47, std::get<3>(module).size());
+    ASSERT_EQ(47, std::get<4>(module).size());
+    ASSERT_EQ(47, std::get<5>(module).size());
+    ASSERT_EQ(47, std::get<0>(phase).size());
+    ASSERT_EQ(47, std::get<1>(phase).size());
+    ASSERT_EQ(47, std::get<2>(phase).size());
+    ASSERT_EQ(47, std::get<3>(phase).size());
+    ASSERT_EQ(47, std::get<4>(phase).size());
+    ASSERT_EQ(47, std::get<5>(phase).size());
+    for (size_t i = 0; i < 6; ++i) {
+        for (size_t j = 0; j < 6; ++j) {
             ASSERT_EQ(13, module.at(i).at(j).size());
             ASSERT_EQ(13, phase.at(i).at(j).size());
         }
     }
     // column (axis), pulsation, incidence
-    ASSERT_DOUBLE_EQ(4.143975E+05,module.at(2).at(4).at(3));
-    ASSERT_DOUBLE_EQ(-1.987963E+00,phase.at(1).at(3).at(2));
+    ASSERT_DOUBLE_EQ(4.143975E+05, module.at(2).at(4).at(3));
+    ASSERT_DOUBLE_EQ(-1.987963E+00, phase.at(1).at(3).at(2));
 }

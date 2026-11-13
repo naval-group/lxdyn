@@ -8,11 +8,10 @@
 #ifndef GRPCCONTROLLERINTERFACETESTHPP
 #define GRPCCONTROLLERINTERFACETESTHPP
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class GrpcControllerInterfaceTest : public ::testing::Test
-{
-};
+#include "gtest/gtest.h"
+
+class GrpcControllerInterfaceTest : public ::testing::Test {};
 
 #endif /* GRPCCONTROLLERINTERFACETESTHPP */

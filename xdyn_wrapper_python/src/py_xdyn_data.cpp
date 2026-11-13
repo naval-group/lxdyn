@@ -1,12 +1,14 @@
 #include "py_xdyn_data.hpp"
+
+#include <string>
+
 #include "py_pybind_additions.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
-#include "xdyn/test_data_generator/precal_test_data.hpp"
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
-#include <string>
+#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/test_data_generator/hdb_data.hpp"
+#include "xdyn/test_data_generator/precal_test_data.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
 
 // Duplicated code from core/unit_tests and executables/test_hs.cpp
 BodyPtr get_body(const std::string& name, const VectorOfVectorOfPoints& points);
@@ -23,33 +25,28 @@ BodyPtr get_body(const std::string& name, const VectorOfVectorOfPoints& points)
 void py_add_module_xdyn_data_body(py::module& m);
 void py_add_module_xdyn_data_body(py::module& m)
 {
-    m.def("get_body", &get_body,
-        py::arg("name"),
-        py::arg("points") = two_triangles()
-        );
-
+    m.def("get_body", &get_body, py::arg("name"), py::arg("points") = two_triangles());
 }
 
 void py_add_module_xdyn_data_mesh(py::module& m);
 void py_add_module_xdyn_data_mesh(py::module& m)
 {
-
-    m.def("one_triangle",&one_triangle);
-    m.def("one_triangle_clockwise",&one_triangle_clockwise);
-    m.def("degenerated_triangle",&degenerated_triangle);
-    m.def("unit_cube",&unit_cube);
-    m.def("unit_cube_with_incorrect_orientation",&unit_cube_with_incorrect_orientation);
-    m.def("unit_cube_clockwise",&unit_cube_clockwise);
-    m.def("two_triangles",&two_triangles);
-    m.def("two_triangles_immerged",&two_triangles_immerged);
-    m.def("trapezium",&trapezium);
-    m.def("n_gone",&n_gone);
-    m.def("cube",&cube);
-    m.def("tetrahedron",&tetrahedron);
-    m.def("tetrahedron_clockwise",&tetrahedron_clockwise);
-    m.def("generated_stl",&generated_stl);
-    m.def("L",&L);
-    m.def("U",&U);
+    m.def("one_triangle", &one_triangle);
+    m.def("one_triangle_clockwise", &one_triangle_clockwise);
+    m.def("degenerated_triangle", &degenerated_triangle);
+    m.def("unit_cube", &unit_cube);
+    m.def("unit_cube_with_incorrect_orientation", &unit_cube_with_incorrect_orientation);
+    m.def("unit_cube_clockwise", &unit_cube_clockwise);
+    m.def("two_triangles", &two_triangles);
+    m.def("two_triangles_immerged", &two_triangles_immerged);
+    m.def("trapezium", &trapezium);
+    m.def("n_gone", &n_gone);
+    m.def("cube", &cube);
+    m.def("tetrahedron", &tetrahedron);
+    m.def("tetrahedron_clockwise", &tetrahedron_clockwise);
+    m.def("generated_stl", &generated_stl);
+    m.def("L", &L);
+    m.def("U", &U);
 }
 
 void py_add_module_xdyn_data_yaml(py::module& m);
@@ -61,7 +58,9 @@ void py_add_module_xdyn_data_yaml(py::module& m)
     m.def("full_example", &test_data::full_example);
     m.def("full_example_with_diagonal_inertia", &test_data::full_example_with_diagonal_inertia);
     m.def("full_example_with_propulsion", &test_data::full_example_with_propulsion);
-    m.def("full_example_with_propulsion_and_old_key_name", &test_data::full_example_with_propulsion_and_old_key_name);
+    m.def(
+        "full_example_with_propulsion_and_old_key_name",
+        &test_data::full_example_with_propulsion_and_old_key_name);
     m.def("falling_ball_example", &test_data::falling_ball_example);
     m.def("oscillating_cube_example", &test_data::oscillating_cube_example);
     m.def("new_oscillating_cube_example", &test_data::new_oscillating_cube_example);
@@ -90,7 +89,9 @@ void py_add_module_xdyn_data_yaml(py::module& m)
     m.def("wageningen", &test_data::wageningen);
     m.def("resistance_curve", &test_data::resistance_curve);
     m.def("propulsion_and_resistance", &test_data::propulsion_and_resistance);
-    m.def("dummy_controllers_and_commands_for_propulsion_and_resistance", &test_data::dummy_controllers_and_commands_for_propulsion_and_resistance);
+    m.def(
+        "dummy_controllers_and_commands_for_propulsion_and_resistance",
+        &test_data::dummy_controllers_and_commands_for_propulsion_and_resistance);
     m.def("heading_keeping_base", &test_data::heading_keeping_base);
     m.def("heading_keeping_controllers", &test_data::heading_keeping_controllers);
     m.def("radiation_damping", &test_data::radiation_damping);
@@ -99,7 +100,9 @@ void py_add_module_xdyn_data_yaml(py::module& m)
     m.def("test_ship_radiation_damping", &test_data::test_ship_radiation_damping);
     m.def("simple_track_keeping", &test_data::simple_track_keeping);
     m.def("maneuvering_commands", &test_data::maneuvering_commands);
-    m.def("maneuvering_with_same_frame_of_reference", &test_data::maneuvering_with_same_frame_of_reference);
+    m.def(
+        "maneuvering_with_same_frame_of_reference",
+        &test_data::maneuvering_with_same_frame_of_reference);
     m.def("maneuvering", &test_data::maneuvering);
     m.def("bug_2641", &test_data::bug_2641);
     m.def("simple_station_keeping", &test_data::simple_station_keeping);
@@ -115,14 +118,22 @@ void py_add_module_xdyn_data_yaml(py::module& m)
     m.def("maneuvering_with_commands", &test_data::maneuvering_with_commands);
     m.def("kt_kq", &test_data::kt_kq);
     m.def("linear_hydrostatics", &test_data::linear_hydrostatics);
-    m.def("test_ship_linear_hydrostatics_without_waves", &test_data::test_ship_linear_hydrostatics_without_waves);
-    m.def("test_ship_linear_hydrostatics_with_waves", &test_data::test_ship_linear_hydrostatics_with_waves);
+    m.def(
+        "test_ship_linear_hydrostatics_without_waves",
+        &test_data::test_ship_linear_hydrostatics_without_waves);
+    m.def(
+        "test_ship_linear_hydrostatics_with_waves",
+        &test_data::test_ship_linear_hydrostatics_with_waves);
     m.def("fmi", &test_data::fmi);
     m.def("dummy_history", &test_data::dummy_history);
     m.def("complete_yaml_message_from_gui", &test_data::complete_yaml_message_from_gui);
     m.def("JSON_message_with_requested_output", &test_data::JSON_message_with_requested_output);
-    m.def("JSON_server_request_GM_cube_with_output", &test_data::JSON_server_request_GM_cube_with_output);
-    m.def("complete_yaml_message_for_falling_ball", &test_data::complete_yaml_message_for_falling_ball);
+    m.def(
+        "JSON_server_request_GM_cube_with_output",
+        &test_data::JSON_server_request_GM_cube_with_output);
+    m.def(
+        "complete_yaml_message_for_falling_ball",
+        &test_data::complete_yaml_message_for_falling_ball);
     m.def("bug_2963_hs_fast", &test_data::bug_2963_hs_fast);
     m.def("bug_2963_hs_exact", &test_data::bug_2963_hs_exact);
     m.def("bug_2963_fk", &test_data::bug_2963_fk);
@@ -139,13 +150,17 @@ void py_add_module_xdyn_data_yaml(py::module& m)
     m.def("bug_3241", &test_data::bug_3241);
     m.def("constant_force", &test_data::constant_force);
     m.def("issue_20", &test_data::issue_20);
-    m.def("simserver_test_with_commands_and_delay", &test_data::simserver_test_with_commands_and_delay);
+    m.def(
+        "simserver_test_with_commands_and_delay",
+        &test_data::simserver_test_with_commands_and_delay);
     m.def("simserver_message_without_Dt", &test_data::simserver_message_without_Dt);
     m.def("man_with_delay", &test_data::man_with_delay);
     m.def("invalid_json_for_cs", &test_data::invalid_json_for_cs);
     m.def("tutorial_09_gRPC_wave_model", &test_data::tutorial_09_gRPC_wave_model);
     m.def("tutorial_10_gRPC_force_model", &test_data::tutorial_10_gRPC_force_model);
-    m.def("tutorial_10_gRPC_force_model_commands", &test_data::tutorial_10_gRPC_force_model_commands);
+    m.def(
+        "tutorial_10_gRPC_force_model_commands",
+        &test_data::tutorial_10_gRPC_force_model_commands);
     m.def("grpc_setpoints", &test_data::grpc_setpoints);
     m.def("gRPC_force_model", &test_data::gRPC_force_model);
     m.def("gRPC_controller", &test_data::gRPC_controller);
@@ -157,7 +172,6 @@ void py_add_module_xdyn_data_yaml(py::module& m)
     m.def("tutorial_13_hdb_force_model", &test_data::tutorial_13_hdb_force_model);
     m.def("tutorial_13_precal_r_force_model", &test_data::tutorial_13_precal_r_force_model);
     m.def("tutorial_14_filtered_states", &test_data::tutorial_14_filtered_states);
-
 }
 
 void py_add_module_xdyn_data_test(py::module& m);

@@ -8,63 +8,68 @@
 #ifndef SURFACEELEVATIONBUILDER_HPP_
 #define SURFACEELEVATIONBUILDER_HPP_
 
+#include <memory>
+#include <optional>
+#include <ssc/kinematics.hpp>
+#include <ssc/macros.hpp>
+#include <vector>
+
 #include "DirectionalSpreadingBuilder.hpp"
 #include "SpectrumBuilder.hpp"
 #include "WaveModelBuilder.hpp"
 
-#include <ssc/kinematics.hpp>
-#include <ssc/macros.hpp>
-
-#include <optional>
-#include <vector>
-
-#include <memory>
-
 class SurfaceElevationInterface;
 struct YamlWaveOutput;
 
-class SurfaceElevationBuilderInterface
-{
-    public:
-        SurfaceElevationBuilderInterface(
-            const std::shared_ptr<std::vector<WaveModelBuilderPtr> >& wave_parsers_,
-            const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >& directional_spreading_parsers_,
-            const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) :
-                wave_parsers(wave_parsers_),
-                directional_spreading_parsers(directional_spreading_parsers_),
-                spectrum_parsers(spectrum_parsers_)
-        {}
-        virtual ~SurfaceElevationBuilderInterface() = default;
-        static ssc::kinematics::PointMatrixPtr make_wave_mesh(const YamlWaveOutput& output);
-        std::pair<std::size_t,std::size_t> get_wave_mesh_size(const YamlWaveOutput& output) const;
-        virtual std::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
+class SurfaceElevationBuilderInterface {
+public:
+    SurfaceElevationBuilderInterface(
+        const std::shared_ptr<std::vector<WaveModelBuilderPtr>>& wave_parsers_,
+        const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr>>&
+            directional_spreading_parsers_,
+        const std::shared_ptr<std::vector<SpectrumBuilderPtr>>& spectrum_parsers_)
+        : wave_parsers(wave_parsers_)
+        , directional_spreading_parsers(directional_spreading_parsers_)
+        , spectrum_parsers(spectrum_parsers_)
+    {
+    }
+    virtual ~SurfaceElevationBuilderInterface() = default;
+    static ssc::kinematics::PointMatrixPtr make_wave_mesh(const YamlWaveOutput& output);
+    std::pair<std::size_t, std::size_t> get_wave_mesh_size(const YamlWaveOutput& output) const;
+    virtual std::optional<std::shared_ptr<SurfaceElevationInterface>> try_to_parse(
+        const std::string& model,
+        const std::string& yaml) const = 0;
 
-    protected:
-        SurfaceElevationBuilderInterface();
-        std::shared_ptr<std::vector<WaveModelBuilderPtr> > wave_parsers;
-        std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> > directional_spreading_parsers;
-        std::shared_ptr<std::vector<SpectrumBuilderPtr> > spectrum_parsers;
+protected:
+    SurfaceElevationBuilderInterface();
+    std::shared_ptr<std::vector<WaveModelBuilderPtr>> wave_parsers;
+    std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr>> directional_spreading_parsers;
+    std::shared_ptr<std::vector<SpectrumBuilderPtr>> spectrum_parsers;
 };
 
 template <typename T>
-class SurfaceElevationBuilder : public SurfaceElevationBuilderInterface
-{
-    public:
-        SurfaceElevationBuilder(
-            const std::shared_ptr<std::vector<WaveModelBuilderPtr> >& wave_parsers_,
-            const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >& directional_spreading_parsers_,
-            const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) :
-                SurfaceElevationBuilderInterface(wave_parsers_, directional_spreading_parsers_, spectrum_parsers_)
-        {}
-        std::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const override;
+class SurfaceElevationBuilder : public SurfaceElevationBuilderInterface {
+public:
+    SurfaceElevationBuilder(
+        const std::shared_ptr<std::vector<WaveModelBuilderPtr>>& wave_parsers_,
+        const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr>>&
+            directional_spreading_parsers_,
+        const std::shared_ptr<std::vector<SpectrumBuilderPtr>>& spectrum_parsers_)
+        : SurfaceElevationBuilderInterface(
+              wave_parsers_,
+              directional_spreading_parsers_,
+              spectrum_parsers_)
+    {
+    }
+    std::optional<std::shared_ptr<SurfaceElevationInterface>> try_to_parse(
+        const std::string& model,
+        const std::string& yaml) const override;
 
-    private:
-        SurfaceElevationBuilder(); // Disabled
+private:
+    SurfaceElevationBuilder();  // Disabled
 };
-
 
 using SurfaceElevationBuilderPtr = std::shared_ptr<SurfaceElevationBuilderInterface>;
 using SurfaceElevationPtr = std::shared_ptr<SurfaceElevationInterface>;
-
 
 #endif /* SURFACEELEVATIONBUILDER_HPP_ */

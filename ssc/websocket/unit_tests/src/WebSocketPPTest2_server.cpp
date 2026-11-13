@@ -1,14 +1,12 @@
 // Test Environment:
 // server, no TLS, no locks, iostream based transport
+#include <iostream>
 #include <utility>
 #include <websocketpp/config/core.hpp>
 #include <websocketpp/server.hpp>
-#include <iostream>
 
 #include "gtest/gtest.h"
-class WebSocketPPTest2_server : public ::testing::Test
-{
-};
+class WebSocketPPTest2_server : public ::testing::Test {};
 
 using server = websocketpp::server<websocketpp::config::core>;
 using message_ptr = websocketpp::config::core::message_type::ptr;
@@ -44,16 +42,22 @@ void echo_func(server* s, websocketpp::connection_hdl hdl, const message_ptr& ms
     s->send(std::move(hdl), msg->get_payload(), msg->get_opcode());
 }
 
-bool validate_func_subprotocol(server* s, std::string* out, const std::string& accept,
+bool validate_func_subprotocol(
+    server* s,
+    std::string* out,
+    const std::string& accept,
     websocketpp::connection_hdl hdl);
-bool validate_func_subprotocol(server* s, std::string* out, const std::string& accept,
+bool validate_func_subprotocol(
+    server* s,
+    std::string* out,
+    const std::string& accept,
     websocketpp::connection_hdl hdl)
 {
     server::connection_ptr con = s->get_con_from_hdl(std::move(hdl));
 
     std::stringstream o;
 
-    const std::vector<std::string> & protocols = con->get_requested_subprotocols();
+    const std::vector<std::string>& protocols = con->get_requested_subprotocols();
     std::vector<std::string>::const_iterator it;
 
     for (it = protocols.begin(); it != protocols.end(); ++it) {
@@ -78,119 +82,150 @@ void open_func_subprotocol(server* s, std::string* out, websocketpp::connection_
 }
 
 /* Tests */
-TEST_F(WebSocketPPTest2_server, basic_websocket_request ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\n\r\n";
-    std::string output = "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, basic_websocket_request)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\n\r\n";
+    std::string output =
+        "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
 
     server s;
     s.set_user_agent("test");
 
-    ASSERT_EQ(run_server_test(s,input), output);
+    ASSERT_EQ(run_server_test(s, input), output);
 }
 
-TEST_F(WebSocketPPTest2_server,  invalid_websocket_version ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: a\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, invalid_websocket_version)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: a\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\n\r\n";
     std::string output = "HTTP/1.1 400 Bad Request\r\nServer: test\r\n\r\n";
 
     server s;
     s.set_user_agent("test");
-    //s.set_message_handler(bind(&echo_func,&s,websocketpp::lib::placeholders::_1,websocketpp::lib::placeholders::_2));
+    // s.set_message_handler(bind(&echo_func,&s,websocketpp::lib::placeholders::_1,websocketpp::lib::placeholders::_2));
 
-    ASSERT_EQ(run_server_test(s,input), output);
+    ASSERT_EQ(run_server_test(s, input), output);
 }
 
-TEST_F(WebSocketPPTest2_server,  unimplemented_websocket_version ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 14\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, unimplemented_websocket_version)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 14\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\n\r\n";
 
-    std::string output = "HTTP/1.1 400 Bad Request\r\nSec-WebSocket-Version: 0,7,8,13\r\nServer: test\r\n\r\n";
+    std::string output =
+        "HTTP/1.1 400 Bad Request\r\nSec-WebSocket-Version: 0,7,8,13\r\nServer: test\r\n\r\n";
 
     server s;
     s.set_user_agent("test");
 
-    ASSERT_EQ(run_server_test(s,input), output);
+    ASSERT_EQ(run_server_test(s, input), output);
 }
 
-TEST_F(WebSocketPPTest2_server,  list_subprotocol_empty ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, list_subprotocol_empty)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
 
-    std::string output = "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
+    std::string output =
+        "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
 
     std::string subprotocol;
 
     server s;
     s.set_user_agent("test");
-    s.set_open_handler(bind(&open_func_subprotocol,&s,&subprotocol,websocketpp::lib::placeholders::_1));
+    s.set_open_handler(
+        bind(&open_func_subprotocol, &s, &subprotocol, websocketpp::lib::placeholders::_1));
 
-    ASSERT_EQ(run_server_test(s,input), output);
+    ASSERT_EQ(run_server_test(s, input), output);
     ASSERT_EQ(subprotocol, "");
 }
 
-TEST_F(WebSocketPPTest2_server,  list_subprotocol_one ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, list_subprotocol_one)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
 
-    std::string output = "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
+    std::string output =
+        "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
 
     std::string validate;
     std::string open;
 
     server s;
     s.set_user_agent("test");
-    s.set_validate_handler(bind(&validate_func_subprotocol,&s,&validate,"",websocketpp::lib::placeholders::_1));
-    s.set_open_handler(bind(&open_func_subprotocol,&s,&open,websocketpp::lib::placeholders::_1));
+    s.set_validate_handler(
+        bind(&validate_func_subprotocol, &s, &validate, "", websocketpp::lib::placeholders::_1));
+    s.set_open_handler(bind(&open_func_subprotocol, &s, &open, websocketpp::lib::placeholders::_1));
 
-    ASSERT_EQ(run_server_test(s,input), output);
+    ASSERT_EQ(run_server_test(s, input), output);
     ASSERT_EQ(validate, "foo,");
     ASSERT_EQ(open, "");
 }
 
-TEST_F(WebSocketPPTest2_server,  accept_subprotocol_one ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, accept_subprotocol_one)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
 
-    std::string output = "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nSec-WebSocket-Protocol: foo\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
+    std::string output =
+        "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nSec-WebSocket-Protocol: foo\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
 
     std::string validate;
     std::string open;
 
     server s;
     s.set_user_agent("test");
-    s.set_validate_handler(bind(&validate_func_subprotocol,&s,&validate,"foo",websocketpp::lib::placeholders::_1));
-    s.set_open_handler(bind(&open_func_subprotocol,&s,&open,websocketpp::lib::placeholders::_1));
+    s.set_validate_handler(
+        bind(&validate_func_subprotocol, &s, &validate, "foo", websocketpp::lib::placeholders::_1));
+    s.set_open_handler(bind(&open_func_subprotocol, &s, &open, websocketpp::lib::placeholders::_1));
 
-    ASSERT_EQ(run_server_test(s,input), output);
+    ASSERT_EQ(run_server_test(s, input), output);
     ASSERT_EQ(validate, "foo,");
     ASSERT_EQ(open, "foo");
 }
 
-TEST_F(WebSocketPPTest2_server,  accept_subprotocol_invalid ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, accept_subprotocol_invalid)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo\r\n\r\n";
 
     std::string validate;
     std::string open;
 
     server s;
     s.set_user_agent("test");
-    s.set_validate_handler(bind(&validate_func_subprotocol,&s,&validate,"foo2",websocketpp::lib::placeholders::_1));
-    s.set_open_handler(bind(&open_func_subprotocol,&s,&open,websocketpp::lib::placeholders::_1));
+    s.set_validate_handler(bind(
+        &validate_func_subprotocol,
+        &s,
+        &validate,
+        "foo2",
+        websocketpp::lib::placeholders::_1));
+    s.set_open_handler(bind(&open_func_subprotocol, &s, &open, websocketpp::lib::placeholders::_1));
 
     std::string o;
 
-    ASSERT_THROW(o = run_server_test(s,input), websocketpp::exception);
+    ASSERT_THROW(o = run_server_test(s, input), websocketpp::exception);
 }
 
-TEST_F(WebSocketPPTest2_server,  accept_subprotocol_two ) {
-    std::string input = "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo, bar\r\n\r\n";
+TEST_F(WebSocketPPTest2_server, accept_subprotocol_two)
+{
+    std::string input =
+        "GET / HTTP/1.1\r\nHost: www.example.com\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nOrigin: http://www.example.com\r\nSec-WebSocket-Protocol: foo, bar\r\n\r\n";
 
-    std::string output = "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nSec-WebSocket-Protocol: bar\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
+    std::string output =
+        "HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nSec-WebSocket-Protocol: bar\r\nServer: test\r\nUpgrade: websocket\r\n\r\n";
 
     std::string validate;
     std::string open;
 
     server s;
     s.set_user_agent("test");
-    s.set_validate_handler(bind(&validate_func_subprotocol,&s,&validate,"bar",websocketpp::lib::placeholders::_1));
-    s.set_open_handler(bind(&open_func_subprotocol,&s,&open,websocketpp::lib::placeholders::_1));
+    s.set_validate_handler(
+        bind(&validate_func_subprotocol, &s, &validate, "bar", websocketpp::lib::placeholders::_1));
+    s.set_open_handler(bind(&open_func_subprotocol, &s, &open, websocketpp::lib::placeholders::_1));
 
-    ASSERT_EQ(run_server_test(s,input), output);
+    ASSERT_EQ(run_server_test(s, input), output);
     ASSERT_EQ(validate, "foo,bar,");
     ASSERT_EQ(open, "bar");
 }

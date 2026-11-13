@@ -1,7 +1,6 @@
 #include "State.hpp"
 
-State::State(const AbstractStates<double>& vals,
-             const double t0)
+State::State(const AbstractStates<double>& vals, const double t0)
 {
     x.record(t0, vals.x);
     y.record(t0, vals.y);
@@ -18,13 +17,9 @@ State::State(const AbstractStates<double>& vals,
     qk.record(t0, vals.qk);
 }
 
-State::State(const double Tmax) :
-        AbstractStates<History>(Tmax)
-{
-}
+State::State(const double Tmax) : AbstractStates<History>(Tmax) {}
 
-State::State(const AbstractStates<History>& h) : AbstractStates<History>(h)
-{}
+State::State(const AbstractStates<History>& h) : AbstractStates<History>(h) {}
 
 State::State(const StateType& state_values, const double t)
 {
@@ -45,18 +40,18 @@ State::State(const StateType& state_values, const double t)
 
 StateType State::get_StateType(const size_t index) const
 {
-    return StateType({x[(int)index].second,
-                      y[(int)index].second,
-                      z[(int)index].second,
-                      u[(int)index].second,
-                      v[(int)index].second,
-                      w[(int)index].second,
-                      p[(int)index].second,
-                      q[(int)index].second,
-                      r[(int)index].second,
-                      qr[(int)index].second,
-                      qi[(int)index].second,
-                      qj[(int)index].second,
-                      qk[(int)index].second});
+    return StateType(
+        {x[(int)index].second,
+         y[(int)index].second,
+         z[(int)index].second,
+         u[(int)index].second,
+         v[(int)index].second,
+         w[(int)index].second,
+         p[(int)index].second,
+         q[(int)index].second,
+         r[(int)index].second,
+         qr[(int)index].second,
+         qi[(int)index].second,
+         qj[(int)index].second,
+         qk[(int)index].second});
 }
-

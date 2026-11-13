@@ -1,5 +1,6 @@
-#include "hdb_data.hpp"
 #include <sstream>
+
+#include "hdb_data.hpp"
 
 std::string test_data::big_hdb()
 {

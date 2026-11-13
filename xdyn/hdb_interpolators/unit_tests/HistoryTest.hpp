@@ -8,14 +8,14 @@
 #ifndef HISTORYTEST_HPP_
 #define HISTORYTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class HistoryTest : public ::testing::Test
-{
-    protected:
-        HistoryTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class HistoryTest : public ::testing::Test {
+protected:
+    HistoryTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* HISTORYTEST_HPP_ */
+#endif /* HISTORYTEST_HPP_ */

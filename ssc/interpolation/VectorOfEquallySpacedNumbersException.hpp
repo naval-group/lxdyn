@@ -10,18 +10,20 @@
 
 #include "ssc/exception_handling/Exception.hpp"
 
-namespace ssc
-{
-    namespace interpolation
+namespace ssc {
+namespace interpolation {
+class VectorOfEquallySpacedNumbersException : public ::ssc::exception_handling::Exception {
+public:
+    VectorOfEquallySpacedNumbersException(
+        const std::string& message,
+        const std::string& file,
+        const std::string& function,
+        const unsigned int line)
+        : Exception(message, file, function, line)
     {
-        class VectorOfEquallySpacedNumbersException: public ::ssc::exception_handling::Exception
-        {
-            public:
-                VectorOfEquallySpacedNumbersException(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) :
-                    Exception(message, file, function, line) {
-                }
-        };
     }
-}
+};
+}  // namespace interpolation
+}  // namespace ssc
 
-#endif  /* VECTOROFEQUALLYSPACEDNUMBEREXCEPTION_HPP_ */
+#endif /* VECTOROFEQUALLYSPACEDNUMBEREXCEPTION_HPP_ */

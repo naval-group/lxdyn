@@ -10,8 +10,7 @@
 
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 
-struct CenterOfMass
-{
+struct CenterOfMass {
     CenterOfMass(const EPoint& G_, const double v_);
     CenterOfMass& operator+=(const CenterOfMass& com);
 
@@ -19,8 +18,8 @@ struct CenterOfMass
     double volume;
     bool all_facets_are_in_same_plane;
 
-    private:
-        CenterOfMass();
+private:
+    CenterOfMass();
 };
 
 #endif /* CENTEROFMASS_HPP_ */

@@ -8,15 +8,14 @@
 #ifndef YAMLSIMULATORINPUT_HPP_
 #define YAMLSIMULATORINPUT_HPP_
 
-#include "YamlRotation.hpp"
-#include "YamlModel.hpp"
 #include "YamlBody.hpp"
-#include "YamlEnvironmentalConstants.hpp"
 #include "YamlController.hpp"
+#include "YamlEnvironmentalConstants.hpp"
+#include "YamlModel.hpp"
+#include "YamlRotation.hpp"
 #include "YamlTimeSeries.hpp"
 
-struct YamlSimulatorInput
-{
+struct YamlSimulatorInput {
     YamlRotation rotations;
     YamlEnvironmentalConstants environmental_constants;
     std::vector<YamlModel> environment;

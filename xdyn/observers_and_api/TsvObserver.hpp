@@ -1,29 +1,29 @@
 #ifndef TSVOBSERVER_HPP_
 #define TSVOBSERVER_HPP_
 
-#include "xdyn/core/Observer.hpp"
 #include <ostream>
 
-class TsvObserver : public Observer
-{
-    public:
-        explicit TsvObserver(const std::string& filename);
-        TsvObserver(const std::string& filename, const std::vector<std::string>& data);
-        ~TsvObserver() override;
+#include "xdyn/core/Observer.hpp"
 
-    private:
-        void flush_after_initialization() override;
-        void flush_after_write() override;
-        void flush_value_during_write() override;
+class TsvObserver : public Observer {
+public:
+    explicit TsvObserver(const std::string& filename);
+    TsvObserver(const std::string& filename, const std::vector<std::string>& data);
+    ~TsvObserver() override;
 
-        bool output_to_file;
-        std::ostream& os;
+private:
+    void flush_after_initialization() override;
+    void flush_after_write() override;
+    void flush_value_during_write() override;
 
-        using Observer::get_serializer;
-        using Observer::get_initializer;
+    bool output_to_file;
+    std::ostream& os;
 
-        std::function<void()> get_serializer(const double val, const DataAddressing& address) override;
-        std::function<void()> get_initializer(const double val, const DataAddressing& address) override;
+    using Observer::get_initializer;
+    using Observer::get_serializer;
+
+    std::function<void()> get_serializer(const double val, const DataAddressing& address) override;
+    std::function<void()> get_initializer(const double val, const DataAddressing& address) override;
 };
 
 #endif /* TSVOBSERVER_HPP_ */

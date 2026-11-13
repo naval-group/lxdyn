@@ -6,42 +6,43 @@
  */
 
 #include "GrpcControllerInterfaceTest.hpp"
+
 #include "GrpcControllerInterface.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
-TEST_F (GrpcControllerInterfaceTest, can_parse_url)
+TEST_F(GrpcControllerInterfaceTest, can_parse_url)
 {
-    const auto input = GrpcControllerInterface::parse (test_data::gRPC_controller ());
-    ASSERT_EQ ("pid:9002", input.url);
+    const auto input = GrpcControllerInterface::parse(test_data::gRPC_controller());
+    ASSERT_EQ("pid:9002", input.url);
 }
 
-TEST_F (GrpcControllerInterfaceTest, should_throw_a_helpful_message_if_input_is_invalid)
+TEST_F(GrpcControllerInterfaceTest, should_throw_a_helpful_message_if_input_is_invalid)
 {
     std::string error_msg;
-    try
-    {
-        GrpcControllerInterface::parse ("some: invalid YAML");
+    try {
+        GrpcControllerInterface::parse("some: invalid YAML");
+    } catch (const InvalidInputException& e) {
+        error_msg = e.get_message();
     }
-    catch (const InvalidInputException &e)
-    {
-        error_msg = e.get_message ();
-    }
-    ASSERT_EQ ("Unable to parse YAML data for a gRPC controller:\n"
-               "invalid node; first invalid key: \"url\"\n"
-               "The offending YAML block was:\n"
-               "some: invalid YAML",
-               error_msg);
+    ASSERT_EQ(
+        "Unable to parse YAML data for a gRPC controller:\n"
+        "invalid node; first invalid key: \"url\"\n"
+        "The offending YAML block was:\n"
+        "some: invalid YAML",
+        error_msg);
 }
 
-TEST_F (GrpcControllerInterfaceTest, can_parse_name)
+TEST_F(GrpcControllerInterfaceTest, can_parse_name)
 {
-    const auto input = GrpcControllerInterface::parse (test_data::gRPC_controller ());
-    ASSERT_EQ ("PID", input.name);
+    const auto input = GrpcControllerInterface::parse(test_data::gRPC_controller());
+    ASSERT_EQ("PID", input.name);
 }
 
-TEST_F (GrpcControllerInterfaceTest, rest_of_yaml_should_be_available_for_use_by_grpc_method_set_parameters)
+TEST_F(
+    GrpcControllerInterfaceTest,
+    rest_of_yaml_should_be_available_for_use_by_grpc_method_set_parameters)
 {
-    const auto input = GrpcControllerInterface::parse (test_data::gRPC_controller ());
-    ASSERT_EQ (test_data::gRPC_controller (), input.yaml);
+    const auto input = GrpcControllerInterface::parse(test_data::gRPC_controller());
+    ASSERT_EQ(test_data::gRPC_controller(), input.yaml);
 }

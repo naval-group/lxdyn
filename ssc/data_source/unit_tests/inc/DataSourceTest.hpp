@@ -9,15 +9,13 @@
 #define DATASOURCETEST_HPP_
 
 #include "gtest/gtest.h"
-
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class DataSourceTest : public ::testing::Test
-{
-    protected:
-        DataSourceTest();
-        ~DataSourceTest() override;
-        ssc::random_data_generator::DataGenerator a;
+class DataSourceTest : public ::testing::Test {
+protected:
+    DataSourceTest();
+    ~DataSourceTest() override;
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* DATASOURCETEST_HPP_ */
+#endif /* DATASOURCETEST_HPP_ */

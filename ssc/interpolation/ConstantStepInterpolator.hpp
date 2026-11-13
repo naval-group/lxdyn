@@ -8,48 +8,49 @@
 #ifndef CONSTANTSTEPINTERPOLATOR_HPP_
 #define CONSTANTSTEPINTERPOLATOR_HPP_
 
-#include "Interpolator.hpp"
-#include <vector>
 #include <cstddef>
+#include <vector>
 
-namespace ssc
-{
-    namespace interpolation
-    {
-        /** \author cec
-         *  \ingroup interpolation
-         *  \brief Generic interface to interpolation classes
-         *  \details
-         *  \section ex1 Example
-         *  \snippet interpolation/unit_tests/src/InterpolatorTest.cpp InterpolatorTest example
-         *  \section ex2 Expected output
-         *  \snippet interpolation/unit_tests/src/InterpolatorTest.cpp InterpolatorTest expected output
-         */
+#include "Interpolator.hpp"
 
-        class ConstantStepInterpolator : public Interpolator
-        {
-            public:
-                ConstantStepInterpolator();
-                ConstantStepInterpolator(const double& xmin_, const double& xmax_, const std::vector<double>& y);
+namespace ssc {
+namespace interpolation {
+/** \author cec
+ *  \ingroup interpolation
+ *  \brief Generic interface to interpolation classes
+ *  \details
+ *  \section ex1 Example
+ *  \snippet interpolation/unit_tests/src/InterpolatorTest.cpp InterpolatorTest example
+ *  \section ex2 Expected output
+ *  \snippet interpolation/unit_tests/src/InterpolatorTest.cpp InterpolatorTest expected output
+ */
 
-            protected:
-                void update_coefficients_if_necessary(const double x0) override;
-                virtual void find_index_of_interval_containing(const double val);
-                double get_f() const override = 0;
-                double get_df(const size_t derivative_order) const override = 0;
+class ConstantStepInterpolator : public Interpolator {
+public:
+    ConstantStepInterpolator();
+    ConstantStepInterpolator(
+        const double& xmin_,
+        const double& xmax_,
+        const std::vector<double>& y);
 
-                double xmin;
-                double xmax;
-                std::vector<double> y;
-                size_t n;
-                double delta;
-                size_t idx;
-                double val_sat;
+protected:
+    void update_coefficients_if_necessary(const double x0) override;
+    virtual void find_index_of_interval_containing(const double val);
+    double get_f() const override = 0;
+    double get_df(const size_t derivative_order) const override = 0;
 
-            private:
-                virtual void compute_coefficients_for_ith_interval(const double x0, const size_t i) = 0;
-                std::vector<bool> coefficients_have_been_computed_for_interval;
-        };
-    }
-}
+    double xmin;
+    double xmax;
+    std::vector<double> y;
+    size_t n;
+    double delta;
+    size_t idx;
+    double val_sat;
+
+private:
+    virtual void compute_coefficients_for_ith_interval(const double x0, const size_t i) = 0;
+    std::vector<bool> coefficients_have_been_computed_for_interval;
+};
+}  // namespace interpolation
+}  // namespace ssc
 #endif /* CONSTANTSTEPINTERPOLATOR_HPP_ */

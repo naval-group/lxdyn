@@ -6,18 +6,19 @@
  */
 
 #include "CSVControllerTest.hpp"
-#include "xdyn/listeners_and_controllers/CSVController.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
-#include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/yaml_parser/parse_controllers.hpp"
+
 #include <boost/algorithm/string.hpp>
-#include <ssc/solver/Scheduler.hpp>
-#include <cstdio> // For remove
 #include <cmath>
+#include <cstdio>  // For remove
+#include <ssc/solver/Scheduler.hpp>
+
+#include "xdyn/listeners_and_controllers/CSVController.hpp"
+#include "xdyn/observers_and_api/simulator_api.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/yaml_parser/parse_controllers.hpp"
 #define PI M_PI
 
-CSVControllerTest::CSVControllerTest()
-    : a(ssc::random_data_generator::DataGenerator(54545))
+CSVControllerTest::CSVControllerTest() : a(ssc::random_data_generator::DataGenerator(54545))
 {
     csv << "t,some column,rpm_co,beta_co\n";
     csv << "0.2,23,65,78\n";
@@ -75,9 +76,15 @@ TEST_F(CSVControllerTest, can_parse_time_shift_to_match_tstart)
 {
     std::string yaml = test_yaml();
     ASSERT_TRUE(CSVController(0, a.random<std::string>(), yaml).yaml.shift_time_column);
-    boost::replace_all(yaml, "shift time column to match tstart: true", "shift time column to match tstart: false");
+    boost::replace_all(
+        yaml,
+        "shift time column to match tstart: true",
+        "shift time column to match tstart: false");
     ASSERT_FALSE(CSVController(0, a.random<std::string>(), yaml).yaml.shift_time_column);
-    boost::replace_all(yaml, "shift time column to match tstart: false", "shift time column to match tstart: foo");
+    boost::replace_all(
+        yaml,
+        "shift time column to match tstart: false",
+        "shift time column to match tstart: foo");
     ASSERT_THROW(CSVController(0, a.random<std::string>(), yaml), InvalidInputException);
 }
 
@@ -92,14 +99,19 @@ TEST_F(CSVControllerTest, can_parse_commands)
 TEST_F(CSVControllerTest, commands_should_be_correct)
 {
     const CSVController controller(0, a.random<std::string>(), test_yaml());
-    const std::vector<std::string> expected_commands = {"port side propeller(beta)", "port side propeller(rpm)"};
+    const std::vector<std::string> expected_commands = {
+        "port side propeller(beta)",
+        "port side propeller(rpm)"};
     ASSERT_EQ(expected_commands, controller.get_command_names());
 }
 
 TEST_F(CSVControllerTest, can_read_data_from_csv)
 {
     std::string yaml = test_yaml();
-    boost::replace_all(yaml, "shift time column to match tstart: true", "shift time column to match tstart: false");
+    boost::replace_all(
+        yaml,
+        "shift time column to match tstart: true",
+        "shift time column to match tstart: false");
     CSVController controller(0, a.random<std::string>(), yaml);
     const double tstart = 0.1;
     const double dt = 0.5;

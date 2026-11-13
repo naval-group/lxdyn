@@ -10,6 +10,7 @@
 
 #include <map>
 #include <string>
+
 #include "xdyn/core/StateLayout.hpp"
 
 /** \author cady
@@ -22,15 +23,15 @@
  *  \section ex2 Expected output
  *  \snippet simulator/unit_tests/ResTest.cpp ResTest expected output
  */
-struct Res
-{
+struct Res {
     Res();
     Res(const double t_, const StateType& x_);
     /// Instant at which the states correspond
     double t;
     /// Values of the states of the system
     StateType x;
-    /// extra outputs from force models. Corresponds to 'extra_observations' in code/grpc/force.proto#L99
+    /// extra outputs from force models. Corresponds to 'extra_observations' in
+    /// code/grpc/force.proto#L99
     std::map<std::string, double> extra_observations;
 };
 

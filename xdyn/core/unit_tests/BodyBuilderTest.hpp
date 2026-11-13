@@ -8,20 +8,20 @@
 #ifndef BODYBUILDERTEST_HPP_
 #define BODYBUILDERTEST_HPP_
 
-#include "Body.hpp"
 #include <ssc/random_data_generator.hpp>
+
+#include "Body.hpp"
 #include "gtest/gtest.h"
 
-class BodyBuilderTest : public ::testing::Test
-{
-    public:
-        static BodyPtr build_body(const size_t idx=0);
-        static BodyPtr build_body_with_filtered_states();
+class BodyBuilderTest : public ::testing::Test {
+public:
+    static BodyPtr build_body(const size_t idx = 0);
+    static BodyPtr build_body_with_filtered_states();
 
-    protected:
-        BodyBuilderTest();
-        ssc::random_data_generator::DataGenerator a;
-        const BodyPtr& body;
+protected:
+    BodyBuilderTest();
+    ssc::random_data_generator::DataGenerator a;
+    const BodyPtr& body;
 };
 
-#endif  /* BODYBUILDERTEST_HPP_ */
+#endif /* BODYBUILDERTEST_HPP_ */

@@ -10,36 +10,33 @@
 
 #include "ssc/kinematics/Wrench.hpp"
 
-namespace ssc
-{
-    namespace kinematics
-    {
-        /** \author cec
-         *  \date May 19, 2014, 2:18:28 PM
-         *  \brief Just like a Wrench, except reference frames aren't checked (faster).
-         *  \ingroup kinematics
-         *  \section ex1 Example
-         *  \snippet kinematics/unit_tests/src/UnsafeWrenchTest.cpp UnsafeWrenchTest example
-         *  \section ex2 Expected output
-         *  \snippet kinematics/unit_tests/src/UnsafeWrenchTest.cpp UnsafeWrenchTest expected output
-         */
-        class UnsafeWrench : public Wrench
-        {
-            public:
-                UnsafeWrench() = default;
-                explicit UnsafeWrench(const Point& P);
-                UnsafeWrench(const Point& P, const Eigen::Vector3d& force, const Eigen::Vector3d& torque);
-                explicit UnsafeWrench(const Wrench& rhs);
+namespace ssc {
+namespace kinematics {
+/** \author cec
+ *  \date May 19, 2014, 2:18:28 PM
+ *  \brief Just like a Wrench, except reference frames aren't checked (faster).
+ *  \ingroup kinematics
+ *  \section ex1 Example
+ *  \snippet kinematics/unit_tests/src/UnsafeWrenchTest.cpp UnsafeWrenchTest example
+ *  \section ex2 Expected output
+ *  \snippet kinematics/unit_tests/src/UnsafeWrenchTest.cpp UnsafeWrenchTest expected output
+ */
+class UnsafeWrench : public Wrench {
+public:
+    UnsafeWrench() = default;
+    explicit UnsafeWrench(const Point& P);
+    UnsafeWrench(const Point& P, const Eigen::Vector3d& force, const Eigen::Vector3d& torque);
+    explicit UnsafeWrench(const Wrench& rhs);
 
-                UnsafeWrench operator+(const UnsafeWrench& rhs) const;
-                UnsafeWrench operator-(const UnsafeWrench& rhs) const;
-                UnsafeWrench& operator+=(const UnsafeWrench& rhs);
-                UnsafeWrench& operator-=(const UnsafeWrench& rhs);
-                UnsafeWrench& operator+=(const Wrench& rhs);
-                UnsafeWrench& operator+=(const Wrench&& rhs);
-                UnsafeWrench& operator-=(const Wrench& rhs);
-        };
-    }
-}
+    UnsafeWrench operator+(const UnsafeWrench& rhs) const;
+    UnsafeWrench operator-(const UnsafeWrench& rhs) const;
+    UnsafeWrench& operator+=(const UnsafeWrench& rhs);
+    UnsafeWrench& operator-=(const UnsafeWrench& rhs);
+    UnsafeWrench& operator+=(const Wrench& rhs);
+    UnsafeWrench& operator+=(const Wrench&& rhs);
+    UnsafeWrench& operator-=(const Wrench& rhs);
+};
+}  // namespace kinematics
+}  // namespace ssc
 
 #endif /* UNSAFEWRENCH_HPP_ */

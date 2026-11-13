@@ -8,19 +8,20 @@
 #include "SimulatorBuilderTest.hpp"
 // Specializations (e.g. SurfaceElevationBuilder<DefaultSurfaceElevation>) must be visible
 // before can_parse<T>() instantiates them — see the note in simulator_api.cpp.
-#include "xdyn/listeners_and_controllers/builders.hpp"
+#include <cmath>
+#include <memory>
+#include <ssc/kinematics.hpp>
+
 #include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/environment_models/DefaultWindModel.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/force_models/GravityForceModel.hpp"
+#include "xdyn/listeners_and_controllers/builders.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#include <memory>
-#include <ssc/kinematics.hpp>
-#include <cmath>
 
 static const YamlSimulatorInput& shared_input()
 {
@@ -28,30 +29,33 @@ static const YamlSimulatorInput& shared_input()
     return ret;
 }
 
-SimulatorBuilderTest::SimulatorBuilderTest() : a(ssc::random_data_generator::DataGenerator(1212)), input(shared_input()),
-                                               builder(SimulatorBuilder(input, 0))
+SimulatorBuilderTest::SimulatorBuilderTest()
+    : a(ssc::random_data_generator::DataGenerator(1212))
+    , input(shared_input())
+    , builder(SimulatorBuilder(input, 0))
 {
 }
 
 TEST_F(SimulatorBuilderTest, throws_if_cannot_find_mesh)
 {
-    ASSERT_THROW(builder.get_bodies(MeshMap(), std::vector<bool>(1,false), std::map<std::string,double>()),InternalErrorException);
+    ASSERT_THROW(
+        builder.get_bodies(MeshMap(), std::vector<bool>(1, false), std::map<std::string, double>()),
+        InternalErrorException);
 }
 
 TEST_F(SimulatorBuilderTest, can_get_bodies)
 {
     MeshMap m;
     m[input.bodies.front().name] = two_triangles();
-    const auto bodies = builder.get_bodies(m, std::vector<bool>(1,false), std::map<std::string,double>());
+    const auto bodies =
+        builder.get_bodies(m, std::vector<bool>(1, false), std::map<std::string, double>());
     ASSERT_EQ(1, bodies.size());
     ASSERT_EQ(input.bodies.front().name, bodies.front()->get_name());
     const auto states = bodies.front()->get_states();
     const auto Id = states.inverse_of_the_total_inertia * states.total_inertia;
-    for (int i = 0 ; i < 6 ; ++i)
-    {
-        for (int j = 0 ; j < 6 ; ++j)
-        {
-            ASSERT_NEAR(Id(i,j), i==j, 1E-10) << "i = " << i << ", j = " << j;
+    for (int i = 0; i < 6; ++i) {
+        for (int j = 0; j < 6; ++j) {
+            ASSERT_NEAR(Id(i, j), i == j, 1E-10) << "i = " << i << ", j = " << j;
         }
     }
 }
@@ -61,11 +65,13 @@ TEST_F(SimulatorBuilderTest, can_get_rho_and_g)
     builder.can_parse<DefaultSurfaceElevation>();
     builder.can_parse<DefaultWindModel>();
     const auto env = builder.build_environment_and_frames();
-    ASSERT_DOUBLE_EQ(9.81,env.g);
-    ASSERT_DOUBLE_EQ(1000,env.rho);
+    ASSERT_DOUBLE_EQ(9.81, env.g);
+    ASSERT_DOUBLE_EQ(1000, env.rho);
 }
 
-std::string SimulatorBuilderTest::customize(const std::string& body_name, const std::string& something) const
+std::string SimulatorBuilderTest::customize(
+    const std::string& body_name,
+    const std::string& something) const
 {
     return something + "(" + body_name + ")";
 }
@@ -82,11 +88,11 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_body_to_mesh_transform)
     const auto bodies = get_body_vector(a.random<std::string>());
 
     ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
-    builder.add_initial_transforms(bodies,k);
+    builder.add_initial_transforms(bodies, k);
     ASSERT_TRUE(k.get() != nullptr);
-    for (auto that_body = bodies.begin() ; that_body != bodies.end() ; ++that_body)
-    {
-        ASSERT_NO_THROW(k->get((*that_body)->get_name(), customize((*that_body)->get_name(), "mesh")));
+    for (auto that_body = bodies.begin(); that_body != bodies.end(); ++that_body) {
+        ASSERT_NO_THROW(
+            k->get((*that_body)->get_name(), customize((*that_body)->get_name(), "mesh")));
     }
 }
 
@@ -96,10 +102,9 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_ned_to_body_transform)
     builder.can_parse<DefaultWindModel>();
     const auto bodies = get_body_vector(a.random<std::string>());
     ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
-    builder.add_initial_transforms(bodies,k);
+    builder.add_initial_transforms(bodies, k);
     ASSERT_TRUE(k.get() != nullptr);
-    for (auto that_body = bodies.begin() ; that_body != bodies.end() ; ++that_body)
-    {
+    for (auto that_body = bodies.begin(); that_body != bodies.end(); ++that_body) {
         ASSERT_NO_THROW(k->get("NED", (*that_body)->get_name()));
     }
 }
@@ -149,7 +154,8 @@ TEST_F(SimulatorBuilderTest, get_forces_should_throw_if_there_is_anything_it_can
     MeshMap m;
     const std::string name = input.bodies.front().name;
     m[name] = two_triangles();
-    const auto bodies = builder.get_bodies(m, std::vector<bool>(1,false), std::map<std::string,double>());
+    const auto bodies =
+        builder.get_bodies(m, std::vector<bool>(1, false), std::map<std::string, double>());
     const auto env = builder.build_environment_and_frames();
     ASSERT_THROW(builder.get_forces(env), InvalidInputException);
 }
@@ -162,9 +168,9 @@ TEST_F(SimulatorBuilderTest, get_forces_should_throw_if_two_force_models_share_a
     input2.bodies.front().external_forces = {gravity};
     SimulatorBuilder builder2(input2, 0);
     builder2.can_parse<DefaultSurfaceElevation>()
-            .can_parse<DefaultWindModel>()
-            .can_parse<GravityForceModel>()
-            .can_parse<GravityForceModel>();
+        .can_parse<DefaultWindModel>()
+        .can_parse<GravityForceModel>()
+        .can_parse<GravityForceModel>();
     const auto env = builder2.build_environment_and_frames();
     ASSERT_THROW(builder2.get_forces(env), InvalidInputException);
 }
@@ -177,7 +183,7 @@ TEST_F(SimulatorBuilderTest, wind_model_is_available_from_env)
     Eigen::Vector3d position;
     position << a.random<double>(), a.random<double>(), -std::abs(a.random<double>());
     double time(a.random<double>());
-    ASSERT_NO_THROW(/*Eigen::Vector3d wind = */env.wind->get_wind(position, time));
+    ASSERT_NO_THROW(/*Eigen::Vector3d wind = */ env.wind->get_wind(position, time));
 }
 
 TEST_F(SimulatorBuilderTest, can_get_rho_air)
@@ -185,5 +191,5 @@ TEST_F(SimulatorBuilderTest, can_get_rho_air)
     builder.can_parse<DefaultSurfaceElevation>();
     builder.can_parse<DefaultWindModel>();
     const auto env = builder.build_environment_and_frames();
-    ASSERT_DOUBLE_EQ(1.225,env.get_rho_air());
+    ASSERT_DOUBLE_EQ(1.225, env.get_rho_air());
 }

@@ -8,16 +8,16 @@
 #ifndef RESULTANTFORCECOMPUTERTEST_HPP_
 #define RESULTANTFORCECOMPUTERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
+
+#include "gtest/gtest.h"
 #include "xdyn/core/Sim.hpp"
 
-class ResultantForceComputerTest : public ::testing::Test
-{
-    protected:
-        ResultantForceComputerTest();
-        ssc::random_data_generator::DataGenerator a;
-        Sim& sim;
+class ResultantForceComputerTest : public ::testing::Test {
+protected:
+    ResultantForceComputerTest();
+    ssc::random_data_generator::DataGenerator a;
+    Sim& sim;
 };
 
-#endif  /* RESULTANTFORCECOMPUTERTEST_HPP_ */
+#endif /* RESULTANTFORCECOMPUTERTEST_HPP_ */

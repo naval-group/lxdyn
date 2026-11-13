@@ -8,17 +8,16 @@
 #ifndef GZCURVETEST_HPP_
 #define GZCURVETEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
+#include "gtest/gtest.h"
 #include "xdyn/core/Sim.hpp"
 
-class GZCurveTest : public ::testing::Test
-{
-    protected:
-        GZCurveTest();
-        ssc::random_data_generator::DataGenerator a;
-        Sim& sim;
+class GZCurveTest : public ::testing::Test {
+protected:
+    GZCurveTest();
+    ssc::random_data_generator::DataGenerator a;
+    Sim& sim;
 };
 
-#endif  /* GZCURVETEST_HPP_ */
+#endif /* GZCURVETEST_HPP_ */

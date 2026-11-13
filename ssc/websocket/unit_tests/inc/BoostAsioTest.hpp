@@ -4,11 +4,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class BoostAsioTest : public ::testing::Test
-{
-    protected:
-        BoostAsioTest();
-        ssc::random_data_generator::DataGenerator a;
+class BoostAsioTest : public ::testing::Test {
+protected:
+    BoostAsioTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
 #endif

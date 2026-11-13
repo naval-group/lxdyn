@@ -9,6 +9,7 @@
 
 using namespace ssc::interpolation;
 
-ParabolicCoefficients::ParabolicCoefficients(const double& a_, const double& b_, const double& c_) :
-a(a_),b(b_),c(c_)
-{}
+ParabolicCoefficients::ParabolicCoefficients(const double& a_, const double& b_, const double& c_)
+    : a(a_), b(b_), c(c_)
+{
+}

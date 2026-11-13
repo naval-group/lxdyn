@@ -12,15 +12,17 @@
 
 /** \brief Same as FastHydrostaticForceModel but with the exact application point
  */
-class ExactHydrostaticForceModel : public FastHydrostaticForceModel
-{
-    public:
-        ExactHydrostaticForceModel(const std::string& body_name, const EnvironmentAndFrames& env);
-        static std::string model_name();
+class ExactHydrostaticForceModel : public FastHydrostaticForceModel {
+public:
+    ExactHydrostaticForceModel(const std::string& body_name, const EnvironmentAndFrames& env);
+    static std::string model_name();
 
-    private:
-        ExactHydrostaticForceModel();
-        EPoint get_application_point(const FacetIterator& that_facet, const BodyStates& states, const double zG) const override;
+private:
+    ExactHydrostaticForceModel();
+    EPoint get_application_point(
+        const FacetIterator& that_facet,
+        const BodyStates& states,
+        const double zG) const override;
 };
 
 #endif /* EXACTHYDROSTATICFORCEMODEL_HPP_ */

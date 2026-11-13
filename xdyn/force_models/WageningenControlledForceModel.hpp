@@ -17,50 +17,51 @@ constexpr int NB_COEFF_KQ = 47;
 
 /** \brief Wageningen Controlled Force Model
  */
-class WageningenControlledForceModel : public AbstractWageningen
-{
-    public:
-        struct Yaml : public AbstractWageningen::Yaml
-        {
-            size_t number_of_blades{};
-            double blade_area_ratio{};
-        };
+class WageningenControlledForceModel : public AbstractWageningen {
+public:
+    struct Yaml : public AbstractWageningen::Yaml {
+        size_t number_of_blades{};
+        double blade_area_ratio{};
+    };
 
-        WageningenControlledForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        double get_Kt(const std::map<std::string,double>& commands, const double J) const override;
-        double get_Kq(const std::map<std::string,double>& commands, const double J) const override;
-        double Kt(const size_t Z, const double AE_A0, const double P_D, const double J) const;
-        double Kq(const size_t Z, const double AE_A0, const double P_D, const double J) const;
-        static std::string model_name();
-        static Yaml parse(const std::string& yaml);
+    WageningenControlledForceModel(
+        const Yaml& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    double get_Kt(const std::map<std::string, double>& commands, const double J) const override;
+    double get_Kq(const std::map<std::string, double>& commands, const double J) const override;
+    double Kt(const size_t Z, const double AE_A0, const double P_D, const double J) const;
+    double Kq(const size_t Z, const double AE_A0, const double P_D, const double J) const;
+    static std::string model_name();
+    static Yaml parse(const std::string& yaml);
 
-    private:
-        WageningenControlledForceModel();
-        void check(const double P_D, const double J) const;
-        size_t Z;
-        double AE_A0;
+private:
+    WageningenControlledForceModel();
+    void check(const double P_D, const double J) const;
+    size_t Z;
+    double AE_A0;
 
-        /// Interpolation coefficient for Kt for the Wageningen B-series
-        const double ct[NB_COEFF_KT];
-        /// Exponents for the advance ratio for Kt for the Wageningen B-series
-        const size_t st[NB_COEFF_KT];
-        /// Exponents for P/D for Kt for the Wageningen B-series
-        const size_t tt[NB_COEFF_KT];
-        /// Exponents for the blade area ratio for Kt for the Wageningen B-series
-        const size_t ut[NB_COEFF_KT];
-        /// Exponents for number of blades for Kt for the Wageningen B-series
-        const size_t vt[NB_COEFF_KT];
+    /// Interpolation coefficient for Kt for the Wageningen B-series
+    const double ct[NB_COEFF_KT];
+    /// Exponents for the advance ratio for Kt for the Wageningen B-series
+    const size_t st[NB_COEFF_KT];
+    /// Exponents for P/D for Kt for the Wageningen B-series
+    const size_t tt[NB_COEFF_KT];
+    /// Exponents for the blade area ratio for Kt for the Wageningen B-series
+    const size_t ut[NB_COEFF_KT];
+    /// Exponents for number of blades for Kt for the Wageningen B-series
+    const size_t vt[NB_COEFF_KT];
 
-        /// Interpolation coefficient for Kq for the Wageningen B-series
-        const double cq[NB_COEFF_KQ];
-        /// Exponents for the advance ratio for Kq for the Wageningen B-series
-        const size_t sq[NB_COEFF_KQ];
-        /// Exponents for P/D for Kq for the Wageningen B-series
-        const size_t tq[NB_COEFF_KQ];
-        /// Exponents for the blade area ratio for Kq for the Wageningen B-series
-        const size_t uq[NB_COEFF_KQ];
-        /// Exponents for number of blades for Kq for the Wageningen B-series
-        const size_t vq[NB_COEFF_KQ];
+    /// Interpolation coefficient for Kq for the Wageningen B-series
+    const double cq[NB_COEFF_KQ];
+    /// Exponents for the advance ratio for Kq for the Wageningen B-series
+    const size_t sq[NB_COEFF_KQ];
+    /// Exponents for P/D for Kq for the Wageningen B-series
+    const size_t tq[NB_COEFF_KQ];
+    /// Exponents for the blade area ratio for Kq for the Wageningen B-series
+    const size_t uq[NB_COEFF_KQ];
+    /// Exponents for number of blades for Kq for the Wageningen B-series
+    const size_t vq[NB_COEFF_KQ];
 };
 
 #endif /* WAGENINGENCONTROLLEDFORCEMODEL_HPP_ */

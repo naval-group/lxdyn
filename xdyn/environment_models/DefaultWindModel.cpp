@@ -7,11 +7,12 @@
 
 #include "DefaultWindModel.hpp"
 
-DefaultWindModel::DefaultWindModel(int)
-{
-}
+DefaultWindModel::DefaultWindModel(int) {}
 
-std::string DefaultWindModel::model_name() {return "no wind";}
+std::string DefaultWindModel::model_name()
+{
+    return "no wind";
+}
 
 int DefaultWindModel::parse(const std::string&)
 {

@@ -9,7 +9,7 @@
 #define INTEGRATOR_HPP_
 #include <functional>
 
-using Function = std::function<double (const double&)>;
+using Function = std::function<double(const double&)>;
 /** \author cec
  *  \ingroup MODULE_NAME
  *  \brief Responsibility
@@ -19,27 +19,24 @@ using Function = std::function<double (const double&)>;
  *  \section ex2 Expected output
  *  \snippet MODULE_NAME/unit_tests/src/IntegratorTest.cpp IntegratorTest expected output
  */
-namespace ssc
-{
-    namespace integrate
-    {
-        class Integrator
-        {
-            public:
-                Integrator();
-                explicit Integrator(const Function& f_);
-                virtual ~Integrator() = default;
-                double integrate_f(double a, double b, double eps=1e-6);
-                double integrate(const Function& f, double a, double b, double eps=1e-6);
+namespace ssc {
+namespace integrate {
+class Integrator {
+public:
+    Integrator();
+    explicit Integrator(const Function& f_);
+    virtual ~Integrator() = default;
+    double integrate_f(double a, double b, double eps = 1e-6);
+    double integrate(const Function& f, double a, double b, double eps = 1e-6);
 
-            protected:
-                Function f;
-                bool function_defined;
+protected:
+    Function f;
+    bool function_defined;
 
-            private:
-                virtual double integrate_impl(const Function& f, double a, double b, double eps=1e-6) = 0;
-        };
-    }
-}
+private:
+    virtual double integrate_impl(const Function& f, double a, double b, double eps = 1e-6) = 0;
+};
+}  // namespace integrate
+}  // namespace ssc
 
 #endif /* INTEGRATOR_HPP_ */

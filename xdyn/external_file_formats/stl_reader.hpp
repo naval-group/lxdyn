@@ -1,9 +1,10 @@
 #ifndef STL_READER_HPP_
 #define STL_READER_HPP_
 
-#include <string>
 #include <istream>
 #include <ostream>
+#include <string>
+
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 
 /**
@@ -45,7 +46,12 @@ VectorOfVectorOfPoints read_stl(const std::string& input);
 VectorOfVectorOfPoints read_binary_stl(std::istream& stream);
 VectorOfVectorOfPoints read_binary_stl(const std::string& input);
 
-enum class StlType {UNKNOWN, ASCII, BINARY};
+enum class StlType
+{
+    UNKNOWN,
+    ASCII,
+    BINARY
+};
 StlType identify_stl(const std::string& input);
 std::ostream& operator<<(std::ostream& out, const StlType& race);
 #endif

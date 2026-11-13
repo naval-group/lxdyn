@@ -8,15 +8,14 @@
 #ifndef WAVENUMBERFUNCTORTEST_HPP_
 #define WAVENUMBERFUNCTORTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class WaveNumberFunctorTest : public ::testing::Test
-{
-    protected:
-        WaveNumberFunctorTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class WaveNumberFunctorTest : public ::testing::Test {
+protected:
+    WaveNumberFunctorTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* WAVENUMBERFUNCTORTEST_HPP_ */
+#endif /* WAVENUMBERFUNCTORTEST_HPP_ */

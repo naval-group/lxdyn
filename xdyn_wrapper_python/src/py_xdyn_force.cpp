@@ -1,6 +1,12 @@
 #include "py_xdyn_force.hpp"
-#include "py_pybind_additions.hpp"
 
+#include <memory>
+#include <string>
+
+#include "py_pybind_additions.hpp"
+#include "ssc/data_source/DataSource.hpp"
+#include "ssc/kinematics/Point.hpp"
+#include "ssc/kinematics/Wrench.hpp"
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/core/ImmersedSurfaceForceModel.hpp"
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
@@ -22,23 +28,17 @@
 #include "xdyn/force_models/LinearFroudeKrylovForceModel.hpp"
 #include "xdyn/force_models/LinearHydrostaticForceModel.hpp"
 #include "xdyn/force_models/LinearStiffnessForceModel.hpp"
-#include "xdyn/force_models/ManeuveringForceModel.hpp"
 #include "xdyn/force_models/MMGManeuveringForceModel.hpp"
+#include "xdyn/force_models/ManeuveringForceModel.hpp"
 #include "xdyn/force_models/QuadraticDampingForceModel.hpp"
 #include "xdyn/force_models/RadiationDampingForceModel.hpp"
 #include "xdyn/force_models/ResistanceCurveForceModel.hpp"
 #include "xdyn/force_models/RudderForceModel.hpp"
 #include "xdyn/force_models/SimpleHeadingKeepingController.hpp"
 #include "xdyn/force_models/SimpleStationKeepingController.hpp"
-#include "xdyn/force_models/unit_tests/HDBParserForTests.hpp"
 #include "xdyn/force_models/WageningenControlledForceModel.hpp"
+#include "xdyn/force_models/unit_tests/HDBParserForTests.hpp"
 #include "xdyn/hdb_interpolators/HDBParser.hpp"
-#include "ssc/data_source/DataSource.hpp"
-#include "ssc/kinematics/Point.hpp"
-#include "ssc/kinematics/Wrench.hpp"
-#include <memory>
-#include <string>
-#include <memory>
 
 namespace py = pybind11;
 
@@ -49,7 +49,8 @@ void py_add_module_xdyn_force(py::module& m0)
     py::class_<ForceModel>(m, "ForceModel", "Base class from which all force models derived")
         .def("get_name", &ForceModel::get_name)
         .def("get_body_name", &ForceModel::get_body_name)
-        .def("__call__",
+        .def(
+            "__call__",
             static_cast<ssc::kinematics::Wrench (ForceModel::*)(
                 const BodyStates& /*states*/,
                 const double /*t*/,
@@ -58,10 +59,11 @@ void py_add_module_xdyn_force(py::module& m0)
             py::arg("BodyStates"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("command_listener") = ssc::data_source::DataSource())
-        ;
+            py::arg("command_listener") = ssc::data_source::DataSource());
 
-    py::class_<ConstantForceModel::Input>(m, "ConstantForceModelInput",
+    py::class_<ConstantForceModel::Input>(
+        m,
+        "ConstantForceModelInput",
         "Input for ConstantForceModel")
         .def(py::init<>())
         .def_readwrite("frame", &ConstantForceModel::Input::frame)
@@ -73,148 +75,197 @@ void py_add_module_xdyn_force(py::module& m0)
         .def_readwrite("Z", &ConstantForceModel::Input::Z)
         .def_readwrite("K", &ConstantForceModel::Input::K)
         .def_readwrite("M", &ConstantForceModel::Input::M)
-        .def_readwrite("N", &ConstantForceModel::Input::N)
-        ;
+        .def_readwrite("N", &ConstantForceModel::Input::N);
 
     py::class_<ConstantForceModel, ForceModel>(m, "ConstantForceModel", "Constant force model")
-        .def(py::init<const ConstantForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
-            py::arg("input_data"),
-            py::arg("body_name"),
-            py::arg("env")
-            )
-        .def("get_name", &ConstantForceModel::get_name)
-        .def("get_body_name", &ConstantForceModel::get_body_name)
-        .def("get_force", &ConstantForceModel::get_force,
-            py::arg("states"),
-            py::arg("t"),
-            py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>()
-            )
-        .def_static("model_name", &ConstantForceModel::model_name,
-            "Returns model name \"constant force\"")
-        .def_static("parse", &ConstantForceModel::parse, py::arg("yaml"))
-        ;
-
-    py::class_<GravityForceModel, ForceModel>(m, "GravityForceModel",
-        "Gravity force model, a creating a vertical down force along Z-NED axis")
-        .def(py::init<const std::string&, const EnvironmentAndFrames&>())
-        .def_static("model_name", &GravityForceModel::model_name,
-            "Returns model name \"gravity\"")
-        .def("potential_energy", &GravityForceModel::potential_energy)
-        .def("get_force", &GravityForceModel::get_force,
-            py::arg("states"),
-            py::arg("t"),
-            py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>())
-        ;
-
-    py::class_<BasicBuoyancyForceModel::Input>(m, "BasicBuoyancyForceModelInput",
-        "Input for BasicBuoyancyForceModel")
-        .def(py::init<>())
-        .def_readwrite("V", &BasicBuoyancyForceModel::Input::V)
-        ;
-
-    py::class_<BasicBuoyancyForceModel, ForceModel>(m, "BasicBuoyancyForceModel",
-        "Basic buoyancy force model")
-        .def(py::init<const BasicBuoyancyForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const ConstantForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"))
-        .def("get_force", &BasicBuoyancyForceModel::get_force,
+        .def("get_name", &ConstantForceModel::get_name)
+        .def("get_body_name", &ConstantForceModel::get_body_name)
+        .def(
+            "get_force",
+            &ConstantForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>()
-            )
+            py::arg("commands") = std::map<std::string, double>())
+        .def_static(
+            "model_name",
+            &ConstantForceModel::model_name,
+            "Returns model name \"constant force\"")
+        .def_static("parse", &ConstantForceModel::parse, py::arg("yaml"));
+
+    py::class_<GravityForceModel, ForceModel>(
+        m,
+        "GravityForceModel",
+        "Gravity force model, a creating a vertical down force along Z-NED axis")
+        .def(py::init<const std::string&, const EnvironmentAndFrames&>())
+        .def_static("model_name", &GravityForceModel::model_name, "Returns model name \"gravity\"")
+        .def("potential_energy", &GravityForceModel::potential_energy)
+        .def(
+            "get_force",
+            &GravityForceModel::get_force,
+            py::arg("states"),
+            py::arg("t"),
+            py::arg("env"),
+            py::arg("commands") = std::map<std::string, double>());
+
+    py::class_<BasicBuoyancyForceModel::Input>(
+        m,
+        "BasicBuoyancyForceModelInput",
+        "Input for BasicBuoyancyForceModel")
+        .def(py::init<>())
+        .def_readwrite("V", &BasicBuoyancyForceModel::Input::V);
+
+    py::class_<BasicBuoyancyForceModel, ForceModel>(
+        m,
+        "BasicBuoyancyForceModel",
+        "Basic buoyancy force model")
+        .def(
+            py::init<
+                const BasicBuoyancyForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
+            py::arg("input_data"),
+            py::arg("body_name"),
+            py::arg("env"))
+        .def(
+            "get_force",
+            &BasicBuoyancyForceModel::get_force,
+            py::arg("states"),
+            py::arg("t"),
+            py::arg("env"),
+            py::arg("commands") = std::map<std::string, double>())
         .def_static("parse", &BasicBuoyancyForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &BasicBuoyancyForceModel::model_name,
-            "Returns model name \"basic buoyancy\"")
-        ;
+        .def_static(
+            "model_name",
+            &BasicBuoyancyForceModel::model_name,
+            "Returns model name \"basic buoyancy\"");
 
     py::class_<ResistanceCurveForceModel::Yaml>(m, "ResistanceCurveForceModelInput")
         .def(py::init<>())
         .def_readwrite("Va", &ResistanceCurveForceModel::Yaml::Va)
-        .def_readwrite("R", &ResistanceCurveForceModel::Yaml::R)
-        ;
+        .def_readwrite("R", &ResistanceCurveForceModel::Yaml::R);
 
-    py::class_<ResistanceCurveForceModel, ForceModel>(m, "ResistanceCurveForceModel", "Resistance curve given by interpolation table")
-        .def(py::init<const ResistanceCurveForceModel::Yaml& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<ResistanceCurveForceModel, ForceModel>(
+        m,
+        "ResistanceCurveForceModel",
+        "Resistance curve given by interpolation table")
+        .def(
+            py::init<
+                const ResistanceCurveForceModel::Yaml& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
-        .def_static("model_name", &ResistanceCurveForceModel::model_name,
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &ResistanceCurveForceModel::model_name,
             "Returns model name \"resistance curve\"")
         .def_static("parse", &ResistanceCurveForceModel::parse, py::arg("yaml"))
-        .def("get_force", &ResistanceCurveForceModel::get_force,
+        .def(
+            "get_force",
+            &ResistanceCurveForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>(),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-            )
+            py::arg("commands") = std::map<std::string, double>(),
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
+
+    py::class_<DampingForceModel, ForceModel>(
+        m,
+        "DampingForceModel",
+        "Abstract damping force model")
+        //.def(py::init<const std::string& /*name*/, const std::string& /*body_name*/, const
+        // EnvironmentAndFrames& /*env*/>()) .def("get_force", &DampingForceModel::get_force)
         ;
 
-    py::class_<DampingForceModel, ForceModel>(m, "DampingForceModel", "Abstract damping force model")
-        //.def(py::init<const std::string& /*name*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>())
-        //.def("get_force", &DampingForceModel::get_force)
-        ;
-
-    py::class_<LinearDampingForceModel, DampingForceModel, ForceModel>(m, "LinearDampingForceModel",
+    py::class_<LinearDampingForceModel, DampingForceModel, ForceModel>(
+        m,
+        "LinearDampingForceModel",
         "Linear damping force model")
-        .def(py::init<const LinearDampingForceModel::Input& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const LinearDampingForceModel::Input& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
+            py::arg("env"))
         .def_static("parse", &LinearDampingForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &LinearDampingForceModel::model_name,
+        .def_static(
+            "model_name",
+            &LinearDampingForceModel::model_name,
             "Returns model name \"linear damping\"")
-        .def("get_force", &LinearDampingForceModel::get_force,
+        .def(
+            "get_force",
+            &LinearDampingForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>())
-        ;
+            py::arg("commands") = std::map<std::string, double>());
 
-    py::class_<QuadraticDampingForceModel, DampingForceModel, ForceModel>(m, "QuadraticDampingForceModel",
+    py::class_<QuadraticDampingForceModel, DampingForceModel, ForceModel>(
+        m,
+        "QuadraticDampingForceModel",
         "Quadratic damping force model")
-        .def(py::init<const QuadraticDampingForceModel::Input& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const QuadraticDampingForceModel::Input& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
+            py::arg("env"))
         .def_static("parse", &QuadraticDampingForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &QuadraticDampingForceModel::model_name,
-            "Returns model name \"quadratic damping\"")
-        ;
+        .def_static(
+            "model_name",
+            &QuadraticDampingForceModel::model_name,
+            "Returns model name \"quadratic damping\"");
 
     py::class_<LinearStiffnessForceModel::Input>(m, "LinearStiffnessForceModelInput")
         .def(py::init<>())
         .def_readwrite("name", &LinearStiffnessForceModel::Input::name)
         .def_readwrite("K", &LinearStiffnessForceModel::Input::K)
-        .def_readwrite("equilibrium_position", &LinearStiffnessForceModel::Input::equilibrium_position)
-        ;
+        .def_readwrite(
+            "equilibrium_position",
+            &LinearStiffnessForceModel::Input::equilibrium_position);
 
-    py::class_<LinearStiffnessForceModel, ForceModel>(m, "LinearStiffnessForceModel",
+    py::class_<LinearStiffnessForceModel, ForceModel>(
+        m,
+        "LinearStiffnessForceModel",
         "Linear stiffness force model")
-        .def(py::init<const LinearStiffnessForceModel::Input& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const LinearStiffnessForceModel::Input& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
+            py::arg("env"))
         .def_static("parse", &LinearStiffnessForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &LinearStiffnessForceModel::model_name,
+        .def_static(
+            "model_name",
+            &LinearStiffnessForceModel::model_name,
             "Returns model name \"linear stiffness\"")
-        .def("get_force", &LinearStiffnessForceModel::get_force,
+        .def(
+            "get_force",
+            &LinearStiffnessForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>())
-        ;
+            py::arg("commands") = std::map<std::string, double>());
 
-    py::class_<MMGManeuveringForceModel::Input>(m, "MMGManeuveringForceModelInput",
+    py::class_<MMGManeuveringForceModel::Input>(
+        m,
+        "MMGManeuveringForceModelInput",
         "Input for MMGManeuveringForceModel")
         .def(py::init<>())
         .def_readwrite("application_point", &MMGManeuveringForceModel::Input::application_point)
@@ -235,27 +286,36 @@ void py_add_module_xdyn_force(py::module& m0)
         .def_readwrite("Nvvv", &MMGManeuveringForceModel::Input::Nvvv)
         .def_readwrite("Nrvv", &MMGManeuveringForceModel::Input::Nrvv)
         .def_readwrite("Nvrr", &MMGManeuveringForceModel::Input::Nvrr)
-        .def_readwrite("Nrrr", &MMGManeuveringForceModel::Input::Nrrr)
-    ;
+        .def_readwrite("Nrrr", &MMGManeuveringForceModel::Input::Nrrr);
 
-    py::class_<MMGManeuveringForceModel, ForceModel>(m, "MMGManeuveringForceModel",
+    py::class_<MMGManeuveringForceModel, ForceModel>(
+        m,
+        "MMGManeuveringForceModel",
         "Mathematical Model Group manoeuvring ship force model")
-        .def(py::init<const MMGManeuveringForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const MMGManeuveringForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
+            py::arg("env"))
         .def_static("parse", &MMGManeuveringForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &MMGManeuveringForceModel::model_name,
+        .def_static(
+            "model_name",
+            &MMGManeuveringForceModel::model_name,
             "Returns model name \"MMG maneuvering\"")
-        .def("get_force", &MMGManeuveringForceModel::get_force,
+        .def(
+            "get_force",
+            &MMGManeuveringForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>())
-        ;
+            py::arg("commands") = std::map<std::string, double>());
 
-    py::class_<HydroPolarForceModel::Input>(m, "HydroPolarForceModelInput",
+    py::class_<HydroPolarForceModel::Input>(
+        m,
+        "HydroPolarForceModelInput",
         "Input for HydroPolarForceModel")
         .def(py::init<>())
         .def_readwrite("name", &HydroPolarForceModel::Input::name)
@@ -267,173 +327,237 @@ void py_add_module_xdyn_force(py::module& m0)
         .def_readwrite("reference_area", &HydroPolarForceModel::Input::reference_area)
         .def_readwrite("chord_length", &HydroPolarForceModel::Input::chord_length)
         .def_readwrite("use_waves_velocity", &HydroPolarForceModel::Input::use_waves_velocity)
-        .def_readwrite("angle_command", &HydroPolarForceModel::Input::angle_command)
-        ;
+        .def_readwrite("angle_command", &HydroPolarForceModel::Input::angle_command);
 
-    py::class_<HydroPolarForceModel, ForceModel>(m, "HydroPolarForceModel",
+    py::class_<HydroPolarForceModel, ForceModel>(
+        m,
+        "HydroPolarForceModel",
         "Hydrodynamic polar force model")
-        .def(py::init<const HydroPolarForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const HydroPolarForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
-            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>()
-            )
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def_static("parse", &HydroPolarForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &HydroPolarForceModel::model_name,
+        .def_static(
+            "model_name",
+            &HydroPolarForceModel::model_name,
             "Returns model name \"hydrodynamic polar\"")
-        .def("get_force", &HydroPolarForceModel::get_force,
+        .def(
+            "get_force",
+            &HydroPolarForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>(),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-            )
-        ;
+            py::arg("commands") = std::map<std::string, double>(),
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 
-    py::class_<AeroPolarForceModel::Input>(m, "AeroPolarForceModelInput",
+    py::class_<AeroPolarForceModel::Input>(
+        m,
+        "AeroPolarForceModelInput",
         "Input for AeroPolarForceModel")
         .def(py::init<>())
         .def_readwrite("name", &AeroPolarForceModel::Input::name)
-        .def_readwrite("calculation_point_in_body_frame", &AeroPolarForceModel::Input::calculation_point_in_body_frame)
+        .def_readwrite(
+            "calculation_point_in_body_frame",
+            &AeroPolarForceModel::Input::calculation_point_in_body_frame)
         .def_readwrite("apparent_wind_angle", &AeroPolarForceModel::Input::apparent_wind_angle)
         .def_readwrite("lift_coefficient", &AeroPolarForceModel::Input::lift_coefficient)
         .def_readwrite("drag_coefficient", &AeroPolarForceModel::Input::drag_coefficient)
-        .def_readwrite("reference_area", &AeroPolarForceModel::Input::reference_area,
+        .def_readwrite(
+            "reference_area",
+            &AeroPolarForceModel::Input::reference_area,
             "Reference area (in square metres) of the wing, for lift and drag normalization.")
-        .def_readwrite("angle_command", &AeroPolarForceModel::Input::angle_command)
-        ;
+        .def_readwrite("angle_command", &AeroPolarForceModel::Input::angle_command);
 
-    py::class_<AeroPolarForceModel, ForceModel>(m, "AeroPolarForceModel",
+    py::class_<AeroPolarForceModel, ForceModel>(
+        m,
+        "AeroPolarForceModel",
         "Aerodynamic polar force model")
-        .def(py::init<const AeroPolarForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const AeroPolarForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
-            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>()
-            )
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def_static("parse", &AeroPolarForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &AeroPolarForceModel::model_name,
+        .def_static(
+            "model_name",
+            &AeroPolarForceModel::model_name,
             "Returns model name \"aerodynamic polar\"")
-        .def("get_force", &AeroPolarForceModel::get_force,
+        .def(
+            "get_force",
+            &AeroPolarForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>()
-            )
-        ;
+            py::arg("commands") = std::map<std::string, double>());
 
-    py::class_<FlettnerRotorForceModel::Input>(m, "FlettnerRotorForceModelInput",
+    py::class_<FlettnerRotorForceModel::Input>(
+        m,
+        "FlettnerRotorForceModelInput",
         "Input for FlettnerRotorForceModel")
         .def(py::init<>())
         .def_readwrite("name", &FlettnerRotorForceModel::Input::name)
-        .def_readwrite("calculation_point_in_body_frame", &FlettnerRotorForceModel::Input::calculation_point_in_body_frame)
+        .def_readwrite(
+            "calculation_point_in_body_frame",
+            &FlettnerRotorForceModel::Input::calculation_point_in_body_frame)
         .def_readwrite("diameter", &FlettnerRotorForceModel::Input::diameter)
         .def_readwrite("length", &FlettnerRotorForceModel::Input::length)
         .def_readwrite("spin_ratio", &FlettnerRotorForceModel::Input::spin_ratio)
         .def_readwrite("lift_coefficient", &FlettnerRotorForceModel::Input::lift_coefficient)
-        .def_readwrite("drag_coefficient", &FlettnerRotorForceModel::Input::drag_coefficient)
-        ;
+        .def_readwrite("drag_coefficient", &FlettnerRotorForceModel::Input::drag_coefficient);
 
-    py::class_<FlettnerRotorForceModel, ForceModel>(m, "FlettnerRotorForceModel", "Flettner rotor force")
-        .def(py::init<const FlettnerRotorForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<FlettnerRotorForceModel, ForceModel>(
+        m,
+        "FlettnerRotorForceModel",
+        "Flettner rotor force")
+        .def(
+            py::init<
+                const FlettnerRotorForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
+            py::arg("env"))
         .def_static("parse", &FlettnerRotorForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &FlettnerRotorForceModel::model_name,
+        .def_static(
+            "model_name",
+            &FlettnerRotorForceModel::model_name,
             "Returns model name \"Flettner rotor\"")
-        .def("get_force", &FlettnerRotorForceModel::get_force,
+        .def(
+            "get_force",
+            &FlettnerRotorForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
             py::arg("commands"),
-            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>()
-            )
-        ;
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 
-    py::class_<AbstractWageningen::Yaml>(m, "AbstractWageningenInput",
+    py::class_<AbstractWageningen::Yaml>(
+        m,
+        "AbstractWageningenInput",
         "Input for AbstractWageningen")
         .def_readwrite("name", &AbstractWageningen::Yaml::name)
-        .def_readwrite("position_of_propeller_frame", &AbstractWageningen::Yaml::position_of_propeller_frame)
+        .def_readwrite(
+            "position_of_propeller_frame",
+            &AbstractWageningen::Yaml::position_of_propeller_frame)
         .def_readwrite("wake_coefficient", &AbstractWageningen::Yaml::wake_coefficient)
-        .def_readwrite("relative_rotative_efficiency", &AbstractWageningen::Yaml::relative_rotative_efficiency)
-        .def_readwrite("thrust_deduction_factor", &AbstractWageningen::Yaml::thrust_deduction_factor)
+        .def_readwrite(
+            "relative_rotative_efficiency",
+            &AbstractWageningen::Yaml::relative_rotative_efficiency)
+        .def_readwrite(
+            "thrust_deduction_factor",
+            &AbstractWageningen::Yaml::thrust_deduction_factor)
         .def_readwrite("rotating_clockwise", &AbstractWageningen::Yaml::rotating_clockwise)
-        .def_readwrite("diameter", &AbstractWageningen::Yaml::diameter)
-        ;
+        .def_readwrite("diameter", &AbstractWageningen::Yaml::diameter);
 
     py::class_<AbstractWageningen, ForceModel>(m, "AbstractWageningen")
-        // .def(py::init<const AbstractWageningen::Yaml& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>())
+        // .def(py::init<const AbstractWageningen::Yaml& /*input*/, const std::string&
+        // /*body_name*/, const EnvironmentAndFrames& /*env*/>())
         .def_static("parse", &AbstractWageningen::parse, py::arg("yaml"))
         .def("get_advance_ratio", &AbstractWageningen::get_advance_ratio)
-        // Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;
+        // Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames&
+        // env, const std::map<std::string,double>& commands) const;
         ;
 
-    py::class_<KtKqForceModel::Yaml, AbstractWageningen::Yaml>(m, "KtKqForceModelInput",
+    py::class_<KtKqForceModel::Yaml, AbstractWageningen::Yaml>(
+        m,
+        "KtKqForceModelInput",
         "Input for KtKqForceModel")
         .def_readwrite("J", &KtKqForceModel::Yaml::J)
         .def_readwrite("Kt", &KtKqForceModel::Yaml::Kt)
-        .def_readwrite("Kq", &KtKqForceModel::Yaml::Kq)
-        ;
+        .def_readwrite("Kq", &KtKqForceModel::Yaml::Kq);
 
-    py::class_<KtKqForceModel, AbstractWageningen, ForceModel>(m, "KtKqForceModel", "Kt Kq force model")
-        .def(py::init<const KtKqForceModel::Yaml& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<KtKqForceModel, AbstractWageningen, ForceModel>(
+        m,
+        "KtKqForceModel",
+        "Kt Kq force model")
+        .def(
+            py::init<
+                const KtKqForceModel::Yaml& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
-        .def_static("model_name", &KtKqForceModel::model_name,
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &KtKqForceModel::model_name,
             "Returns model name \"Kt(J) & Kq(J)\"")
-        .def("get_force", &AbstractWageningen::get_force,
+        .def(
+            "get_force",
+            &AbstractWageningen::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
             py::arg("commands"))
         .def_static("parse", &KtKqForceModel::parse, py::arg("yaml"))
         .def("get_Kt", &KtKqForceModel::get_Kt)
-        .def("get_Kq", &KtKqForceModel::get_Kq)
-        ;
+        .def("get_Kq", &KtKqForceModel::get_Kq);
 
-    py::class_<WageningenControlledForceModel::Yaml, AbstractWageningen::Yaml>(m, "WageningenControlledForceModelInput",
+    py::class_<WageningenControlledForceModel::Yaml, AbstractWageningen::Yaml>(
+        m,
+        "WageningenControlledForceModelInput",
         "Input for WageningenControlledForceModel")
         .def(py::init<>())
         .def_readwrite("number_of_blades", &WageningenControlledForceModel::Yaml::number_of_blades)
-        .def_readwrite("blade_area_ratio", &WageningenControlledForceModel::Yaml::blade_area_ratio)
-        ;
+        .def_readwrite("blade_area_ratio", &WageningenControlledForceModel::Yaml::blade_area_ratio);
 
-    py::class_<WageningenControlledForceModel, AbstractWageningen, ForceModel>(m, "WageningenControlledForceModel",
+    py::class_<WageningenControlledForceModel, AbstractWageningen, ForceModel>(
+        m,
+        "WageningenControlledForceModel",
         "Wageningen controlled force model")
-        .def(py::init<const WageningenControlledForceModel::Yaml& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const WageningenControlledForceModel::Yaml& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
-        .def_static("model_name", &WageningenControlledForceModel::model_name,
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &WageningenControlledForceModel::model_name,
             "Returns model name \"wageningen B-series\"")
-        .def("get_force", &AbstractWageningen::get_force,
+        .def(
+            "get_force",
+            &AbstractWageningen::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
             py::arg("commands"),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-            )
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def_static("parse", &WageningenControlledForceModel::parse, py::arg("yaml"))
         .def("get_Kt", &WageningenControlledForceModel::get_Kt)
         .def("get_Kq", &WageningenControlledForceModel::get_Kq)
-        .def("Kt", &WageningenControlledForceModel::Kt, py::arg("Z"),py::arg("AE_A0"),py::arg("P_D"),py::arg("J"),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-            )
-        .def("Kq", &WageningenControlledForceModel::Kq, py::arg("Z"),py::arg("AE_A0"),py::arg("P_D"),py::arg("J"),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-            )
-        ;
+        .def(
+            "Kt",
+            &WageningenControlledForceModel::Kt,
+            py::arg("Z"),
+            py::arg("AE_A0"),
+            py::arg("P_D"),
+            py::arg("J"),
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def(
+            "Kq",
+            &WageningenControlledForceModel::Kq,
+            py::arg("Z"),
+            py::arg("AE_A0"),
+            py::arg("P_D"),
+            py::arg("J"),
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>());
 
-    py::class_<HoltropMennenForceModel::Input>(m, "HoltropMennenForceModelInput",
+    py::class_<HoltropMennenForceModel::Input>(
+        m,
+        "HoltropMennenForceModelInput",
         "Input for HoltropMennenForceModel")
         .def(py::init<>())
         .def_readwrite("Lwl", &HoltropMennenForceModel::Input::Lwl)
@@ -448,14 +572,15 @@ void py_add_module_xdyn_force(py::module& m0)
         .def_readwrite("hb", &HoltropMennenForceModel::Input::hb)
         .def_readwrite("Cm", &HoltropMennenForceModel::Input::Cm)
         .def_readwrite("Cwp", &HoltropMennenForceModel::Input::Cwp)
-        .def_readwrite("iE", &HoltropMennenForceModel::Input::iE) // WARNING: iE must be in degrees
+        .def_readwrite("iE", &HoltropMennenForceModel::Input::iE)  // WARNING: iE must be in degrees
         .def_readwrite("At", &HoltropMennenForceModel::Input::At)
         .def_readwrite("Sapp", &HoltropMennenForceModel::Input::Sapp)
         .def_readwrite("Cstern", &HoltropMennenForceModel::Input::Cstern)
         .def_readwrite("hull_form_coeff", &HoltropMennenForceModel::Input::hull_form_coeff)
         .def_readwrite("app_form_coeff", &HoltropMennenForceModel::Input::app_form_coeff)
-        .def_readwrite("apply_on_ship_speed_direction", &HoltropMennenForceModel::Input::apply_on_ship_speed_direction)
-        ;
+        .def_readwrite(
+            "apply_on_ship_speed_direction",
+            &HoltropMennenForceModel::Input::apply_on_ship_speed_direction);
 
     py::class_<HoltropMennenForceModel::DerivedData>(m, "HoltropMennenForceModelDerivedData")
         .def(py::init<const HoltropMennenForceModel::Input& /*input*/>())
@@ -476,85 +601,160 @@ void py_add_module_xdyn_force(py::module& m0)
         .def_readwrite("S", &HoltropMennenForceModel::DerivedData::S)
         .def_readwrite("c16", &HoltropMennenForceModel::DerivedData::c16)
         .def_readwrite("Lr", &HoltropMennenForceModel::DerivedData::Lr)
-        .def_readwrite("Lambda", &HoltropMennenForceModel::DerivedData::lambda) // Capitalize first letter to avoid conflict with python reserved keyword lambda
+        .def_readwrite(
+            "Lambda",
+            &HoltropMennenForceModel::DerivedData::lambda)  // Capitalize first letter to avoid
+                                                            // conflict with python reserved keyword
+                                                            // lambda
         .def_readwrite("iE", &HoltropMennenForceModel::DerivedData::iE)
         .def_readwrite("c1", &HoltropMennenForceModel::DerivedData::c1)
         .def_readwrite("m1", &HoltropMennenForceModel::DerivedData::m1)
-        .def_readwrite("hull_form_coeff", &HoltropMennenForceModel::DerivedData::hull_form_coeff)
-        ;
+        .def_readwrite("hull_form_coeff", &HoltropMennenForceModel::DerivedData::hull_form_coeff);
 
-    py::class_<HoltropMennenForceModel, ForceModel>(m, "HoltropMennenForceModel",
+    py::class_<HoltropMennenForceModel, ForceModel>(
+        m,
+        "HoltropMennenForceModel",
         "Holtrop Mennen force model")
-        .def(py::init<const HoltropMennenForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const HoltropMennenForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"))
-        .def("get_force", &HoltropMennenForceModel::get_force,
+        .def(
+            "get_force",
+            &HoltropMennenForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>()
-            )
+            py::arg("commands") = std::map<std::string, double>())
         .def_static("parse", &HoltropMennenForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &HoltropMennenForceModel::model_name,
+        .def_static(
+            "model_name",
+            &HoltropMennenForceModel::model_name,
             "Returns model name \"Holtrop & Mennen\"")
-        .def("Rf", &HoltropMennenForceModel::Rf, py::arg("states"), py::arg("env"),"Frictional resistance over the hull")
-        .def("Rapp", &HoltropMennenForceModel::Rapp, py::arg("states"), py::arg("env"), "Frictional resistance over the appendages")
-        .def("Rw", &HoltropMennenForceModel::Rw, py::arg("states"), py::arg("env"), "Wave-making resistance")
-        .def("Rb", &HoltropMennenForceModel::Rb, py::arg("states"), py::arg("env"), "Bulbous bow influence")
-        .def("Rtr", &HoltropMennenForceModel::Rtr, py::arg("states"), py::arg("env"), "Immersed transom stern influence")
-        .def("Ra", &HoltropMennenForceModel::Ra, py::arg("states"), py::arg("env"),"Correlation term between model and full scale")
-        ;
+        .def(
+            "Rf",
+            &HoltropMennenForceModel::Rf,
+            py::arg("states"),
+            py::arg("env"),
+            "Frictional resistance over the hull")
+        .def(
+            "Rapp",
+            &HoltropMennenForceModel::Rapp,
+            py::arg("states"),
+            py::arg("env"),
+            "Frictional resistance over the appendages")
+        .def(
+            "Rw",
+            &HoltropMennenForceModel::Rw,
+            py::arg("states"),
+            py::arg("env"),
+            "Wave-making resistance")
+        .def(
+            "Rb",
+            &HoltropMennenForceModel::Rb,
+            py::arg("states"),
+            py::arg("env"),
+            "Bulbous bow influence")
+        .def(
+            "Rtr",
+            &HoltropMennenForceModel::Rtr,
+            py::arg("states"),
+            py::arg("env"),
+            "Immersed transom stern influence")
+        .def(
+            "Ra",
+            &HoltropMennenForceModel::Ra,
+            py::arg("states"),
+            py::arg("env"),
+            "Correlation term between model and full scale");
 
-    py::class_<RudderForceModel::Yaml, WageningenControlledForceModel::Yaml, AbstractWageningen::Yaml>(m, "RudderForceModelInput")
+    py::class_<
+        RudderForceModel::Yaml,
+        WageningenControlledForceModel::Yaml,
+        AbstractWageningen::Yaml>(m, "RudderForceModelInput")
         .def(py::init<>())
         .def(py::init<const WageningenControlledForceModel::Yaml& /*yaml*/>())
-        .def_readwrite("Ar", &RudderForceModel::Yaml::Ar) //!< Rudder area (in m^2) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
-        .def_readwrite("b", &RudderForceModel::Yaml::b)   //!< Rudder height (in m) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
-        .def_readwrite("effective_aspect_ratio_factor", &RudderForceModel::Yaml::effective_aspect_ratio_factor) //!< Non-dimensional (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 97 § b)
-        .def_readwrite("lift_coeff", &RudderForceModel::Yaml::lift_coeff) //!< Non-dimensional: lift is multiplied by it (for tuning)
-        .def_readwrite("drag_coeff", &RudderForceModel::Yaml::drag_coeff) //!< Non-dimensional: drag is multiplied by it (for tuning)
-        .def_readwrite("position_of_the_rudder_frame_in_the_body_frame", &RudderForceModel::Yaml::position_of_the_rudder_frame_in_the_body_frame)
-        ;
+        .def_readwrite(
+            "Ar",
+            &RudderForceModel::Yaml::Ar)  //!< Rudder area (in m^2) (cf. "Maneuvering Technical
+                                          //!< Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
+        .def_readwrite(
+            "b",
+            &RudderForceModel::Yaml::b)  //!< Rudder height (in m) (cf. "Maneuvering Technical
+                                         //!< Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
+        .def_readwrite(
+            "effective_aspect_ratio_factor",
+            &RudderForceModel::Yaml::
+                effective_aspect_ratio_factor)  //!< Non-dimensional (cf. "Maneuvering Technical
+                                                //!< Manual", J. Brix, Seehafen Verlag, p. 97 § b)
+        .def_readwrite(
+            "lift_coeff",
+            &RudderForceModel::Yaml::lift_coeff)  //!< Non-dimensional: lift is multiplied by it
+                                                  //!< (for tuning)
+        .def_readwrite(
+            "drag_coeff",
+            &RudderForceModel::Yaml::drag_coeff)  //!< Non-dimensional: drag is multiplied by it
+                                                  //!< (for tuning)
+        .def_readwrite(
+            "position_of_the_rudder_frame_in_the_body_frame",
+            &RudderForceModel::Yaml::position_of_the_rudder_frame_in_the_body_frame);
 
     py::class_<RudderForceModel, ForceModel>(m, "RudderForceModel", "Rudder force model")
-        .def(py::init<const RudderForceModel::Yaml& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const RudderForceModel::Yaml& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("env"),
-            py::arg("commands")
-            )
+            py::arg("commands"))
         .def("get_force", &RudderForceModel::get_force)
         .def("get_rudder_force", &RudderForceModel::get_rudder_force)
         .def_static("parse", &RudderForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &RudderForceModel::model_name,
-            "Returns model name \"propeller+rudder\"")
-        ;
+        .def_static(
+            "model_name",
+            &RudderForceModel::model_name,
+            "Returns model name \"propeller+rudder\"");
 
     py::class_<RudderForceModel::InOutWake<double>>(m, "RudderForceModelInOutWake")
         .def(py::init<>())
         .def_readwrite("in_wake", &RudderForceModel::InOutWake<double>::in_wake)
-        .def_readwrite("outside_wake", &RudderForceModel::InOutWake<double>::outside_wake)
-        ;
+        .def_readwrite("outside_wake", &RudderForceModel::InOutWake<double>::outside_wake);
 
-    py::class_<RudderForceModel::InOutWake<ssc::kinematics::Point>>(m, "RudderForceModelInOutWakeSscPoint")
+    py::class_<RudderForceModel::InOutWake<ssc::kinematics::Point>>(
+        m,
+        "RudderForceModelInOutWakeSscPoint")
         .def(py::init<>())
         .def_readwrite("in_wake", &RudderForceModel::InOutWake<ssc::kinematics::Point>::in_wake)
-        .def_readwrite("outside_wake", &RudderForceModel::InOutWake<ssc::kinematics::Point>::outside_wake)
-        ;
+        .def_readwrite(
+            "outside_wake",
+            &RudderForceModel::InOutWake<ssc::kinematics::Point>::outside_wake);
 
-    py::class_<RudderForceModel::InOutWake<ssc::kinematics::Vector6d>>(m, "RudderForceModelInOutWakeSscVector6d")
+    py::class_<RudderForceModel::InOutWake<ssc::kinematics::Vector6d>>(
+        m,
+        "RudderForceModelInOutWakeSscVector6d")
         .def(py::init<>())
         .def_readwrite("in_wake", &RudderForceModel::InOutWake<ssc::kinematics::Vector6d>::in_wake)
-        .def_readwrite("outside_wake", &RudderForceModel::InOutWake<ssc::kinematics::Vector6d>::outside_wake)
-        ;
+        .def_readwrite(
+            "outside_wake",
+            &RudderForceModel::InOutWake<ssc::kinematics::Vector6d>::outside_wake);
 
     py::class_<RudderForceModel::RudderModel>(m, "RudderModel")
-        .def(py::init<const RudderForceModel::Yaml& /*parameters*/, const double /*rho*/, const double /*nu*/>(),
+        .def(
+            py::init<
+                const RudderForceModel::Yaml& /*parameters*/,
+                const double /*rho*/,
+                const double /*nu*/>(),
             py::arg("parameters"),
             py::arg("rho"),
-            py::arg("nu")
-            )
-        .def("get_Ar", &RudderForceModel::RudderModel::get_Ar,
+            py::arg("nu"))
+        .def(
+            "get_Ar",
+            &RudderForceModel::RudderModel::get_Ar,
             py::arg("CTh"),
             R"(Calculates the rudder area (in or outside wake)
 
@@ -565,7 +765,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                InOutWake<double> : Rudder area (in m^2)
                )")
-        .def("get_angle_of_attack", &RudderForceModel::RudderModel::get_angle_of_attack,
+        .def(
+            "get_angle_of_attack",
+            &RudderForceModel::RudderModel::get_angle_of_attack,
             py::arg("rudder_angle"),
             py::arg("fluid_angle"),
             R"(Calculates the angle between the propeller's wake & the rudder
@@ -579,7 +781,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                Angle of attack (in radian)
                )")
-        .def("get_lift", &RudderForceModel::RudderModel::get_lift,
+        .def(
+            "get_lift",
+            &RudderForceModel::RudderModel::get_lift,
             py::arg("Vs"),
             py::arg("Cl"),
             py::arg("alpha"),
@@ -596,7 +800,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                float: Lift force (in Newton)
                )")
-        .def("get_drag", &RudderForceModel::RudderModel::get_drag,
+        .def(
+            "get_drag",
+            &RudderForceModel::RudderModel::get_drag,
             py::arg("Vs"),
             py::arg("Cl"),
             py::arg("area"),
@@ -611,7 +817,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                float: Drag force (in Newton)
                )")
-        .def("get_Cd", &RudderForceModel::RudderModel::get_Cd,
+        .def(
+            "get_Cd",
+            &RudderForceModel::RudderModel::get_Cd,
             py::arg("Vs"),
             py::arg("Cl"),
             R"(Calculates the drag coefficient (non-dimensional)
@@ -624,7 +832,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                float: Drag coeffcient
                )")
-        .def("get_Cl", &RudderForceModel::RudderModel::get_Cl,
+        .def(
+            "get_Cl",
+            &RudderForceModel::RudderModel::get_Cl,
             py::arg("alpha_wake"),
             R"(Calculates the lift coefficient (non-dimensional)
 
@@ -637,12 +847,18 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                float: Lift coeffcient
                )")
-        .def("get_wrench",
-            static_cast<RudderForceModel::InOutWake<ssc::kinematics::Vector6d> (RudderForceModel::RudderModel::*)(
-                const double /*rudder_angle*/, //!< Rudder angle (in radian): positive if rudder on port side
-                const RudderForceModel::InOutWake<ssc::kinematics::Point>& /*Vs*/,  //!< Speed of the ship relative to the fluid (in m/s)
-                const RudderForceModel::InOutWake<double>& /*area*/ //!< Rudder area (in or outside wake) in m^2
-                ) const>(&RudderForceModel::RudderModel::get_wrench),
+        .def(
+            "get_wrench",
+            static_cast<RudderForceModel::InOutWake<ssc::kinematics::Vector6d> (
+                RudderForceModel::RudderModel::*)(
+                const double /*rudder_angle*/,  //!< Rudder angle (in radian): positive if rudder on
+                                                //!< port side
+                const RudderForceModel::InOutWake<
+                    ssc::kinematics::Point>& /*Vs*/,  //!< Speed of the ship relative to the fluid
+                                                      //!< (in m/s)
+                const RudderForceModel::InOutWake<double>& /*area*/  //!< Rudder area (in or outside
+                                                                     //!< wake) in m^2
+            ) const>(&RudderForceModel::RudderModel::get_wrench),
             py::arg("rudder_angle"),
             py::arg("Vs"),
             py::arg("area"),
@@ -659,12 +875,15 @@ void py_add_module_xdyn_force(py::module& m0)
                 InOutWakeSscVector6d: wrench
                )")
 
-        .def("get_wrench",
+        .def(
+            "get_wrench",
             static_cast<ssc::kinematics::Vector6d (RudderForceModel::RudderModel::*)(
-                const double /*rudder_angle*/,  //!< Rudder angle (in radian): positive if rudder on port side
-                const ssc::kinematics::Point& /*Vs*/,  //!< Speed of the ship relative to the fluid (in m/s)
-                const double /*area*/           //!< Rudder area (in or outside wake) in m^2
-                ) const>(&RudderForceModel::RudderModel::get_wrench),
+                const double /*rudder_angle*/,  //!< Rudder angle (in radian): positive if rudder on
+                                                //!< port side
+                const ssc::kinematics::Point& /*Vs*/,  //!< Speed of the ship relative to the fluid
+                                                       //!< (in m/s)
+                const double /*area*/                  //!< Rudder area (in or outside wake) in m^2
+            ) const>(&RudderForceModel::RudderModel::get_wrench),
             py::arg("rudder_angle"),
             py::arg("Vs"),
             py::arg("area"),
@@ -680,7 +899,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                 ssc::kinematics::Vector6d: wrench
                )")
-        .def("get_force", &RudderForceModel::RudderModel::get_force,
+        .def(
+            "get_force",
+            &RudderForceModel::RudderModel::get_force,
             py::arg("lift"),
             py::arg("drag"),
             py::arg("angle"),
@@ -696,7 +917,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                 ssc::kinematics::Vector6d: wrench
                )")
-        .def("get_vs", &RudderForceModel::RudderModel::get_vs,
+        .def(
+            "get_vs",
+            &RudderForceModel::RudderModel::get_vs,
             py::arg("CTh"),
             py::arg("Va"),
             py::arg("v"),
@@ -713,7 +936,9 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                 InOutWakeSscPoint:
                )")
-        .def("get_fluid_angle", &RudderForceModel::RudderModel::get_fluid_angle,
+        .def(
+            "get_fluid_angle",
+            &RudderForceModel::RudderModel::get_fluid_angle,
             py::arg("Vs"),
             R"(Calculates the angle of incidence of the fluid, inside & outside wake
 
@@ -726,68 +951,89 @@ void py_add_module_xdyn_force(py::module& m0)
                Return
                 InOutWake: Angle in radian
                )")
-        .def("get_D", &RudderForceModel::RudderModel::get_D)
-        ;
+        .def("get_D", &RudderForceModel::RudderModel::get_D);
 
-    py::class_<RadiationDampingForceModel::Input>(m, "RadiationDampingForceModelInput",
+    py::class_<RadiationDampingForceModel::Input>(
+        m,
+        "RadiationDampingForceModelInput",
         "Input for RadiationDampingForceModel")
         .def(py::init<>())
         .def_readwrite("yaml", &RadiationDampingForceModel::Input::yaml)
-        .def("set_hdb_parser_for_tests",
-            [] (RadiationDampingForceModel::Input &a,
-                const std::vector<double>& omega,
-                const std::vector<double>& Ma,
-                const std::vector<double>& Br,
-                const bool only_diagonal_terms)
-            {
+        .def(
+            "set_hdb_parser_for_tests",
+            [](RadiationDampingForceModel::Input& a,
+               const std::vector<double>& omega,
+               const std::vector<double>& Ma,
+               const std::vector<double>& Br,
+               const bool only_diagonal_terms) {
                 a.parser = std::make_shared<HDBParserForTests>(omega, Ma, Br, only_diagonal_terms);
             },
             py::arg("omega"),
             py::arg("Ma"),
             py::arg("Br"),
-            py::arg("only_diagonal_terms")
-        );
+            py::arg("only_diagonal_terms"));
 
-    py::class_<RadiationDampingForceModel, ForceModel>(m, "RadiationDampingForceModel", "Radiation damping force model")
-        .def(py::init<const RadiationDampingForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<RadiationDampingForceModel, ForceModel>(
+        m,
+        "RadiationDampingForceModel",
+        "Radiation damping force model")
+        .def(
+            py::init<
+                const RadiationDampingForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
-            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>()
-            )
-        .def_static("model_name", &RadiationDampingForceModel::model_name,
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def_static(
+            "model_name",
+            &RadiationDampingForceModel::model_name,
             "Returns model name \"radiation damping\"")
-        .def("get_force", &RadiationDampingForceModel::get_force,
+        .def(
+            "get_force",
+            &RadiationDampingForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>()
-            )
+            py::arg("commands") = std::map<std::string, double>())
         .def("get_Tmax", &RadiationDampingForceModel::get_Tmax)
-        .def_static("parse", &RadiationDampingForceModel::parse, py::arg("yaml"), py::arg("parse_hdb")=true)
-        ;
+        .def_static(
+            "parse",
+            &RadiationDampingForceModel::parse,
+            py::arg("yaml"),
+            py::arg("parse_hdb") = true);
 
-    py::class_<SimpleHeadingKeepingController::Yaml>(m, "SimpleHeadingKeepingControllerInput",
+    py::class_<SimpleHeadingKeepingController::Yaml>(
+        m,
+        "SimpleHeadingKeepingControllerInput",
         "Input for SimpleHeadingKeepingController")
         .def_readwrite("name", &SimpleHeadingKeepingController::Yaml::name)
         .def_readwrite("ksi", &SimpleHeadingKeepingController::Yaml::ksi)
-        .def_readwrite("Tp", &SimpleHeadingKeepingController::Yaml::Tp)
-        ;
+        .def_readwrite("Tp", &SimpleHeadingKeepingController::Yaml::Tp);
 
-    py::class_<SimpleHeadingKeepingController, ForceModel>(m, "SimpleHeadingKeepingController",
+    py::class_<SimpleHeadingKeepingController, ForceModel>(
+        m,
+        "SimpleHeadingKeepingController",
         "Simple heading keeping controller")
-        .def(py::init<const SimpleHeadingKeepingController::Yaml& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<
+                const SimpleHeadingKeepingController::Yaml& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
-        .def_static("model_name", &SimpleHeadingKeepingController::model_name,
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &SimpleHeadingKeepingController::model_name,
             "Returns model name \"simple heading controller\"")
         .def("get_force", &SimpleHeadingKeepingController::get_force)
-        .def_static("parse", &SimpleHeadingKeepingController::parse, py::arg("yaml"))
-        ;
+        .def_static("parse", &SimpleHeadingKeepingController::parse, py::arg("yaml"));
 
-    py::class_<SimpleStationKeepingController::Yaml>(m, "SimpleStationKeepingControllerInput",
+    py::class_<SimpleStationKeepingController::Yaml>(
+        m,
+        "SimpleStationKeepingControllerInput",
         "Input for SimpleStationKeepingController")
         .def_readwrite("name", &SimpleStationKeepingController::Yaml::name)
         .def_readwrite("ksi_x", &SimpleStationKeepingController::Yaml::ksi_x)
@@ -795,87 +1041,126 @@ void py_add_module_xdyn_force(py::module& m0)
         .def_readwrite("ksi_y", &SimpleStationKeepingController::Yaml::ksi_y)
         .def_readwrite("T_y", &SimpleStationKeepingController::Yaml::T_y)
         .def_readwrite("ksi_psi", &SimpleStationKeepingController::Yaml::ksi_psi)
-        .def_readwrite("T_psi", &SimpleStationKeepingController::Yaml::T_psi)
-        ;
+        .def_readwrite("T_psi", &SimpleStationKeepingController::Yaml::T_psi);
 
-    py::class_<SimpleStationKeepingController, ForceModel>(m, "SimpleStationKeepingController", "Simple station keeping controller")
-        .def(py::init<const SimpleStationKeepingController::Yaml& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<SimpleStationKeepingController, ForceModel>(
+        m,
+        "SimpleStationKeepingController",
+        "Simple station keeping controller")
+        .def(
+            py::init<
+                const SimpleStationKeepingController::Yaml& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
-        .def_static("model_name", &SimpleStationKeepingController::model_name,
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &SimpleStationKeepingController::model_name,
             "Returns model name \"simple station-keeping controller\"")
         .def("get_force", &SimpleStationKeepingController::get_force)
-        .def_static("parse", &SimpleStationKeepingController::parse, py::arg("yaml"))
-        ;
+        .def_static("parse", &SimpleStationKeepingController::parse, py::arg("yaml"));
 
-    py::class_<AbstractRaoForceModel, ForceModel>(m, "AbstractRaoForceModel", "Abstracts the commonalities between linear Froude-Krylov & diffraction force models")
-        .def(py::init<const YamlRAO& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<AbstractRaoForceModel, ForceModel>(
+        m,
+        "AbstractRaoForceModel",
+        "Abstracts the commonalities between linear Froude-Krylov & diffraction force models")
+        .def(
+            py::init<
+                const YamlRAO& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-        )
-        .def(py::init<const YamlRAO& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/, const std::string& /*hdb_file_contents*/>(),
+            py::arg("env"))
+        .def(
+            py::init<
+                const YamlRAO& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/,
+                const std::string& /*hdb_file_contents*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
-            py::arg("hdb_file_contents")
-        )
-        .def("get_force", &AbstractRaoForceModel::get_force,
+            py::arg("hdb_file_contents"))
+        .def(
+            "get_force",
+            &AbstractRaoForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>(),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-            )
-        .def_static("parse", &AbstractRaoForceModel::parse, py::arg("yaml"), py::arg("type_of_rao"))
-        ;
+            py::arg("commands") = std::map<std::string, double>(),
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def_static(
+            "parse",
+            &AbstractRaoForceModel::parse,
+            py::arg("yaml"),
+            py::arg("type_of_rao"));
 
-    py::class_<DiffractionForceModel, AbstractRaoForceModel, ForceModel>(m, "DiffractionForceModel", "Diffraction force model")
-        .def(py::init<const YamlRAO& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<DiffractionForceModel, AbstractRaoForceModel, ForceModel>(
+        m,
+        "DiffractionForceModel",
+        "Diffraction force model")
+        .def(
+            py::init<
+                const YamlRAO& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-        )
-        .def(py::init<const YamlRAO& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/, const std::string& /*hdb_file_contents*/>(),
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def(
+            py::init<
+                const YamlRAO& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/,
+                const std::string& /*hdb_file_contents*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
             py::arg("hdb_file_contents"),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-        )
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def_static("parse", &DiffractionForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &DiffractionForceModel::model_name,
-            "Returns model name \"diffraction\"")
-        ;
+        .def_static(
+            "model_name",
+            &DiffractionForceModel::model_name,
+            "Returns model name \"diffraction\"");
 
-    py::class_<LinearFroudeKrylovForceModel, AbstractRaoForceModel, ForceModel>(m, "LinearFroudeKrylovForceModel", "Linear Froude Krylov force model")
-        .def(py::init<const YamlRAO& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<LinearFroudeKrylovForceModel, AbstractRaoForceModel, ForceModel>(
+        m,
+        "LinearFroudeKrylovForceModel",
+        "Linear Froude Krylov force model")
+        .def(
+            py::init<
+                const YamlRAO& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-        )
-        .def(py::init<const YamlRAO& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/, const std::string& /*hdb_file_contents*/>(),
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
+        .def(
+            py::init<
+                const YamlRAO& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/,
+                const std::string& /*hdb_file_contents*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
             py::arg("env"),
             py::arg("hdb_file_contents"),
-            py::call_guard<py::scoped_ostream_redirect,
-                           py::scoped_estream_redirect>()
-        )
+            py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>())
         .def_static("parse", &LinearFroudeKrylovForceModel::parse, py::arg("yaml"))
-        .def_static("model_name", &LinearFroudeKrylovForceModel::model_name,
-            "Returns model name \"linear Froude-Krylov\"")
-        ;
+        .def_static(
+            "model_name",
+            &LinearFroudeKrylovForceModel::model_name,
+            "Returns model name \"linear Froude-Krylov\"");
 
-    py::class_<LinearHydrostaticForceModel::Input>(m, "LinearHydrostaticForceModelInput",
+    py::class_<LinearHydrostaticForceModel::Input>(
+        m,
+        "LinearHydrostaticForceModelInput",
         "Input for LinearHydrostaticForceModel")
         .def(py::init<>())
         .def_readwrite("z_eq", &LinearHydrostaticForceModel::Input::z_eq)
@@ -883,98 +1168,137 @@ void py_add_module_xdyn_force(py::module& m0)
         .def_readwrite("phi_eq", &LinearHydrostaticForceModel::Input::phi_eq)
         .def_readwrite("K1", &LinearHydrostaticForceModel::Input::K1)
         .def_readwrite("K2", &LinearHydrostaticForceModel::Input::K2)
-        .def_readwrite("K3", &LinearHydrostaticForceModel::Input::K3)
-        ;
+        .def_readwrite("K3", &LinearHydrostaticForceModel::Input::K3);
 
-    py::class_<LinearHydrostaticForceModel, ForceModel>(m, "LinearHydrostaticForceModel", "Linear hydrostatic force model")
-        .def(py::init<const LinearHydrostaticForceModel::Input& /*input*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<LinearHydrostaticForceModel, ForceModel>(
+        m,
+        "LinearHydrostaticForceModel",
+        "Linear hydrostatic force model")
+        .def(
+            py::init<
+                const LinearHydrostaticForceModel::Input& /*input*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-            )
-        .def_static("model_name", &LinearHydrostaticForceModel::model_name, "Returns model name \"linear hydrostatics\"")
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &LinearHydrostaticForceModel::model_name,
+            "Returns model name \"linear hydrostatics\"")
         .def_static("parse", &LinearHydrostaticForceModel::parse, py::arg("yaml"))
-        .def("get_force", &LinearHydrostaticForceModel::get_force,
+        .def(
+            "get_force",
+            &LinearHydrostaticForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands") = std::map<std::string,double>())
-        ;
+            py::arg("commands") = std::map<std::string, double>());
 
     py::class_<SurfaceForceModel::DF>(m, "SurfaceForceModelDF")
-        .def(py::init<const EPoint& /*dF_*/, const EPoint& /*C_*/>(),
-            py::arg("dF") = EPoint(), py::arg("C") = EPoint())
-        ;
+        .def(
+            py::init<const EPoint& /*dF_*/, const EPoint& /*C_*/>(),
+            py::arg("dF") = EPoint(),
+            py::arg("C") = EPoint());
 
     py::class_<SurfaceForceModel, ForceModel>(m, "SurfaceForceModel")
-        // .def(py::init<const std::string& /*name*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        // .def(py::init<const std::string& /*name*/, const std::string& /*body_name*/, const
+        // EnvironmentAndFrames& /*env*/>(),
         //     py::arg("name"),
         //     py::arg("body_name"),
         //     py::arg("env")
         // )
-        .def("get_force", &SurfaceForceModel::get_force,
+        .def(
+            "get_force",
+            &SurfaceForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
             py::arg("commands") = std::map<std::string, double>())
-        .def("potential_energy", &SurfaceForceModel::potential_energy,
+        .def(
+            "potential_energy",
+            &SurfaceForceModel::potential_energy,
             py::arg("states"),
             py::arg("x"),
             py::arg("env"),
             "Compute potential energy of the hydrostatic force model")
-        .def("is_a_surface_force_model", &SurfaceForceModel::is_a_surface_force_model)
-        ;
+        .def("is_a_surface_force_model", &SurfaceForceModel::is_a_surface_force_model);
 
-    py::class_<ImmersedSurfaceForceModel, SurfaceForceModel, ForceModel>(m, "ImmersedSurfaceForceModel")
-        // .def(py::init<const std::string& /*name*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<ImmersedSurfaceForceModel, SurfaceForceModel, ForceModel>(
+        m,
+        "ImmersedSurfaceForceModel")
+        // .def(py::init<const std::string& /*name*/, const std::string& /*body_name*/, const
+        // EnvironmentAndFrames& /*env*/>(),
         //     py::arg("name"),
         //     py::arg("body_name"),
         //     py::arg("env")
         // )
         ;
 
-    py::class_<FastHydrostaticForceModel, ImmersedSurfaceForceModel, SurfaceForceModel, ForceModel>(m, "FastHydrostaticForceModel")
-        .def(py::init<const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<FastHydrostaticForceModel, ImmersedSurfaceForceModel, SurfaceForceModel, ForceModel>(
+        m,
+        "FastHydrostaticForceModel")
+        .def(
+            py::init<const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
             py::arg("body_name"),
-            py::arg("env")
-        )
+            py::arg("env"))
         .def("get_name", &FastHydrostaticForceModel::get_name)
-        .def_static("model_name", &FastHydrostaticForceModel::model_name,
-            "Returns model name \"non-linear hydrostatic (fast)\"")
-        ;
+        .def_static(
+            "model_name",
+            &FastHydrostaticForceModel::model_name,
+            "Returns model name \"non-linear hydrostatic (fast)\"");
 
-    py::class_<ExactHydrostaticForceModel, FastHydrostaticForceModel, ImmersedSurfaceForceModel, SurfaceForceModel, ForceModel>(m, "ExactHydrostaticForceModel",
+    py::class_<
+        ExactHydrostaticForceModel,
+        FastHydrostaticForceModel,
+        ImmersedSurfaceForceModel,
+        SurfaceForceModel,
+        ForceModel>(
+        m,
+        "ExactHydrostaticForceModel",
         "Same as FastHydrostaticForceModel but with the exact application point")
-        .def(py::init<const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+        .def(
+            py::init<const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
             py::arg("body_name"),
-            py::arg("env")
-        )
-        .def_static("model_name", &ExactHydrostaticForceModel::model_name,
-            "Returns model name \"non-linear hydrostatic (exact)\"")
-        ;
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &ExactHydrostaticForceModel::model_name,
+            "Returns model name \"non-linear hydrostatic (exact)\"");
 
-    py::class_<ManeuveringForceModel::Yaml>(m, "ManeuveringForceModelInput",
+    py::class_<ManeuveringForceModel::Yaml>(
+        m,
+        "ManeuveringForceModelInput",
         "Input for ManeuveringForceModel")
         .def(py::init<>())
         .def_readwrite("name", &ManeuveringForceModel::Yaml::name)
         .def_readwrite("frame_of_reference", &ManeuveringForceModel::Yaml::frame_of_reference)
         .def_readwrite("commands", &ManeuveringForceModel::Yaml::commands)
-        .def_readwrite("var2expr", &ManeuveringForceModel::Yaml::var2expr)
-        ;
+        .def_readwrite("var2expr", &ManeuveringForceModel::Yaml::var2expr);
 
-    py::class_<ManeuveringForceModel, ForceModel>(m, "ManeuveringForceModel", "Maneuvering force model")
-        .def(py::init<const ManeuveringForceModel::Yaml& /*data*/, const std::string& /*body_name*/, const EnvironmentAndFrames& /*env*/>(),
+    py::class_<ManeuveringForceModel, ForceModel>(
+        m,
+        "ManeuveringForceModel",
+        "Maneuvering force model")
+        .def(
+            py::init<
+                const ManeuveringForceModel::Yaml& /*data*/,
+                const std::string& /*body_name*/,
+                const EnvironmentAndFrames& /*env*/>(),
             py::arg("input_data"),
             py::arg("body_name"),
-            py::arg("env")
-        )
-        .def_static("model_name", &ManeuveringForceModel::model_name, "Returns model name \"maneuvering\"")
+            py::arg("env"))
+        .def_static(
+            "model_name",
+            &ManeuveringForceModel::model_name,
+            "Returns model name \"maneuvering\"")
         .def_static("parse", &ManeuveringForceModel::parse, py::arg("yaml"))
         .def("get_Tmax", &ManeuveringForceModel::get_Tmax)
-        .def("get_force", &ManeuveringForceModel::get_force,
+        .def(
+            "get_force",
+            &ManeuveringForceModel::get_force,
             py::arg("states"),
             py::arg("t"),
             py::arg("env"),
-            py::arg("commands"))
-        ;
+            py::arg("commands"));
 }

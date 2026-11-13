@@ -10,13 +10,11 @@
 
 #include "ssc/data_source/DataSource.hpp"
 
-namespace ssc
-{
-    namespace solver
-    {
-        ssc::data_source::DataSource make_ds(const std::string& yaml);
-        void integrate(ssc::data_source::DataSource& ds, const double t0, const double t1);
-    }
-}
+namespace ssc {
+namespace solver {
+ssc::data_source::DataSource make_ds(const std::string& yaml);
+void integrate(ssc::data_source::DataSource& ds, const double t0, const double t1);
+}  // namespace solver
+}  // namespace ssc
 
 #endif /* SIMULATOR_INTERFACE_HPP_ */

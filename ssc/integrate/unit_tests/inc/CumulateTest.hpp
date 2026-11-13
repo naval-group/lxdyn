@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class CumulateTest : public ::testing::Test
-{
-    protected:
-        CumulateTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class CumulateTest : public ::testing::Test {
+protected:
+    CumulateTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* CUMULATETEST_HPP_ */
+#endif /* CUMULATETEST_HPP_ */

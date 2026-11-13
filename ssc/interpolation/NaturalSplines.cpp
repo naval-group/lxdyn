@@ -11,14 +11,17 @@ using namespace ssc::interpolation;
 
 NaturalSplines::NaturalSplines()
 {
-    M = (h != 0) ? compute_second_derivative() : std::vector<double>(2,0);
+    M = (h != 0) ? compute_second_derivative() : std::vector<double>(2, 0);
 }
 
-NaturalSplines::NaturalSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y) : Splines(xmin_, xmax_,y)
+NaturalSplines::NaturalSplines(
+    const double& xmin_,
+    const double& xmax_,
+    const std::vector<double>& y)
+    : Splines(xmin_, xmax_, y)
 {
-    M = (h != 0) ? compute_second_derivative() : std::vector<double>(2,0);
+    M = (h != 0) ? compute_second_derivative() : std::vector<double>(2, 0);
 }
-
 
 double NaturalSplines::get_endpoint_value() const
 {

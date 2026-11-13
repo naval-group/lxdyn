@@ -6,6 +6,7 @@
  */
 
 #include "yaml_data.hpp"
+
 #include <boost/algorithm/string.hpp>
 #include <sstream>
 
@@ -82,8 +83,20 @@ std::string airy_depth_100()
            "        seed of the random data generator: 0\n";
 }
 
-std::string position_relative_to_mesh(const double x, const double y, const double z, const double phi, const double theta, const double psi);
-std::string position_relative_to_mesh(const double x, const double y, const double z, const double phi, const double theta, const double psi)
+std::string position_relative_to_mesh(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi);
+std::string position_relative_to_mesh(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     std::stringstream ss;
     ss << "    position of body frame relative to mesh:\n"
@@ -97,8 +110,20 @@ std::string position_relative_to_mesh(const double x, const double y, const doub
     return ss.str();
 }
 
-std::string initial_position_of_body_frame(const double x, const double y, const double z, const double phi, const double theta, const double psi);
-std::string initial_position_of_body_frame(const double x, const double y, const double z, const double phi, const double theta, const double psi)
+std::string initial_position_of_body_frame(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi);
+std::string initial_position_of_body_frame(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     std::stringstream ss;
     ss << "    initial position of body frame relative to NED:\n"
@@ -112,8 +137,20 @@ std::string initial_position_of_body_frame(const double x, const double y, const
     return ss.str();
 }
 
-std::string initial_position_of_body_frame_deg(const double x, const double y, const double z, const double phi, const double theta, const double psi);
-std::string initial_position_of_body_frame_deg(const double x, const double y, const double z, const double phi, const double theta, const double psi)
+std::string initial_position_of_body_frame_deg(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi);
+std::string initial_position_of_body_frame_deg(
+    const double x,
+    const double y,
+    const double z,
+    const double phi,
+    const double theta,
+    const double psi)
 {
     std::stringstream ss;
     ss << "    initial position of body frame relative to NED:\n"
@@ -127,8 +164,22 @@ std::string initial_position_of_body_frame_deg(const double x, const double y, c
     return ss.str();
 }
 
-std::string initial_velocity(const std::string& frame, const double u, const double v, const double w, const double p, const double q, const double r);
-std::string initial_velocity(const std::string& frame, const double u, const double v, const double w, const double p, const double q, const double r)
+std::string initial_velocity(
+    const std::string& frame,
+    const double u,
+    const double v,
+    const double w,
+    const double p,
+    const double q,
+    const double r);
+std::string initial_velocity(
+    const std::string& frame,
+    const double u,
+    const double v,
+    const double w,
+    const double p,
+    const double q,
+    const double r)
 {
     std::stringstream ss;
     ss << "    initial velocity of body frame relative to NED:\n"
@@ -142,8 +193,22 @@ std::string initial_velocity(const std::string& frame, const double u, const dou
     return ss.str();
 }
 
-std::string initial_velocity_kt(const std::string& frame, const double u, const double v, const double w, const double p, const double q, const double r);
-std::string initial_velocity_kt(const std::string& frame, const double u, const double v, const double w, const double p, const double q, const double r)
+std::string initial_velocity_kt(
+    const std::string& frame,
+    const double u,
+    const double v,
+    const double w,
+    const double p,
+    const double q,
+    const double r);
+std::string initial_velocity_kt(
+    const std::string& frame,
+    const double u,
+    const double v,
+    const double w,
+    const double p,
+    const double q,
+    const double r)
 {
     std::stringstream ss;
     ss << "    initial velocity of body frame relative to NED:\n"
@@ -245,8 +310,10 @@ std::string rigid_body_inertia_matrix()
            "            row 6: [0,0,0,0,0,7.676e6]\n";
 }
 
-std::string centre_of_inertia(const std::string& frame, const double x, const double y, const double z);
-std::string centre_of_inertia(const std::string& frame, const double x, const double y, const double z)
+std::string
+centre_of_inertia(const std::string& frame, const double x, const double y, const double z);
+std::string
+centre_of_inertia(const std::string& frame, const double x, const double y, const double z)
 {
     std::stringstream ss;
     ss << "        centre of inertia:\n"
@@ -259,417 +326,251 @@ std::string centre_of_inertia(const std::string& frame, const double x, const do
 
 std::string test_data::bug_2655()
 {
-    return rotation_convention()
-       +  "\n"
-       +  environmental_constants()
-       +  "environment models:\n"
-       +  "  - model: no wind\n"
-       +  "  - model: waves\n"
-       +  discretization()
-       +  airy_depth_100()
-       +  stretching()
-       +  directional_spreading()
-       +  "        spectral density:\n"
-       +  "           type: dirac\n"
-       +  "           omega0: {value: 0.8976, unit: rad/s}\n"
-       +  "           Hs: {value: 5, unit: m}\n"
-       +  "    output:\n"
-       +  "        frame of reference: NED\n"
-       +  "        mesh:\n"
-       +  "            xmin: {value: 1, unit: m}\n"
-       +  "            xmax: {value: 5, unit: m}\n"
-       +  "            nx: 0\n"
-       +  "            ymin: {value: 1, unit: m}\n"
-       +  "            ymax: {value: 2, unit: m}\n"
-       +  "            ny: 0\n"
-       +  "# Fixed frame: NED\n"
-       +  "bodies: # All bodies have NED as parent frame\n"
-       +  "  - name: TestShip\n"
-       +  "    mesh: test_ship.stl\n"
-       +  position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
-       +  initial_position_of_body_frame_deg(0,0,-0.099,0,-0.334,0)
-       +  initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       +  dynamics()
-       +  "    external forces:\n"
-       +  "      - model: gravity\n"
-       +  "      - model: non-linear hydrostatic (fast)\n"
-       +  "      - model: non-linear Froude-Krylov\n"
-       +  linear_damping()
-       +  quadratic_damping()
-       +  "\n"
-       +  "output:\n"
-       +  "   - format: csv\n"
-       +  "     filename: houle_travers_5m_7s.csv\n"
-       +  "     data: [t, x(TestShip), y(TestShip), z(TestShip), u(TestShip), v(TestShip), w(TestShip), p(TestShip), q(TestShip), r(TestShip), phi(TestShip), theta(TestShip), psi(TestShip)]\n";
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no wind\n" + "  - model: waves\n" + discretization() + airy_depth_100() +
+           stretching() + directional_spreading() + "        spectral density:\n" +
+           "           type: dirac\n" + "           omega0: {value: 0.8976, unit: rad/s}\n" +
+           "           Hs: {value: 5, unit: m}\n" + "    output:\n" +
+           "        frame of reference: NED\n" + "        mesh:\n" +
+           "            xmin: {value: 1, unit: m}\n" + "            xmax: {value: 5, unit: m}\n" +
+           "            nx: 0\n" + "            ymin: {value: 1, unit: m}\n" +
+           "            ymax: {value: 2, unit: m}\n" + "            ny: 0\n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0) +
+           initial_position_of_body_frame_deg(0, 0, -0.099, 0, -0.334, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n" +
+           "      - model: non-linear Froude-Krylov\n" + linear_damping() + quadratic_damping() +
+           "\n" + "output:\n" + "   - format: csv\n" + "     filename: houle_travers_5m_7s.csv\n" +
+           "     data: [t, x(TestShip), y(TestShip), z(TestShip), u(TestShip), v(TestShip), w(TestShip), p(TestShip), q(TestShip), r(TestShip), phi(TestShip), theta(TestShip), psi(TestShip)]\n";
 }
 
 std::string test_data::hydrostatic_test()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no wind\n"
-       + "  - model: no waves\n"
-       + "    frame: NED\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: body 1\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(10, 0, 0, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-       + initial_velocity("body", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("body 1", 0, 0, 0)
-       + rigid_body_inertia_matrix()
-       + "        added mass matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [3.519e4,0,0,0,0,0]\n"
-       + "            row 2: [0,3.023e5,0,0,0,0]\n"
-       + "            row 3: [0,0,1.980e5,0,0,0]\n"
-       + "            row 4: [0,0,0,3.189e5,0,0]\n"
-       + "            row 5: [0,0,0,0,8.866e6,0]\n"
-       + "            row 6: [0,0,0,0,0,6.676e6]\n"
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no wind\n" + "  - model: no waves\n" + "    frame: NED\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: body 1\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(10, 0, 0, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0, 0, 0, 0) +
+           initial_velocity("body", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("body 1", 0, 0, 0) +
+           rigid_body_inertia_matrix() +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [3.519e4,0,0,0,0,0]\n" + "            row 2: [0,3.023e5,0,0,0,0]\n" +
+           "            row 3: [0,0,1.980e5,0,0,0]\n" + "            row 4: [0,0,0,3.189e5,0,0]\n" +
+           "            row 5: [0,0,0,0,8.866e6,0]\n" + "            row 6: [0,0,0,0,0,6.676e6]\n" +
+           "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n" + "\n";
 }
 
 std::string test_data::added_mass_from_hdb_file()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no wind\n"
-       + "  - model: no waves\n"
-       + "    frame: NED\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: body 1\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(10, 0, 0, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-       + initial_velocity("body", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("body 1", 0,0,0)
-       + rigid_body_inertia_matrix()
-       + "        added mass matrix at the center of gravity and projected in the body frame:\n"
-       + "            from hdb: test_ship.hdb\n"
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no wind\n" + "  - model: no waves\n" + "    frame: NED\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: body 1\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(10, 0, 0, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0, 0, 0, 0) +
+           initial_velocity("body", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("body 1", 0, 0, 0) +
+           rigid_body_inertia_matrix() +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "            from hdb: test_ship.hdb\n" + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n" + "\n";
 }
 
 std::string test_data::full_example()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "    air rho: {value: 1.225, unit: kg/m^3}\n"
-       + "environment models:\n"
-       + "  - model: no wind\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 12, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: body 1\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2)
-       + initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5)
-       + initial_velocity("body 1", -8, -9, 14, 56, 7, 6)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("body 1", 4, 7, -10)
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [11,    11,    11,    11,    11,    11]\n"
-       + "            row 2: [11,    12,    13,    14,    15,    16]\n"
-       + "            row 3: [11,    13,    16,    20,    25,    31]\n"
-       + "            row 4: [11,    14,    20,    30,    45,    66]\n"
-       + "            row 5: [11,    15,    25,    45,    80,   136]\n"
-       + "            row 6: [11,    16,    31,    66,   136,   262]\n"
-       + "        added mass matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [1,    1,    1,    1,    1,    1]\n"
-       + "            row 2: [1,    2,    3,    4,    5,    6]\n"
-       + "            row 3: [1,    3,    6,    10,   15,  21]\n"
-       + "            row 4: [1,    4,    10,   20,   35,  56]\n"
-       + "            row 5: [1,    5,    15,   35,   70, 126]\n"
-       + "            row 6: [1,    6,    21,   56,  126, 252]\n"
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "      - model: quadratic damping\n"
-       + "        damping matrix at the center of gravity projected in the body frame:\n"
-       + "            row 1: [  2,   3,   5,   7,  11,  13]\n"
-       + "            row 2: [ 17,  19,  23,  29,  31,  37]\n"
-       + "            row 3: [ 41,  43,  47,  53,  59,  61]\n"
-       + "            row 4: [ 67,  71,  73,  79,  83,  89]\n"
-       + "            row 5: [ 97, 101, 103, 107, 109, 113]\n"
-       + "            row 6: [127, 131, 137, 139, 149, 151]\n"
-       + "    blocked dof:\n"
-       + "       from YAML:\n"
-       + "         - state: u\n"
-       + "           t: [0,4.2]\n"
-       + "           value: [4,5]\n"
-       + "           interpolation: linear\n"
-       + "output:\n"
-       + "   - format: csv\n"
-       + "     filename: tutorial_1.csv\n"
-       + "     data: [x(body 1)]\n"
-       + "   - format: hdf5\n"
-       + "     filename: tutorial_1.h5\n"
-       + "     data: ['y(body 1)','z(body 1)','Fz(gravity,body 1,body 1)','waves']\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" +
+           "    air rho: {value: 1.225, unit: kg/m^3}\n" + "environment models:\n" +
+           "  - model: no wind\n" + "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 12, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: body 1\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2) +
+           initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5) +
+           initial_velocity("body 1", -8, -9, 14, 56, 7, 6) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("body 1", 4, 7, -10) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [11,    11,    11,    11,    11,    11]\n" +
+           "            row 2: [11,    12,    13,    14,    15,    16]\n" +
+           "            row 3: [11,    13,    16,    20,    25,    31]\n" +
+           "            row 4: [11,    14,    20,    30,    45,    66]\n" +
+           "            row 5: [11,    15,    25,    45,    80,   136]\n" +
+           "            row 6: [11,    16,    31,    66,   136,   262]\n" +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [1,    1,    1,    1,    1,    1]\n" +
+           "            row 2: [1,    2,    3,    4,    5,    6]\n" +
+           "            row 3: [1,    3,    6,    10,   15,  21]\n" +
+           "            row 4: [1,    4,    10,   20,   35,  56]\n" +
+           "            row 5: [1,    5,    15,   35,   70, 126]\n" +
+           "            row 6: [1,    6,    21,   56,  126, 252]\n" + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n" +
+           "      - model: quadratic damping\n" +
+           "        damping matrix at the center of gravity projected in the body frame:\n" +
+           "            row 1: [  2,   3,   5,   7,  11,  13]\n" +
+           "            row 2: [ 17,  19,  23,  29,  31,  37]\n" +
+           "            row 3: [ 41,  43,  47,  53,  59,  61]\n" +
+           "            row 4: [ 67,  71,  73,  79,  83,  89]\n" +
+           "            row 5: [ 97, 101, 103, 107, 109, 113]\n" +
+           "            row 6: [127, 131, 137, 139, 149, 151]\n" + "    blocked dof:\n" +
+           "       from YAML:\n" + "         - state: u\n" + "           t: [0,4.2]\n" +
+           "           value: [4,5]\n" + "           interpolation: linear\n" + "output:\n" +
+           "   - format: csv\n" + "     filename: tutorial_1.csv\n" + "     data: [x(body 1)]\n" +
+           "   - format: hdf5\n" + "     filename: tutorial_1.h5\n" +
+           "     data: ['y(body 1)','z(body 1)','Fz(gravity,body 1,body 1)','waves']\n";
 }
 
 std::string test_data::full_example_with_diagonal_inertia()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no wind\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 12, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: body 1\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2)
-       + initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5)
-       + initial_velocity("body 1", -8, -9, 14, 56, 7, 6)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("body 1", 4, 7, -10)
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [1, 0, 0, 0, 0, 0]\n"
-       + "            row 2: [0, 2, 0, 0, 0, 0]\n"
-       + "            row 3: [0, 0, 3, 0, 0, 0]\n"
-       + "            row 4: [0, 0, 0, 4, 0, 0]\n"
-       + "            row 5: [0, 0, 0, 0, 5, 0]\n"
-       + "            row 6: [0, 0, 0, 0, 0, 6]\n"
-       + "        added mass matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [0, 0, 0, 0, 0, 0]\n"
-       + "            row 2: [0, 0, 0, 0, 0, 0]\n"
-       + "            row 3: [0, 0, 0, 0, 0, 0]\n"
-       + "            row 4: [0, 0, 0, 0, 0, 0]\n"
-       + "            row 5: [0, 0, 0, 0, 0, 0]\n"
-       + "            row 6: [0, 0, 0, 0, 0, 0]\n"
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "      - model: quadratic damping\n"
-       + "        damping matrix at the center of gravity projected in the body frame:\n"
-       + "            row 1: [  2,   3,   5,   7,  11,  13]\n"
-       + "            row 2: [ 17,  19,  23,  29,  31,  37]\n"
-       + "            row 3: [ 41,  43,  47,  53,  59,  61]\n"
-       + "            row 4: [ 67,  71,  73,  79,  83,  89]\n"
-       + "            row 5: [ 97, 101, 103, 107, 109, 113]\n"
-       + "            row 6: [127, 131, 137, 139, 149, 151]\n"
-       + "    blocked dof:\n"
-       + "       from YAML:\n"
-       + "         - state: u\n"
-       + "           t: [0,4.2]\n"
-       + "           value: [4,5]\n"
-       + "           interpolation: linear\n"
-       + "output:\n"
-       + "   - format: csv\n"
-       + "     filename: tutorial_1.csv\n"
-       + "     data: [x(body 1)]\n"
-       + "   - format: hdf5\n"
-       + "     filename: tutorial_1.h5\n"
-       + "     data: ['y(body 1)','z(body 1)','Fz(gravity,body 1,body 1)','waves']\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no wind\n" + "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 12, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: body 1\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2) +
+           initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5) +
+           initial_velocity("body 1", -8, -9, 14, 56, 7, 6) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("body 1", 4, 7, -10) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [1, 0, 0, 0, 0, 0]\n" + "            row 2: [0, 2, 0, 0, 0, 0]\n" +
+           "            row 3: [0, 0, 3, 0, 0, 0]\n" + "            row 4: [0, 0, 0, 4, 0, 0]\n" +
+           "            row 5: [0, 0, 0, 0, 5, 0]\n" + "            row 6: [0, 0, 0, 0, 0, 6]\n" +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [0, 0, 0, 0, 0, 0]\n" + "            row 2: [0, 0, 0, 0, 0, 0]\n" +
+           "            row 3: [0, 0, 0, 0, 0, 0]\n" + "            row 4: [0, 0, 0, 0, 0, 0]\n" +
+           "            row 5: [0, 0, 0, 0, 0, 0]\n" + "            row 6: [0, 0, 0, 0, 0, 0]\n" +
+           "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n" + "      - model: quadratic damping\n" +
+           "        damping matrix at the center of gravity projected in the body frame:\n" +
+           "            row 1: [  2,   3,   5,   7,  11,  13]\n" +
+           "            row 2: [ 17,  19,  23,  29,  31,  37]\n" +
+           "            row 3: [ 41,  43,  47,  53,  59,  61]\n" +
+           "            row 4: [ 67,  71,  73,  79,  83,  89]\n" +
+           "            row 5: [ 97, 101, 103, 107, 109, 113]\n" +
+           "            row 6: [127, 131, 137, 139, 149, 151]\n" + "    blocked dof:\n" +
+           "       from YAML:\n" + "         - state: u\n" + "           t: [0,4.2]\n" +
+           "           value: [4,5]\n" + "           interpolation: linear\n" + "output:\n" +
+           "   - format: csv\n" + "     filename: tutorial_1.csv\n" + "     data: [x(body 1)]\n" +
+           "   - format: hdf5\n" + "     filename: tutorial_1.h5\n" +
+           "     data: ['y(body 1)','z(body 1)','Fz(gravity,body 1,body 1)','waves']\n";
 }
 
 std::string test_data::full_example_with_propulsion()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "    air rho: {value: 1.225, unit: kg/m^3}\n"
-       + "environment models:\n"
-       + "  - model: no wind\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 12, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: body 1\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2)
-       + initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5)
-       + initial_velocity("body 1", -8, -9, 14, 56, 7, 6)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("body 1", 4, 7, -10)
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [1,2,3,4,5,6]\n"
-       + "            row 2: [7,2,1,2,11,13]\n"
-       + "            row 3: [20,30,3,80,0.9,0.1]\n"
-       + "            row 4: [0,0,0,4,0,0]\n"
-       + "            row 5: [0,0,0,0,5,0]\n"
-       + "            row 6: [0,0,0,0,0,6]\n"
-       + "        added mass matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [1,2,3,4,5,6]\n"
-       + "            row 2: [-7,2,1,2,11,13]\n"
-       + "            row 3: [-20,30,3,80,0.9,0.1]\n"
-       + "            row 4: [0,0,0,4.1,0,0]\n"
-       + "            row 5: [0,0,0,0,5.2,0]\n"
-       + "            row 6: [0,0,0,0,0,6.3]\n"
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "      - model: quadratic damping\n"
-       + "        damping matrix at the center of gravity projected in the body frame:\n"
-       + "            row 1: [  2,   3,   5,   7,  11,  13]\n"
-       + "            row 2: [ 17,  19,  23,  29,  31,  37]\n"
-       + "            row 3: [ 41,  43,  47,  53,  59,  61]\n"
-       + "            row 4: [ 67,  71,  73,  79,  83,  89]\n"
-       + "            row 5: [ 97, 101, 103, 107, 109, 113]\n"
-       + "            row 6: [127, 131, 137, 139, 149, 151]\n"
-       + "      - name: port side propeller\n"
-       + "        model: wageningen B-series\n"
-       + "        position of propeller frame:\n"
-       + "            frame: mesh(body 1)\n"
-       + "            x: {value: -4, unit: m}\n"
-       + "            y: {value: -2, unit: m}\n"
-       + "            z: {value: 2, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: -10, unit: deg}\n"
-       + "            psi: {value: -1, unit: deg}\n"
-       + "        wake coefficient w: 0.9\n"
-       + "        relative rotative efficiency etaR: 1\n"
-       + "        thrust deduction factor t: 0.7\n"
-       + "        rotation: clockwise\n"
-       + "        number of blades: 3\n"
-       + "        blade area ratio AE/A0: 0.5\n"
-       + "        diameter: {value: 2, unit: m}\n"
-       + "      - name: starboard propeller\n"
-       + "        model: wageningen B-series\n"
-       + "        position of propeller frame:\n"
-       + "            frame: mesh(body 1)\n"
-       + "            relative to: mesh(body 1)\n"
-       + "            x: {value: -4, unit: m}\n"
-       + "            y: {value: 2, unit: m}\n"
-       + "            z: {value: 2, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: -10, unit: deg}\n"
-       + "            psi: {value: 1, unit: deg}\n"
-       + "        wake coefficient w: 0.9\n"
-       + "        relative rotative efficiency etaR: 1\n"
-       + "        thrust deduction factor t: 0.7\n"
-       + "        rotation: anti-clockwise\n"
-       + "        number of blades: 3\n"
-       + "        blade area ratio AE/A0: 0.5\n"
-       + "        diameter: {value: 2, unit: m}\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" +
+           "    air rho: {value: 1.225, unit: kg/m^3}\n" + "environment models:\n" +
+           "  - model: no wind\n" + "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 12, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: body 1\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2) +
+           initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5) +
+           initial_velocity("body 1", -8, -9, 14, 56, 7, 6) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("body 1", 4, 7, -10) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [1,2,3,4,5,6]\n" + "            row 2: [7,2,1,2,11,13]\n" +
+           "            row 3: [20,30,3,80,0.9,0.1]\n" + "            row 4: [0,0,0,4,0,0]\n" +
+           "            row 5: [0,0,0,0,5,0]\n" + "            row 6: [0,0,0,0,0,6]\n" +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [1,2,3,4,5,6]\n" + "            row 2: [-7,2,1,2,11,13]\n" +
+           "            row 3: [-20,30,3,80,0.9,0.1]\n" + "            row 4: [0,0,0,4.1,0,0]\n" +
+           "            row 5: [0,0,0,0,5.2,0]\n" + "            row 6: [0,0,0,0,0,6.3]\n" +
+           "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n" + "      - model: quadratic damping\n" +
+           "        damping matrix at the center of gravity projected in the body frame:\n" +
+           "            row 1: [  2,   3,   5,   7,  11,  13]\n" +
+           "            row 2: [ 17,  19,  23,  29,  31,  37]\n" +
+           "            row 3: [ 41,  43,  47,  53,  59,  61]\n" +
+           "            row 4: [ 67,  71,  73,  79,  83,  89]\n" +
+           "            row 5: [ 97, 101, 103, 107, 109, 113]\n" +
+           "            row 6: [127, 131, 137, 139, 149, 151]\n" +
+           "      - name: port side propeller\n" + "        model: wageningen B-series\n" +
+           "        position of propeller frame:\n" + "            frame: mesh(body 1)\n" +
+           "            x: {value: -4, unit: m}\n" + "            y: {value: -2, unit: m}\n" +
+           "            z: {value: 2, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: -10, unit: deg}\n" +
+           "            psi: {value: -1, unit: deg}\n" + "        wake coefficient w: 0.9\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0.7\n" + "        rotation: clockwise\n" +
+           "        number of blades: 3\n" + "        blade area ratio AE/A0: 0.5\n" +
+           "        diameter: {value: 2, unit: m}\n" + "      - name: starboard propeller\n" +
+           "        model: wageningen B-series\n" + "        position of propeller frame:\n" +
+           "            frame: mesh(body 1)\n" + "            relative to: mesh(body 1)\n" +
+           "            x: {value: -4, unit: m}\n" + "            y: {value: 2, unit: m}\n" +
+           "            z: {value: 2, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: -10, unit: deg}\n" +
+           "            psi: {value: 1, unit: deg}\n" + "        wake coefficient w: 0.9\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0.7\n" + "        rotation: anti-clockwise\n" +
+           "        number of blades: 3\n" + "        blade area ratio AE/A0: 0.5\n" +
+           "        diameter: {value: 2, unit: m}\n";
 }
 
 std::string test_data::full_example_with_propulsion_and_old_key_name()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no wind\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 12, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: body 1\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2)
-       + initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5)
-       + initial_velocity("body 1", -8, -9, 14, 56, 7, 6)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("body 1", 4, 7, -10)
-       + "        rigid body inertia matrix at the center of buoyancy projected in the body frame:\n"
-       + "            row 1: [1,2,3,4,5,6]\n"
-       + "            row 2: [7,2,1,2,11,13]\n"
-       + "            row 3: [20,30,3,80,0.9,0.1]\n"
-       + "            row 4: [0,0,0,4,0,0]\n"
-       + "            row 5: [0,0,0,0,5,0]\n"
-       + "            row 6: [0,0,0,0,0,6]\n"
-       + "        added mass matrix at the center of buoyancy projected in the body frame:\n"
-       + "            row 1: [1,2,3,4,5,6]\n"
-       + "            row 2: [-7,2,1,2,11,13]\n"
-       + "            row 3: [-20,30,3,80,0.9,0.1]\n"
-       + "            row 4: [0,0,0,4.1,0,0]\n"
-       + "            row 5: [0,0,0,0,5.2,0]\n"
-       + "            row 6: [0,0,0,0,0,6.3]\n"
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "      - model: quadratic damping\n"
-       + "        damping matrix at the center of gravity projected in the body frame:\n"
-       + "            row 1: [  2,   3,   5,   7,  11,  13]\n"
-       + "            row 2: [ 17,  19,  23,  29,  31,  37]\n"
-       + "            row 3: [ 41,  43,  47,  53,  59,  61]\n"
-       + "            row 4: [ 67,  71,  73,  79,  83,  89]\n"
-       + "            row 5: [ 97, 101, 103, 107, 109, 113]\n"
-       + "            row 6: [127, 131, 137, 139, 149, 151]\n"
-       + "      - name: port side propeller\n"
-       + "        model: wageningen B-series\n"
-       + "        position of propeller frame:\n"
-       + "            frame: mesh(body 1)\n"
-       + "            x: {value: -4, unit: m}\n"
-       + "            y: {value: -2, unit: m}\n"
-       + "            z: {value: 2, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: -10, unit: deg}\n"
-       + "            psi: {value: -1, unit: deg}\n"
-       + "        wake coefficient w: 0.9\n"
-       + "        relative rotative efficiency etaR: 1\n"
-       + "        thrust deduction factor t: 0.7\n"
-       + "        rotation: clockwise\n"
-       + "        number of blades: 3\n"
-       + "        blade area ratio AE/A0: 0.5\n"
-       + "        diameter: {value: 2, unit: m}\n"
-       + "      - name: starboard propeller\n"
-       + "        model: wageningen B-series\n"
-       + "        position of propeller frame:\n"
-       + "            frame: mesh(body 1)\n"
-       + "            relative to: mesh(body 1)\n"
-       + "            x: {value: -4, unit: m}\n"
-       + "            y: {value: 2, unit: m}\n"
-       + "            z: {value: 2, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: -10, unit: deg}\n"
-       + "            psi: {value: 1, unit: deg}\n"
-       + "        wake coefficient w: 0.9\n"
-       + "        relative rotative efficiency etaR: 1\n"
-       + "        thrust deduction factor t: 0.7\n"
-       + "        rotation: anti-clockwise\n"
-       + "        number of blades: 3\n"
-       + "        blade area ratio AE/A0: 0.5\n"
-       + "        diameter: {value: 2, unit: m}\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no wind\n" + "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 12, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: body 1\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(10, 0.21, 33000, 1, 3, 2) +
+           initial_position_of_body_frame(4, 8, 12, 1.3, 1.4, 1.5) +
+           initial_velocity("body 1", -8, -9, 14, 56, 7, 6) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("body 1", 4, 7, -10) +
+           "        rigid body inertia matrix at the center of buoyancy projected in the body frame:\n" +
+           "            row 1: [1,2,3,4,5,6]\n" + "            row 2: [7,2,1,2,11,13]\n" +
+           "            row 3: [20,30,3,80,0.9,0.1]\n" + "            row 4: [0,0,0,4,0,0]\n" +
+           "            row 5: [0,0,0,0,5,0]\n" + "            row 6: [0,0,0,0,0,6]\n" +
+           "        added mass matrix at the center of buoyancy projected in the body frame:\n" +
+           "            row 1: [1,2,3,4,5,6]\n" + "            row 2: [-7,2,1,2,11,13]\n" +
+           "            row 3: [-20,30,3,80,0.9,0.1]\n" + "            row 4: [0,0,0,4.1,0,0]\n" +
+           "            row 5: [0,0,0,0,5.2,0]\n" + "            row 6: [0,0,0,0,0,6.3]\n" +
+           "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n" + "      - model: quadratic damping\n" +
+           "        damping matrix at the center of gravity projected in the body frame:\n" +
+           "            row 1: [  2,   3,   5,   7,  11,  13]\n" +
+           "            row 2: [ 17,  19,  23,  29,  31,  37]\n" +
+           "            row 3: [ 41,  43,  47,  53,  59,  61]\n" +
+           "            row 4: [ 67,  71,  73,  79,  83,  89]\n" +
+           "            row 5: [ 97, 101, 103, 107, 109, 113]\n" +
+           "            row 6: [127, 131, 137, 139, 149, 151]\n" +
+           "      - name: port side propeller\n" + "        model: wageningen B-series\n" +
+           "        position of propeller frame:\n" + "            frame: mesh(body 1)\n" +
+           "            x: {value: -4, unit: m}\n" + "            y: {value: -2, unit: m}\n" +
+           "            z: {value: 2, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: -10, unit: deg}\n" +
+           "            psi: {value: -1, unit: deg}\n" + "        wake coefficient w: 0.9\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0.7\n" + "        rotation: clockwise\n" +
+           "        number of blades: 3\n" + "        blade area ratio AE/A0: 0.5\n" +
+           "        diameter: {value: 2, unit: m}\n" + "      - name: starboard propeller\n" +
+           "        model: wageningen B-series\n" + "        position of propeller frame:\n" +
+           "            frame: mesh(body 1)\n" + "            relative to: mesh(body 1)\n" +
+           "            x: {value: -4, unit: m}\n" + "            y: {value: 2, unit: m}\n" +
+           "            z: {value: 2, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: -10, unit: deg}\n" +
+           "            psi: {value: 1, unit: deg}\n" + "        wake coefficient w: 0.9\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0.7\n" + "        rotation: anti-clockwise\n" +
+           "        number of blades: 3\n" + "        blade area ratio AE/A0: 0.5\n" +
+           "        diameter: {value: 2, unit: m}\n";
 }
 
 std::string one_ton_rigid_inertia_matrix();
@@ -698,285 +599,163 @@ std::string no_added_mass()
 
 std::string test_data::falling_ball_example()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models: []\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: ball\n"
-       + position_relative_to_mesh(0, 0, -10, 1, 3, 2)
-       + initial_position_of_body_frame(4, 8, 12, 0, 0, 0)
-       + initial_velocity("ball", 1, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("ball", 0, 0, 0.5)
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [1E6,0,0,0,0,0]\n"
-       + "            row 2: [0,1E6,0,0,0,0]\n"
-       + "            row 3: [0,0,1E6,0,0,0]\n"
-       + "            row 4: [0,0,0,1E6,0,0]\n"
-       + "            row 5: [0,0,0,0,1E6,0]\n"
-       + "            row 6: [0,0,0,0,0,1E6]\n"
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "output:\n"
-       + "   - format: csv\n"
-       + "     filename: falling_ball.csv\n"
-       + "     data: [x(ball)]\n"
-       + "   - format: hdf5\n"
-       + "     filename: falling_ball.h5\n"
-       + "     data: ['x(ball)','y(ball)','z(ball)','Fz(gravity,ball,ball)']\n"
-       + "   - format: json\n"
-       + "     filename: falling_ball.json\n"
-       + "     data: ['x(ball)','y(ball)','z(ball)','qr(ball)','qi(ball)','qj(ball)','qk(ball)']\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models: []\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: ball\n" +
+           position_relative_to_mesh(0, 0, -10, 1, 3, 2) +
+           initial_position_of_body_frame(4, 8, 12, 0, 0, 0) +
+           initial_velocity("ball", 1, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("ball", 0, 0, 0.5) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [1E6,0,0,0,0,0]\n" + "            row 2: [0,1E6,0,0,0,0]\n" +
+           "            row 3: [0,0,1E6,0,0,0]\n" + "            row 4: [0,0,0,1E6,0,0]\n" +
+           "            row 5: [0,0,0,0,1E6,0]\n" + "            row 6: [0,0,0,0,0,1E6]\n" +
+           no_added_mass() + "    external forces:\n" + "      - model: gravity\n" + "output:\n" +
+           "   - format: csv\n" + "     filename: falling_ball.csv\n" + "     data: [x(ball)]\n" +
+           "   - format: hdf5\n" + "     filename: falling_ball.h5\n" +
+           "     data: ['x(ball)','y(ball)','z(ball)','Fz(gravity,ball,ball)']\n" +
+           "   - format: json\n" + "     filename: falling_ball.json\n" +
+           "     data: ['x(ball)','y(ball)','z(ball)','qr(ball)','qi(ball)','qj(ball)','qk(ball)']\n";
 }
 
 std::string test_data::simserver_test_with_commands_and_delay()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models: []\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: ball\n"
-       + position_relative_to_mesh(0, 0, 0, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-       + initial_velocity("ball", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("ball", 0, 0, 0)
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [1,0,0,0,0,0]\n"
-       + "            row 2: [0,1,0,0,0,0]\n"
-       + "            row 3: [0,0,1,0,0,0]\n"
-       + "            row 4: [0,0,0,1,0,0]\n"
-       + "            row 5: [0,0,0,0,1,0]\n"
-       + "            row 6: [0,0,0,0,0,1]\n"
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: maneuvering\n"
-       + "        name: F1\n"
-       + "        reference frame:\n"
-       + "            frame: ball\n"
-       + "            x: {value: 0, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: 0, unit: m}\n"
-       + "            phi: {value: 0, unit: deg}\n"
-       + "            theta: {value: 0, unit: deg}\n"
-       + "            psi: {value: 0, unit: deg}\n"
-       + "        commands: [command1, b, a]\n"
-       + "        X: x(t)\n"
-       + "        Y: y(t-10)\n"
-       + "        Z: command1*z(t)\n"
-       + "        K: b*u(t-6)\n"
-       + "        M: v(t-6) + command1*w(t-5) + 2*b*p(t-4) + q(t-3)/a\n"
-       + "        N: 0";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models: []\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: ball\n" +
+           position_relative_to_mesh(0, 0, 0, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0, 0, 0, 0) +
+           initial_velocity("ball", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("ball", 0, 0, 0) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [1,0,0,0,0,0]\n" + "            row 2: [0,1,0,0,0,0]\n" +
+           "            row 3: [0,0,1,0,0,0]\n" + "            row 4: [0,0,0,1,0,0]\n" +
+           "            row 5: [0,0,0,0,1,0]\n" + "            row 6: [0,0,0,0,0,1]\n" +
+           no_added_mass() + "    external forces:\n" + "      - model: maneuvering\n" +
+           "        name: F1\n" + "        reference frame:\n" + "            frame: ball\n" +
+           "            x: {value: 0, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 0, unit: m}\n" + "            phi: {value: 0, unit: deg}\n" +
+           "            theta: {value: 0, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        commands: [command1, b, a]\n" +
+           "        X: x(t)\n" + "        Y: y(t-10)\n" + "        Z: command1*z(t)\n" +
+           "        K: b*u(t-6)\n" +
+           "        M: v(t-6) + command1*w(t-5) + 2*b*p(t-4) + q(t-3)/a\n" + "        N: 0";
 }
 
 std::string test_data::falling_cube()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1026, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models: []\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: cube\n"
-       + "    mesh: cube.stl\n"
-       + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-       + initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("cube", 0, 0, 0.5)
-       + one_ton_rigid_inertia_matrix()
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: gravity\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models: []\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: cube\n" +
+           "    mesh: cube.stl\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0, 0, 0, 0) +
+           initial_velocity("cube", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("cube", 0, 0, 0.5) +
+           one_ton_rigid_inertia_matrix() + no_added_mass() + "    external forces:\n" +
+           "      - model: gravity\n";
 }
 
 std::string test_data::rolling_cube()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1026, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: cube\n"
-       + "    mesh: cube.stl\n"
-       + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-       + initial_position_of_body_frame_deg(0, 0, 0, 0, 10, 0)
-       + initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("cube", 0, 0, 0.5)
-       + one_ton_rigid_inertia_matrix()
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: cube\n" +
+           "    mesh: cube.stl\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame_deg(0, 0, 0, 0, 10, 0) +
+           initial_velocity("cube", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("cube", 0, 0, 0.5) +
+           one_ton_rigid_inertia_matrix() + no_added_mass() + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n";
 }
 
 std::string test_data::oscillating_cube_example()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1026, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: cube\n"
-       + "    mesh: cube.stl\n"
-       + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 0.5, 0, 0, 0)
-       + initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("cube", 0, 0, 0)
-       + one_ton_rigid_inertia_matrix()
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: cube\n" +
+           "    mesh: cube.stl\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0.5, 0, 0, 0) +
+           initial_velocity("cube", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("cube", 0, 0, 0) +
+           one_ton_rigid_inertia_matrix() + no_added_mass() + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n";
 }
 
 std::string test_data::new_oscillating_cube_example()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: cube\n"
-       + "    mesh: big_cube.stl\n"
-       + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-       + initial_position_of_body_frame_deg(0, 0, 0, 25, 0, 0)
-       + initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("cube", 0, 0, 0)
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [5E2,0,0,0,0,0]\n"
-       + "            row 2: [0,5E2,0,0,0,0]\n"
-       + "            row 3: [0,0,5E2,0,0,0]\n"
-       + "            row 4: [0,0,0,5E2,0,0]\n"
-       + "            row 5: [0,0,0,0,5E2,0]\n"
-       + "            row 6: [0,0,0,0,0,5E2]\n"
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: cube\n" +
+           "    mesh: big_cube.stl\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame_deg(0, 0, 0, 25, 0, 0) +
+           initial_velocity("cube", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("cube", 0, 0, 0) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [5E2,0,0,0,0,0]\n" + "            row 2: [0,5E2,0,0,0,0]\n" +
+           "            row 3: [0,0,5E2,0,0,0]\n" + "            row 4: [0,0,0,5E2,0,0]\n" +
+           "            row 5: [0,0,0,0,5E2,0]\n" + "            row 6: [0,0,0,0,0,5E2]\n" +
+           no_added_mass() + "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n";
 }
-
 
 std::string test_data::stable_cube_example()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1026, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: cube\n"
-       + "    mesh: cube.stl\n"
-       + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 0.4746588693957115, 0, 0, 0)
-       + initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("cube", 0, 0, 0)
-       + one_ton_rigid_inertia_matrix()
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: cube\n" +
+           "    mesh: cube.stl\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0.4746588693957115, 0, 0, 0) +
+           initial_velocity("cube", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("cube", 0, 0, 0) +
+           one_ton_rigid_inertia_matrix() + no_added_mass() + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n";
 }
 
 std::string test_data::stable_rolling_cube_test()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1000, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "    output:\n"
-       + "        frame of reference: cube\n"
-       + "        mesh:\n"
-       + "            xmin: {value: -10, unit: m}\n"
-       + "            xmax: {value: 1, unit: km}\n"
-       + "            nx: 10\n"
-       + "            ymin: {value: -20, unit: m}\n"
-       + "            ymax: {value: 3, unit: km}\n"
-       + "            ny: 20\n"
-       + "\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: cube\n"
-       + "    mesh: cube.stl\n"
-       + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-       + initial_position_of_body_frame_deg(0, 0, 0.25, 0, 2, 0)
-       + initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + hydrodynamic_calculation_point()
-       + centre_of_inertia("cube", 0, 0, 0.4)
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "            row 1: [83.33,0,0,0,0,0]\n"
-       + "            row 2: [0,83.33,0,0,0,0]\n"
-       + "            row 3: [0,0,83.33,0,0,0]\n"
-       + "            row 4: [0,0,0,83.33,0,0]\n"
-       + "            row 5: [0,0,0,0,83.33,0]\n"
-       + "            row 6: [0,0,0,0,0,83.33]\n"
-       + no_added_mass()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1000, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    output:\n" +
+           "        frame of reference: cube\n" + "        mesh:\n" +
+           "            xmin: {value: -10, unit: m}\n" +
+           "            xmax: {value: 1, unit: km}\n" + "            nx: 10\n" +
+           "            ymin: {value: -20, unit: m}\n" +
+           "            ymax: {value: 3, unit: km}\n" + "            ny: 20\n" + "\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: cube\n" +
+           "    mesh: cube.stl\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame_deg(0, 0, 0.25, 0, 2, 0) +
+           initial_velocity("cube", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("cube", 0, 0, 0.4) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [83.33,0,0,0,0,0]\n" + "            row 2: [0,83.33,0,0,0,0]\n" +
+           "            row 3: [0,0,83.33,0,0,0]\n" + "            row 4: [0,0,0,83.33,0,0]\n" +
+           "            row 5: [0,0,0,0,83.33,0]\n" + "            row 6: [0,0,0,0,0,83.33]\n" +
+           no_added_mass() + "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n" + "\n";
 }
 
 std::string test_data::test_ship_hydrostatic_test(const std::string& type)
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -986,84 +765,55 @@ std::string test_data::test_ship_hydrostatic_test(const std::string& type)
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: " << type << "\n"
        << "    \n";
     return ss.str();
 }
 
-
 std::string test_data::test_ship_gm_test()
 {
-    return  rotation_convention() +
-       + "\n"
-       + environmental_constants()
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: TestShip\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       + dynamics()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: GM\n"
-       + "        name of hydrostatic force model: non-linear hydrostatic (fast)\n"
-       + "        roll step: {value: 10, unit: deg}\n";
+    return rotation_convention() + +"\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: GM\n" +
+           "        name of hydrostatic force model: non-linear hydrostatic (fast)\n" +
+           "        roll step: {value: 10, unit: deg}\n";
 }
 
 std::string test_data::test_ship_propulsion()
 {
-    return rotation_convention()
-       + "\n"
-       + environmental_constants()
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: TestShip\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 1, 0, -0.0058, 0)
-       // Without it the out-of-trim start makes 2.7 mm/s of sternway, i.e. a negative advance ratio.
-       + initial_velocity("TestShip", 0.01, 0, 0, 0, 0, 0)
-       + dynamics()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "      - model: quadratic damping\n"
-       + damping_matrix()
-       + "      - model: resistance curve\n"
-       + "        speed: {unit: m/s, values: [-1,0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n"
-       + "        resistance: {unit: N, values: [-7.728E+02,0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n"
-       + "      - name: propeller\n"
-       + "        model: wageningen B-series\n"
-       + "        position of propeller frame:\n"
-       + "            frame: TestShip\n"
-       + "            x: {value: -8.4, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: 2.5, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: 3, unit: deg}\n"
-       + "            psi: {value: 0, unit: deg}\n"
-       + "        wake coefficient w: 0\n"
-       + "        relative rotative efficiency etaR: 1\n"
-       + "        thrust deduction factor t: 0\n"
-       + "        rotation: clockwise\n"
-       + "        number of blades: 4\n"
-       + "        blade area ratio AE/A0: 0.55\n"
-       + "        diameter: {value: 1.925, unit: m}\n"
-       + "    \n";
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 1, 0, -0.0058, 0)
+           // Without it the out-of-trim start makes 2.7 mm/s of sternway, i.e. a negative advance
+           // ratio.
+           + initial_velocity("TestShip", 0.01, 0, 0, 0, 0, 0) + dynamics() +
+           "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n" + "      - model: quadratic damping\n" +
+           damping_matrix() + "      - model: resistance curve\n" +
+           "        speed: {unit: m/s, values: [-1,0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n" +
+           "        resistance: {unit: N, values: [-7.728E+02,0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n" +
+           "      - name: propeller\n" + "        model: wageningen B-series\n" +
+           "        position of propeller frame:\n" + "            frame: TestShip\n" +
+           "            x: {value: -8.4, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 2.5, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 3, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        wake coefficient w: 0\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0\n" + "        rotation: clockwise\n" +
+           "        number of blades: 4\n" + "        blade area ratio AE/A0: 0.55\n" +
+           "        diameter: {value: 1.925, unit: m}\n" + "    \n";
 }
 
 std::string test_data::test_ship_fast_hydrostatic_test()
@@ -1078,146 +828,80 @@ std::string test_data::test_ship_exact_hydrostatic_test()
 
 std::string test_data::test_ship_waves_test()
 {
-    return rotation_convention()
-       + "\n"
-       + environmental_constants()
-       + "environment models:\n"
-       + "  - model: waves\n"
-       + discretization()
-       + airy_depth_100()
-       + stretching()
-       + directional_spreading()
-       + "        spectral density:\n"
-       + "           type: jonswap\n"
-       + "           Hs: {value: 5, unit: m}\n"
-       + "           Tp: {value: 15, unit: s}\n"
-       + "           gamma: 1.2\n"
-       + "      - model: airy\n"
-       + "        depth: {value: 100, unit: m}\n"
-       + "        seed of the random data generator: 10\n"
-       + stretching()
-       + "        directional spreading:\n"
-       + "           type: cos2s\n"
-       + "           s: 2\n"
-       + "           waves propagating to: {value: 90, unit: deg}\n"
-       + "        spectral density:\n"
-       + "           type: dirac\n"
-       + "           omega0: {value: 0.05, unit: rad/s}\n"
-       + "           Hs: {value: 15, unit: m}\n"
-       + "    output:\n"
-       + "        frame of reference: NED\n"
-       + "        mesh:\n"
-       + "            xmin: {value: 1, unit: m}\n"
-       + "            xmax: {value: 5, unit: m}\n"
-       + "            nx: 2\n"
-       + "            ymin: {value: 1, unit: m}\n"
-       + "            ymax: {value: 2, unit: m}\n"
-       + "            ny: 2\n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: TestShip\n"
-       + "    mesh: test_ship.stl\n"
-       + position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       + dynamics()
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "output:\n"
-       + "- format: hdf5\n"
-       + "  filename: test.h5\n"
-       + "  data: [mesh, command line, yaml, python scripts, matlab scripts, spectra, waves]\n";
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: waves\n" + discretization() + airy_depth_100() + stretching() +
+           directional_spreading() + "        spectral density:\n" + "           type: jonswap\n" +
+           "           Hs: {value: 5, unit: m}\n" + "           Tp: {value: 15, unit: s}\n" +
+           "           gamma: 1.2\n" + "      - model: airy\n" +
+           "        depth: {value: 100, unit: m}\n" +
+           "        seed of the random data generator: 10\n" + stretching() +
+           "        directional spreading:\n" + "           type: cos2s\n" + "           s: 2\n" +
+           "           waves propagating to: {value: 90, unit: deg}\n" +
+           "        spectral density:\n" + "           type: dirac\n" +
+           "           omega0: {value: 0.05, unit: rad/s}\n" +
+           "           Hs: {value: 15, unit: m}\n" + "    output:\n" +
+           "        frame of reference: NED\n" + "        mesh:\n" +
+           "            xmin: {value: 1, unit: m}\n" + "            xmax: {value: 5, unit: m}\n" +
+           "            nx: 2\n" + "            ymin: {value: 1, unit: m}\n" +
+           "            ymax: {value: 2, unit: m}\n" + "            ny: 2\n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n" +
+           "output:\n" + "- format: hdf5\n" + "  filename: test.h5\n" +
+           "  data: [mesh, command line, yaml, python scripts, matlab scripts, spectra, waves]\n";
 }
 
 std::string test_data::waves()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1026, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: waves\n"
-       + discretization_with_ndir_nfreq()
-       + airy_depth_100()
-       + stretching()
-       + directional_spreading()
-       + "        spectral density:\n"
-       + "           type: jonswap\n"
-       + "           Hs: {value: 5, unit: m}\n"
-       + "           Tp: {value: 15, unit: s}\n"
-       + "           gamma: 1.2\n"
-       + "      - model: airy\n"
-       + "        depth: {value: 100, unit: m}\n"
-       + "        seed of the random data generator: 10\n"
-       + stretching()
-       + "        directional spreading:\n"
-       + "           type: cos2s\n"
-       + "           s: 2\n"
-       + "           waves propagating to: {value: 90, unit: deg}\n"
-       + "        spectral density:\n"
-       + "           type: dirac\n"
-       + "           omega0: {value: 0.05, unit: rad/s}\n"
-       + "           Hs: {value: 15, unit: m}\n"
-       + "    output:\n"
-       + "        frame of reference: NED\n"
-       + "        mesh:\n"
-       + "            xmin: {value: 1, unit: m}\n"
-       + "            xmax: {value: 5, unit: m}\n"
-       + "            nx: 5\n"
-       + "            ymin: {value: 1, unit: m}\n"
-       + "            ymax: {value: 2, unit: m}\n"
-       + "            ny: 2\n"
-       + "output:\n"
-       + "   - format: hdf5\n"
-       + "     filename: waves.h5\n"
-       + "     data: [command line, yaml, spectra, waves]\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: waves\n" + discretization_with_ndir_nfreq() + airy_depth_100() +
+           stretching() + directional_spreading() + "        spectral density:\n" +
+           "           type: jonswap\n" + "           Hs: {value: 5, unit: m}\n" +
+           "           Tp: {value: 15, unit: s}\n" + "           gamma: 1.2\n" +
+           "      - model: airy\n" + "        depth: {value: 100, unit: m}\n" +
+           "        seed of the random data generator: 10\n" + stretching() +
+           "        directional spreading:\n" + "           type: cos2s\n" + "           s: 2\n" +
+           "           waves propagating to: {value: 90, unit: deg}\n" +
+           "        spectral density:\n" + "           type: dirac\n" +
+           "           omega0: {value: 0.05, unit: rad/s}\n" +
+           "           Hs: {value: 15, unit: m}\n" + "    output:\n" +
+           "        frame of reference: NED\n" + "        mesh:\n" +
+           "            xmin: {value: 1, unit: m}\n" + "            xmax: {value: 5, unit: m}\n" +
+           "            nx: 5\n" + "            ymin: {value: 1, unit: m}\n" +
+           "            ymax: {value: 2, unit: m}\n" + "            ny: 2\n" + "output:\n" +
+           "   - format: hdf5\n" + "     filename: waves.h5\n" +
+           "     data: [command line, yaml, spectra, waves]\n";
 }
 
 std::string test_data::simple_waves()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1026, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: waves\n"
-       + "    discretization:\n"
-       + "       n: 128\n"
-       + "       omega min: {value: 0.1, unit: rad/s}\n"
-       + "       omega max: {value: 6, unit: rad/s}\n"
-       + "       energy fraction: 0.999\n"
-       + airy_depth_100()
-       + stretching()
-       + directional_spreading()
-       + "        spectral density:\n"
-       + "           type: dirac\n"
-       + "           omega0: {value: 0.05, unit: rad/s}\n"
-       + "           Hs: {value: 15, unit: m}\n"
-       + "    output:\n"
-       + "        frame of reference: NED\n"
-       + "        mesh:\n"
-       + "            xmin: {value: -10, unit: m}\n"
-       + "            xmax: {value: 10, unit: m}\n"
-       + "            nx: 21\n"
-       + "            ymin: {value: -20, unit: m}\n"
-       + "            ymax: {value: +20, unit: m}\n"
-       + "            ny: 41\n"
-       + "output:\n"
-       + "   - format: hdf5\n"
-       + "     filename: simple_waves.h5\n"
-       + "     data: ['waves']\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: waves\n" + "    discretization:\n" + "       n: 128\n" +
+           "       omega min: {value: 0.1, unit: rad/s}\n" +
+           "       omega max: {value: 6, unit: rad/s}\n" + "       energy fraction: 0.999\n" +
+           airy_depth_100() + stretching() + directional_spreading() +
+           "        spectral density:\n" + "           type: dirac\n" +
+           "           omega0: {value: 0.05, unit: rad/s}\n" +
+           "           Hs: {value: 15, unit: m}\n" + "    output:\n" +
+           "        frame of reference: NED\n" + "        mesh:\n" +
+           "            xmin: {value: -10, unit: m}\n" +
+           "            xmax: {value: 10, unit: m}\n" + "            nx: 21\n" +
+           "            ymin: {value: -20, unit: m}\n" +
+           "            ymax: {value: +20, unit: m}\n" + "            ny: 41\n" + "output:\n" +
+           "   - format: hdf5\n" + "     filename: simple_waves.h5\n" + "     data: ['waves']\n";
 }
 
 std::string test_data::waves_for_parser_validation_only()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "discretization:\n"
+    ss << rotation_convention() << "discretization:\n"
        << "   n: 128\n"
        << "   omega min: {value: 0.1, unit: rad/s}\n"
        << "   omega max: {value: 6, unit: deg/s}\n"
@@ -1349,137 +1033,57 @@ std::string test_data::waves_from_a_list_of_rays_for_parser_validation_only()
 
 std::string test_data::waves_from_a_list_of_rays()
 {
-    return rotation_convention()
-       + "\n"
-       + "environmental constants:\n"
-       + "    g: {value: 9.81, unit: m/s^2}\n"
-       + "    rho: {value: 1026, unit: kg/m^3}\n"
-       + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-       + "environment models:\n"
-       + "  - model: waves\n"
-       + "    spectra from a list of rays:\n"
-       + "      - model: airy\n"
-       + "        stretching:\n"
-       + "           delta: 0.5\n"
-       + "           h: {unit: m, value: 100}\n"
-       + "        depth: {value: 1.7, unit: km}\n"
-       + "        rays:\n"
-       + "          # Two rays with T=8s and T=10s\n"
-       + "          a: {values: [0.1, 0.5], unit: m}\n"
-       + "          psi: {values: [180.0, 180.0], unit: deg}\n"
-       + "          omega: {values: [0.628318, 0.785398], unit: rad/s}\n"
-       + "          k: {values: [3.872832, 6.051301], unit: 1/m}\n"
-       + "          phase: {values: [50, 90], unit: deg}\n"
-       + "      - model: airy\n"
-       + "        rays:\n"
-       + "          # Two rays with T=10s and T=12s\n"
-       + "          a: {values: [0.1, 0.5], unit: m}\n"
-       + "          psi: {values: [180.0, 180.0], unit: deg}\n"
-       + "          omega: {values: [0.523598, 0.628318], unit: rad/s}\n"
-       + "          k: {values: [2.689467, 3.872832], unit: 1/m}\n"
-       + "          phase: {values: [110, 130], unit: deg}\n"
-       + "        depth: {value: 1000, unit: m}\n"
-       + "        stretching:\n"
-       + "           delta: 0.6\n"
-       + "           h: {unit: m, value: 101}\n"
-       + "    output:\n"
-       + "        frame of reference: NED\n"
-       + "        mesh:\n"
-       + "           xmin: {value: -10, unit: m}\n"
-       + "           xmax: {value: 1, unit: km}\n"
-       + "           nx: 10\n"
-       + "           ymin: {value: -20, unit: m}\n"
-       + "           ymax: {value: 3, unit: km}\n"
-       + "           ny: 20\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: waves\n" + "    spectra from a list of rays:\n" + "      - model: airy\n" +
+           "        stretching:\n" + "           delta: 0.5\n" +
+           "           h: {unit: m, value: 100}\n" + "        depth: {value: 1.7, unit: km}\n" +
+           "        rays:\n" + "          # Two rays with T=8s and T=10s\n" +
+           "          a: {values: [0.1, 0.5], unit: m}\n" +
+           "          psi: {values: [180.0, 180.0], unit: deg}\n" +
+           "          omega: {values: [0.628318, 0.785398], unit: rad/s}\n" +
+           "          k: {values: [3.872832, 6.051301], unit: 1/m}\n" +
+           "          phase: {values: [50, 90], unit: deg}\n" + "      - model: airy\n" +
+           "        rays:\n" + "          # Two rays with T=10s and T=12s\n" +
+           "          a: {values: [0.1, 0.5], unit: m}\n" +
+           "          psi: {values: [180.0, 180.0], unit: deg}\n" +
+           "          omega: {values: [0.523598, 0.628318], unit: rad/s}\n" +
+           "          k: {values: [2.689467, 3.872832], unit: 1/m}\n" +
+           "          phase: {values: [110, 130], unit: deg}\n" +
+           "        depth: {value: 1000, unit: m}\n" + "        stretching:\n" +
+           "           delta: 0.6\n" + "           h: {unit: m, value: 101}\n" + "    output:\n" +
+           "        frame of reference: NED\n" + "        mesh:\n" +
+           "           xmin: {value: -10, unit: m}\n" + "           xmax: {value: 1, unit: km}\n" +
+           "           nx: 10\n" + "           ymin: {value: -20, unit: m}\n" +
+           "           ymax: {value: 3, unit: km}\n" + "           ny: 20\n";
 }
 
 std::string test_data::cube_in_waves()
 {
     std::stringstream ss;
-        ss << rotation_convention()
-           << "\n"
-           << "environmental constants:\n"
-           << "    g: {value: 9.81, unit: m/s^2}\n"
-           << "    rho: {value: 1026, unit: kg/m^3}\n"
-           << "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-           << "environment models:\n"
-           << "  - model: waves\n"
-           << "    discretization:\n"
-           << "       n: 128\n"
-           << "       omega min: {value: 0.1, unit: rad/s}\n"
-           << "       omega max: {value: 6, unit: rad/s}\n"
-           << "       energy fraction: 0.999\n"
-           << "    spectra:\n"
-           << "      - model: airy\n"
-           << "        depth: {value: 100, unit: m}\n"
-           << "        seed of the random data generator: 0\n"
-           << "        stretching:\n"
-           << "          delta: 1\n"
-           << "          h: {unit: m, value: 0}\n"
-           << "        directional spreading:\n"
-           << "           type: dirac\n"
-           << "           waves propagating to: {value: 90, unit: deg}\n"
-           << "        spectral density:\n"
-           << "           type: jonswap\n"
-           << "           Hs: {value: 5, unit: m}\n"
-           << "           Tp: {value: 15, unit: s}\n"
-           << "           gamma: 1.2\n"
-           << "      - model: airy\n"
-           << "        depth: {value: 100, unit: m}\n"
-           << "        seed of the random data generator: 10\n"
-           << "        stretching:\n"
-           << "          delta: 1\n"
-           << "          h: {unit: m, value: 0}\n"
-           << "        directional spreading:\n"
-           << "           type: cos2s\n"
-           << "           s: 2\n"
-           << "           waves propagating to: {value: 90, unit: deg}\n"
-           << "        spectral density:\n"
-           << "           type: dirac\n"
-           << "           Hs: {value: 5, unit: m}\n"
-           << "           omega0: {value: 0.05, unit: rad/s}\n"
-           << "    output:\n"
-           << "        frame of reference: cube\n"
-           << "        mesh:\n"
-           << "            xmin: {value: 1, unit: m}\n"
-           << "            xmax: {value: 5, unit: m}\n"
-           << "            nx: 5\n"
-           << "            ymin: {value: 1, unit: m}\n"
-           << "            ymax: {value: 2, unit: m}\n"
-           << "            ny: 2\n"
-           << "\n"
-           << "bodies: # All bodies have NED as parent frame\n"
-           << "  - name: cube\n"
-           << "    mesh: cube.stl\n"
-           << position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-           << initial_position_of_body_frame(0, 0, 0.4746588693957115, 0, 0, 0)
-           << initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-           << "    dynamics:\n"
-           << "        hydrodynamic forces calculation point in body frame:\n"
-           << "            x: {value: 0.696, unit: m}\n"
-           << "            y: {value: 0, unit: m}\n"
-           << "            z: {value: 1.418, unit: m}\n"
-           << centre_of_inertia("cube", 0, 0, 0.5)
-           << one_ton_rigid_inertia_matrix()
-           << no_added_mass()
-           << "    external forces:\n"
-           << "      - model: gravity\n"
-           << "      - model: non-linear hydrostatic (fast)\n";
-        return ss.str();
-}
-
-std::string test_data::test_ship_froude_krylov()
-{
-    std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
+    ss << rotation_convention() << "\n"
+       << "environmental constants:\n"
+       << "    g: {value: 9.81, unit: m/s^2}\n"
+       << "    rho: {value: 1026, unit: kg/m^3}\n"
+       << "    nu: {value: 1.18e-6, unit: m^2/s}\n"
        << "environment models:\n"
        << "  - model: waves\n"
-       << discretization()
-       << airy_depth_100()
-       << stretching()
-       << directional_spreading()
+       << "    discretization:\n"
+       << "       n: 128\n"
+       << "       omega min: {value: 0.1, unit: rad/s}\n"
+       << "       omega max: {value: 6, unit: rad/s}\n"
+       << "       energy fraction: 0.999\n"
+       << "    spectra:\n"
+       << "      - model: airy\n"
+       << "        depth: {value: 100, unit: m}\n"
+       << "        seed of the random data generator: 0\n"
+       << "        stretching:\n"
+       << "          delta: 1\n"
+       << "          h: {unit: m, value: 0}\n"
+       << "        directional spreading:\n"
+       << "           type: dirac\n"
+       << "           waves propagating to: {value: 90, unit: deg}\n"
        << "        spectral density:\n"
        << "           type: jonswap\n"
        << "           Hs: {value: 5, unit: m}\n"
@@ -1488,8 +1092,60 @@ std::string test_data::test_ship_froude_krylov()
        << "      - model: airy\n"
        << "        depth: {value: 100, unit: m}\n"
        << "        seed of the random data generator: 10\n"
-       << stretching()
+       << "        stretching:\n"
+       << "          delta: 1\n"
+       << "          h: {unit: m, value: 0}\n"
        << "        directional spreading:\n"
+       << "           type: cos2s\n"
+       << "           s: 2\n"
+       << "           waves propagating to: {value: 90, unit: deg}\n"
+       << "        spectral density:\n"
+       << "           type: dirac\n"
+       << "           Hs: {value: 5, unit: m}\n"
+       << "           omega0: {value: 0.05, unit: rad/s}\n"
+       << "    output:\n"
+       << "        frame of reference: cube\n"
+       << "        mesh:\n"
+       << "            xmin: {value: 1, unit: m}\n"
+       << "            xmax: {value: 5, unit: m}\n"
+       << "            nx: 5\n"
+       << "            ymin: {value: 1, unit: m}\n"
+       << "            ymax: {value: 2, unit: m}\n"
+       << "            ny: 2\n"
+       << "\n"
+       << "bodies: # All bodies have NED as parent frame\n"
+       << "  - name: cube\n"
+       << "    mesh: cube.stl\n"
+       << position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
+       << initial_position_of_body_frame(0, 0, 0.4746588693957115, 0, 0, 0)
+       << initial_velocity("cube", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
+       << "        hydrodynamic forces calculation point in body frame:\n"
+       << "            x: {value: 0.696, unit: m}\n"
+       << "            y: {value: 0, unit: m}\n"
+       << "            z: {value: 1.418, unit: m}\n"
+       << centre_of_inertia("cube", 0, 0, 0.5) << one_ton_rigid_inertia_matrix() << no_added_mass()
+       << "    external forces:\n"
+       << "      - model: gravity\n"
+       << "      - model: non-linear hydrostatic (fast)\n";
+    return ss.str();
+}
+
+std::string test_data::test_ship_froude_krylov()
+{
+    std::stringstream ss;
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
+       << "  - model: waves\n"
+       << discretization() << airy_depth_100() << stretching() << directional_spreading()
+       << "        spectral density:\n"
+       << "           type: jonswap\n"
+       << "           Hs: {value: 5, unit: m}\n"
+       << "           Tp: {value: 15, unit: s}\n"
+       << "           gamma: 1.2\n"
+       << "      - model: airy\n"
+       << "        depth: {value: 100, unit: m}\n"
+       << "        seed of the random data generator: 10\n"
+       << stretching() << "        directional spreading:\n"
        << "           type: cos2s\n"
        << "           s: 2\n"
        << "           waves propagating to: {value: 90, unit: deg}\n"
@@ -1512,9 +1168,7 @@ std::string test_data::test_ship_froude_krylov()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (fast)\n"
        << "      - model: non-linear Froude-Krylov\n"
@@ -1525,19 +1179,15 @@ std::string test_data::test_ship_froude_krylov()
 std::string test_data::test_ship_diffraction()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: waves\n"
        << "    discretization:\n"
        << "       n: 10\n"
        << "       omega min: {value: 0.05026548, unit: rad/s}\n"
        << "       omega max: {value: 0.6366198, unit: rad/s}\n"
        << "       energy fraction: 0.999\n"
-       << airy_depth_100()
-       << stretching()
-       << directional_spreading()
+       << airy_depth_100() << stretching() << directional_spreading()
        << "        spectral density:\n"
        << "           type: jonswap\n"
        << "           Hs: {value: 5, unit: m}\n"
@@ -1546,8 +1196,7 @@ std::string test_data::test_ship_diffraction()
        << "      - model: airy\n"
        << "        depth: {value: 100, unit: m}\n"
        << "        seed of the random data generator: 10\n"
-       << stretching()
-       << "        directional spreading:\n"
+       << stretching() << "        directional spreading:\n"
        << "           type: cos2s\n"
        << "           s: 2\n"
        << "           waves propagating to: {value: 90, unit: deg}\n"
@@ -1570,9 +1219,7 @@ std::string test_data::test_ship_diffraction()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (fast)\n"
        << "      - model: non-linear Froude-Krylov\n"
@@ -1590,10 +1237,8 @@ std::string test_data::test_ship_diffraction()
 std::string test_data::test_ship_damping()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    frame: NED\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
@@ -1604,14 +1249,11 @@ std::string test_data::test_ship_damping()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (fast)\n"
        << "      - model: quadratic damping\n"
-       << damping_matrix()
-       << "    \n";
+       << damping_matrix() << "    \n";
     return ss.str();
 }
 
@@ -1753,10 +1395,8 @@ std::string test_data::resistance_curve()
 std::string test_data::propulsion_and_resistance()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -1766,14 +1406,12 @@ std::string test_data::propulsion_and_resistance()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << "    dynamics:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
        << "        hydrodynamic forces calculation point in body frame:\n"
        << "            x: {value: 0.696, unit: m}\n"
        << "            y: {value: 0, unit: m}\n"
        << "            z: {value: 0.432, unit: m}\n"
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
+       << centre_of_inertia("TestShip", 0.258, 0, 0.432) << rigid_body_inertia_matrix()
        << "        added mass matrix at the center of gravity and projected in the body frame:\n"
        << "            row 1: [3.519e4,0,0,0,0,0]\n"
        << "            row 2: [0,3.023e5,0,0,0,0]\n"
@@ -1839,182 +1477,117 @@ std::string test_data::dummy_controllers_and_commands_for_propulsion_and_resista
 
 std::string test_data::heading_keeping_base()
 {
-    return rotation_convention()
-         + "\n"
-         + "environmental constants:\n"
-         + "    g: {value: 9.81, unit: m/s^2}\n"
-         + "    rho: {value: 1026, unit: kg/m^3}\n"
-         + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-         + "# Fixed frame: NED\n"
-         + "bodies: # All bodies have NED as parent frame\n"
-         + "  - name: dtmb\n"
-         + position_relative_to_mesh(70.27, 0, -7.55, 0, 0, 0)
-         + "    dynamics:\n"
-         + "        hydrodynamic forces calculation point in body frame:\n"
-         + "            x: {value: 0, unit: m}\n"
-         + "            y: {value: 0, unit: m}\n"
-         + "            z: {value: 3.45, unit: m}\n"
-         + centre_of_inertia("dtmb", 0, 0, 0)
-         + "        mass: {value: 8569., unit: tonne} # Caution: 'ton' is the british ton which is 907.185 kg\n"
-         + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-         + "            frame: dtmb\n"
-         + "            row 1: [8.569e6,0,0,0,0,0]\n"
-         + "            row 2: [0,8.569e6,0,0,0,0]\n"
-         + "            row 3: [0,0,8.569e6,0,0,0]\n"
-         + "            row 4: [0,0,0,4.271e8,0,0]\n"
-         + "            row 5: [0,0,0,0,1.080e10,0]\n"
-         + "            row 6: [0,0,0,0,0,1.080e10]\n"
-         + "        added mass matrix at the center of gravity and projected in the body frame:\n"
-         + "            frame: dtmb\n"
-         + "            # T min Aqua+ (3.5s)\n"
-         + "            row 1: [ 8.979E+04, 0.000E+00, -1.981E+05,  0.000E+00, -1.962E+07,  0.000E+00]\n"
-         + "            row 2: [ 0.000E+00, 2.172E+06,  0.000E+00,  1.135E+06,  0.000E+00,  2.523E+07]\n"
-         + "            row 3: [-1.981E+05, 0.000E+00,  9.680E+06,  0.000E+00,  6.716E+07,  0.000E+00]\n"
-         + "            row 4: [ 0.000E+00, 1.135E+06,  0.000E+00,  3.865E+07,  0.000E+00, -2.228E+08]\n"
-         + "            row 5: [-1.962E+07, 0.000E+00,  6.716E+07,  0.000E+00,  9.117E+09,  0.000E+00]\n"
-         + "            row 6: [ 0.000E+00, 2.523E+07,  0.000E+00, -2.228E+08,  0.000E+00,  3.338E+09]\n"
-         + initial_position_of_body_frame_deg(0, 0, -1.41, -0.06, 0, 0.81)
-         + initial_velocity("dtmb", 8.901, 0.020, 0, -0.007, 0, -0.0006)
-         + "    external forces:\n"
-         + "      - model: linear damping\n"
-         + "        damping matrix at the center of gravity projected in the body frame:\n"
-         + "            frame: dtmb\n"
-         + "            row 1: [ 0, 0,      0,      0,       0, 0]\n"
-         + "            row 2: [ 0, 0,      0,      0,       0, 0]\n"
-         + "            row 3: [ 0, 0, 8.86e6,      0,       0, 0]\n"
-         + "            row 4: [ 0, 0,      0, 3.18e7,       0, 0]\n"
-         + "            row 5: [ 0, 0,      0,      0, 1.01e10, 0]\n"
-         + "            row 6: [ 0, 0,      0,      0,       0, 0]\n"
-         + "      - model: quadratic damping\n"
-         + "        damping matrix at the center of gravity projected in the body frame:\n"
-         + "            frame: dtmb\n"
-         + "            row 1: [ 0, 0, 0,      0, 0, 0]\n"
-         + "            row 2: [ 0, 0, 0,      0, 0, 0]\n"
-         + "            row 3: [ 0, 0, 0,      0, 0, 0]\n"
-         + "            row 4: [ 0, 0, 0, 1.16e8, 0, 0]\n"
-         + "            row 5: [ 0, 0, 0,      0, 0, 0]\n"
-         + "            row 6: [ 0, 0, 0,      0, 0, 0]\n"
-         + "      - model: resistance curve\n"
-         + "        speed: {unit: m/s, values: [-1.858, 0.000, 1.858, 2.212, 2.616, 2.785, 2.979, 3.353, 3.732, 4.100, 4.474, 4.843, 5.212, 5.600, 5.964, 6.338, 6.711, 7.090, 7.479, 7.842, 8.211, 8.580, 8.938, 9.332, 9.696, 10.069, 10.448, 10.817, 11.195, 11.554, 11.933, 12.311, 12.685, 13.059, 13.432, 13.811, 14.185, 14.369, 14.544, 14.743, 14.927, 15.301, 15.665, 16.053, 16.427, 16.791]}\n"
-         + "        resistance: {unit: N, values: [-1.890E+04, 0.000E+00, 1.890E+04, 2.557E+04, 3.185E+04, 3.683E+04, 3.853E+04, 4.778E+04, 5.996E+04, 6.849E+04, 8.565E+04, 9.835E+04, 1.145E+05, 1.357E+05, 1.613E+05, 1.789E+05, 1.991E+05, 2.253E+05, 2.465E+05, 2.720E+05, 3.029E+05, 3.327E+05, 3.708E+05, 4.061E+05, 4.415E+05, 4.762E+05, 5.392E+05, 6.029E+05, 6.597E+05, 7.331E+05, 7.862E+05, 8.579E+05, 9.303E+05, 1.011E+06, 1.117E+06, 1.254E+06, 1.414E+06, 1.526E+06, 1.611E+06, 1.723E+06, 1.846E+06, 2.056E+06, 2.283E+06, 2.530E+06, 2.708E+06, 2.992E+06]}\n"
-         + "      - name: PSPropRudd\n"
-         + "        model: propeller+rudder\n"
-         + "        position of propeller frame:\n"
-         + "            frame: dtmb\n"
-         + "            x: {value: -60.695, unit: m}\n"
-         + "            y: {value: -4.650, unit: m}\n"
-         + "            z: {value: 6.574, unit: m}\n"
-         + "            phi: {value: 0, unit: rad}\n"
-         + "            theta: {value: 2.95, unit: deg}\n"
-         + "            psi: {value: 0, unit: deg}\n"
-         + "        wake coefficient w: 0.15\n"
-         + "        relative rotative efficiency etaR: 1\n"
-         + "        thrust deduction factor t: 0.12\n"
-         + "        rotation: clockwise\n"
-         + "        number of blades: 5\n"
-         + "        blade area ratio AE/A0: 0.58\n"
-         + "        diameter: {value: 6.15, unit: m}\n"
-         + "        rudder area: {value: 15.4, unit: m^2}\n"
-         + "        rudder height: {value: 4.4, unit: m}\n"
-         + "        effective aspect ratio factor: 1.7\n"
-         + "        lift tuning coefficient: 1.\n"
-         + "        drag tuning coefficient: 1.\n"
-         + "        position of rudder in body frame:\n"
-         + "            x: {value: -66.27, unit: m}\n"
-         + "            y: {value: -4.75, unit: m}\n"
-         + "            z: {value: 4.60, unit: m}\n"
-         + "      - name: SBPropRudd\n"
-         + "        model: propeller+rudder\n"
-         + "        position of propeller frame:\n"
-         + "            frame: dtmb\n"
-         + "            x: {value: -60.695, unit: m}\n"
-         + "            y: {value: 4.650, unit: m}\n"
-         + "            z: {value: 6.574, unit: m}\n"
-         + "            phi: {value: 0, unit: rad}\n"
-         + "            theta: {value: 2.95, unit: deg}\n"
-         + "            psi: {value: 0, unit: deg}\n"
-         + "        wake coefficient w: 0.15\n"
-         + "        relative rotative efficiency etaR: 1\n"
-         + "        thrust deduction factor t: 0.12\n"
-         + "        rotation: anti-clockwise\n"
-         + "        number of blades: 5\n"
-         + "        blade area ratio AE/A0: 0.58\n"
-         + "        diameter: {value: 6.15, unit: m}\n"
-         + "        rudder area: {value: 15.4, unit: m^2}\n"
-         + "        rudder height: {value: 4.4, unit: m}\n"
-         + "        effective aspect ratio factor: 1.7\n"
-         + "        lift tuning coefficient: 1.\n"
-         + "        drag tuning coefficient: 1.\n"
-         + "        position of rudder in body frame:\n"
-         + "            x: {value: -66.27, unit: m}\n"
-         + "            y: {value: 4.75, unit: m}\n"
-         + "            z: {value: 4.60, unit: m}\n"
-         + "      - model: maneuvering\n"
-         + "        name: man\n"
-         + "        reference frame:\n"
-         + "            frame: dtmb\n"
-         + "            x: {value: 0.731, unit: m}\n"
-         + "            y: {value: 0, unit: m}\n"
-         + "            z: {value: 1.397, unit: m}\n"
-         + "            phi: {value: 0, unit: deg}\n"
-         + "            theta: {value: 0, unit: deg}\n"
-         + "            psi: {value: 0, unit: deg}\n"
-         + "        X: X_\n"
-         + "        Y: Y_\n"
-         + "        Z: 0.\n"
-         + "        K: 0.\n"
-         + "        M: 0.\n"
-         + "        N: N_\n"
-         + "        X_: (Xu0*u(t) + 1/2.*Xuu0*(u(t))^2 + 1/6.*Xuuu0*(u(t))^3) + (Xv*abs(v(t)) + 1/2.*Xvv*(v(t))^2) + Xuv*u(t)*v(t) + Xr*r(t)\n"
-         + "        Y_: (Yv*v(t) + 1/2.*Yvv*v(t)*abs(v(t)) + 1/6.*Yvvv*(v(t))^3) + Yuv*u(t)*v(t) + Yr*r(t)\n"
-         + "        N_: (Nv*v(t) + 1/2.*Nvv*v(t)*abs(v(t))) + Nuv*u(t)*v(t) + Nr*r(t)\n"
-         + "        Xu0:    0.\n"
-         + "        Xuu0:   0.\n"
-         + "        Xuuu0:  0.\n"
-         + "        Xv:    -5.528E+03\n"
-         + "        Xvv:   -1.301E+05\n"
-         + "        Xuv:   -9.539E+02\n"
-         + "        Xr:    -1.462E+06\n"
-         + "        Xrp:    1.246E+07\n"
-         + "        Yv:     2.925E+05\n"
-         + "        Yvv:   -4.548E+05\n"
-         + "        Yvvv:  -2.292E+05\n"
-         + "        Yuv:   -1.504E+05\n"
-         + "        Yr:    -8.542E+07\n"
-         + "        Yvp:   -1.056E+07\n"
-         + "        Yrp:    1.958E+08\n"
-         + "        Nv:     3.979E+07\n"
-         + "        Nvv:   -2.511E+07\n"
-         + "        Nuv:   -1.392E+07\n"
-         + "        Nr:    -9.677E+09\n"
-         + "        Nvp:   -8.913E+08\n"
-         + "        Nrp:    2.609E+10\n"
-         + "    blocked dof:\n"
-         + "       from YAML:\n"
-         + "         - state: w\n"
-         + "           t: [0, 1000]\n"
-         + "           value: [0, 0]\n"
-         + "           interpolation: piecewise constant\n"
-         + "         - state: p\n"
-         + "           t: [0, 1000]\n"
-         + "           value: [0, 0]\n"
-         + "           interpolation: piecewise constant\n"
-         + "         - state: q\n"
-         + "           t: [0, 1000]\n"
-         + "           value: [0, 0]\n"
-         + "           interpolation: piecewise constant\n"
-         + "environment models:\n"
-         + "  - model: no waves\n"
-         + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-         + "commands:\n"
-         + "    - name: PSPropRudd\n"
-         + "      t: [0]\n"
-         + "      rpm: {unit: rpm, values: [101.]}\n"
-         + "      P/D: {unit: 1, values: [0.79]}\n"
-         + "    - name: SBPropRudd\n"
-         + "      t: [0]\n"
-         + "      rpm: {unit: rpm, values: [101.]}\n"
-         + "      P/D: {unit: 1, values: [0.79]}\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "# Fixed frame: NED\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: dtmb\n" +
+           position_relative_to_mesh(70.27, 0, -7.55, 0, 0, 0) + "    dynamics:\n" +
+           "        hydrodynamic forces calculation point in body frame:\n" +
+           "            x: {value: 0, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 3.45, unit: m}\n" + centre_of_inertia("dtmb", 0, 0, 0) +
+           "        mass: {value: 8569., unit: tonne} # Caution: 'ton' is the british ton which is 907.185 kg\n" +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            frame: dtmb\n" + "            row 1: [8.569e6,0,0,0,0,0]\n" +
+           "            row 2: [0,8.569e6,0,0,0,0]\n" + "            row 3: [0,0,8.569e6,0,0,0]\n" +
+           "            row 4: [0,0,0,4.271e8,0,0]\n" +
+           "            row 5: [0,0,0,0,1.080e10,0]\n" +
+           "            row 6: [0,0,0,0,0,1.080e10]\n" +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "            frame: dtmb\n" + "            # T min Aqua+ (3.5s)\n" +
+           "            row 1: [ 8.979E+04, 0.000E+00, -1.981E+05,  0.000E+00, -1.962E+07,  0.000E+00]\n" +
+           "            row 2: [ 0.000E+00, 2.172E+06,  0.000E+00,  1.135E+06,  0.000E+00,  2.523E+07]\n" +
+           "            row 3: [-1.981E+05, 0.000E+00,  9.680E+06,  0.000E+00,  6.716E+07,  0.000E+00]\n" +
+           "            row 4: [ 0.000E+00, 1.135E+06,  0.000E+00,  3.865E+07,  0.000E+00, -2.228E+08]\n" +
+           "            row 5: [-1.962E+07, 0.000E+00,  6.716E+07,  0.000E+00,  9.117E+09,  0.000E+00]\n" +
+           "            row 6: [ 0.000E+00, 2.523E+07,  0.000E+00, -2.228E+08,  0.000E+00,  3.338E+09]\n" +
+           initial_position_of_body_frame_deg(0, 0, -1.41, -0.06, 0, 0.81) +
+           initial_velocity("dtmb", 8.901, 0.020, 0, -0.007, 0, -0.0006) +
+           "    external forces:\n" + "      - model: linear damping\n" +
+           "        damping matrix at the center of gravity projected in the body frame:\n" +
+           "            frame: dtmb\n" +
+           "            row 1: [ 0, 0,      0,      0,       0, 0]\n" +
+           "            row 2: [ 0, 0,      0,      0,       0, 0]\n" +
+           "            row 3: [ 0, 0, 8.86e6,      0,       0, 0]\n" +
+           "            row 4: [ 0, 0,      0, 3.18e7,       0, 0]\n" +
+           "            row 5: [ 0, 0,      0,      0, 1.01e10, 0]\n" +
+           "            row 6: [ 0, 0,      0,      0,       0, 0]\n" +
+           "      - model: quadratic damping\n" +
+           "        damping matrix at the center of gravity projected in the body frame:\n" +
+           "            frame: dtmb\n" + "            row 1: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 2: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 3: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 4: [ 0, 0, 0, 1.16e8, 0, 0]\n" +
+           "            row 5: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 6: [ 0, 0, 0,      0, 0, 0]\n" + "      - model: resistance curve\n" +
+           "        speed: {unit: m/s, values: [-1.858, 0.000, 1.858, 2.212, 2.616, 2.785, 2.979, 3.353, 3.732, 4.100, 4.474, 4.843, 5.212, 5.600, 5.964, 6.338, 6.711, 7.090, 7.479, 7.842, 8.211, 8.580, 8.938, 9.332, 9.696, 10.069, 10.448, 10.817, 11.195, 11.554, 11.933, 12.311, 12.685, 13.059, 13.432, 13.811, 14.185, 14.369, 14.544, 14.743, 14.927, 15.301, 15.665, 16.053, 16.427, 16.791]}\n" +
+           "        resistance: {unit: N, values: [-1.890E+04, 0.000E+00, 1.890E+04, 2.557E+04, 3.185E+04, 3.683E+04, 3.853E+04, 4.778E+04, 5.996E+04, 6.849E+04, 8.565E+04, 9.835E+04, 1.145E+05, 1.357E+05, 1.613E+05, 1.789E+05, 1.991E+05, 2.253E+05, 2.465E+05, 2.720E+05, 3.029E+05, 3.327E+05, 3.708E+05, 4.061E+05, 4.415E+05, 4.762E+05, 5.392E+05, 6.029E+05, 6.597E+05, 7.331E+05, 7.862E+05, 8.579E+05, 9.303E+05, 1.011E+06, 1.117E+06, 1.254E+06, 1.414E+06, 1.526E+06, 1.611E+06, 1.723E+06, 1.846E+06, 2.056E+06, 2.283E+06, 2.530E+06, 2.708E+06, 2.992E+06]}\n" +
+           "      - name: PSPropRudd\n" + "        model: propeller+rudder\n" +
+           "        position of propeller frame:\n" + "            frame: dtmb\n" +
+           "            x: {value: -60.695, unit: m}\n" +
+           "            y: {value: -4.650, unit: m}\n" +
+           "            z: {value: 6.574, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 2.95, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        wake coefficient w: 0.15\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0.12\n" + "        rotation: clockwise\n" +
+           "        number of blades: 5\n" + "        blade area ratio AE/A0: 0.58\n" +
+           "        diameter: {value: 6.15, unit: m}\n" +
+           "        rudder area: {value: 15.4, unit: m^2}\n" +
+           "        rudder height: {value: 4.4, unit: m}\n" +
+           "        effective aspect ratio factor: 1.7\n" +
+           "        lift tuning coefficient: 1.\n" + "        drag tuning coefficient: 1.\n" +
+           "        position of rudder in body frame:\n" +
+           "            x: {value: -66.27, unit: m}\n" +
+           "            y: {value: -4.75, unit: m}\n" + "            z: {value: 4.60, unit: m}\n" +
+           "      - name: SBPropRudd\n" + "        model: propeller+rudder\n" +
+           "        position of propeller frame:\n" + "            frame: dtmb\n" +
+           "            x: {value: -60.695, unit: m}\n" +
+           "            y: {value: 4.650, unit: m}\n" + "            z: {value: 6.574, unit: m}\n" +
+           "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 2.95, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        wake coefficient w: 0.15\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0.12\n" + "        rotation: anti-clockwise\n" +
+           "        number of blades: 5\n" + "        blade area ratio AE/A0: 0.58\n" +
+           "        diameter: {value: 6.15, unit: m}\n" +
+           "        rudder area: {value: 15.4, unit: m^2}\n" +
+           "        rudder height: {value: 4.4, unit: m}\n" +
+           "        effective aspect ratio factor: 1.7\n" +
+           "        lift tuning coefficient: 1.\n" + "        drag tuning coefficient: 1.\n" +
+           "        position of rudder in body frame:\n" +
+           "            x: {value: -66.27, unit: m}\n" + "            y: {value: 4.75, unit: m}\n" +
+           "            z: {value: 4.60, unit: m}\n" + "      - model: maneuvering\n" +
+           "        name: man\n" + "        reference frame:\n" + "            frame: dtmb\n" +
+           "            x: {value: 0.731, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 1.397, unit: m}\n" + "            phi: {value: 0, unit: deg}\n" +
+           "            theta: {value: 0, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        X: X_\n" + "        Y: Y_\n" +
+           "        Z: 0.\n" + "        K: 0.\n" + "        M: 0.\n" + "        N: N_\n" +
+           "        X_: (Xu0*u(t) + 1/2.*Xuu0*(u(t))^2 + 1/6.*Xuuu0*(u(t))^3) + (Xv*abs(v(t)) + 1/2.*Xvv*(v(t))^2) + Xuv*u(t)*v(t) + Xr*r(t)\n" +
+           "        Y_: (Yv*v(t) + 1/2.*Yvv*v(t)*abs(v(t)) + 1/6.*Yvvv*(v(t))^3) + Yuv*u(t)*v(t) + Yr*r(t)\n" +
+           "        N_: (Nv*v(t) + 1/2.*Nvv*v(t)*abs(v(t))) + Nuv*u(t)*v(t) + Nr*r(t)\n" +
+           "        Xu0:    0.\n" + "        Xuu0:   0.\n" + "        Xuuu0:  0.\n" +
+           "        Xv:    -5.528E+03\n" + "        Xvv:   -1.301E+05\n" +
+           "        Xuv:   -9.539E+02\n" + "        Xr:    -1.462E+06\n" +
+           "        Xrp:    1.246E+07\n" + "        Yv:     2.925E+05\n" +
+           "        Yvv:   -4.548E+05\n" + "        Yvvv:  -2.292E+05\n" +
+           "        Yuv:   -1.504E+05\n" + "        Yr:    -8.542E+07\n" +
+           "        Yvp:   -1.056E+07\n" + "        Yrp:    1.958E+08\n" +
+           "        Nv:     3.979E+07\n" + "        Nvv:   -2.511E+07\n" +
+           "        Nuv:   -1.392E+07\n" + "        Nr:    -9.677E+09\n" +
+           "        Nvp:   -8.913E+08\n" + "        Nrp:    2.609E+10\n" + "    blocked dof:\n" +
+           "       from YAML:\n" + "         - state: w\n" + "           t: [0, 1000]\n" +
+           "           value: [0, 0]\n" + "           interpolation: piecewise constant\n" +
+           "         - state: p\n" + "           t: [0, 1000]\n" + "           value: [0, 0]\n" +
+           "           interpolation: piecewise constant\n" + "         - state: q\n" +
+           "           t: [0, 1000]\n" + "           value: [0, 0]\n" +
+           "           interpolation: piecewise constant\n" + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "commands:\n" +
+           "    - name: PSPropRudd\n" + "      t: [0]\n" +
+           "      rpm: {unit: rpm, values: [101.]}\n" + "      P/D: {unit: 1, values: [0.79]}\n" +
+           "    - name: SBPropRudd\n" + "      t: [0]\n" +
+           "      rpm: {unit: rpm, values: [101.]}\n" + "      P/D: {unit: 1, values: [0.79]}\n";
 }
 
 std::string test_data::heading_keeping_controllers()
@@ -2091,57 +1664,38 @@ std::string test_data::diffraction_precalr()
 
 std::string test_data::test_ship_radiation_damping()
 {
-    return rotation_convention()
-         + "\n"
-         + environmental_constants()
-         + "environment models:\n"
-         + "  - model: no waves\n"
-         + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-         + "    \n"
-         + "# Fixed frame: NED\n"
-         + "bodies: # All bodies have NED as parent frame\n"
-         + "  - name: TestShip\n"
-         + "    mesh: test_ship.stl\n"
-         + position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
-         + initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-         + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-         + dynamics()
-         + "    external forces:\n"
-         + "      - model: resistance curve\n"
-         + "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n"
-         + "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n"
-         + "      - model: radiation damping\n"
-         + "        hdb: test_ship.hdb\n"
-         + "        type of quadrature for cos transform: simpson\n"
-         + "        type of quadrature for convolution: simpson\n"
-         + "        nb of points for retardation function discretization: 50\n"
-         + "        omega min: {value: 0, unit: rad/s}\n"
-         + "        omega max: {value: 30, unit: rad/s}\n"
-         + "        tau min: {value: 0.2094395, unit: s}\n"
-         + "        tau max: {value: 10, unit: s}\n"
-         + "        output Br and K: false\n"
-         + "        calculation point in body frame:\n"
-         + "            x: {value: 0.696, unit: m}\n"
-         + "            y: {value: 0, unit: m}\n"
-         + "            z: {value: 1.418, unit: m}\n"
-         + "      - name: propeller\n"
-         + "        model: wageningen B-series\n"
-         + "        position of propeller frame:\n"
-         + "            frame: TestShip\n"
-         + "            x: {value: -8.4, unit: m}\n"
-         + "            y: {value: 0, unit: m}\n"
-         + "            z: {value: 0.432, unit: m}\n"
-         + "            phi: {value: 0, unit: rad}\n"
-         + "            theta: {value: 0, unit: deg}\n"
-         + "            psi: {value: 0, unit: deg}\n"
-         + "        wake coefficient w: 0\n"
-         + "        relative rotative efficiency etaR: 1\n"
-         + "        thrust deduction factor t: 0\n"
-         + "        rotation: clockwise\n"
-         + "        number of blades: 4\n"
-         + "        blade area ratio AE/A0: 0.55\n"
-         + "        diameter: {value: 1.925, unit: m}\n"
-         + "    \n";
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 1, 0, 0, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - model: resistance curve\n" +
+           "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n" +
+           "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n" +
+           "      - model: radiation damping\n" + "        hdb: test_ship.hdb\n" +
+           "        type of quadrature for cos transform: simpson\n" +
+           "        type of quadrature for convolution: simpson\n" +
+           "        nb of points for retardation function discretization: 50\n" +
+           "        omega min: {value: 0, unit: rad/s}\n" +
+           "        omega max: {value: 30, unit: rad/s}\n" +
+           "        tau min: {value: 0.2094395, unit: s}\n" +
+           "        tau max: {value: 10, unit: s}\n" + "        output Br and K: false\n" +
+           "        calculation point in body frame:\n" +
+           "            x: {value: 0.696, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 1.418, unit: m}\n" + "      - name: propeller\n" +
+           "        model: wageningen B-series\n" + "        position of propeller frame:\n" +
+           "            frame: TestShip\n" + "            x: {value: -8.4, unit: m}\n" +
+           "            y: {value: 0, unit: m}\n" + "            z: {value: 0.432, unit: m}\n" +
+           "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 0, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        wake coefficient w: 0\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0\n" + "        rotation: clockwise\n" +
+           "        number of blades: 4\n" + "        blade area ratio AE/A0: 0.55\n" +
+           "        diameter: {value: 1.925, unit: m}\n" + "    \n";
 }
 
 std::string test_data::simple_track_keeping()
@@ -2228,51 +1782,30 @@ std::string test_data::maneuvering()
 
 std::string test_data::bug_2641()
 {
-    return rotation_convention()
-         + "\n"
-         + environmental_constants()
-         + "environment models:\n"
-         + "  - model: no waves\n"
-         + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-         + "\n"
-         + "# Fixed frame: NED\n"
-         + "bodies: # All bodies have NED as parent frame\n"
-         + "  - name: TestShip\n"
-         + "    mesh: test_ship.stl\n"
-         + position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
-         + initial_position_of_body_frame_deg(0, 0, -0.099, 0, -0.334, 0)
-         + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-         + dynamics()
-         + "    external forces:\n"
-         + "      - model: gravity\n"
-         + "      - model: non-linear hydrostatic (exact)\n"
-         + linear_damping()
-         + quadratic_damping()
-         + "      - model: resistance curve\n"
-         + "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n"
-         + "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n"
-         + "      - name: propeller\n"
-         + "        model: wageningen B-series\n"
-         + "        position of propeller frame:\n"
-         + "            frame: TestShip\n"
-         + "            x: {value: -8.4, unit: m}\n"
-         + "            y: {value: 0, unit: m}\n"
-         + "            z: {value: 2.5, unit: m}\n"
-         + "            phi: {value: 0, unit: rad}\n"
-         + "            theta: {value: 3, unit: deg}\n"
-         + "            psi: {value: 0, unit: deg}\n"
-         + "        wake coefficient w: 0\n"
-         + "        relative rotative efficiency etaR: 1\n"
-         + "        thrust deduction factor t: 0\n"
-         + "        rotation: clockwise\n"
-         + "        number of blades: 4\n"
-         + "        blade area ratio AE/A0: 0.55\n"
-         + "        diameter: {value: 1.925, unit: m}\n"
-         + "\n"
-         + "output:\n"
-         + "   - format: csv\n"
-         + "     filename: acceleration.csv\n"
-         + "     data: [t, x(TestShip), y(TestShip), z(TestShip), u(TestShip), v(TestShip), w(TestShip), p(TestShip), q(TestShip), r(TestShip), phi(TestShip), theta(TestShip), psi(TestShip)]\n";
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "\n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    mesh: test_ship.stl\n" +
+           position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0) +
+           initial_position_of_body_frame_deg(0, 0, -0.099, 0, -0.334, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (exact)\n" +
+           linear_damping() + quadratic_damping() + "      - model: resistance curve\n" +
+           "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n" +
+           "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n" +
+           "      - name: propeller\n" + "        model: wageningen B-series\n" +
+           "        position of propeller frame:\n" + "            frame: TestShip\n" +
+           "            x: {value: -8.4, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 2.5, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 3, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        wake coefficient w: 0\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0\n" + "        rotation: clockwise\n" +
+           "        number of blades: 4\n" + "        blade area ratio AE/A0: 0.55\n" +
+           "        diameter: {value: 1.925, unit: m}\n" + "\n" + "output:\n" +
+           "   - format: csv\n" + "     filename: acceleration.csv\n" +
+           "     data: [t, x(TestShip), y(TestShip), z(TestShip), u(TestShip), v(TestShip), w(TestShip), p(TestShip), q(TestShip), r(TestShip), phi(TestShip), theta(TestShip), psi(TestShip)]\n";
 }
 
 std::string test_data::simple_station_keeping()
@@ -2320,8 +1853,7 @@ std::string test_data::rudder()
 std::string test_data::bug_in_exact_hydrostatic()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "environmental constants:\n"
        << "    g: {value: 9.81, unit: m/s^2}\n"
        << "    rho: {value: 1026, unit: kg/m^3}\n"
@@ -2335,13 +1867,9 @@ std::string test_data::bug_in_exact_hydrostatic()
        << "    mesh: cube.stl\n"
        << position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 0.4746588693957115, 0, 0, 0)
-       << initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("cube", 0, 0, 0.5)
-       << one_ton_rigid_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("cube", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("cube", 0, 0, 0.5)
+       << one_ton_rigid_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (exact)\n";
     return ss.str();
@@ -2349,10 +1877,8 @@ std::string test_data::bug_in_exact_hydrostatic()
 std::string test_data::bug_2714_heading_keeping()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -2362,14 +1888,10 @@ std::string test_data::bug_2714_heading_keeping()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, -0.099, 10, -0.334, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (fast)\n"
-       << linear_damping()
-       << quadratic_damping()
-       << "      - name: controller\n"
+       << linear_damping() << quadratic_damping() << "      - name: controller\n"
        << "        model: simple heading controller\n"
        << "        ksi: 0.9\n"
        << "        Tp: {value: 4, unit: s}\n"
@@ -2384,10 +1906,8 @@ std::string test_data::bug_2714_heading_keeping()
 std::string test_data::bug_2714_station_keeping()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -2397,14 +1917,10 @@ std::string test_data::bug_2714_station_keeping()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, -0.099, 10, -0.334, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (fast)\n"
-       << linear_damping()
-       << quadratic_damping()
-       << "      - name: controller\n"
+       << linear_damping() << quadratic_damping() << "      - name: controller\n"
        << "        model: simple station-keeping controller\n"
        << "        ksi_x: 0.9\n"
        << "        T_x: {value: 4, unit: s}\n"
@@ -2423,10 +1939,8 @@ std::string test_data::bug_2714_station_keeping()
 std::string test_data::bug_2732()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -2436,14 +1950,10 @@ std::string test_data::bug_2732()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, -0.099, 10, -0.334, 0)
-       << initial_velocity("TestShip", 10, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 10, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (fast)\n"
-       << linear_damping()
-       << quadratic_damping()
-       << "      - model: resistance curve\n"
+       << linear_damping() << quadratic_damping() << "      - model: resistance curve\n"
        << "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n"
        << "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n"
        << "      - model: maneuvering\n"
@@ -2529,8 +2039,7 @@ std::string test_data::bug_2732()
 std::string test_data::L_config()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "environmental constants:\n"
        << "    g: {value: 9.81, unit: m/s^2}\n"
        << "    rho: {value: 1026, unit: kg/m^3}\n"
@@ -2542,13 +2051,9 @@ std::string test_data::L_config()
        << "    mesh: L.stl\n"
        << position_relative_to_mesh(0.5, 0.8333333333, -0.8333333333, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-       << initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("L", 0, 0, 0.5)
-       << one_ton_rigid_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("cube", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("L", 0, 0, 0.5)
+       << one_ton_rigid_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: gravity\n";
     return ss.str();
 }
@@ -2556,8 +2061,7 @@ std::string test_data::L_config()
 std::string test_data::GM_cube()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "environmental constants:\n"
        << "    g: {value: 9.81, unit: m/s^2}\n"
        << "    rho: {value: 1000, unit: kg/m^3}\n"
@@ -2571,13 +2075,9 @@ std::string test_data::GM_cube()
        << "    mesh: cube.stl\n"
        << position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, 0, 0, 0, 0)
-       << initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("cube", 0, 0, 0)
-       << one_ton_rigid_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("cube", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("cube", 0, 0, 0)
+       << one_ton_rigid_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: GM\n"
        << "        name of hydrostatic force model: non-linear hydrostatic (exact)\n"
@@ -2588,10 +2088,8 @@ std::string test_data::GM_cube()
 std::string test_data::bug_2838()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -2601,14 +2099,11 @@ std::string test_data::bug_2838()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, -0.099, 10, -0.334, 0)
-       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0)
-       << dynamics()
+       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0) << dynamics()
        << "    external forces:\n"
        << "      - model: gravity\n"
        << "      - model: non-linear hydrostatic (fast)\n"
-       << linear_damping()
-       << quadratic_damping()
-       << "      - model: resistance curve\n"
+       << linear_damping() << quadratic_damping() << "      - model: resistance curve\n"
        << "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n"
        << "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n"
        << "      - model: maneuvering\n"
@@ -2694,10 +2189,8 @@ std::string test_data::bug_2838()
 std::string test_data::bug_2845()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -2707,8 +2200,7 @@ std::string test_data::bug_2845()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, -0.099, 10, -0.334, 0)
-       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0)
-       << dynamics()
+       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0) << dynamics()
        << "    external forces:\n"
        << "      - name: PropRudd\n"
        << "        model: propeller+rudder\n"
@@ -2771,10 +2263,8 @@ std::string test_data::bug_2845()
 std::string test_data::maneuvering_with_commands()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -2784,8 +2274,7 @@ std::string test_data::maneuvering_with_commands()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, -0.099, 10, -0.334, 0)
-       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0)
-       << dynamics()
+       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0) << dynamics()
        << "    external forces:\n"
        << "      - model: maneuvering\n"
        << "        name: F1\n"
@@ -2877,10 +2366,8 @@ std::string test_data::linear_hydrostatics()
 std::string test_data::test_ship_linear_hydrostatics_without_waves()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -2890,13 +2377,9 @@ std::string test_data::test_ship_linear_hydrostatics_without_waves()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("TestShip", 0.258, 0, 0.432)
+       << rigid_body_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: linear hydrostatics\n"
        << "        z eq: {value: -0.099, unit: m}\n"
        << "        theta eq: {value: 0, unit: deg}\n"
@@ -2910,19 +2393,15 @@ std::string test_data::test_ship_linear_hydrostatics_without_waves()
 std::string test_data::test_ship_linear_hydrostatics_with_waves()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: waves\n"
        << "    discretization:\n"
        << "       n: 128\n"
        << "       omega min: {value: 0.1, unit: rad/s}\n"
        << "       omega max: {value: 6, unit: rad/s}\n"
        << "       energy fraction: 0.999\n"
-       << airy_depth_100()
-       << stretching()
-       << "        directional spreading:\n"
+       << airy_depth_100() << stretching() << "        directional spreading:\n"
        << "           type: dirac\n"
        << "           waves propagating to: {value: 0, unit: deg}\n"
        << "        spectral density:\n"
@@ -2936,13 +2415,9 @@ std::string test_data::test_ship_linear_hydrostatics_with_waves()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("TestShip", 0.258, 0, 0.432)
+       << rigid_body_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: linear hydrostatics\n"
        << "        z eq: {value: -0.099, unit: m}\n"
        << "        theta eq: {value: 0, unit: deg}\n"
@@ -2956,21 +2431,16 @@ std::string test_data::test_ship_linear_hydrostatics_with_waves()
 std::string test_data::bug_2963_hs_fast()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "# Fixed frame: NED\n"
        << "bodies: # All bodies have NED as parent frame\n"
        << "  - name: TestShip\n"
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("TestShip", 0.258, 0, 0.432)
+       << rigid_body_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: non-linear hydrostatic (fast)\n";
     return ss.str();
 }
@@ -2978,21 +2448,16 @@ std::string test_data::bug_2963_hs_fast()
 std::string test_data::bug_2963_hs_exact()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "# Fixed frame: NED\n"
        << "bodies: # All bodies have NED as parent frame\n"
        << "  - name: TestShip\n"
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("TestShip", 0.258, 0, 0.432)
+       << rigid_body_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: non-linear hydrostatic (exact)\n";
     return ss.str();
 }
@@ -3000,21 +2465,16 @@ std::string test_data::bug_2963_hs_exact()
 std::string test_data::bug_2963_fk()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "# Fixed frame: NED\n"
        << "bodies: # All bodies have NED as parent frame\n"
        << "  - name: TestShip\n"
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("TestShip", 0.258, 0, 0.432)
+       << rigid_body_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: non-linear Froude-Krylov\n";
     return ss.str();
 }
@@ -3022,21 +2482,16 @@ std::string test_data::bug_2963_fk()
 std::string test_data::bug_2963_diff()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "# Fixed frame: NED\n"
        << "bodies: # All bodies have NED as parent frame\n"
        << "  - name: TestShip\n"
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("TestShip", 0.258, 0, 0.432)
+       << rigid_body_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: diffraction\n"
        << "        hdb: test_ship.hdb\n"
        << "        calculation point in body frame:\n"
@@ -3050,21 +2505,16 @@ std::string test_data::bug_2963_diff()
 std::string test_data::bug_2963_gm()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "# Fixed frame: NED\n"
        << "bodies: # All bodies have NED as parent frame\n"
        << "  - name: TestShip\n"
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 1, 0, 0, 0)
-       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("TestShip", 0.258, 0, 0.432)
-       << rigid_body_inertia_matrix()
-       << no_added_mass()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 1, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("TestShip", 0.258, 0, 0.432)
+       << rigid_body_inertia_matrix() << no_added_mass() << "    external forces:\n"
        << "      - model: GM\n"
        << "        name of hydrostatic force model: non-linear hydrostatic (fast)\n"
        << "        roll step: {value: 60, unit: degree}\n";
@@ -3084,7 +2534,7 @@ std::string test_data::man_with_delay()
        << "    theta: {value: 0, unit: deg}\n"
        << "    psi: {value: 0, unit: deg}\n"
        << "commands: [command1, b, a]\n"
-//       << "X: 1E6*(x(t-10) + command1*x(t-9) + 2*b*y(t-8) + z(t-7)/a)\n"
+       //       << "X: 1E6*(x(t-10) + command1*x(t-9) + 2*b*y(t-8) + z(t-7)/a)\n"
        << "X: 1E6*(x(t))\n"
        << "Y: 1E6*(x(t-10))\n"
        << "Z: 1E6*(command1*x(t))\n"
@@ -3127,9 +2577,9 @@ std::string test_data::complete_yaml_message_from_gui()
        << "\"qi\": 100, "
        << "\"qj\": 101, "
        << "\"qk\": 102}]" << std::endl
-       <<",\"commands\":" << std::endl
-       <<"  {\"RPM\": 1.2," << std::endl
-       <<"  \"B1\": 0.1}}";
+       << ",\"commands\":" << std::endl
+       << "  {\"RPM\": 1.2," << std::endl
+       << "  \"B1\": 0.1}}";
     return ss.str();
 }
 
@@ -3152,12 +2602,12 @@ std::string test_data::JSON_message_with_requested_output()
        << "\"qi\": 100, "
        << "\"qj\": 101, "
        << "\"qk\": 102}]" << std::endl
-       <<",\"commands\":" << std::endl
-       <<"  {\"RPM\": 1.2," << std::endl
-       <<"  \"B1\": 0.1}"
-       <<",\"requested_output\":" << std::endl
-       <<"  [\"Fx(force,body,NED)\","
-       <<"  \"By(body)\"]}";
+       << ",\"commands\":" << std::endl
+       << "  {\"RPM\": 1.2," << std::endl
+       << "  \"B1\": 0.1}"
+       << ",\"requested_output\":" << std::endl
+       << "  [\"Fx(force,body,NED)\","
+       << "  \"By(body)\"]}";
     return ss.str();
 }
 
@@ -3180,15 +2630,13 @@ std::string test_data::JSON_server_request_GM_cube_with_output()
        << "\"qi\": 0.0, "
        << "\"qj\": 0.0, "
        << "\"qk\": 0.0}]" << std::endl
-       <<",\"commands\": null," << std::endl
-       <<"\"requested_output\":" << std::endl
-       <<"  [\"GM(cube)\","
-       <<"  \"GZ(cube)\"]}";
+       << ",\"commands\": null," << std::endl
+       << "\"requested_output\":" << std::endl
+       << "  [\"GM(cube)\","
+       << "  \"GZ(cube)\"]}";
 
     return ss.str();
 }
-
-
 
 std::string test_data::simserver_message_without_Dt()
 {
@@ -3204,13 +2652,13 @@ std::string test_data::simserver_message_without_Dt()
        << "\"p\": 96, "
        << "\"q\": 97, "
        << "\"r\": 98, "
-      << "\"qr\": 99, "
-      << "\"qi\": 100, "
-      << "\"qj\": 101, "
-      << "\"qk\": 102}]" << std::endl
-      <<",\"commands\":" << std::endl
-      <<"  {\"RPM\": 1.2," << std::endl
-      <<"  \"B1\": 0.1}}";
+       << "\"qr\": 99, "
+       << "\"qi\": 100, "
+       << "\"qj\": 101, "
+       << "\"qk\": 102}]" << std::endl
+       << ",\"commands\":" << std::endl
+       << "  {\"RPM\": 1.2," << std::endl
+       << "  \"B1\": 0.1}}";
     return ss.str();
 }
 
@@ -3229,11 +2677,11 @@ std::string test_data::complete_yaml_message_for_falling_ball()
        << "\"p\": 0.0, "
        << "\"q\": 0.0, "
        << "\"r\": 0.0, "
-      << "\"qr\": 1.0, "
-      << "\"qi\": 0.0, "
-      << "\"qj\": 0.0, "
-      << "\"qk\": 0.0}]" << std::endl
-      <<",\"commands\": null}";
+       << "\"qr\": 1.0, "
+       << "\"qi\": 0.0, "
+       << "\"qj\": 0.0, "
+       << "\"qk\": 0.0}]" << std::endl
+       << ",\"commands\": null}";
 
     return ss.str();
 }
@@ -3253,11 +2701,11 @@ std::string test_data::invalid_json_for_cs()
        << "\"p\": 0.0, "
        << "\"q\": 0.0, "
        << "\"r\": 0.0, "
-      << "\"qr\": 1.0, "
-      << "\"qi\": 0.0, "
-      << "\"qj\": 0.0, "
-      << "\"qk\": 0.0}]" << std::endl
-      <<",\"commands\": null}";
+       << "\"qr\": 1.0, "
+       << "\"qi\": 0.0, "
+       << "\"qj\": 0.0, "
+       << "\"qk\": 0.0}]" << std::endl
+       << ",\"commands\": null}";
 
     return ss.str();
 }
@@ -3265,10 +2713,8 @@ std::string test_data::invalid_json_for_cs()
 std::string test_data::bug_3004()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -3278,8 +2724,7 @@ std::string test_data::bug_3004()
        << "    mesh: Ponton.stl\n"
        << position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, -2.167, 0, 0, 0)
-       << initial_velocity("Ponton", 0, 0, 0, 0, 0, 0)
-       << "    dynamics:\n"
+       << initial_velocity("Ponton", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
        << "        hydrodynamic forces calculation point in body frame:\n"
        << "            x: {value: 0, unit: m}\n"
        << "            y: {value: 0, unit: m}\n"
@@ -3314,10 +2759,8 @@ std::string test_data::bug_3004()
 std::string test_data::bug_3003()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: no waves\n"
        << "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
        << "    \n"
@@ -3326,8 +2769,7 @@ std::string test_data::bug_3003()
        << "  - name: TestShip\n"
        << position_relative_to_mesh(0, 0, 0, 0, 0, 0)
        << initial_position_of_body_frame_deg(0, 0, -0.099, 0, -0.334, 0)
-       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0)
-       << dynamics()
+       << initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0) << dynamics()
        << "    external forces:\n"
        << "      - model: maneuvering\n"
        << "        name: F1\n"
@@ -3350,8 +2792,7 @@ std::string test_data::bug_3003()
 std::string test_data::bug_2984()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
+    ss << rotation_convention() << "\n"
        << "environmental constants:\n"
        << "    g: {value: 9.81, unit: m/s^2}\n"
        << "    rho: {value: 1025, unit: kg/m^3}\n"
@@ -3365,8 +2806,7 @@ std::string test_data::bug_2984()
        << "  - name: ship\n"
        << position_relative_to_mesh(0, 0, 0, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-       << initial_velocity("ship", 0, 0, 0, 0, 0, 0)
-       << "    dynamics:\n"
+       << initial_velocity("ship", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
        << "        hydrodynamic forces calculation point in body frame:\n"
        << "            x: {value: 0, unit: m}\n"
        << "            y: {value: 0, unit: m}\n"
@@ -3417,10 +2857,8 @@ std::string test_data::bug_2984()
 std::string test_data::bug_3217()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: waves\n"
        << "    discretization:\n"
        << "       n: 1\n"
@@ -3447,9 +2885,7 @@ std::string test_data::bug_3217()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: diffraction\n"
        << "        hdb: v00_complet_FK_diffr.hdb\n"
        << "        calculation point in body frame:\n"
@@ -3491,10 +2927,8 @@ std::string test_data::bug_3217()
 std::string test_data::bug_3227()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << "\n"
-       << environmental_constants()
-       << "environment models:\n"
+    ss << rotation_convention() << "\n"
+       << environmental_constants() << "environment models:\n"
        << "  - model: waves\n"
        << "    discretization:\n"
        << "       n: 1\n"
@@ -3521,9 +2955,7 @@ std::string test_data::bug_3227()
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, -5, 0, -0.0058, 0)
-       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       << dynamics()
-       << "    external forces:\n"
+       << initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) << dynamics() << "    external forces:\n"
        << "      - model: diffraction\n"
        << "        hdb: v00_complet_FK_diffr.hdb\n"
        << "        calculation point in body frame:\n"
@@ -3586,108 +3018,60 @@ std::string test_data::constant_force()
 
 std::string test_data::tutorial_09_gRPC_wave_model()
 {
-    return rotation_convention()
-         + "\n"
-         + "environmental constants:\n"
-         + "    g: {value: 9.81, unit: m/s^2}\n"
-         + "    rho: {value: 1026, unit: kg/m^3}\n"
-         + "    nu: {value: 1.18e-6, unit: m^2/s}\n"
-         + "environment models:\n"
-         + "  - model: grpc\n"
-         + "    url: waves-server:50051\n"
-         + "    Hs: 1.5\n"
-         + "    Tp: 10\n"
-         + "    gamma: 1.2\n"
-         + "    waves propagating to: 180\n"
-         + "    omega: [0.448, 0.483, 0.523, 0.571, 0.628, 0.698, 0.785, 0.897, 1.047]\n"
-         + "bodies: # All bodies have NED as parent frame\n"
-         + "  - name: cube\n"
-         + "    mesh: cube.stl\n"
-         + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-         + initial_position_of_body_frame_deg(0, 0, 0.25, 0, 2, 0)
-         + initial_velocity("cube", 0, 0, 0, 0, 0, 0)
-         + "    dynamics:\n"
-         + hydrodynamic_calculation_point()
-         + centre_of_inertia("cube", 0, 0, 0.4)
-         + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-         + "            row 1: [83.33,0,0,0,0,0]\n"
-         + "            row 2: [0,83.33,0,0,0,0]\n"
-         + "            row 3: [0,0,83.33,0,0,0]\n"
-         + "            row 4: [0,0,0,83.33,0,0]\n"
-         + "            row 5: [0,0,0,0,83.33,0]\n"
-         + "            row 6: [0,0,0,0,0,83.33]\n"
-         + no_added_mass()
-         + "    external forces:\n"
-         + "      - model: gravity\n"
-         + "      - model: non-linear hydrostatic (fast)\n"
-         + "      - model: diffraction\n"
-         + "        hdb: test_ship.hdb\n"
-         + "        calculation point in body frame:\n"
-         + "            x: {value: 0.696, unit: m}\n"
-         + "            y: {value: 0, unit: m}\n"
-         + "            z: {value: 1.418, unit: m}\n"
-         + "        mirror for 180 to 360: true\n" + "\n";
+    return rotation_convention() + "\n" + "environmental constants:\n" +
+           "    g: {value: 9.81, unit: m/s^2}\n" + "    rho: {value: 1026, unit: kg/m^3}\n" +
+           "    nu: {value: 1.18e-6, unit: m^2/s}\n" + "environment models:\n" +
+           "  - model: grpc\n" + "    url: waves-server:50051\n" + "    Hs: 1.5\n" +
+           "    Tp: 10\n" + "    gamma: 1.2\n" + "    waves propagating to: 180\n" +
+           "    omega: [0.448, 0.483, 0.523, 0.571, 0.628, 0.698, 0.785, 0.897, 1.047]\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: cube\n" +
+           "    mesh: cube.stl\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame_deg(0, 0, 0.25, 0, 2, 0) +
+           initial_velocity("cube", 0, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("cube", 0, 0, 0.4) +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            row 1: [83.33,0,0,0,0,0]\n" + "            row 2: [0,83.33,0,0,0,0]\n" +
+           "            row 3: [0,0,83.33,0,0,0]\n" + "            row 4: [0,0,0,83.33,0,0]\n" +
+           "            row 5: [0,0,0,0,83.33,0]\n" + "            row 6: [0,0,0,0,0,83.33]\n" +
+           no_added_mass() + "    external forces:\n" + "      - model: gravity\n" +
+           "      - model: non-linear hydrostatic (fast)\n" + "      - model: diffraction\n" +
+           "        hdb: test_ship.hdb\n" + "        calculation point in body frame:\n" +
+           "            x: {value: 0.696, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 1.418, unit: m}\n" + "        mirror for 180 to 360: true\n" +
+           "\n";
 }
 
 std::string test_data::tutorial_10_gRPC_force_model()
 {
-    return rotation_convention()
-         + "\n"
-         + environmental_constants()
-         + "environment models:\n"
-         + "  - model: no waves\n"
-         + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-         + "    \n"
-         + "# Fixed frame: NED\n"
-         + "bodies: # All bodies have NED as parent frame\n"
-         + "  - name: TestShip\n"
-         + "    filtered states:\n"
-         + "      u:\n"
-         + "          type of filter: moving average\n"
-         + "          duration in seconds : 2.3\n"
-         + "      v:\n"
-         + "          type of filter: moving average\n"
-         + "          duration in seconds : 3\n"
-         + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-         + initial_position_of_body_frame(5, 0, 1, 0, 0, 0)
-         + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-         + dynamics()
-         + "    external forces:\n"
-         + "      - name: parametric oscillator\n"
-         + "        model: grpc\n"
-         + "        url: force-model:9002\n"
-         + "        k: 60\n"
-         + "        c: 1\n";
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    filtered states:\n" + "      u:\n" +
+           "          type of filter: moving average\n" + "          duration in seconds : 2.3\n" +
+           "      v:\n" + "          type of filter: moving average\n" +
+           "          duration in seconds : 3\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame(5, 0, 1, 0, 0, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - name: parametric oscillator\n" + "        model: grpc\n" +
+           "        url: force-model:9002\n" + "        k: 60\n" + "        c: 1\n";
 }
 
 std::string test_data::tutorial_14_filtered_states()
 {
-    return rotation_convention()
-         + "\n"
-         + environmental_constants()
-         + "environment models:\n"
-         + "  - model: no waves\n"
-         + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-         + "    \n"
-         + "# Fixed frame: NED\n"
-         + "bodies: # All bodies have NED as parent frame\n"
-         + "  - name: TestShip\n"
-         + "    filtered states:\n"
-         + "      z:\n"
-         + "          type of filter: moving average\n"
-         + "          duration in seconds : 5\n"
-         + position_relative_to_mesh(0, 0, 0, 0, 0, 0)
-         + initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-         + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-         + dynamics()
-         + "    external forces:\n"
-         + "      - model: grpc\n"
-         + "        name: filtered force model\n"
-         + "        url: force-model:9002\n"
-         +  "output:\n"
-         +  "   - format: csv\n"
-         +  "     filename: filtered_states.csv\n"
-         +  "     data: [t, 'x(TestShip)',  'x_filtered(TestShip)', 'z(TestShip)',  'z_filtered(TestShip)', 'xf(TestShip)', 'x_(TestShip)']\n";
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + "    filtered states:\n" + "      z:\n" +
+           "          type of filter: moving average\n" + "          duration in seconds : 5\n" +
+           position_relative_to_mesh(0, 0, 0, 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0, 0, 0, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - model: grpc\n" + "        name: filtered force model\n" +
+           "        url: force-model:9002\n" + "output:\n" + "   - format: csv\n" +
+           "     filename: filtered_states.csv\n" +
+           "     data: [t, 'x(TestShip)',  'x_filtered(TestShip)', 'z(TestShip)',  'z_filtered(TestShip)', 'xf(TestShip)', 'x_(TestShip)']\n";
 }
 
 std::string test_data::tutorial_10_gRPC_force_model_commands()
@@ -3725,404 +3109,210 @@ std::string test_data::gRPC_controller()
 
 std::string test_data::fmi()
 {
-    return rotation_convention()
-        +  environmental_constants()
-        +  environmental_models_no_waves_no_wind()
-        +  "# Fixed frame: NED\n"
-        +  "bodies: # All bodies have NED as parent frame\n"
-        +  "  - name: TestShip\n"
-        +  "    # mesh: test_ship.stl\n"
-        +  position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0)
-        +  initial_position_of_body_frame_deg(0, 0, -0.099, 0, -0.334, 0)
-        +  initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0)
-        +  "    dynamics:\n"
-        +  hydrodynamic_calculation_point()
-        +  centre_of_inertia("TestShip", 0.258, 0, 0.432)
-        +  "        mass: {value: 253.31, unit: tonne} # Caution: 'ton' is the british ton which is 907.185 kg\n"
-        +  "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-        +  "            frame: TestShip\n"
-        +  "            row 1: [253310,0,0,0,0,0]\n"
-        +  "            row 2: [0,253310,0,0,0,0]\n"
-        +  "            row 3: [0,0,253310,0,0,0]\n"
-        +  "            row 4: [0,0,0,1.522e6,0,0]\n"
-        +  "            row 5: [0,0,0,0,8.279e6,0]\n"
-        +  "            row 6: [0,0,0,0,0,7.676e6]\n"
-        +  "        added mass matrix at the center of gravity and projected in the body frame:\n"
-        +  "            frame: TestShip\n"
-        +  "            row 1: [3.519e4,0,0,0,0,0]\n"
-        +  "            row 2: [0,3.023e5,0,0,0,0]\n"
-        +  "            row 3: [0,0,1.980e5,0,0,0]\n"
-        +  "            row 4: [0,0,0,3.189e5,0,0]\n"
-        +  "            row 5: [0,0,0,0,8.866e6,0]\n"
-        +  "            row 6: [0,0,0,0,0,6.676e6]\n"
-        +  "    external forces:\n"
-        +  "      - model: gravity\n"
-        +  "      # - model: non-linear hydrostatic (fast)\n"
-        +  "      - model: linear hydrostatics\n"
-        +  "        z eq: {value: 0.0, unit: m}\n"
-        +  "        theta eq: {value: 0, unit: deg}\n"
-        +  "        phi eq: {value: 0, unit: deg}\n"
-        +  "        K row 1: [1e5, 0 , 0]\n"
-        +  "        K row 2: [0, 1e6 , 0]\n"
-        +  "        K row 3: [0, 0 , 1e6]\n"
-        +  "      - model: linear damping\n"
-        +  damping_matrix()
-        +  "      - model: quadratic damping\n"
-        +  "        damping matrix at the center of gravity projected in the body frame:\n"
-        +  "            row 1: [ 0, 0, 0,      0, 0, 0]\n"
-        +  "            row 2: [ 0, 0, 0,      0, 0, 0]\n"
-        +  "            row 3: [ 0, 0, 0,      0, 0, 0]\n"
-        +  "            row 4: [ 0, 0, 0, 1.45e6, 0, 0]\n"
-        +  "            row 5: [ 0, 0, 0,      0, 0, 0]\n"
-        +  "            row 6: [ 0, 0, 0,      0, 0, 0]\n"
-        +  "      - model: resistance curve\n"
-        +  "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n"
-        +  "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n"
-        +  "      - model: maneuvering\n"
-        +  "        name: F1\n"
-        +  "        reference frame:\n"
-        +  "            frame: TestShip\n"
-        +  "            x: {value: 0.696, unit: m}\n"
-        +  "            y: {value: 0, unit: m}\n"
-        +  "            z: {value: 1.418, unit: m}\n"
-        +  "            phi: {value: 1.418, unit: deg}\n"
-        +  "            theta: {value: 1.418, unit: deg}\n"
-        +  "            psi: {value: 1.418, unit: deg}\n"
-        +  "        X: 0.5*rho*Vs^2*L^2*X_\n"
-        +  "        Y: 0.5*rho*Vs^2*L^2*Y_\n"
-        +  "        Z: 0\n"
-        +  "        K: 0\n"
-        +  "        M: 0\n"
-        +  "        N: 0.5*rho*Vs^2*L^3*N_\n"
-        +  "        rho: 1025\n"
-        +  "        Vs: sqrt(u(t)^2+v(t)^2)\n"
-        +  "        L: 21.569\n"
-        +  "        X_: Xu*u_ + Xuu*u_^2 + Xuuu*u_^3 + Xvv*v_^2 + Xrr*r_^2 + Xvr*abs(v_)*abs(r_)\n"
-        +  "        Y_: Yv*v_ + Yvv*v_*abs(v_) + Yvvv*v_^3 + Yvrr*v_*r_^2 + Yr*r_ + Yrr*r_*abs(r_) + Yrrr*r_^3 + Yrvv*r_*v_^2\n"
-        +  "        N_: Nv*v_ + Nvv*v_*abs(v_) + Nvvv*v_^3 + Nvrr*v_*r_^2 + Nr*r_ + Nrr*r_*abs(r_) + Nrrr*r_^3 + Nrvv*r_*v_^2\n"
-        +  "        u_: u(t)/Vs\n"
-        +  "        v_: v(t)/Vs\n"
-        +  "        r_: r(t)/Vs*L\n"
-        +  "        Xu: 0\n"
-        +  "        Xuu: 0\n"
-        +  "        Xuuu: 0\n"
-        +  "        Xvv: -0.041\n"
-        +  "        Xrr: -0.01\n"
-        +  "        Xvr: -0.015\n"
-        +  "        Yv: -0.13\n"
-        +  "        Yvv: -0.18\n"
-        +  "        Yvvv: 0\n"
-        +  "        Yvrr: 0\n"
-        +  "        Yr: 0.015\n"
-        +  "        Yrr: 0.021\n"
-        +  "        Yrrr: 0\n"
-        +  "        Yrvv: 0\n"
-        +  "        Nv: -0.37\n"
-        +  "        Nvv: -0.12\n"
-        +  "        Nvvv: 0\n"
-        +  "        Nvrr: 0\n"
-        +  "        Nr: -0.1\n"
-        +  "        Nrr: 0.005\n"
-        +  "        Nrrr: 0\n"
-        +  "        Nrvv: 0\n"
-        +  "      - name: PropRudd\n"
-        +  "        model: propeller+rudder\n"
-        +  "        position of propeller frame:\n"
-        +  "            frame: TestShip\n"
-        +  "            x: {value: -8.4, unit: m}\n"
-        +  "            y: {value: 0, unit: m}\n"
-        +  "            z: {value: 2.5, unit: m}\n"
-        +  "            phi: {value: 0, unit: rad}\n"
-        +  "            theta: {value: 3, unit: deg}\n"
-        +  "            psi: {value: 0, unit: deg}\n"
-        +  "        wake coefficient w: 0\n"
-        +  "        relative rotative efficiency etaR: 1\n"
-        +  "        thrust deduction factor t: 0\n"
-        +  "        rotation: clockwise\n"
-        +  "        number of blades: 4\n"
-        +  "        blade area ratio AE/A0: 0.55\n"
-        +  "        diameter: {value: 1.925, unit: m}\n"
-        +  "        rudder area: {value: 2.2, unit: m^2}\n"
-        +  "        rudder height: {value: 2, unit: m^2}\n"
-        +  "        effective aspect ratio factor: 1.7\n"
-        +  "        lift tuning coefficient: 2.1\n"
-        +  "        drag tuning coefficient: 1\n"
-        +  "        position of rudder in body frame:\n"
-        +  "            x: {value: 0.258, unit: m}\n"
-        +  "            y: {value: 0, unit: m}\n"
-        +  "            z: {value: 0.432, unit: m}\n"
-        +  "\n"
-        +  "output:\n"
-        +  "   - format: map\n"
-        +  "     filename: efforts.h5\n"
-        +  "     data: [t,  'Mz(PropRudd,TestShip,TestShip)']\n";
+    return rotation_convention() + environmental_constants() +
+           environmental_models_no_waves_no_wind() + "# Fixed frame: NED\n" +
+           "bodies: # All bodies have NED as parent frame\n" + "  - name: TestShip\n" +
+           "    # mesh: test_ship.stl\n" + position_relative_to_mesh(9.355, 0, -3.21, 0, 0, 0) +
+           initial_position_of_body_frame_deg(0, 0, -0.099, 0, -0.334, 0) +
+           initial_velocity_kt("TestShip", 10, 0, 0, 0, 0, 0) + "    dynamics:\n" +
+           hydrodynamic_calculation_point() + centre_of_inertia("TestShip", 0.258, 0, 0.432) +
+           "        mass: {value: 253.31, unit: tonne} # Caution: 'ton' is the british ton which is 907.185 kg\n" +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "            frame: TestShip\n" + "            row 1: [253310,0,0,0,0,0]\n" +
+           "            row 2: [0,253310,0,0,0,0]\n" + "            row 3: [0,0,253310,0,0,0]\n" +
+           "            row 4: [0,0,0,1.522e6,0,0]\n" + "            row 5: [0,0,0,0,8.279e6,0]\n" +
+           "            row 6: [0,0,0,0,0,7.676e6]\n" +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "            frame: TestShip\n" + "            row 1: [3.519e4,0,0,0,0,0]\n" +
+           "            row 2: [0,3.023e5,0,0,0,0]\n" + "            row 3: [0,0,1.980e5,0,0,0]\n" +
+           "            row 4: [0,0,0,3.189e5,0,0]\n" + "            row 5: [0,0,0,0,8.866e6,0]\n" +
+           "            row 6: [0,0,0,0,0,6.676e6]\n" + "    external forces:\n" +
+           "      - model: gravity\n" + "      # - model: non-linear hydrostatic (fast)\n" +
+           "      - model: linear hydrostatics\n" + "        z eq: {value: 0.0, unit: m}\n" +
+           "        theta eq: {value: 0, unit: deg}\n" + "        phi eq: {value: 0, unit: deg}\n" +
+           "        K row 1: [1e5, 0 , 0]\n" + "        K row 2: [0, 1e6 , 0]\n" +
+           "        K row 3: [0, 0 , 1e6]\n" + "      - model: linear damping\n" +
+           damping_matrix() + "      - model: quadratic damping\n" +
+           "        damping matrix at the center of gravity projected in the body frame:\n" +
+           "            row 1: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 2: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 3: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 4: [ 0, 0, 0, 1.45e6, 0, 0]\n" +
+           "            row 5: [ 0, 0, 0,      0, 0, 0]\n" +
+           "            row 6: [ 0, 0, 0,      0, 0, 0]\n" + "      - model: resistance curve\n" +
+           "        speed: {unit: m/s, values: [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]}\n" +
+           "        resistance: {unit: N, values: [0.000E+00,2.102E+02,7.728E+02,1.647E+03,2.803E+03,4.230E+03,5.999E+03,8.498E+03,1.273E+04,2.084E+04,2.789E+04,4.238E+04,7.737E+04,1.449E+05,2.439E+05,3.590E+05,4.741E+05]}\n" +
+           "      - model: maneuvering\n" + "        name: F1\n" + "        reference frame:\n" +
+           "            frame: TestShip\n" + "            x: {value: 0.696, unit: m}\n" +
+           "            y: {value: 0, unit: m}\n" + "            z: {value: 1.418, unit: m}\n" +
+           "            phi: {value: 1.418, unit: deg}\n" +
+           "            theta: {value: 1.418, unit: deg}\n" +
+           "            psi: {value: 1.418, unit: deg}\n" + "        X: 0.5*rho*Vs^2*L^2*X_\n" +
+           "        Y: 0.5*rho*Vs^2*L^2*Y_\n" + "        Z: 0\n" + "        K: 0\n" +
+           "        M: 0\n" + "        N: 0.5*rho*Vs^2*L^3*N_\n" + "        rho: 1025\n" +
+           "        Vs: sqrt(u(t)^2+v(t)^2)\n" + "        L: 21.569\n" +
+           "        X_: Xu*u_ + Xuu*u_^2 + Xuuu*u_^3 + Xvv*v_^2 + Xrr*r_^2 + Xvr*abs(v_)*abs(r_)\n" +
+           "        Y_: Yv*v_ + Yvv*v_*abs(v_) + Yvvv*v_^3 + Yvrr*v_*r_^2 + Yr*r_ + Yrr*r_*abs(r_) + Yrrr*r_^3 + Yrvv*r_*v_^2\n" +
+           "        N_: Nv*v_ + Nvv*v_*abs(v_) + Nvvv*v_^3 + Nvrr*v_*r_^2 + Nr*r_ + Nrr*r_*abs(r_) + Nrrr*r_^3 + Nrvv*r_*v_^2\n" +
+           "        u_: u(t)/Vs\n" + "        v_: v(t)/Vs\n" + "        r_: r(t)/Vs*L\n" +
+           "        Xu: 0\n" + "        Xuu: 0\n" + "        Xuuu: 0\n" + "        Xvv: -0.041\n" +
+           "        Xrr: -0.01\n" + "        Xvr: -0.015\n" + "        Yv: -0.13\n" +
+           "        Yvv: -0.18\n" + "        Yvvv: 0\n" + "        Yvrr: 0\n" +
+           "        Yr: 0.015\n" + "        Yrr: 0.021\n" + "        Yrrr: 0\n" +
+           "        Yrvv: 0\n" + "        Nv: -0.37\n" + "        Nvv: -0.12\n" +
+           "        Nvvv: 0\n" + "        Nvrr: 0\n" + "        Nr: -0.1\n" +
+           "        Nrr: 0.005\n" + "        Nrrr: 0\n" + "        Nrvv: 0\n" +
+           "      - name: PropRudd\n" + "        model: propeller+rudder\n" +
+           "        position of propeller frame:\n" + "            frame: TestShip\n" +
+           "            x: {value: -8.4, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 2.5, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 3, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        wake coefficient w: 0\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0\n" + "        rotation: clockwise\n" +
+           "        number of blades: 4\n" + "        blade area ratio AE/A0: 0.55\n" +
+           "        diameter: {value: 1.925, unit: m}\n" +
+           "        rudder area: {value: 2.2, unit: m^2}\n" +
+           "        rudder height: {value: 2, unit: m^2}\n" +
+           "        effective aspect ratio factor: 1.7\n" +
+           "        lift tuning coefficient: 2.1\n" + "        drag tuning coefficient: 1\n" +
+           "        position of rudder in body frame:\n" +
+           "            x: {value: 0.258, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 0.432, unit: m}\n" + "\n" + "output:\n" + "   - format: map\n" +
+           "     filename: efforts.h5\n" + "     data: [t,  'Mz(PropRudd,TestShip,TestShip)']\n";
 }
 
 std::string test_data::tutorial_11_gRPC_controller()
 {
-    return heading_keeping_base()
-                + "setpoints:\n"
-                + "    - t: [0,250,250.0001,500]\n"
-                + "      psi_co: {unit: deg, values: [30,30,45,45]}\n"
-                + "controllers:\n"
-                + "    - type: grpc\n"
-                + "      name: portside controller\n"
-                + "      url: pid:9002\n"
-                + "      dt: 0.3\n"
-                + "      state weights:\n"
-                + "        psi: 1\n"
-                + "      setpoint: psi_co\n"
-                + "      command: PSPropRudd(beta)\n"
-                + "      gains:\n"
-                + "        Kp: -1\n"
-                + "        Ki: 0\n"
-                + "        Kd: -1\n"
-                + "    - type: PID\n"
-                + "      name: starboard controller\n"
-                + "      dt: 0.7\n"
-                + "      state weights:\n"
-                + "        psi: 1\n"
-                + "      setpoint: psi_co\n"
-                + "      command: SBPropRudd(beta)\n"
-                + "      gains:\n"
-                + "        Kp: -1\n"
-                + "        Ki: 0\n"
-                + "        Kd: -1\n"
-                "output:\n"
-                "  - format: csv\n"
-                "    filename: tutorial_11.csv\n"
-                "    data: [t, 'psi(dtmb)', 'PSPropRudd(beta)', 'SBPropRudd(beta)', 'Ten times current time']\n";
+    return heading_keeping_base() + "setpoints:\n" + "    - t: [0,250,250.0001,500]\n" +
+           "      psi_co: {unit: deg, values: [30,30,45,45]}\n" + "controllers:\n" +
+           "    - type: grpc\n" + "      name: portside controller\n" + "      url: pid:9002\n" +
+           "      dt: 0.3\n" + "      state weights:\n" + "        psi: 1\n" +
+           "      setpoint: psi_co\n" + "      command: PSPropRudd(beta)\n" + "      gains:\n" +
+           "        Kp: -1\n" + "        Ki: 0\n" + "        Kd: -1\n" + "    - type: PID\n" +
+           "      name: starboard controller\n" + "      dt: 0.7\n" + "      state weights:\n" +
+           "        psi: 1\n" + "      setpoint: psi_co\n" + "      command: SBPropRudd(beta)\n" +
+           "      gains:\n" + "        Kp: -1\n" + "        Ki: 0\n" +
+           "        Kd: -1\n"
+           "output:\n"
+           "  - format: csv\n"
+           "    filename: tutorial_11.csv\n"
+           "    data: [t, 'psi(dtmb)', 'PSPropRudd(beta)', 'SBPropRudd(beta)', 'Ten times current time']\n";
 }
 
 std::string test_data::tutorial_13_hdb_force_model()
 {
-    return rotation_convention()
-       + "\n"
-       + environmental_constants()
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "    \n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: TestShip\n"
-       + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0)
-       + initial_position_of_body_frame(5, 0, 1, 0, 0, 0)
-       + initial_velocity("TestShip", 0, 0, 0, 0, 0, 0)
-       + dynamics()
-       + "    external forces:\n"
-       + "      - model: grpc\n"
-       + "        name: hdb force model\n"
-       + "        url: force-model:9002\n"
-       + "        hdb: big.hdb\n"
-       + "output:\n"
-       + "   - format: csv\n"
-       + "     filename: hdb_output.csv\n"
-       + "     data:\n"
-       + "     - 'Ma(0,0)(TestShip)'\n"
-       + "     - 'Ma(0,2)(TestShip)'\n"
-       + "     - 'Ma(0,4)(TestShip)'\n"
-       + "     - 'Ma(1,1)(TestShip)'\n"
-       + "     - 'Ma(1,3)(TestShip)'\n"
-       + "     - 'Ma(1,5)(TestShip)'\n"
-       + "     - 'Ma(2,0)(TestShip)'\n"
-       + "     - 'Ma(2,2)(TestShip)'\n"
-       + "     - 'Ma(2,4)(TestShip)'\n"
-       + "     - 'Ma(3,1)(TestShip)'\n"
-       + "     - 'Ma(3,3)(TestShip)'\n"
-       + "     - 'Ma(3,5)(TestShip)'\n"
-       + "     - 'Ma(4,0)(TestShip)'\n"
-       + "     - 'Ma(4,2)(TestShip)'\n"
-       + "     - 'Ma(4,4)(TestShip)'\n"
-       + "     - 'Ma(5,1)(TestShip)'\n"
-       + "     - 'Ma(5,3)(TestShip)'\n"
-       + "     - 'Ma(5,5)(TestShip)'\n"
-       + "     - 'diffX(0,0)(TestShip)'\n"
-       + "     - 'diffX(0,1)(TestShip)'\n"
-       + "     - 'diffX(1,0)(TestShip)'\n"
-       + "     - 'diffX(1,1)(TestShip)'\n"
-       + "     - 'diffX(2,0)(TestShip)'\n"
-       + "     - 'diffX(2,1)(TestShip)'\n"
-       + "     - 'diffY(0,0)(TestShip)'\n"
-       + "     - 'diffY(0,1)(TestShip)'\n"
-       + "     - 'diffY(1,0)(TestShip)'\n"
-       + "     - 'diffY(1,1)(TestShip)'\n"
-       + "     - 'diffY(2,0)(TestShip)'\n"
-       + "     - 'diffY(2,1)(TestShip)'\n"
-       + "     - 'diffZ(0,0)(TestShip)'\n"
-       + "     - 'diffZ(0,1)(TestShip)'\n"
-       + "     - 'diffZ(1,0)(TestShip)'\n"
-       + "     - 'diffZ(1,1)(TestShip)'\n"
-       + "     - 'diffZ(2,0)(TestShip)'\n"
-       + "     - 'diffZ(2,1)(TestShip)'\n"
-       + "     - 'diffK(0,0)(TestShip)'\n"
-       + "     - 'diffK(0,1)(TestShip)'\n"
-       + "     - 'diffK(1,0)(TestShip)'\n"
-       + "     - 'diffK(1,1)(TestShip)'\n"
-       + "     - 'diffK(2,0)(TestShip)'\n"
-       + "     - 'diffK(2,1)(TestShip)'\n"
-       + "     - 'diffM(0,0)(TestShip)'\n"
-       + "     - 'diffM(0,1)(TestShip)'\n"
-       + "     - 'diffM(1,0)(TestShip)'\n"
-       + "     - 'diffM(1,1)(TestShip)'\n"
-       + "     - 'diffM(2,0)(TestShip)'\n"
-       + "     - 'diffM(2,1)(TestShip)'\n"
-       + "     - 'diffN(0,0)(TestShip)'\n"
-       + "     - 'diffN(0,1)(TestShip)'\n"
-       + "     - 'diffN(1,0)(TestShip)'\n"
-       + "     - 'diffN(1,1)(TestShip)'\n"
-       + "     - 'diffN(2,0)(TestShip)'\n"
-       + "     - 'diffN(2,1)(TestShip)'\n"
-       + "     - 'diffpX(0,0)(TestShip)'\n"
-       + "     - 'diffpX(0,1)(TestShip)'\n"
-       + "     - 'diffpX(1,0)(TestShip)'\n"
-       + "     - 'diffpX(1,1)(TestShip)'\n"
-       + "     - 'diffpX(2,0)(TestShip)'\n"
-       + "     - 'diffpX(2,1)(TestShip)'\n"
-       + "     - 'diffpY(0,0)(TestShip)'\n"
-       + "     - 'diffpY(0,1)(TestShip)'\n"
-       + "     - 'diffpY(1,0)(TestShip)'\n"
-       + "     - 'diffpY(1,1)(TestShip)'\n"
-       + "     - 'diffpY(2,0)(TestShip)'\n"
-       + "     - 'diffpY(2,1)(TestShip)'\n"
-       + "     - 'diffpZ(0,0)(TestShip)'\n"
-       + "     - 'diffpZ(0,1)(TestShip)'\n"
-       + "     - 'diffpZ(1,0)(TestShip)'\n"
-       + "     - 'diffpZ(1,1)(TestShip)'\n"
-       + "     - 'diffpZ(2,0)(TestShip)'\n"
-       + "     - 'diffpZ(2,1)(TestShip)'\n"
-       + "     - 'diffpK(0,0)(TestShip)'\n"
-       + "     - 'diffpK(0,1)(TestShip)'\n"
-       + "     - 'diffpK(1,0)(TestShip)'\n"
-       + "     - 'diffpK(1,1)(TestShip)'\n"
-       + "     - 'diffpK(2,0)(TestShip)'\n"
-       + "     - 'diffpK(2,1)(TestShip)'\n"
-       + "     - 'diffpM(0,0)(TestShip)'\n"
-       + "     - 'diffpM(0,1)(TestShip)'\n"
-       + "     - 'diffpM(1,0)(TestShip)'\n"
-       + "     - 'diffpM(1,1)(TestShip)'\n"
-       + "     - 'diffpM(2,0)(TestShip)'\n"
-       + "     - 'diffpM(2,1)(TestShip)'\n"
-       + "     - 'diffpN(0,0)(TestShip)'\n"
-       + "     - 'diffpN(0,1)(TestShip)'\n"
-       + "     - 'diffpN(1,0)(TestShip)'\n"
-       + "     - 'diffpN(1,1)(TestShip)'\n"
-       + "     - 'diffpN(2,0)(TestShip)'\n"
-       + "     - 'diffpN(2,1)(TestShip)'\n"
-       + "     - 'diffT0(TestShip)'\n"
-       + "     - 'diffT1(TestShip)'\n"
-       + "     - 'diffT2(TestShip)'\n"
-       + "     - 'diffTp0(TestShip)'\n"
-       + "     - 'diffTp1(TestShip)'\n"
-       + "     - 'diffTp2(TestShip)'\n"
-       + "     - 'diffpsi0(TestShip)'\n"
-       + "     - 'diffpsi1(TestShip)'\n"
-       + "     - 'diffppsi0(TestShip)'\n"
-       + "     - 'diffppsi1(TestShip)'\n"
-       + "     - 'FKFMX(0,0)(TestShip)'\n"
-       + "     - 'FKFMX(0,1)(TestShip)'\n"
-       + "     - 'FKFMX(1,0)(TestShip)'\n"
-       + "     - 'FKFMX(1,1)(TestShip)'\n"
-       + "     - 'FKFMX(2,0)(TestShip)'\n"
-       + "     - 'FKFMX(2,1)(TestShip)'\n"
-       + "     - 'FKFMY(0,0)(TestShip)'\n"
-       + "     - 'FKFMY(0,1)(TestShip)'\n"
-       + "     - 'FKFMY(1,0)(TestShip)'\n"
-       + "     - 'FKFMY(1,1)(TestShip)'\n"
-       + "     - 'FKFMY(2,0)(TestShip)'\n"
-       + "     - 'FKFMY(2,1)(TestShip)'\n"
-       + "     - 'FKFMZ(0,0)(TestShip)'\n"
-       + "     - 'FKFMZ(0,1)(TestShip)'\n"
-       + "     - 'FKFMZ(1,0)(TestShip)'\n"
-       + "     - 'FKFMZ(1,1)(TestShip)'\n"
-       + "     - 'FKFMZ(2,0)(TestShip)'\n"
-       + "     - 'FKFMZ(2,1)(TestShip)'\n"
-       + "     - 'FKFMK(0,0)(TestShip)'\n"
-       + "     - 'FKFMK(0,1)(TestShip)'\n"
-       + "     - 'FKFMK(1,0)(TestShip)'\n"
-       + "     - 'FKFMK(1,1)(TestShip)'\n"
-       + "     - 'FKFMK(2,0)(TestShip)'\n"
-       + "     - 'FKFMK(2,1)(TestShip)'\n"
-       + "     - 'FKFMM(0,0)(TestShip)'\n"
-       + "     - 'FKFMM(0,1)(TestShip)'\n"
-       + "     - 'FKFMM(1,0)(TestShip)'\n"
-       + "     - 'FKFMM(1,1)(TestShip)'\n"
-       + "     - 'FKFMM(2,0)(TestShip)'\n"
-       + "     - 'FKFMM(2,1)(TestShip)'\n"
-       + "     - 'FKFMN(0,0)(TestShip)'\n"
-       + "     - 'FKFMN(0,1)(TestShip)'\n"
-       + "     - 'FKFMN(1,0)(TestShip)'\n"
-       + "     - 'FKFMN(1,1)(TestShip)'\n"
-       + "     - 'FKFMN(2,0)(TestShip)'\n"
-       + "     - 'FKFMN(2,1)(TestShip)'\n"
-       + "     - 'FKFMpX(0,0)(TestShip)'\n"
-       + "     - 'FKFMpY(0,0)(TestShip)'\n"
-       + "     - 'FKFMpZ(0,0)(TestShip)'\n"
-       + "     - 'FKFMpK(0,0)(TestShip)'\n"
-       + "     - 'FKFMpM(0,0)(TestShip)'\n"
-       + "     - 'FKFMpN(0,0)(TestShip)'\n"
-       + "     - 'FKFMpX(1,0)(TestShip)'\n"
-       + "     - 'FKFMpY(1,0)(TestShip)'\n"
-       + "     - 'FKFMpZ(1,0)(TestShip)'\n"
-       + "     - 'FKFMpK(1,0)(TestShip)'\n"
-       + "     - 'FKFMpM(1,0)(TestShip)'\n"
-       + "     - 'FKFMpN(1,0)(TestShip)'\n"
-       + "     - 'FKT0(TestShip)'\n"
-       + "     - 'FKT1(TestShip)'\n"
-       + "     - 'FKT2(TestShip)'\n"
-       + "     - 'FKTp0(TestShip)'\n"
-       + "     - 'FKTp1(TestShip)'\n"
-       + "     - 'FKTp2(TestShip)'\n"
-       + "     - 'FKTp6(TestShip)'\n"
-       + "     - 'FKpsi0(TestShip)'\n"
-       + "     - 'FKpsi1(TestShip)'\n"
-       + "     - 'FKppsi0(TestShip)'\n"
-       + "     - 'FKppsi1(TestShip)'\n"
-       + "     - 'omega0(TestShip)'\n"
-       + "     - 'omega1(TestShip)'\n"
-       + "     - 'omega2(TestShip)'\n"
-       + "     - 'forwardSpeed(TestShip)'\n"
-       + "     - 'Ma000(TestShip)'\n"
-       + "     - 'Ma001(TestShip)'\n"
-       + "     - 'Ma002(TestShip)'\n"
-       + "     - 'Ma110(TestShip)'\n"
-       + "     - 'Ma111(TestShip)'\n"
-       + "     - 'Ma112(TestShip)'\n"
-       + "     - 'Ma220(TestShip)'\n"
-       + "     - 'Ma221(TestShip)'\n"
-       + "     - 'Ma222(TestShip)'\n"
-       + "     - 'Ma330(TestShip)'\n"
-       + "     - 'Ma331(TestShip)'\n"
-       + "     - 'Ma332(TestShip)'\n"
-       + "     - 'Ma440(TestShip)'\n"
-       + "     - 'Ma441(TestShip)'\n"
-       + "     - 'Ma442(TestShip)'\n"
-       + "     - 'Ma550(TestShip)'\n"
-       + "     - 'Ma551(TestShip)'\n"
-       + "     - 'Ma552(TestShip)'\n"
-       + "     - 'Br_0_0_0(TestShip)'\n"
-       + "     - 'Br_0_0_6(TestShip)'\n"
-       + "     - 'Br_5_0_0(TestShip)'\n"
-       + "     - 'Br_5_0_6(TestShip)'\n"
-       + "     - 'Br_0_5_0(TestShip)'\n"
-       + "     - 'Br_0_5_6(TestShip)'\n"
-       + "     - 'Br_5_5_0(TestShip)'\n"
-       + "     - 'Br_5_5_6(TestShip)'\n"
-       + "     - 'driftX(0,0)(TestShip)'\n"
-       + "     - 'driftX(1,0)(TestShip)'\n"
-       + "     - 'driftX(0,1)(TestShip)'\n"
-       + "     - 'driftY(0,0)(TestShip)'\n"
-       + "     - 'driftY(1,0)(TestShip)'\n"
-       + "     - 'driftY(0,1)(TestShip)'\n"
-       + "     - 'driftM(0,0)(TestShip)'\n"
-       + "     - 'driftM(1,0)(TestShip)'\n"
-       + "     - 'driftM(0,1)(TestShip)'\n"
-       + "     - 'driftTp(0)(TestShip)'\n"
-       + "     - 'driftTp(1)(TestShip)'\n"
-       + "     - 'driftTp(2)(TestShip)'\n"
-       + "     - 'driftPsi(0)(TestShip)'\n"
-       + "     - 'driftPsi(1)(TestShip)'\n"
-       ;
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: TestShip\n" + position_relative_to_mesh(0, 0, 0.5, 0, 0, 0) +
+           initial_position_of_body_frame(5, 0, 1, 0, 0, 0) +
+           initial_velocity("TestShip", 0, 0, 0, 0, 0, 0) + dynamics() + "    external forces:\n" +
+           "      - model: grpc\n" + "        name: hdb force model\n" +
+           "        url: force-model:9002\n" + "        hdb: big.hdb\n" + "output:\n" +
+           "   - format: csv\n" + "     filename: hdb_output.csv\n" + "     data:\n" +
+           "     - 'Ma(0,0)(TestShip)'\n" + "     - 'Ma(0,2)(TestShip)'\n" +
+           "     - 'Ma(0,4)(TestShip)'\n" + "     - 'Ma(1,1)(TestShip)'\n" +
+           "     - 'Ma(1,3)(TestShip)'\n" + "     - 'Ma(1,5)(TestShip)'\n" +
+           "     - 'Ma(2,0)(TestShip)'\n" + "     - 'Ma(2,2)(TestShip)'\n" +
+           "     - 'Ma(2,4)(TestShip)'\n" + "     - 'Ma(3,1)(TestShip)'\n" +
+           "     - 'Ma(3,3)(TestShip)'\n" + "     - 'Ma(3,5)(TestShip)'\n" +
+           "     - 'Ma(4,0)(TestShip)'\n" + "     - 'Ma(4,2)(TestShip)'\n" +
+           "     - 'Ma(4,4)(TestShip)'\n" + "     - 'Ma(5,1)(TestShip)'\n" +
+           "     - 'Ma(5,3)(TestShip)'\n" + "     - 'Ma(5,5)(TestShip)'\n" +
+           "     - 'diffX(0,0)(TestShip)'\n" + "     - 'diffX(0,1)(TestShip)'\n" +
+           "     - 'diffX(1,0)(TestShip)'\n" + "     - 'diffX(1,1)(TestShip)'\n" +
+           "     - 'diffX(2,0)(TestShip)'\n" + "     - 'diffX(2,1)(TestShip)'\n" +
+           "     - 'diffY(0,0)(TestShip)'\n" + "     - 'diffY(0,1)(TestShip)'\n" +
+           "     - 'diffY(1,0)(TestShip)'\n" + "     - 'diffY(1,1)(TestShip)'\n" +
+           "     - 'diffY(2,0)(TestShip)'\n" + "     - 'diffY(2,1)(TestShip)'\n" +
+           "     - 'diffZ(0,0)(TestShip)'\n" + "     - 'diffZ(0,1)(TestShip)'\n" +
+           "     - 'diffZ(1,0)(TestShip)'\n" + "     - 'diffZ(1,1)(TestShip)'\n" +
+           "     - 'diffZ(2,0)(TestShip)'\n" + "     - 'diffZ(2,1)(TestShip)'\n" +
+           "     - 'diffK(0,0)(TestShip)'\n" + "     - 'diffK(0,1)(TestShip)'\n" +
+           "     - 'diffK(1,0)(TestShip)'\n" + "     - 'diffK(1,1)(TestShip)'\n" +
+           "     - 'diffK(2,0)(TestShip)'\n" + "     - 'diffK(2,1)(TestShip)'\n" +
+           "     - 'diffM(0,0)(TestShip)'\n" + "     - 'diffM(0,1)(TestShip)'\n" +
+           "     - 'diffM(1,0)(TestShip)'\n" + "     - 'diffM(1,1)(TestShip)'\n" +
+           "     - 'diffM(2,0)(TestShip)'\n" + "     - 'diffM(2,1)(TestShip)'\n" +
+           "     - 'diffN(0,0)(TestShip)'\n" + "     - 'diffN(0,1)(TestShip)'\n" +
+           "     - 'diffN(1,0)(TestShip)'\n" + "     - 'diffN(1,1)(TestShip)'\n" +
+           "     - 'diffN(2,0)(TestShip)'\n" + "     - 'diffN(2,1)(TestShip)'\n" +
+           "     - 'diffpX(0,0)(TestShip)'\n" + "     - 'diffpX(0,1)(TestShip)'\n" +
+           "     - 'diffpX(1,0)(TestShip)'\n" + "     - 'diffpX(1,1)(TestShip)'\n" +
+           "     - 'diffpX(2,0)(TestShip)'\n" + "     - 'diffpX(2,1)(TestShip)'\n" +
+           "     - 'diffpY(0,0)(TestShip)'\n" + "     - 'diffpY(0,1)(TestShip)'\n" +
+           "     - 'diffpY(1,0)(TestShip)'\n" + "     - 'diffpY(1,1)(TestShip)'\n" +
+           "     - 'diffpY(2,0)(TestShip)'\n" + "     - 'diffpY(2,1)(TestShip)'\n" +
+           "     - 'diffpZ(0,0)(TestShip)'\n" + "     - 'diffpZ(0,1)(TestShip)'\n" +
+           "     - 'diffpZ(1,0)(TestShip)'\n" + "     - 'diffpZ(1,1)(TestShip)'\n" +
+           "     - 'diffpZ(2,0)(TestShip)'\n" + "     - 'diffpZ(2,1)(TestShip)'\n" +
+           "     - 'diffpK(0,0)(TestShip)'\n" + "     - 'diffpK(0,1)(TestShip)'\n" +
+           "     - 'diffpK(1,0)(TestShip)'\n" + "     - 'diffpK(1,1)(TestShip)'\n" +
+           "     - 'diffpK(2,0)(TestShip)'\n" + "     - 'diffpK(2,1)(TestShip)'\n" +
+           "     - 'diffpM(0,0)(TestShip)'\n" + "     - 'diffpM(0,1)(TestShip)'\n" +
+           "     - 'diffpM(1,0)(TestShip)'\n" + "     - 'diffpM(1,1)(TestShip)'\n" +
+           "     - 'diffpM(2,0)(TestShip)'\n" + "     - 'diffpM(2,1)(TestShip)'\n" +
+           "     - 'diffpN(0,0)(TestShip)'\n" + "     - 'diffpN(0,1)(TestShip)'\n" +
+           "     - 'diffpN(1,0)(TestShip)'\n" + "     - 'diffpN(1,1)(TestShip)'\n" +
+           "     - 'diffpN(2,0)(TestShip)'\n" + "     - 'diffpN(2,1)(TestShip)'\n" +
+           "     - 'diffT0(TestShip)'\n" + "     - 'diffT1(TestShip)'\n" +
+           "     - 'diffT2(TestShip)'\n" + "     - 'diffTp0(TestShip)'\n" +
+           "     - 'diffTp1(TestShip)'\n" + "     - 'diffTp2(TestShip)'\n" +
+           "     - 'diffpsi0(TestShip)'\n" + "     - 'diffpsi1(TestShip)'\n" +
+           "     - 'diffppsi0(TestShip)'\n" + "     - 'diffppsi1(TestShip)'\n" +
+           "     - 'FKFMX(0,0)(TestShip)'\n" + "     - 'FKFMX(0,1)(TestShip)'\n" +
+           "     - 'FKFMX(1,0)(TestShip)'\n" + "     - 'FKFMX(1,1)(TestShip)'\n" +
+           "     - 'FKFMX(2,0)(TestShip)'\n" + "     - 'FKFMX(2,1)(TestShip)'\n" +
+           "     - 'FKFMY(0,0)(TestShip)'\n" + "     - 'FKFMY(0,1)(TestShip)'\n" +
+           "     - 'FKFMY(1,0)(TestShip)'\n" + "     - 'FKFMY(1,1)(TestShip)'\n" +
+           "     - 'FKFMY(2,0)(TestShip)'\n" + "     - 'FKFMY(2,1)(TestShip)'\n" +
+           "     - 'FKFMZ(0,0)(TestShip)'\n" + "     - 'FKFMZ(0,1)(TestShip)'\n" +
+           "     - 'FKFMZ(1,0)(TestShip)'\n" + "     - 'FKFMZ(1,1)(TestShip)'\n" +
+           "     - 'FKFMZ(2,0)(TestShip)'\n" + "     - 'FKFMZ(2,1)(TestShip)'\n" +
+           "     - 'FKFMK(0,0)(TestShip)'\n" + "     - 'FKFMK(0,1)(TestShip)'\n" +
+           "     - 'FKFMK(1,0)(TestShip)'\n" + "     - 'FKFMK(1,1)(TestShip)'\n" +
+           "     - 'FKFMK(2,0)(TestShip)'\n" + "     - 'FKFMK(2,1)(TestShip)'\n" +
+           "     - 'FKFMM(0,0)(TestShip)'\n" + "     - 'FKFMM(0,1)(TestShip)'\n" +
+           "     - 'FKFMM(1,0)(TestShip)'\n" + "     - 'FKFMM(1,1)(TestShip)'\n" +
+           "     - 'FKFMM(2,0)(TestShip)'\n" + "     - 'FKFMM(2,1)(TestShip)'\n" +
+           "     - 'FKFMN(0,0)(TestShip)'\n" + "     - 'FKFMN(0,1)(TestShip)'\n" +
+           "     - 'FKFMN(1,0)(TestShip)'\n" + "     - 'FKFMN(1,1)(TestShip)'\n" +
+           "     - 'FKFMN(2,0)(TestShip)'\n" + "     - 'FKFMN(2,1)(TestShip)'\n" +
+           "     - 'FKFMpX(0,0)(TestShip)'\n" + "     - 'FKFMpY(0,0)(TestShip)'\n" +
+           "     - 'FKFMpZ(0,0)(TestShip)'\n" + "     - 'FKFMpK(0,0)(TestShip)'\n" +
+           "     - 'FKFMpM(0,0)(TestShip)'\n" + "     - 'FKFMpN(0,0)(TestShip)'\n" +
+           "     - 'FKFMpX(1,0)(TestShip)'\n" + "     - 'FKFMpY(1,0)(TestShip)'\n" +
+           "     - 'FKFMpZ(1,0)(TestShip)'\n" + "     - 'FKFMpK(1,0)(TestShip)'\n" +
+           "     - 'FKFMpM(1,0)(TestShip)'\n" + "     - 'FKFMpN(1,0)(TestShip)'\n" +
+           "     - 'FKT0(TestShip)'\n" + "     - 'FKT1(TestShip)'\n" + "     - 'FKT2(TestShip)'\n" +
+           "     - 'FKTp0(TestShip)'\n" + "     - 'FKTp1(TestShip)'\n" +
+           "     - 'FKTp2(TestShip)'\n" + "     - 'FKTp6(TestShip)'\n" +
+           "     - 'FKpsi0(TestShip)'\n" + "     - 'FKpsi1(TestShip)'\n" +
+           "     - 'FKppsi0(TestShip)'\n" + "     - 'FKppsi1(TestShip)'\n" +
+           "     - 'omega0(TestShip)'\n" + "     - 'omega1(TestShip)'\n" +
+           "     - 'omega2(TestShip)'\n" + "     - 'forwardSpeed(TestShip)'\n" +
+           "     - 'Ma000(TestShip)'\n" + "     - 'Ma001(TestShip)'\n" +
+           "     - 'Ma002(TestShip)'\n" + "     - 'Ma110(TestShip)'\n" +
+           "     - 'Ma111(TestShip)'\n" + "     - 'Ma112(TestShip)'\n" +
+           "     - 'Ma220(TestShip)'\n" + "     - 'Ma221(TestShip)'\n" +
+           "     - 'Ma222(TestShip)'\n" + "     - 'Ma330(TestShip)'\n" +
+           "     - 'Ma331(TestShip)'\n" + "     - 'Ma332(TestShip)'\n" +
+           "     - 'Ma440(TestShip)'\n" + "     - 'Ma441(TestShip)'\n" +
+           "     - 'Ma442(TestShip)'\n" + "     - 'Ma550(TestShip)'\n" +
+           "     - 'Ma551(TestShip)'\n" + "     - 'Ma552(TestShip)'\n" +
+           "     - 'Br_0_0_0(TestShip)'\n" + "     - 'Br_0_0_6(TestShip)'\n" +
+           "     - 'Br_5_0_0(TestShip)'\n" + "     - 'Br_5_0_6(TestShip)'\n" +
+           "     - 'Br_0_5_0(TestShip)'\n" + "     - 'Br_0_5_6(TestShip)'\n" +
+           "     - 'Br_5_5_0(TestShip)'\n" + "     - 'Br_5_5_6(TestShip)'\n" +
+           "     - 'driftX(0,0)(TestShip)'\n" + "     - 'driftX(1,0)(TestShip)'\n" +
+           "     - 'driftX(0,1)(TestShip)'\n" + "     - 'driftY(0,0)(TestShip)'\n" +
+           "     - 'driftY(1,0)(TestShip)'\n" + "     - 'driftY(0,1)(TestShip)'\n" +
+           "     - 'driftM(0,0)(TestShip)'\n" + "     - 'driftM(1,0)(TestShip)'\n" +
+           "     - 'driftM(0,1)(TestShip)'\n" + "     - 'driftTp(0)(TestShip)'\n" +
+           "     - 'driftTp(1)(TestShip)'\n" + "     - 'driftTp(2)(TestShip)'\n" +
+           "     - 'driftPsi(0)(TestShip)'\n" + "     - 'driftPsi(1)(TestShip)'\n";
 }
 
 std::string test_data::tutorial_13_precal_r_force_model()
@@ -4137,19 +3327,15 @@ std::string test_data::tutorial_13_precal_r_force_model()
 std::string test_data::added_mass_from_precal_file()
 {
     std::stringstream ss;
-    ss << rotation_convention()
-       << environmental_constants()
-       << environmental_models_no_waves_no_wind()
-       << "# Fixed frame: NED\n"
+    ss << rotation_convention() << environmental_constants()
+       << environmental_models_no_waves_no_wind() << "# Fixed frame: NED\n"
        << "bodies: # All bodies have NED as parent frame\n"
        << "  - name: body 1\n"
        << "    mesh: test_ship.stl\n"
        << position_relative_to_mesh(10, 0, 0, 0, 0, 0)
        << initial_position_of_body_frame(0, 0, 0, 0, 0, 0)
-       << initial_velocity("body", 0, 0, 0, 0, 0, 0)
-       << "    dynamics:\n"
-       << hydrodynamic_calculation_point()
-       << centre_of_inertia("body 1", 0, 0, 0)
+       << initial_velocity("body", 0, 0, 0, 0, 0, 0) << "    dynamics:\n"
+       << hydrodynamic_calculation_point() << centre_of_inertia("body 1", 0, 0, 0)
        << "        centre of inertia:\n"
        << "            frame: body 1\n"
        << "            x: {value: 0, unit: m}\n"
@@ -4167,247 +3353,166 @@ std::string test_data::added_mass_from_precal_file()
 
 std::string test_data::kvlcc2()
 {
-    return rotation_convention()
-       + "\n"
-       + environmental_constants()
-       + "environment models:\n"
-       + "  - model: no waves\n"
-       + "    constant sea elevation in NED frame: {value: 0, unit: m}\n"
-       + "    \n"
-       + "commands:\n"
-       + "  - name: propellerAndRudder\n"
-       + "    t: [0, 10]\n"
-       + "    P/D: {unit: none, values: [0.721, 0.721]}\n"
-       + "    rpm: {unit: rpm, values: [99, 99]}\n"
-       + "    beta: {unit: none, values: [0, 0]}\n"
-       + "# Fixed frame: NED\n"
-       + "bodies: # All bodies have NED as parent frame\n"
-       + "  - name: ship\n"
-       + "  \n"
-       + position_relative_to_mesh(0, 0, 0., 0, 0, 0)
-       + initial_position_of_body_frame(0, 0, 0, 0, 0, 15.)
-       + initial_velocity("ship", 7.72740661, -2.07055236, 0, 0, 0, 0)
-       + "    dynamics:\n"
-       + "        hydrodynamic forces calculation point in body frame:\n"
-       + "          x: {value: 0, unit: m}\n"
-       + "          y: {value: 0, unit: m}\n"
-       + "          z: {value: 0, unit: m}\n"
-       + "        centre of inertia:\n"
-       + "          frame: ship\n"
-       + "          x: {value: 0, unit: m}\n"
-       + "          y: {value: 0, unit: m}\n"
-       + "          z: {value: 2.2, unit: m}\n"
-       + "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n"
-       + "          row 1: [3.101981e+08,0.000000e+00,0.000000e+00,0.000000e+00,0.000000e+00,0.000000e+00]\n"
-       + "          row 2: [0.000000e+00,3.101981e+08,0.000000e+00,0.000000e+00,0.000000e+00,0.000000e+00]\n"
-       + "          row 3: [0.000000e+00,0.000000e+00,3.101981e+08,0.000000e+00,0.000000e+00,0.000000e+00]\n"
-       + "          row 4: [0.000000e+00,0.000000e+00,0.000000e+00,2.087872e+11,1.201552e+09,2.187367e+10]\n"
-       + "          row 5: [0.000000e+00,0.000000e+00,0.000000e+00,1.201552e+09,2.421491e+12,5.394442e+08]\n"
-       + "          row 6: [0.000000e+00,0.000000e+00,0.000000e+00,2.187367e+10,5.394442e+08,2.464725e+12]\n"
-       + "        added mass matrix at the center of gravity and projected in the body frame:\n"
-       + "          from hdb: KVLCC2.hdb\n"
-       + "    external forces:\n"
-       + "      - model: gravity\n"
-       + "      - model: non-linear hydrostatic (fast)\n"
-       + "      - model: non-linear Froude-Krylov\n"
-       + "      - model: Holtrop & Mennen\n"
-       + "        Lwl: {value: 325.5,unit: m}\n"
-       + "        Lpp: {value: 320,unit: m}\n"
-       + "        B: {value: 58,unit: m}\n"
-       + "        Ta: {value: 20.8,unit: m}\n"
-       + "        Tf: {value: 20.8,unit: m}\n"
-       + "        Vol: {value: 312622,unit: m^3}\n"
-       + "        lcb: 3.48\n"
-       + "        S: {value: 27194,unit: m^2}\n"
-       + "        Abt: {value: 25,unit: m^2}\n"
-       + "        hb: {value: 2.5,unit: m}\n"
-       + "        Cm: 0.998\n"
-       + "        Cwp: 0.83\n"
-       + "        At: {value: 0,unit: m^2}\n"
-       + "        Sapp: {value: 273.3,unit: m^2}\n"
-       + "        Cstern: 0\n"
-       + "        1+k2: 2\n"
-       + "        apply on ship speed direction: false\n"
-       + "      - model: radiation damping\n"
-       + "        hdb: KVLCC2.hdb\n"
-       + "        type of quadrature for cos transform: simpson\n"
-       + "        type of quadrature for convolution: simpson\n"
-       + "        nb of points for retardation function discretization: 100\n"
-       + "        omega min: {value: 0.01, unit: rad/s}\n"
-       + "        omega max: {value: 8, unit: rad/s}\n"
-       + "        tau min: {value: 0, unit: s}\n"
-       + "        tau max: {value: 80, unit: s}\n"
-       + "        forward speed correction: true\n"
-       + "        suppress constant part: true\n"
-       + "        output Br and K: false\n"
-       + "        calculation point in body frame:\n"
-       + "            x: {value: 0, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: 0, unit: m}\n"
-       + "      - model: diffraction\n"
-       + "        hdb: KVLCC2.hdb\n"
-       + "        calculation point in body frame:\n"
-       + "            x: {value: 0, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: 0, unit: m}\n"
-       + "        mirror for 180 to 360: true\n"
-       + "      - model: MMG maneuvering\n"
-       + "        calculation point in body frame:\n"
-       + "            x: {value: -11.1, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: 0, unit: m}\n"
-       + "        Lpp: {value: 320, unit: m}\n"
-       + "        T: {value: 20.8, unit: m}\n"
-       + "        Xvv: -0.04\n"
-       + "        Xrr: 0.011\n"
-       + "        Xvr: 0.002\n"
-       + "        Xvvvv: 0.771\n"
-       + "        Yv: -0.315\n"
-       + "        Yr: 0.083\n"
-       + "        Yvvv: -1.607\n"
-       + "        Yrvv: 0.379\n"
-       + "        Yvrr: -0.391\n"
-       + "        Yrrr: 0.008\n"
-       + "        Nv: -0.137\n"
-       + "        Nr: -0.049\n"
-       + "        Nvvv: -0.03\n"
-       + "        Nrvv: -0.294\n"
-       + "        Nvrr: 0.055\n"
-       + "        Nrrr: -0.013\n"
-       + "      - name: propellerAndRudder\n"
-       + "        model: propeller+rudder\n"
-       + "        position of propeller frame:\n"
-       + "            frame: mesh(ship)\n"
-       + "            x: {value: -163.82, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: 15, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: 0, unit: deg}\n"
-       + "            psi: {value: 0, unit: deg}\n"
-       + "        wake coefficient w: 0.576\n"
-       + "        relative rotative efficiency etaR: 1\n"
-       + "        thrust deduction factor t: 0.7\n"
-       + "        rotation: clockwise\n"
-       + "        number of blades: 5\n"
-       + "        blade area ratio AE/A0: 0.431\n"
-       + "        diameter: {value: 9.326, unit: m}\n"
-       + "        rudder area: {value: 136.7, unit: m^2} #{value: 273.3, unit: m^2}\n"
-       + "        rudder height: {value: 15.8, unit: m^2}\n"
-       + "        effective aspect ratio factor: 1.7\n"
-       + "        lift tuning coefficient: 2.1\n"
-       + "        drag tuning coefficient: 1\n"
-       + "        position of rudder in body frame:\n"
-       + "            x: {value: -170, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: 10, unit: m}\n"
-       + "      - name : sail_1\n"
-       + "        model : aerodynamic polar\n"
-       + "        calculation point in body frame:\n"
-       + "            x: {value: 0, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: -21, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: 0, unit: deg}\n"
-       + "            psi: {value: 0, unit: deg}\n"
-       + "        reference area : {value: 1000, unit: m^2}\n"
-       + "        AWA : {unit: deg, values: [0,7,9,12,28,60,90,120,150,180]}\n"
-       + "        lift coefficient : [0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207]\n"
-       + "        drag coefficient : [0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483]\n"
-       + "      - name : sail_2\n"
-       + "        model : aerodynamic polar\n"
-       + "        calculation point in body frame:\n"
-       + "            x: {value: 100, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: -21, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: 0, unit: deg}\n"
-       + "            psi: {value: 0, unit: deg}\n"
-       + "        reference area : {value: 1000, unit: m^2}\n"
-       + "        AWA : {unit: deg, values: [0,7,9,12,28,60,90,120,150,180]}\n"
-       + "        lift coefficient : [0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207]\n"
-       + "        drag coefficient : [0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483]\n"
-       + "      - name : sail_3\n"
-       + "        model : aerodynamic polar\n"
-       + "        calculation point in body frame:\n"
-       + "            x: {value: -100, unit: m}\n"
-       + "            y: {value: 0, unit: m}\n"
-       + "            z: {value: -21, unit: m}\n"
-       + "            phi: {value: 0, unit: rad}\n"
-       + "            theta: {value: 0, unit: deg}\n"
-       + "            psi: {value: 0, unit: deg}\n"
-       + "        reference area : {value: 1000, unit: m^2}\n"
-       + "        AWA : {unit: deg, values: [0,7,9,12,28,60,90,120,150,180]}\n"
-       + "        lift coefficient : [0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207]\n"
-       + "        drag coefficient : [0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483]\n"
-       ;
+    return rotation_convention() + "\n" + environmental_constants() + "environment models:\n" +
+           "  - model: no waves\n" +
+           "    constant sea elevation in NED frame: {value: 0, unit: m}\n" + "    \n" +
+           "commands:\n" + "  - name: propellerAndRudder\n" + "    t: [0, 10]\n" +
+           "    P/D: {unit: none, values: [0.721, 0.721]}\n" +
+           "    rpm: {unit: rpm, values: [99, 99]}\n" + "    beta: {unit: none, values: [0, 0]}\n" +
+           "# Fixed frame: NED\n" + "bodies: # All bodies have NED as parent frame\n" +
+           "  - name: ship\n" + "  \n" + position_relative_to_mesh(0, 0, 0., 0, 0, 0) +
+           initial_position_of_body_frame(0, 0, 0, 0, 0, 15.) +
+           initial_velocity("ship", 7.72740661, -2.07055236, 0, 0, 0, 0) + "    dynamics:\n" +
+           "        hydrodynamic forces calculation point in body frame:\n" +
+           "          x: {value: 0, unit: m}\n" + "          y: {value: 0, unit: m}\n" +
+           "          z: {value: 0, unit: m}\n" + "        centre of inertia:\n" +
+           "          frame: ship\n" + "          x: {value: 0, unit: m}\n" +
+           "          y: {value: 0, unit: m}\n" + "          z: {value: 2.2, unit: m}\n" +
+           "        rigid body inertia matrix at the center of gravity and projected in the body frame:\n" +
+           "          row 1: [3.101981e+08,0.000000e+00,0.000000e+00,0.000000e+00,0.000000e+00,0.000000e+00]\n" +
+           "          row 2: [0.000000e+00,3.101981e+08,0.000000e+00,0.000000e+00,0.000000e+00,0.000000e+00]\n" +
+           "          row 3: [0.000000e+00,0.000000e+00,3.101981e+08,0.000000e+00,0.000000e+00,0.000000e+00]\n" +
+           "          row 4: [0.000000e+00,0.000000e+00,0.000000e+00,2.087872e+11,1.201552e+09,2.187367e+10]\n" +
+           "          row 5: [0.000000e+00,0.000000e+00,0.000000e+00,1.201552e+09,2.421491e+12,5.394442e+08]\n" +
+           "          row 6: [0.000000e+00,0.000000e+00,0.000000e+00,2.187367e+10,5.394442e+08,2.464725e+12]\n" +
+           "        added mass matrix at the center of gravity and projected in the body frame:\n" +
+           "          from hdb: KVLCC2.hdb\n" + "    external forces:\n" +
+           "      - model: gravity\n" + "      - model: non-linear hydrostatic (fast)\n" +
+           "      - model: non-linear Froude-Krylov\n" + "      - model: Holtrop & Mennen\n" +
+           "        Lwl: {value: 325.5,unit: m}\n" + "        Lpp: {value: 320,unit: m}\n" +
+           "        B: {value: 58,unit: m}\n" + "        Ta: {value: 20.8,unit: m}\n" +
+           "        Tf: {value: 20.8,unit: m}\n" + "        Vol: {value: 312622,unit: m^3}\n" +
+           "        lcb: 3.48\n" + "        S: {value: 27194,unit: m^2}\n" +
+           "        Abt: {value: 25,unit: m^2}\n" + "        hb: {value: 2.5,unit: m}\n" +
+           "        Cm: 0.998\n" + "        Cwp: 0.83\n" + "        At: {value: 0,unit: m^2}\n" +
+           "        Sapp: {value: 273.3,unit: m^2}\n" + "        Cstern: 0\n" +
+           "        1+k2: 2\n" + "        apply on ship speed direction: false\n" +
+           "      - model: radiation damping\n" + "        hdb: KVLCC2.hdb\n" +
+           "        type of quadrature for cos transform: simpson\n" +
+           "        type of quadrature for convolution: simpson\n" +
+           "        nb of points for retardation function discretization: 100\n" +
+           "        omega min: {value: 0.01, unit: rad/s}\n" +
+           "        omega max: {value: 8, unit: rad/s}\n" +
+           "        tau min: {value: 0, unit: s}\n" + "        tau max: {value: 80, unit: s}\n" +
+           "        forward speed correction: true\n" + "        suppress constant part: true\n" +
+           "        output Br and K: false\n" + "        calculation point in body frame:\n" +
+           "            x: {value: 0, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 0, unit: m}\n" + "      - model: diffraction\n" +
+           "        hdb: KVLCC2.hdb\n" + "        calculation point in body frame:\n" +
+           "            x: {value: 0, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 0, unit: m}\n" + "        mirror for 180 to 360: true\n" +
+           "      - model: MMG maneuvering\n" + "        calculation point in body frame:\n" +
+           "            x: {value: -11.1, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 0, unit: m}\n" + "        Lpp: {value: 320, unit: m}\n" +
+           "        T: {value: 20.8, unit: m}\n" + "        Xvv: -0.04\n" + "        Xrr: 0.011\n" +
+           "        Xvr: 0.002\n" + "        Xvvvv: 0.771\n" + "        Yv: -0.315\n" +
+           "        Yr: 0.083\n" + "        Yvvv: -1.607\n" + "        Yrvv: 0.379\n" +
+           "        Yvrr: -0.391\n" + "        Yrrr: 0.008\n" + "        Nv: -0.137\n" +
+           "        Nr: -0.049\n" + "        Nvvv: -0.03\n" + "        Nrvv: -0.294\n" +
+           "        Nvrr: 0.055\n" + "        Nrrr: -0.013\n" +
+           "      - name: propellerAndRudder\n" + "        model: propeller+rudder\n" +
+           "        position of propeller frame:\n" + "            frame: mesh(ship)\n" +
+           "            x: {value: -163.82, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 15, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 0, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" + "        wake coefficient w: 0.576\n" +
+           "        relative rotative efficiency etaR: 1\n" +
+           "        thrust deduction factor t: 0.7\n" + "        rotation: clockwise\n" +
+           "        number of blades: 5\n" + "        blade area ratio AE/A0: 0.431\n" +
+           "        diameter: {value: 9.326, unit: m}\n" +
+           "        rudder area: {value: 136.7, unit: m^2} #{value: 273.3, unit: m^2}\n" +
+           "        rudder height: {value: 15.8, unit: m^2}\n" +
+           "        effective aspect ratio factor: 1.7\n" +
+           "        lift tuning coefficient: 2.1\n" + "        drag tuning coefficient: 1\n" +
+           "        position of rudder in body frame:\n" +
+           "            x: {value: -170, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: 10, unit: m}\n" + "      - name : sail_1\n" +
+           "        model : aerodynamic polar\n" + "        calculation point in body frame:\n" +
+           "            x: {value: 0, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: -21, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 0, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" +
+           "        reference area : {value: 1000, unit: m^2}\n" +
+           "        AWA : {unit: deg, values: [0,7,9,12,28,60,90,120,150,180]}\n" +
+           "        lift coefficient : [0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207]\n" +
+           "        drag coefficient : [0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483]\n" +
+           "      - name : sail_2\n" + "        model : aerodynamic polar\n" +
+           "        calculation point in body frame:\n" + "            x: {value: 100, unit: m}\n" +
+           "            y: {value: 0, unit: m}\n" + "            z: {value: -21, unit: m}\n" +
+           "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 0, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" +
+           "        reference area : {value: 1000, unit: m^2}\n" +
+           "        AWA : {unit: deg, values: [0,7,9,12,28,60,90,120,150,180]}\n" +
+           "        lift coefficient : [0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207]\n" +
+           "        drag coefficient : [0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483]\n" +
+           "      - name : sail_3\n" + "        model : aerodynamic polar\n" +
+           "        calculation point in body frame:\n" +
+           "            x: {value: -100, unit: m}\n" + "            y: {value: 0, unit: m}\n" +
+           "            z: {value: -21, unit: m}\n" + "            phi: {value: 0, unit: rad}\n" +
+           "            theta: {value: 0, unit: deg}\n" +
+           "            psi: {value: 0, unit: deg}\n" +
+           "        reference area : {value: 1000, unit: m^2}\n" +
+           "        AWA : {unit: deg, values: [0,7,9,12,28,60,90,120,150,180]}\n" +
+           "        lift coefficient : [0.00000,0.94828,1.13793,1.25000,1.42681,1.38319,1.26724,0.93103,0.38793,-0.11207]\n" +
+           "        drag coefficient : [0.03448,0.01724,0.01466,0.01466,0.02586,0.11302,0.38250,0.96888,1.31578,1.34483]\n";
 }
-
 
 std::string test_data::blockedDoF_OTT()
 {
-    std::string ret = std::string("    blocked dof:\n")
-       + "       from YAML:\n"
-       + "         - state: x\n"
-       + "           t: [0., 1000.]\n"
-       + "           value: [0, 8000.]\n"
-       + "           interpolation: linear\n"
-       + "         - state: y\n"
-       + "           t: [0., 1000.]\n"
-       + "           value: [0, 0.]\n"
-       + "           interpolation: linear\n"
-       + "         - state: phi\n"
-       + "           t: [0., 1000.]\n"
-       + "           value: [0., 0.]\n"
-       + "           interpolation: linear\n"
-       + "         - state: psi\n"
-       + "           t: [0., 1000.]\n"
-       + "           value: [0.2618, 0.2618]\n"
-       + "           interpolation: linear\n"
-       ;
+    std::string ret = std::string("    blocked dof:\n") + "       from YAML:\n" +
+                      "         - state: x\n" + "           t: [0., 1000.]\n" +
+                      "           value: [0, 8000.]\n" + "           interpolation: linear\n" +
+                      "         - state: y\n" + "           t: [0., 1000.]\n" +
+                      "           value: [0, 0.]\n" + "           interpolation: linear\n" +
+                      "         - state: phi\n" + "           t: [0., 1000.]\n" +
+                      "           value: [0., 0.]\n" + "           interpolation: linear\n" +
+                      "         - state: psi\n" + "           t: [0., 1000.]\n" +
+                      "           value: [0.2618, 0.2618]\n" + "           interpolation: linear\n";
     return ret;
 }
 
 std::string test_data::blockedDoF_idealRudder()
 {
-    std::string ret = std::string("    blocked dof:\n")
-       + "       from YAML:\n"
-       + "         - state: psi\n"
-       + "           t: [0., 1000.]\n"
-       + "           value: [0.2618, 0.2618]\n"
-       + "           interpolation: linear\n"
-       + "           how applied: [0., 1., 0., 0., 0., -170.]"
-       ;
+    std::string ret = std::string("    blocked dof:\n") + "       from YAML:\n" +
+                      "         - state: psi\n" + "           t: [0., 1000.]\n" +
+                      "           value: [0.2618, 0.2618]\n" +
+                      "           interpolation: linear\n" +
+                      "           how applied: [0., 1., 0., 0., 0., -170.]";
     return ret;
 }
 
 std::string test_data::MMGPropeller()
 {
     /*
-    This data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+    This data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura,
+    “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine
+    Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
     */
     std::stringstream ss;
     ss << "name: port side propeller\n"
        << "model: MMG propeller\n"
        << "position of propeller frame:\n"
        << "    frame: mesh(body 1)\n"
-       << "    x: {value: -160, unit: m}\n" // -LPP/2
+       << "    x: {value: -160, unit: m}\n"  // -LPP/2
        << "    y: {value: 0, unit: m}\n"
-       << "    z: {value: 12.6, unit: m}\n" // measured on the KVLCC2 geometry
+       << "    z: {value: 12.6, unit: m}\n"  // measured on the KVLCC2 geometry
        << "    phi: {value: 0, unit: rad}\n"
        << "    theta: {value: 0, unit: deg}\n"
        << "    psi: {value: 0, unit: deg}\n"
        << "wake coefficient w: 0.35\n"
-       << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary for AbstractWageningen
+       << "relative rotative efficiency etaR: 1\n"  // useless for MMG but necessary for
+                                                    // AbstractWageningen
        << "thrust deduction factor t: 0.22\n"
-       << "rotation: clockwise\n"//useless for MMG but necessary for AbstractWageningen
+       << "rotation: clockwise\n"  // useless for MMG but necessary for AbstractWageningen
        << "diameter: {value: 9.86, unit: m}\n"
        << "k0: 0.2931\n"
        << "k1: -0.2753\n"
        << "k2: -0.1385\n"
-       << "C0: 0.\n" // C0 is set to 0 to use the wake formula from Yasukawa & Yoshimura (2014)
+       << "C0: 0.\n"  // C0 is set to 0 to use the wake formula from Yasukawa & Yoshimura (2014)
        << "C1: 2.0\n"
        << "C2: [1.1, 1.6]\n"
-       << "calculation point in body frame:\n"// Should correspond to the MMG origin (midship)
+       << "calculation point in body frame:\n"  // Should correspond to the MMG origin (midship)
        << "    x: {value: 0, unit: m}\n"
        << "    y: {value: 0, unit: m}\n"
        << "    z: {value: 0, unit: m}\n";
@@ -4415,50 +3520,55 @@ std::string test_data::MMGPropeller()
 }
 
 std::string test_data::MMGRudderAndPropeller()
-{    
+{
     /*
-    This data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
+    This data is for the academic hull KVLCC2. The data comes from H. Yasukawa and Y. Yoshimura,
+    “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine
+    Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
     */
     std::stringstream ss;
-    ss  << "name: MMG port side propeller\n"
-        << "model: MMG propeller+rudder\n"
-        << "position of propeller frame:\n"
-        << "    frame: body 1\n"
-        << "    x: {value: -152.73, unit: m}\n"//from Rhino 3D at full-scale
-        << "    y: {value: 0, unit: m}\n"
-        << "    z: {value: 0, unit: m}\n"
-        << "    phi: {value: 0, unit: rad}\n"
-        << "    theta: {value: 0, unit: deg}\n"
-        << "    psi: {value: 0, unit: deg}\n"
-        << "wake coefficient w: 0.35\n"
-        << "relative rotative efficiency etaR: 1\n"//useless for MMG but necessary for AbstractWageningen
-        << "thrust deduction factor t: 0.22\n"
-        << "rotation: clockwise\n"//useless for MMG but necessary for AbstractWageningen
-        << "diameter: {value: 9.86, unit: m}\n"
-        << "k0: 0.2931\n"
-        << "k1: -0.2753\n"
-        << "k2: -0.1385\n"
-        << "C0: 0.\n" // C0 is set to 0 to use the wake formula from Yasukawa & Yoshimura (2014)
-        << "C1: 2.0\n"
-        << "C2: [1.1, 1.6]\n"
-        << "calculation point in body frame:\n"// Should correspond to the MMG origin (midship)
-        << "    x: {value: 0, unit: m}\n"
-        << "    y: {value: 0, unit: m}\n"
-        << "    z: {value: 0, unit: m}\n"      
-        << "rudder area: {value: 112.5, unit: m^2}\n"//not including horn part, as recommended by MMG
-        << "rudder height: {value: 15.8, unit: m}\n"
-        << "xH: -0.464\n"
-        << "lR: -0.71\n"
-        << "tR: 0.387\n"
-        << "aH: 0.312\n"
-        << "gammaR: [0.395,0.640]\n"
-        << "epsilon: 1.09\n"
-        << "kappa: 0.5\n"
-        << "effective aspect ratio: 1.827\n"//It is the rudder lateral area with the horn part which is considered
-        << "position of rudder in body frame:\n"// Aft perpendicular
-        << "    x: {value: -160, unit: m}\n"
-        << "    y: {value: 0, unit: m}\n"
-        << "    z: {value: 12.6, unit: m}\n"//from Rhino 3D at full-scale
-        << "Lpp: {value: 320, unit: m}\n";
+    ss << "name: MMG port side propeller\n"
+       << "model: MMG propeller+rudder\n"
+       << "position of propeller frame:\n"
+       << "    frame: body 1\n"
+       << "    x: {value: -152.73, unit: m}\n"  // from Rhino 3D at full-scale
+       << "    y: {value: 0, unit: m}\n"
+       << "    z: {value: 0, unit: m}\n"
+       << "    phi: {value: 0, unit: rad}\n"
+       << "    theta: {value: 0, unit: deg}\n"
+       << "    psi: {value: 0, unit: deg}\n"
+       << "wake coefficient w: 0.35\n"
+       << "relative rotative efficiency etaR: 1\n"  // useless for MMG but necessary for
+                                                    // AbstractWageningen
+       << "thrust deduction factor t: 0.22\n"
+       << "rotation: clockwise\n"  // useless for MMG but necessary for AbstractWageningen
+       << "diameter: {value: 9.86, unit: m}\n"
+       << "k0: 0.2931\n"
+       << "k1: -0.2753\n"
+       << "k2: -0.1385\n"
+       << "C0: 0.\n"  // C0 is set to 0 to use the wake formula from Yasukawa & Yoshimura (2014)
+       << "C1: 2.0\n"
+       << "C2: [1.1, 1.6]\n"
+       << "calculation point in body frame:\n"  // Should correspond to the MMG origin (midship)
+       << "    x: {value: 0, unit: m}\n"
+       << "    y: {value: 0, unit: m}\n"
+       << "    z: {value: 0, unit: m}\n"
+       << "rudder area: {value: 112.5, unit: m^2}\n"  // not including horn part, as recommended by
+                                                      // MMG
+       << "rudder height: {value: 15.8, unit: m}\n"
+       << "xH: -0.464\n"
+       << "lR: -0.71\n"
+       << "tR: 0.387\n"
+       << "aH: 0.312\n"
+       << "gammaR: [0.395,0.640]\n"
+       << "epsilon: 1.09\n"
+       << "kappa: 0.5\n"
+       << "effective aspect ratio: 1.827\n"      // It is the rudder lateral area with the horn part
+                                                 // which is considered
+       << "position of rudder in body frame:\n"  // Aft perpendicular
+       << "    x: {value: -160, unit: m}\n"
+       << "    y: {value: 0, unit: m}\n"
+       << "    z: {value: 12.6, unit: m}\n"  // from Rhino 3D at full-scale
+       << "Lpp: {value: 320, unit: m}\n";
     return ss.str();
 }

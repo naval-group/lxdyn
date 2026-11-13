@@ -9,21 +9,20 @@
 #define MAPOBSERVERTEST_HPP_
 
 #include <map>
+#include <ssc/random_data_generator/DataGenerator.hpp>
 #include <string>
 #include <vector>
 
 #include "gtest/gtest.h"
-#include <ssc/random_data_generator/DataGenerator.hpp>
 
 class ListOfObservers;
 
-class MapObserverTest : public ::testing::Test
-{
-    protected:
-        MapObserverTest();
-        ssc::random_data_generator::DataGenerator a;
+class MapObserverTest : public ::testing::Test {
+protected:
+    MapObserverTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-std::map<std::string,std::vector<double> > get_map(const ListOfObservers& observers);
+std::map<std::string, std::vector<double>> get_map(const ListOfObservers& observers);
 
-#endif  /* MAPOBSERVERTEST_HPP_ */
+#endif /* MAPOBSERVERTEST_HPP_ */

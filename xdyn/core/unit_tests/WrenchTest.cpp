@@ -1,22 +1,27 @@
 #include "WrenchTest.hpp"
+
+#include <cmath>
+#include <memory>
+
 #include "xdyn/core/Wrench.hpp"
 #include "xdyn/core/yaml2eigen.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/external_data_structures/YamlPosition.hpp"
 #include "xdyn/external_data_structures/YamlRotation.hpp"
-#include <cmath>
-#include <memory>
 
-WrenchTest::WrenchTest(): a(ssc::random_data_generator::DataGenerator(267953))
-{
-}
+WrenchTest::WrenchTest() : a(ssc::random_data_generator::DataGenerator(267953)) {}
 
 TEST_F(WrenchTest, can_get_members)
 {
     const std::string frame("expression_frame");
-    const ssc::kinematics::Point application_point("point_frame", a.random<double>(), a.random<double>(), a.random<double>());
+    const ssc::kinematics::Point application_point(
+        "point_frame",
+        a.random<double>(),
+        a.random<double>(),
+        a.random<double>());
     ssc::kinematics::Vector6d force;
-    force << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>();
+    force << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(),
+        a.random<double>(), a.random<double>();
     const Wrench wrench(application_point, frame, force);
     ASSERT_EQ(frame, wrench.get_frame());
     ASSERT_EQ(application_point.get_frame(), wrench.get_point().get_frame());
@@ -26,7 +31,6 @@ TEST_F(WrenchTest, can_get_members)
 
 TEST_F(WrenchTest, can_change_frame)
 {
-
     // Python code to reproduce the test:
     /*
     import numpy as np
@@ -55,8 +59,11 @@ TEST_F(WrenchTest, can_change_frame)
     */
     const ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     const YamlAngle angles(12 * M_PI / 180, 47 * M_PI / 180, 31 * M_PI / 180);
-    const YamlPosition position(YamlCoordinates(a.random<double>(), a.random<double>(), a.random<double>()), angles, "frame2");
-    YamlRotation rotation_convention("angle", { "z", "y'", "x''" });
+    const YamlPosition position(
+        YamlCoordinates(a.random<double>(), a.random<double>(), a.random<double>()),
+        angles,
+        "frame2");
+    YamlRotation rotation_convention("angle", {"z", "y'", "x''"});
     k->add(make_transform(position, "frame1", rotation_convention));
     const ssc::kinematics::Point P("frame1", 1, 2, 3);
     Eigen::Vector3d force;
@@ -112,10 +119,11 @@ TEST_F(WrenchTest, can_change_point_in_same_frame)
 TEST_F(WrenchTest, can_change_point_in_different_frame)
 {
     const ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
-    const YamlPosition position(YamlCoordinates(a.random<double>(),a.random<double>(),a.random<double>()),
-                                YamlAngle(a.random<double>(), a.random<double>(), a.random<double>()),
-                                "frame1");
-    YamlRotation rotation_convention("angle", { "z", "y'", "x''" });
+    const YamlPosition position(
+        YamlCoordinates(a.random<double>(), a.random<double>(), a.random<double>()),
+        YamlAngle(a.random<double>(), a.random<double>(), a.random<double>()),
+        "frame1");
+    YamlRotation rotation_convention("angle", {"z", "y'", "x''"});
     auto T_from_1_to_2 = make_transform(position, "frame2", rotation_convention);
     k->add(T_from_1_to_2);
     const ssc::kinematics::Point A("frame1", 1, 2, 3);
@@ -130,8 +138,12 @@ TEST_F(WrenchTest, can_change_point_in_different_frame)
     ASSERT_EQ(B.get_frame(), wrench.get_point().get_frame());
     ASSERT_TRUE(B.v.isApprox(wrench.get_point().v));
     ASSERT_TRUE(force.isApprox(wrench.get_force()));
-    ssc::kinematics::Point B_in_2("frame2",T_from_1_to_2.inverse().get_point().v+T_from_1_to_2.get_rot().inverse()*B.v);
-    ssc::kinematics::Point A_in_2("frame2",T_from_1_to_2.inverse().get_point().v+T_from_1_to_2.get_rot().inverse()*A.v);
+    ssc::kinematics::Point B_in_2(
+        "frame2",
+        T_from_1_to_2.inverse().get_point().v + T_from_1_to_2.get_rot().inverse() * B.v);
+    ssc::kinematics::Point A_in_2(
+        "frame2",
+        T_from_1_to_2.inverse().get_point().v + T_from_1_to_2.get_rot().inverse() * A.v);
     Eigen::Vector3d BA_2 = A_in_2 - B_in_2;
     ASSERT_TRUE((torque + BA_2.cross(force)).isApprox(wrench.get_torque()));
 }
@@ -140,28 +152,32 @@ TEST_F(WrenchTest, addition_operator_works)
 {
     const ssc::kinematics::Point A("frame1", 1, 2, 3);
     ssc::kinematics::Vector6d force1;
-    force1 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>();
+    force1 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(),
+        a.random<double>(), a.random<double>();
     const Wrench wrench1(A, "frame1", force1);
     ssc::kinematics::Vector6d force2;
-    force2 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>();
+    force2 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(),
+        a.random<double>(), a.random<double>();
     const Wrench wrench2(A, "frame1", force2);
     const Wrench wrench3 = wrench1 + wrench2;
     ASSERT_EQ("frame1", wrench3.get_frame());
     ASSERT_EQ(A.get_frame(), wrench3.get_point().get_frame());
     ASSERT_TRUE(A.v.isApprox(wrench3.get_point().v));
-    ASSERT_TRUE((force1+force2).isApprox(wrench3.to_vector()));
+    ASSERT_TRUE((force1 + force2).isApprox(wrench3.to_vector()));
 }
 
 TEST_F(WrenchTest, addition_operator_throws_if_different_point_or_frame)
 {
     const ssc::kinematics::Point A("frame1", 1, 2, 3);
     ssc::kinematics::Vector6d force1;
-    force1 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>();
+    force1 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(),
+        a.random<double>(), a.random<double>();
     const Wrench wrench1(A, "frame1", force1);
     // Test: different point in same frame
     const ssc::kinematics::Point B("frame1", 4, 5, 6);
     ssc::kinematics::Vector6d force2;
-    force2 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>();
+    force2 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(),
+        a.random<double>(), a.random<double>();
     const Wrench wrench2(B, "frame1", force2);
     ASSERT_THROW(wrench1 + wrench2, InternalErrorException);
     // Test: point with same coordinates in different frame
@@ -173,27 +189,34 @@ TEST_F(WrenchTest, addition_operator_throws_if_different_point_or_frame)
     ASSERT_THROW(wrench1 + wrench3, InternalErrorException);
 }
 
-TEST_F(WrenchTest, can_add_wrenches_in_different_frames_and_point_using_method_add_instead_of_plus_operator)
+TEST_F(
+    WrenchTest,
+    can_add_wrenches_in_different_frames_and_point_using_method_add_instead_of_plus_operator)
 {
     const ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
-    const YamlPosition position(YamlCoordinates(10,0,0), YamlAngle(0, 0, 90*M_PI/180), "frame1");
-    YamlRotation rotation_convention("angle", { "z", "y'", "x''" });
+    const YamlPosition position(
+        YamlCoordinates(10, 0, 0),
+        YamlAngle(0, 0, 90 * M_PI / 180),
+        "frame1");
+    YamlRotation rotation_convention("angle", {"z", "y'", "x''"});
     auto T_from_1_to_2 = make_transform(position, "frame2", rotation_convention);
     k->add(T_from_1_to_2);
     const ssc::kinematics::Point A("frame1", 1, 2, 3);
     ssc::kinematics::Vector6d force1;
-    force1 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>();
+    force1 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(),
+        a.random<double>(), a.random<double>();
     const Wrench wrench1(A, "frame1", force1);
 
     const ssc::kinematics::Point B("frame2", 4, 5, 6);
     ssc::kinematics::Vector6d force2;
-    force2 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>();
+    force2 << a.random<double>(), a.random<double>(), a.random<double>(), a.random<double>(),
+        a.random<double>(), a.random<double>();
     const Wrench wrench2(B, "frame2", force2);
 
     const Wrench wrench3 = wrench1.add(wrench2, k);
     ASSERT_EQ(wrench3.get_frame(), wrench1.get_frame());
     ASSERT_EQ(wrench3.get_point().get_frame(), wrench1.get_point().get_frame());
     ASSERT_TRUE(wrench3.get_point().v.isApprox(wrench1.get_point().v));
-    ASSERT_TRUE(wrench3.to_vector().isApprox((wrench1 + wrench2.change_point_and_frame(A, "frame1", k)).to_vector()));
-
+    ASSERT_TRUE(wrench3.to_vector().isApprox(
+        (wrench1 + wrench2.change_point_and_frame(A, "frame1", k)).to_vector()));
 }

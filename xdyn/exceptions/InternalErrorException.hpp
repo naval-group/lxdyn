@@ -5,19 +5,21 @@
  *      Author: cady
  */
 
-
 #ifndef CORE_INC_INTERNALERROREXCEPTION_HPP_
 #define CORE_INC_INTERNALERROREXCEPTION_HPP_
 
 #include <ssc/exception_handling.hpp>
 
-class InternalErrorException: public ssc::exception_handling::Exception
-{
-    public:
-        InternalErrorException(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) :
-               Exception(message, file, function, line)
-        {
-        }
+class InternalErrorException : public ssc::exception_handling::Exception {
+public:
+    InternalErrorException(
+        const std::string& message,
+        const std::string& file,
+        const std::string& function,
+        const unsigned int line)
+        : Exception(message, file, function, line)
+    {
+    }
 };
 
-#endif  /* CORE_INC_INTERNALERROREXCEPTION_HPP_ */
+#endif /* CORE_INC_INTERNALERROREXCEPTION_HPP_ */

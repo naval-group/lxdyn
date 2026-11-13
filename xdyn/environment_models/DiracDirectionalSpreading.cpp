@@ -9,15 +9,14 @@
 
 #include <cmath>
 
-
-DiracDirectionalSpreading::DiracDirectionalSpreading(const double psi0_) : WaveDirectionalSpreading(psi0_)
+DiracDirectionalSpreading::DiracDirectionalSpreading(const double psi0_)
+    : WaveDirectionalSpreading(psi0_)
 {
 }
 
 double DiracDirectionalSpreading::operator()(const double psi) const
 {
-    if (fabs(psi-psi0)<1E-15)
-    {
+    if (fabs(psi - psi0) < 1E-15) {
         return 1.0;
     }
     return 0.0;

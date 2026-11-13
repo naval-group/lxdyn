@@ -1,6 +1,9 @@
 #include "py_xdyn_env.hpp"
+
+#include <memory>
+#include <vector>
+
 #include "py_pybind_additions.hpp"
-#include "xdyn/environment_models/discretize.hpp"
 #include "xdyn/environment_models/Airy.hpp"
 #include "xdyn/environment_models/BretschneiderSpectrum.hpp"
 #include "xdyn/environment_models/Cos2sDirectionalSpreading.hpp"
@@ -20,12 +23,11 @@
 #include "xdyn/environment_models/WaveModel.hpp"
 #include "xdyn/environment_models/WaveNumberFunctor.hpp"
 #include "xdyn/environment_models/WaveSpectralDensity.hpp"
-#include "xdyn/environment_models/WindModel.hpp"
 #include "xdyn/environment_models/WindMeanVelocityProfile.hpp"
+#include "xdyn/environment_models/WindModel.hpp"
+#include "xdyn/environment_models/discretize.hpp"
 #include "xdyn/external_data_structures/YamlModel.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
-#include <memory>
-#include <vector>
 
 namespace py = pybind11;
 
@@ -34,110 +36,188 @@ void py_add_module_xdyn_env_wave_io(py::module& m)
 {
     py::class_<YamlWaveOutput>(m, "YamlWaveOutput")
         .def(py::init<>())
-        .def_readwrite("frame_of_reference",&YamlWaveOutput::frame_of_reference, "Name of the frame of reference the x & y coordinates are expressed in")
-        .def_readwrite("xmin", &YamlWaveOutput::xmin, "Minimum x value (in meters) of the points in the output mesh")
-        .def_readwrite("xmax", &YamlWaveOutput::xmax, "Maximum x value (in meters) of the points in the output mesh")
-        .def_readwrite("nx"  , &YamlWaveOutput::nx, "Discretization of the mesh along the x axis (number of different x values)")
-        .def_readwrite("ymin", &YamlWaveOutput::ymin, "Minimum y value (in meters) of the points in the output mesh")
-        .def_readwrite("ymax", &YamlWaveOutput::ymax, "Maximum y value (in meters) of the points in the output mesh")
-        .def_readwrite("ny" , &YamlWaveOutput::ny, "Discretization of the mesh along the y axis (number of different x values)")
-        ;
+        .def_readwrite(
+            "frame_of_reference",
+            &YamlWaveOutput::frame_of_reference,
+            "Name of the frame of reference the x & y coordinates are expressed in")
+        .def_readwrite(
+            "xmin",
+            &YamlWaveOutput::xmin,
+            "Minimum x value (in meters) of the points in the output mesh")
+        .def_readwrite(
+            "xmax",
+            &YamlWaveOutput::xmax,
+            "Maximum x value (in meters) of the points in the output mesh")
+        .def_readwrite(
+            "nx",
+            &YamlWaveOutput::nx,
+            "Discretization of the mesh along the x axis (number of different x values)")
+        .def_readwrite(
+            "ymin",
+            &YamlWaveOutput::ymin,
+            "Minimum y value (in meters) of the points in the output mesh")
+        .def_readwrite(
+            "ymax",
+            &YamlWaveOutput::ymax,
+            "Maximum y value (in meters) of the points in the output mesh")
+        .def_readwrite(
+            "ny",
+            &YamlWaveOutput::ny,
+            "Discretization of the mesh along the y axis (number of different x values)");
 
     py::class_<YamlDiscretization>(m, "YamlDiscretization")
         .def(py::init<>())
-        .def_readwrite("nfreq", &YamlDiscretization::nfreq, "Nb of frequencies in the discretization")
+        .def_readwrite(
+            "nfreq",
+            &YamlDiscretization::nfreq,
+            "Nb of frequencies in the discretization")
         .def_readwrite("ndir", &YamlDiscretization::ndir, "Nb of directions in the discretization")
-        .def_readwrite("omega_min", &YamlDiscretization::omega_min, "First angular frequency (in rad/s)")
-        .def_readwrite("omega_max", &YamlDiscretization::omega_max, "Last angular frequency (in rad/s)")
-        .def_readwrite("energy_fraction", &YamlDiscretization::energy_fraction, "Between 0 and 1: sum(S(omega[i]).S(psi[j]),taken into account)/sum(S(omega[i]).S(psi[j]),total)")
-        .def_readwrite("equal_energy_bins", &YamlDiscretization::equal_energy_bins, "False (by default) or true. When false, omegas are sampled regularly between omega_min and omega_max. When true, they are sampled such that the integral of the spectrum is constant between two consecutive omega values.")
-        ;
+        .def_readwrite(
+            "omega_min",
+            &YamlDiscretization::omega_min,
+            "First angular frequency (in rad/s)")
+        .def_readwrite(
+            "omega_max",
+            &YamlDiscretization::omega_max,
+            "Last angular frequency (in rad/s)")
+        .def_readwrite(
+            "energy_fraction",
+            &YamlDiscretization::energy_fraction,
+            "Between 0 and 1: sum(S(omega[i]).S(psi[j]),taken into account)/sum(S(omega[i]).S(psi[j]),total)")
+        .def_readwrite(
+            "equal_energy_bins",
+            &YamlDiscretization::equal_energy_bins,
+            "False (by default) or true. When false, omegas are sampled regularly between omega_min and omega_max. When true, they are sampled such that the integral of the spectrum is constant between two consecutive omega values.");
 
     py::class_<YamlStretching>(m, "YamlStretching")
         .def(py::init<>())
-        .def_readwrite("delta", &YamlStretching::delta, "0 for Wheeler stretching, 1 for linear extrapolation")
-        .def_readwrite("h", &YamlStretching::h, "Depth (in meters) over which the stretching is taken into account. Should usually be equal to ""depth"" (or 0 for no stretching)")
-        ;
+        .def_readwrite(
+            "delta",
+            &YamlStretching::delta,
+            "0 for Wheeler stretching, 1 for linear extrapolation")
+        .def_readwrite(
+            "h",
+            &YamlStretching::h,
+            "Depth (in meters) over which the stretching is taken into account. Should usually be equal to "
+            "depth"
+            " (or 0 for no stretching)");
 
     py::class_<YamlSpectrum>(m, "YamlSpectrum")
         .def(py::init<>())
         .def_readwrite("model", &YamlSpectrum::model, "Wave model (eg. airy)")
         .def_readwrite("model_yaml", &YamlSpectrum::model_yaml, "Model data in YAML format")
-        .def_readwrite("directional_spreading_type", &YamlSpectrum::directional_spreading_type, "Spreading type (eg. cos2s)")
-        .def_readwrite("directional_spreading_yaml", &YamlSpectrum::directional_spreading_yaml, "Model data in YAML format")
-        .def_readwrite("spectral_density_type", &YamlSpectrum::spectral_density_type, "Type of spectrum (eg. jonswap)")
-        .def_readwrite("spectral_density_yaml", &YamlSpectrum::spectral_density_yaml, "Spectral model parameters in YAML format")
-        .def_readwrite("depth", &YamlSpectrum::depth, "Water depth (in meters): 0 for infinite depth")
-        .def_readwrite("stretching", &YamlSpectrum::stretching, "Stretching model for orbital wave velocities (delta-stretching model)")
-        ;
+        .def_readwrite(
+            "directional_spreading_type",
+            &YamlSpectrum::directional_spreading_type,
+            "Spreading type (eg. cos2s)")
+        .def_readwrite(
+            "directional_spreading_yaml",
+            &YamlSpectrum::directional_spreading_yaml,
+            "Model data in YAML format")
+        .def_readwrite(
+            "spectral_density_type",
+            &YamlSpectrum::spectral_density_type,
+            "Type of spectrum (eg. jonswap)")
+        .def_readwrite(
+            "spectral_density_yaml",
+            &YamlSpectrum::spectral_density_yaml,
+            "Spectral model parameters in YAML format")
+        .def_readwrite(
+            "depth",
+            &YamlSpectrum::depth,
+            "Water depth (in meters): 0 for infinite depth")
+        .def_readwrite(
+            "stretching",
+            &YamlSpectrum::stretching,
+            "Stretching model for orbital wave velocities (delta-stretching model)");
 
     py::class_<YamlRays>(m, "YamlRays")
         .def(py::init<>())
         .def_readwrite("a", &YamlRays::a, "Amplitudes of each ray (in m).")
         .def_readwrite("psi", &YamlRays::psi, "Directions between 0 & 2pi of each ray (in rad).")
-        .def_readwrite("omega", &YamlRays::omega, "Angular frequencies the spectrum was discretized at for each ray (in rad/s).")
-        .def_readwrite("k", &YamlRays::k, "Discretized wave numbers (should therefore be the same size as omega) for each ray (in rad/m).")
-        .def_readwrite("phase", &YamlRays::phase, "Random phases for each ray (in rad).")
-        ;
+        .def_readwrite(
+            "omega",
+            &YamlRays::omega,
+            "Angular frequencies the spectrum was discretized at for each ray (in rad/s).")
+        .def_readwrite(
+            "k",
+            &YamlRays::k,
+            "Discretized wave numbers (should therefore be the same size as omega) for each ray (in rad/m).")
+        .def_readwrite("phase", &YamlRays::phase, "Random phases for each ray (in rad).");
 
     py::class_<YamlSpectrumFromRays>(m, "YamlSpectrumFromRays")
         .def(py::init<>())
         .def_readwrite("model", &YamlSpectrumFromRays::model, "Wave model (eg. airy)")
         .def_readwrite("model_yaml", &YamlSpectrumFromRays::model_yaml, "Model data in YAML format")
         .def_readwrite("rays", &YamlSpectrumFromRays::rays, "List of rays")
-        .def_readwrite("depth", &YamlSpectrumFromRays::depth, "Water depth (in meters): 0 for infinite depth")
-        .def_readwrite("stretching", &YamlSpectrumFromRays::stretching, "Stretching model for orbital wave velocities (delta-stretching model)")
-        ;
+        .def_readwrite(
+            "depth",
+            &YamlSpectrumFromRays::depth,
+            "Water depth (in meters): 0 for infinite depth")
+        .def_readwrite(
+            "stretching",
+            &YamlSpectrumFromRays::stretching,
+            "Stretching model for orbital wave velocities (delta-stretching model)");
 
     py::class_<YamlWaveModel>(m, "YamlWaveModel")
         .def(py::init<>())
-        .def_readwrite("discretization", &YamlWaveModel::discretization, "Spectral discretization parameters")
+        .def_readwrite(
+            "discretization",
+            &YamlWaveModel::discretization,
+            "Spectral discretization parameters")
         .def_readwrite("spectra", &YamlWaveModel::spectra, "Wave spectra to generate")
-        .def_readwrite("spectra_from_rays", &YamlWaveModel::spectra_from_rays, "Wave spectra as a list of rays")
-        .def_readwrite("output", &YamlWaveModel::output, "Defines what wave data is outputted during the simulation & how it is generated")
-        ;
+        .def_readwrite(
+            "spectra_from_rays",
+            &YamlWaveModel::spectra_from_rays,
+            "Wave spectra as a list of rays")
+        .def_readwrite(
+            "output",
+            &YamlWaveModel::output,
+            "Defines what wave data is outputted during the simulation & how it is generated");
 
     py::class_<YamlJonswap>(m, "YamlJonswap")
         .def(py::init<>())
         .def_readwrite("Hs", &YamlJonswap::Hs, "Significant wave height (in meters)")
         .def_readwrite("Tp", &YamlJonswap::Tp, "Mean wave period (in seconds)")
-        .def_readwrite("gamma", &YamlJonswap::gamma, "Non-dimensional peak shape parameter")
-        ;
+        .def_readwrite("gamma", &YamlJonswap::gamma, "Non-dimensional peak shape parameter");
 
     py::class_<YamlBretschneider>(m, "YamlBretschneider")
         .def(py::init<>())
         .def_readwrite("Hs", &YamlBretschneider::Hs, "Significant wave height (in meters)")
-        .def_readwrite("Tp", &YamlBretschneider::Tp, "Mean wave period (in seconds)")
-        ;
+        .def_readwrite("Tp", &YamlBretschneider::Tp, "Mean wave period (in seconds)");
 
     py::class_<YamlCos2s>(m, "YamlCos2s")
         .def(py::init<>())
         .def_readwrite("psi0", &YamlCos2s::psi0, "Primary wave direction in radians.")
-        .def_readwrite("s", &YamlCos2s::s, "Exponent")
-        ;
+        .def_readwrite("s", &YamlCos2s::s, "Exponent");
 
     py::class_<YamlDiracDirection>(m, "YamlDiracDirection")
         .def(py::init<>())
-        .def_readwrite("psi0", &YamlDiracDirection::psi0,"Primary wave direction in radians.")
-        ;
+        .def_readwrite("psi0", &YamlDiracDirection::psi0, "Primary wave direction in radians.");
 
     py::class_<YamlDiracSpectrum>(m, "YamlDiracSpectrum")
         .def(py::init<>())
-        .def_readwrite("omega0", &YamlDiracSpectrum::omega0, "Angular frequency (2 * pi * f) in rad/s of the significant wave height")
-        .def_readwrite("Hs", &YamlDiracSpectrum::Hs, "Significant wave height (in meters)")
-        ;
+        .def_readwrite(
+            "omega0",
+            &YamlDiracSpectrum::omega0,
+            "Angular frequency (2 * pi * f) in rad/s of the significant wave height")
+        .def_readwrite("Hs", &YamlDiracSpectrum::Hs, "Significant wave height (in meters)");
 
     py::class_<YamlPiersonMoskowitz>(m, "YamlPiersonMoskowitz")
         .def(py::init<>())
         .def_readwrite("Hs", &YamlPiersonMoskowitz::Hs, "Significant wave height (in meters)")
-        .def_readwrite("Tp", &YamlPiersonMoskowitz::Tp, "Mean wave period (in seconds)")
-        ;
+        .def_readwrite("Tp", &YamlPiersonMoskowitz::Tp, "Mean wave period (in seconds)");
 
     py::class_<YamlDefaultWaveModel>(m, "YamlDefaultWaveModel")
         .def(py::init<>())
-        .def_readwrite("zwave", &YamlDefaultWaveModel::zwave, "Constant free surface elevation (in meters)")
-        .def_readwrite("output", &YamlDefaultWaveModel::output, "Defines what wave data is outputted during the simulation & how it is generated")
-        ;
+        .def_readwrite(
+            "zwave",
+            &YamlDefaultWaveModel::zwave,
+            "Constant free surface elevation (in meters)")
+        .def_readwrite(
+            "output",
+            &YamlDefaultWaveModel::output,
+            "Defines what wave data is outputted during the simulation & how it is generated");
 }
 
 void py_add_module_xdyn_env_wave(py::module& m_env);
@@ -147,7 +227,8 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
     py_add_module_xdyn_env_wave_io(m_env_io);
 
     py::class_<WaveNumberFunctor>(m_env, "WaveNumberFunctor")
-        .def(py::init<const double, const double>(),
+        .def(
+            py::init<const double, const double>(),
             py::arg("h"),
             py::arg("omega"),
             R"(This is the functor used to solve the dispersion relation to compute
@@ -161,44 +242,73 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
                - `h` (float): Water depth (in meters)
                - `omega` (float): Angular frequency (in rad/s)
             )")
-        .def("__call__", &WaveNumberFunctor::operator())
-        ;
+        .def("__call__", &WaveNumberFunctor::operator());
 
     py::class_<DiscreteDirectionalWaveSpectrum>(m_env, "DiscreteDirectionalWaveSpectrum")
         .def(py::init<>())
-        .def_readwrite("Si", &DiscreteDirectionalWaveSpectrum::Si, "Discretized spectral density (in m^2.s")
+        .def_readwrite(
+            "Si",
+            &DiscreteDirectionalWaveSpectrum::Si,
+            "Discretized spectral density (in m^2.s")
         .def_readwrite("Dj", &DiscreteDirectionalWaveSpectrum::Dj, "Spatial spreading (in 1/rad)")
-        .def_readwrite("omega", &DiscreteDirectionalWaveSpectrum::omega, "Angular frequencies the spectrum was discretized at (in rad/s)")
-        .def_readwrite("psi", &DiscreteDirectionalWaveSpectrum::psi, "Directions between 0 & 2pi the spatial spreading was discretized at (in rad)")
-        .def_readwrite("k", &DiscreteDirectionalWaveSpectrum::k, "Discretized wave number (for each frequency) (in 1/m)")
-        .def_readwrite("phase", &DiscreteDirectionalWaveSpectrum::phase, "Random phases, for each (frequency, direction) couple (but time invariant) in radian phases *phase[i_freq][i_dir]*")
-        ;
+        .def_readwrite(
+            "omega",
+            &DiscreteDirectionalWaveSpectrum::omega,
+            "Angular frequencies the spectrum was discretized at (in rad/s)")
+        .def_readwrite(
+            "psi",
+            &DiscreteDirectionalWaveSpectrum::psi,
+            "Directions between 0 & 2pi the spatial spreading was discretized at (in rad)")
+        .def_readwrite(
+            "k",
+            &DiscreteDirectionalWaveSpectrum::k,
+            "Discretized wave number (for each frequency) (in 1/m)")
+        .def_readwrite(
+            "phase",
+            &DiscreteDirectionalWaveSpectrum::phase,
+            "Random phases, for each (frequency, direction) couple (but time invariant) in radian phases *phase[i_freq][i_dir]*");
 
     py::class_<FlatDiscreteDirectionalWaveSpectrum>(m_env, "FlatDiscreteDirectionalWaveSpectrum")
         .def(py::init<>())
-        .def_readwrite("a", &FlatDiscreteDirectionalWaveSpectrum::a,
+        .def_readwrite(
+            "a",
+            &FlatDiscreteDirectionalWaveSpectrum::a,
             "Amplitude (in m), for each angular frequency omega, and direction")
-        .def_readwrite("omega", &FlatDiscreteDirectionalWaveSpectrum::omega,
+        .def_readwrite(
+            "omega",
+            &FlatDiscreteDirectionalWaveSpectrum::omega,
             "Angular frequencies the spectrum was discretized at (in rad/s), for each angular frequency omega, and direction")
-        .def_readwrite("psi", &FlatDiscreteDirectionalWaveSpectrum::psi,
+        .def_readwrite(
+            "psi",
+            &FlatDiscreteDirectionalWaveSpectrum::psi,
             "Directions between 0 & 2pi the spatial spreading was discretized at (in rad)")
-        .def_readwrite("cos_psi", &FlatDiscreteDirectionalWaveSpectrum::cos_psi,
+        .def_readwrite(
+            "cos_psi",
+            &FlatDiscreteDirectionalWaveSpectrum::cos_psi,
             "Cosinus directions between 0 & 2pi the spatial spreading was discretized at (so we do not compute it each time), for each angular frequency omega, and direction")
-        .def_readwrite("sin_psi", &FlatDiscreteDirectionalWaveSpectrum::sin_psi,
+        .def_readwrite(
+            "sin_psi",
+            &FlatDiscreteDirectionalWaveSpectrum::sin_psi,
             "Sinus directions between 0 & 2pi the spatial spreading was discretized at (so we do not compute it each time), for each angular frequency omega, and direction")
-        .def_readwrite("k", &FlatDiscreteDirectionalWaveSpectrum::k,
+        .def_readwrite(
+            "k",
+            &FlatDiscreteDirectionalWaveSpectrum::k,
             "Discretized wave number (for each frequency) (in 1/m), for each angular frequency omega, i.e. same size as omega")
-        .def_readwrite("phase", &FlatDiscreteDirectionalWaveSpectrum::phase,
-            "Random phases, for each (frequency, direction) couple (but time invariant) in radian, for each angular frequency omega, and direction")
-        ;
+        .def_readwrite(
+            "phase",
+            &FlatDiscreteDirectionalWaveSpectrum::phase,
+            "Random phases, for each (frequency, direction) couple (but time invariant) in radian, for each angular frequency omega, and direction");
 
     // shared_ptr holder (see the PointMatrix comment in py_ssc.cpp): WaveModelPtr is what
     // crosses the boundary. Every class derived from it needs one too — pybind11 refuses to
     // register a default-holder subclass of a custom-holder base.
     py::class_<WaveModel, WaveModelPtr>(m_env, "WaveModel")
-        // .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const double /*constant_random_phase*/>())
-        // .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const int /*random_number_generator_seed*/>())
-        .def("get_elevation", &WaveModel::get_elevation,
+        // .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const double
+        // /*constant_random_phase*/>()) .def(py::init<const DiscreteDirectionalWaveSpectrum&
+        // /*spectrum*/, const int /*random_number_generator_seed*/>())
+        .def(
+            "get_elevation",
+            &WaveModel::get_elevation,
             py::arg("x"),
             py::arg("y"),
             py::arg("t"),
@@ -212,7 +322,9 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `y` (List[float]): y-positions in the NED frame (in meters),
             - `t` (float): Current time instant (in seconds),
             )")
-        .def("get_orbital_velocity", &WaveModel::get_orbital_velocity,
+        .def(
+            "get_orbital_velocity",
+            &WaveModel::get_orbital_velocity,
             py::arg("g"),
             py::arg("x"),
             py::arg("y"),
@@ -232,7 +344,9 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `t` (float): Current time instant (in seconds),
             - `eta` (List[float]): Wave heights at `x`, `y`, `t` (in meters),
             )")
-        .def("get_dynamic_pressure", &WaveModel::get_dynamic_pressure,
+        .def(
+            "get_dynamic_pressure",
+            &WaveModel::get_dynamic_pressure,
             py::arg("rho"),
             py::arg("g"),
             py::arg("x"),
@@ -254,20 +368,28 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `eta` (List[float]): Wave heights at x,y,t (in meters),
             - `t` (float): Current time instant (in seconds),
             )")
-        .def("get_spectrum", &WaveModel::get_spectrum)
-        ;
+        .def("get_spectrum", &WaveModel::get_spectrum);
 
     py::class_<WaveModelPtr>(m_env, "WaveModelPtr");
 
     py::class_<Airy, WaveModel, std::shared_ptr<Airy>>(m_env, "Airy")
-        .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/>(),
-            py::arg("spectrum"))
+        .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/>(), py::arg("spectrum"))
         // The seed first: pybind11 >= 3.1 lets an int match a double without conversion.
-        .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const int /*random_number_generator_seed*/>(),
-            py::arg("spectrum"), py::arg("random_number_generator_seed"))
-        .def(py::init<const DiscreteDirectionalWaveSpectrum& /*spectrum*/, const double /*constant_random_phase*/>(),
-            py::arg("spectrum"), py::arg("constant_random_phase"))
-        .def("evaluate_rao", &Airy::evaluate_rao,
+        .def(
+            py::init<
+                const DiscreteDirectionalWaveSpectrum& /*spectrum*/,
+                const int /*random_number_generator_seed*/>(),
+            py::arg("spectrum"),
+            py::arg("random_number_generator_seed"))
+        .def(
+            py::init<
+                const DiscreteDirectionalWaveSpectrum& /*spectrum*/,
+                const double /*constant_random_phase*/>(),
+            py::arg("spectrum"),
+            py::arg("constant_random_phase"))
+        .def(
+            "evaluate_rao",
+            &Airy::evaluate_rao,
             py::arg("x"),
             py::arg("y"),
             py::arg("t"),
@@ -284,20 +406,24 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `t` (float): Current time instant (in seconds)
             - `rao_module` (List[float]): Module of the RAO
             - `rao_phase` (List[float]): Phase of the RAO
-            )")
-        ;
-    py::class_<Stretching>(m_env, "Stretching", "Rescale the z-axis with delta stretching model (used to compute orbital velocities")
+            )");
+    py::class_<Stretching>(
+        m_env,
+        "Stretching",
+        "Rescale the z-axis with delta stretching model (used to compute orbital velocities")
         .def(py::init<const YamlStretching& /*input*/>(), "Usually read from YAML")
-        .def(py::init([](double delta, double h) {
-            YamlStretching ys;
-            ys.delta = delta;
-            ys.h = h;
-            return std::make_unique<Stretching>(ys);
+        .def(
+            py::init([](double delta, double h) {
+                YamlStretching ys;
+                ys.delta = delta;
+                ys.h = h;
+                return std::make_unique<Stretching>(ys);
             }),
             py::arg("delta") = 0.0,
-            py::arg("h") = 0.0
-            )
-        .def("rescaled_z", &Stretching::rescaled_z,
+            py::arg("h") = 0.0)
+        .def(
+            "rescaled_z",
+            &Stretching::rescaled_z,
             py::arg("original_z"),
             py::arg("wave_height"),
             R"(
@@ -317,29 +443,40 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
         ;
 
     py::class_<WaveSpectralDensity>(m_env, "WaveSpectralDensity")
-        .def("get_wave_number",
-            static_cast<double (WaveSpectralDensity::*)(const double /*omega*/) const>(&WaveSpectralDensity::get_wave_number),
+        .def(
+            "get_wave_number",
+            static_cast<double (WaveSpectralDensity::*)(const double /*omega*/) const>(
+                &WaveSpectralDensity::get_wave_number),
             py::arg("omega"),
             "Compute wave number, infinite depth")
-        .def("get_wave_number",
-            static_cast<double (WaveSpectralDensity::*)(const double /*omega*/, const double /*h*/) const>(&WaveSpectralDensity::get_wave_number),
+        .def(
+            "get_wave_number",
+            static_cast<double (WaveSpectralDensity::*)(const double /*omega*/, const double /*h*/)
+                            const>(&WaveSpectralDensity::get_wave_number),
             py::arg("omega"),
             py::arg("h"),
-            "Compute wave number, in finite depth")
-        ;
+            "Compute wave number, in finite depth");
 
     py::class_<SumOfWaveSpectralDensities, WaveSpectralDensity>(m_env, "SumOfWaveSpectralDensities")
         .def(py::init<>())
         .def(py::init<const WaveSpectralDensity& /*s*/>(), py::arg("s"))
-        .def(py::init<const WaveSpectralDensity& /*s1*/, const SumOfWaveSpectralDensities& /*s2*/>(), py::arg("s1"), py::arg("s2"))
+        .def(
+            py::init<const WaveSpectralDensity& /*s1*/, const SumOfWaveSpectralDensities& /*s2*/>(),
+            py::arg("s1"),
+            py::arg("s2"))
         // .def(py::init<const std::vector<WaveSpectralDensity>& /*ws*/>(), py::arg("ws"))
-        .def("__call__", &SumOfWaveSpectralDensities::operator(), py::arg("omega"),
+        .def(
+            "__call__",
+            &SumOfWaveSpectralDensities::operator(),
+            py::arg("omega"),
             R"(
             Wave density by wave number.
 
             - `omega` (float): Angular frequency (omega = 2 * pi * f) in rad/s
             )")
-        .def("get_angular_frequencies", &SumOfWaveSpectralDensities::get_angular_frequencies,
+        .def(
+            "get_angular_frequencies",
+            &SumOfWaveSpectralDensities::get_angular_frequencies,
             py::arg("omega_min"),
             py::arg("omega_max"),
             py::arg("n"),
@@ -355,18 +492,29 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `omega_max` (float): Maximum angular frequency (in rad/s)
             - `n` (int): Number of angular frequencies to return
             - `equal_energy_bins` (bool): Choose omegas so the integral of S between two successive omegas is constant
-            )")
-        ;
+            )");
 
     py::class_<DiracSpectralDensity, WaveSpectralDensity>(m_env, "DiracSpectralDensity")
-        .def(py::init<const double& /*omega0*/, const double /*Hs*/>(), py::arg("omega0"), py::arg("Hs"))
+        .def(
+            py::init<const double& /*omega0*/, const double /*Hs*/>(),
+            py::arg("omega0"),
+            py::arg("Hs"))
         .def(py::self + py::self)
-        .def("__call__", &DiracSpectralDensity::operator(), py::arg("omega"), "Computes the amplitude of the power spectrum at a given angular frequency")
-        .def("get_angular_frequencies", &DiracSpectralDensity::get_angular_frequencies,  "A vector containing only omega0 (in rad/s)")
-        ;
+        .def(
+            "__call__",
+            &DiracSpectralDensity::operator(),
+            py::arg("omega"),
+            "Computes the amplitude of the power spectrum at a given angular frequency")
+        .def(
+            "get_angular_frequencies",
+            &DiracSpectralDensity::get_angular_frequencies,
+            "A vector containing only omega0 (in rad/s)");
 
     py::class_<BretschneiderSpectrum, WaveSpectralDensity>(m_env, "BretschneiderSpectrum")
-        .def(py::init<const double& /*Hs*/, const double /*Tp*/>(), py::arg("Hs"), py::arg("Tp"),
+        .def(
+            py::init<const double& /*Hs*/, const double /*Tp*/>(),
+            py::arg("Hs"),
+            py::arg("Tp"),
             R"(
             BretschneiderSpectrum only constructor
 
@@ -376,7 +524,10 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `Tp` (float): Mean wave period (in seconds)
             )")
         .def(py::self + py::self)
-        .def("__call__", &BretschneiderSpectrum::operator(), py::arg("omega"),
+        .def(
+            "__call__",
+            &BretschneiderSpectrum::operator(),
+            py::arg("omega"),
             R"(
             Computes the amplitude of the power spectrum at a given angular frequency
 
@@ -385,12 +536,14 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             Input:
 
             - `omega` (float): Angular frequency (2\pi f) in rad/s of the significant wave height
-            )")
-        ;
+            )");
 
     py::class_<JonswapSpectrum, WaveSpectralDensity>(m_env, "JonswapSpectrum")
-        .def(py::init<const double& /*Hs*/, const double /*Tp*/, const double /*gamma*/>(),
-            py::arg("Hs"), py::arg("Tp"), py::arg("omega"),
+        .def(
+            py::init<const double& /*Hs*/, const double /*Tp*/, const double /*gamma*/>(),
+            py::arg("Hs"),
+            py::arg("Tp"),
+            py::arg("omega"),
             R"(
 
             Input:
@@ -400,7 +553,10 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `gamma` (float): Non-dimensional peak shape parameter
             )")
         .def(py::self + py::self)
-        .def("__call__", &JonswapSpectrum::operator(), py::arg("omega"),
+        .def(
+            "__call__",
+            &JonswapSpectrum::operator(),
+            py::arg("omega"),
             R"(
             Computes the amplitude of the power spectrum at a given angular frequency
 
@@ -411,16 +567,19 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
             - `omega` (float): Angular frequency (2\pi f) in rad/s of the significant wave height
             )");
 
-    py::class_<PiersonMoskowitzSpectrum, JonswapSpectrum, WaveSpectralDensity>(m_env, "PiersonMoskowitzSpectrum")
-        .def(py::init<const double& /*Hs*/, const double /*Tp*/>(),
-            py::arg("Hs"), py::arg("Tp"),
+    py::class_<PiersonMoskowitzSpectrum, JonswapSpectrum, WaveSpectralDensity>(
+        m_env,
+        "PiersonMoskowitzSpectrum")
+        .def(
+            py::init<const double& /*Hs*/, const double /*Tp*/>(),
+            py::arg("Hs"),
+            py::arg("Tp"),
             R"(
             Input:
 
             - `Hs` (float): Significant wave height (in meters)
             - `Tp` (float): Mean wave period (in seconds)
-            )")
-        ;
+            )");
 
     py::class_<WaveDirectionalSpreading>(m_env, "WaveDirectionalSpreading")
         // .def(py::init<>())
@@ -429,11 +588,21 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
         //     )
         ;
 
-    py::class_<SumOfWaveDirectionalSpreadings, WaveDirectionalSpreading>(m_env, "SumOfWaveDirectionalSpreadings")
+    py::class_<SumOfWaveDirectionalSpreadings, WaveDirectionalSpreading>(
+        m_env,
+        "SumOfWaveDirectionalSpreadings")
         .def(py::init<const WaveDirectionalSpreading& /*s*/>(), py::arg("s"))
-        .def(py::init<const WaveDirectionalSpreading& /*s1*/, const WaveDirectionalSpreading& /*s2*/>(), py::arg("s1"), py::arg("s2"))
+        .def(
+            py::init<
+                const WaveDirectionalSpreading& /*s1*/,
+                const WaveDirectionalSpreading& /*s2*/>(),
+            py::arg("s1"),
+            py::arg("s2"))
         // .def(py::init<const std::vector<WaveDirectionalSpreading>& /*s*/>(), py::arg("s"))
-        .def("__call__", &SumOfWaveDirectionalSpreadings::operator(), py::arg("psi"),
+        .def(
+            "__call__",
+            &SumOfWaveDirectionalSpreadings::operator(),
+            py::arg("psi"),
             R"(
             Wave density by direction.
 
@@ -441,15 +610,27 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
 
             - `psi` (float): Primary wave direction in radians.
             )")
-        .def("get_directions", &SumOfWaveDirectionalSpreadings::get_directions, py::arg("n"), py::arg("periodic") = false)
-        ;
+        .def(
+            "get_directions",
+            &SumOfWaveDirectionalSpreadings::get_directions,
+            py::arg("n"),
+            py::arg("periodic") = false);
 
-    py::class_<DiracDirectionalSpreading, WaveDirectionalSpreading>(m_env, "DiracDirectionalSpreading")
-        .def(py::init<const double /*psi0*/>(), py::arg("psi0"),
-            "Constructor with psi0 Primary wave direction (NED, ""coming from"") in radians")
+    py::class_<DiracDirectionalSpreading, WaveDirectionalSpreading>(
+        m_env,
+        "DiracDirectionalSpreading")
+        .def(
+            py::init<const double /*psi0*/>(),
+            py::arg("psi0"),
+            "Constructor with psi0 Primary wave direction (NED, "
+            "coming from"
+            ") in radians")
         .def(py::self + py::self)
-        .def("__call__", &DiracDirectionalSpreading::operator(), py::arg("psi"),
-        R"(
+        .def(
+            "__call__",
+            &DiracDirectionalSpreading::operator(),
+            py::arg("psi"),
+            R"(
         Wave density by direction.
         Equals one if psi=psi0 & 0 otherwise.
 
@@ -457,57 +638,70 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
 
         - `psi` (float): Primary wave direction in radians.
         )")
-        .def("get_directions", &DiracDirectionalSpreading::get_directions, "Returns a vector containing only psi0")
-        ;
+        .def(
+            "get_directions",
+            &DiracDirectionalSpreading::get_directions,
+            "Returns a vector containing only psi0");
 
-    py::class_<Cos2sDirectionalSpreading, WaveDirectionalSpreading>(m_env, "Cos2sDirectionalSpreading")
+    py::class_<Cos2sDirectionalSpreading, WaveDirectionalSpreading>(
+        m_env,
+        "Cos2sDirectionalSpreading")
         .def(py::init<const double /*psi0*/, const double /*s*/>(), py::arg("psi0"), py::arg("s"))
         .def(py::self + py::self)
-        .def("__call__", &Cos2sDirectionalSpreading::operator(), py::arg("psi"),
-        R"(
+        .def(
+            "__call__",
+            &Cos2sDirectionalSpreading::operator(),
+            py::arg("psi"),
+            R"(
         Wave density by direction.
         Equals one if psi=psi0 & 0 otherwise.
 
         Input:
 
         - `psi` (float): Primary wave direction in radians.
-        )")
-        ;
+        )");
 
-    m_env.def("discretize",
-        [](const WaveSpectralDensity& S,      //!< Frequency spectrum
-           const WaveDirectionalSpreading& D, //!< Spatial spectrum
-           const double omega_min,            //!< Lower bound of the angular frequency range (in rad/s)
-           const double omega_max,            //!< Upper bound of the angular frequency range (in rad/s)
-           const size_t nfreq,                //!< Number of frequencies in discrete spectrum
-           const size_t ndir,                 //!< Number of directions in discrete spectrum
-           const Stretching& stretching,      //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
-           const bool equal_energy_bins,      //!< Choose omegas so the integral of S between two successive omegas is constant
-           std::optional<double> h          //!< Water depth (in meters)
-           ){
+    m_env.def(
+        "discretize",
+        [](const WaveSpectralDensity& S,       //!< Frequency spectrum
+           const WaveDirectionalSpreading& D,  //!< Spatial spectrum
+           const double omega_min,        //!< Lower bound of the angular frequency range (in rad/s)
+           const double omega_max,        //!< Upper bound of the angular frequency range (in rad/s)
+           const size_t nfreq,            //!< Number of frequencies in discrete spectrum
+           const size_t ndir,             //!< Number of directions in discrete spectrum
+           const Stretching& stretching,  //!< Dilate z-axis to properly compute orbital velocities
+                                          //!< (delta-stretching)
+           const bool equal_energy_bins,  //!< Choose omegas so the integral of S between two
+                                          //!< successive omegas is constant
+           std::optional<double> h        //!< Water depth (in meters)
+        ) {
             if (h.has_value()) {
                 return discretize(
-                    S,                  //!< Frequency spectrum
-                    D,                  //!< Spatial spectrum
-                    omega_min,          //!< Lower bound of the angular frequency range (in rad/s)
-                    omega_max,          //!< Upper bound of the angular frequency range (in rad/s)
-                    (size_t)nfreq,      //!< Number of frequencies in discrete spectrum
-                    (size_t)ndir,       //!< Number of directions in discrete spectrum
-                    h.value(),          //!< Water depth (in meters)
-                    stretching,         //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
-                    equal_energy_bins   //!< Choose omegas so the integral of S between two successive omegas is constant
-                    );
+                    S,                 //!< Frequency spectrum
+                    D,                 //!< Spatial spectrum
+                    omega_min,         //!< Lower bound of the angular frequency range (in rad/s)
+                    omega_max,         //!< Upper bound of the angular frequency range (in rad/s)
+                    (size_t)nfreq,     //!< Number of frequencies in discrete spectrum
+                    (size_t)ndir,      //!< Number of directions in discrete spectrum
+                    h.value(),         //!< Water depth (in meters)
+                    stretching,        //!< Dilate z-axis to properly compute orbital velocities
+                                       //!< (delta-stretching)
+                    equal_energy_bins  //!< Choose omegas so the integral of S between two
+                                       //!< successive omegas is constant
+                );
             } else {
                 return discretize(
-                    S,                  //!< Frequency spectrum
-                    D,                  //!< Spatial spectrum
-                    omega_min,          //!< Lower bound of the angular frequency range (in rad/s)
-                    omega_max,          //!< Upper bound of the angular frequency range (in rad/s)
-                    (size_t)nfreq,      //!< Number of frequencies in discrete spectrum
-                    (size_t)ndir,       //!< Number of directions in discrete spectrum
-                    stretching,         //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
-                    equal_energy_bins   //!< Choose omegas so the integral of S between two successive omegas is constant
-                    );
+                    S,                 //!< Frequency spectrum
+                    D,                 //!< Spatial spectrum
+                    omega_min,         //!< Lower bound of the angular frequency range (in rad/s)
+                    omega_max,         //!< Upper bound of the angular frequency range (in rad/s)
+                    (size_t)nfreq,     //!< Number of frequencies in discrete spectrum
+                    (size_t)ndir,      //!< Number of directions in discrete spectrum
+                    stretching,        //!< Dilate z-axis to properly compute orbital velocities
+                                       //!< (delta-stretching)
+                    equal_energy_bins  //!< Choose omegas so the integral of S between two
+                                       //!< successive omegas is constant
+                );
             }
         },
         py::arg("S"),
@@ -533,31 +727,35 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
         - `stretching` (Stretching) : Dilate z-axis to properly compute orbital velocities (delta-stretching)
         - `equal_energy_bins` (Optional[bool]) : Choose omegas so the integral of S between two successive omegas is constant. Default is False
         - `h` (Optional[float]) : Water depth (in meters). If None, or not provided, infinite depth will be considered
-        )")
-        ;
+        )");
 
-    m_env.def("dynamic_pressure_factor",
-        [](const double k,               //!< Wave number (in 1/m)
-           const double z,               //!< z-position in the NED frame (in meters)
-           const double eta,             //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
-           const Stretching& stretching, //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
-           std::optional<double> h     //!< Water depth (in meters)
-           ){
+    m_env.def(
+        "dynamic_pressure_factor",
+        [](const double k,  //!< Wave number (in 1/m)
+           const double z,  //!< z-position in the NED frame (in meters)
+           const double
+               eta,  //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
+           const Stretching& stretching,  //!< Dilate z-axis to properly compute orbital velocities
+                                          //!< (delta-stretching)
+           std::optional<double> h        //!< Water depth (in meters)
+        ) {
             if (h.has_value()) {
                 return dynamic_pressure_factor(
-                    k,         //!< Wave number (in 1/m)
-                    z,         //!< z-position in the NED frame (in meters)
-                    h.value(), //!< Average water depth (in meters)
-                    eta,       //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
-                    stretching //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
-                    );
+                    k,          //!< Wave number (in 1/m)
+                    z,          //!< z-position in the NED frame (in meters)
+                    h.value(),  //!< Average water depth (in meters)
+                    eta,  //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
+                    stretching  //!< Dilate z-axis to properly compute orbital velocities
+                                //!< (delta-stretching)
+                );
             } else {
                 return dynamic_pressure_factor(
-                    k,         //!< Wave number (in 1/m)
-                    z,         //!< z-position in the NED frame (in meters)
-                    eta,       //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
-                    stretching //!< Dilate z-axis to properly compute orbital velocities (delta-stretching)
-                    );
+                    k,    //!< Wave number (in 1/m)
+                    z,    //!< z-position in the NED frame (in meters)
+                    eta,  //!< Wave elevation at (x,y) in the NED frame (in meters) for stretching
+                    stretching  //!< Dilate z-axis to properly compute orbital velocities
+                                //!< (delta-stretching)
+                );
             }
         },
         py::arg("k"),
@@ -576,10 +774,11 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
         - `eta` (float): Wave elevation at (x,y) in the NED frame (in meters) for stretching
         - `stretching` (Stretching): Dilate z-axis to properly compute orbital velocities (delta-stretching)
         - `h` (Optional[float]): Water depth (in meters). If None, or not provided, infinite depth will be considered
-        )")
-        ;
+        )");
 
-    m_env.def("find_integration_bound_yielding_target_area", &find_integration_bound_yielding_target_area,
+    m_env.def(
+        "find_integration_bound_yielding_target_area",
+        &find_integration_bound_yielding_target_area,
         py::arg("target_area"),
         py::arg("xs"),
         py::arg("ys"),
@@ -598,10 +797,13 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
 
         Return
             Abscissa at which the integral has the given value.
-        )")
-        ;
+        )");
 
-    m_env.def("area_curve", &area_curve, py::arg("xs"), py::arg("ys"),
+    m_env.def(
+        "area_curve",
+        &area_curve,
+        py::arg("xs"),
+        py::arg("ys"),
         R"(
         Calculates the cumulative integral using trapezoidal quadrature.
 
@@ -612,10 +814,12 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
 
         Return
             For each x, integral of ys from xmin to x.
-        )")
-        ;
+        )");
 
-    m_env.def("flatten", &flatten, py::arg("spectrum"),
+    m_env.def(
+        "flatten",
+        &flatten,
+        py::arg("spectrum"),
         R"(
         Discretize a wave spectrum
 
@@ -624,11 +828,13 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
         - `spectrum` (DiscreteDirectionalWaveSpectrum): Spectrum to flatten
 
         Returns a FlatDiscreteDirectionalWaveSpectrum
-        )")
-        ;
+        )");
 
-
-    m_env.def("filter_spectrum", &filter, py::arg("spectrum"), py::arg("ratio"),
+    m_env.def(
+        "filter_spectrum",
+        &filter,
+        py::arg("spectrum"),
+        py::arg("ratio"),
         // Renamed function filter to filter_spectrum to avoid any conflict with python
         // wrapper function
         R"(
@@ -644,10 +850,13 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
 
         Returns FlatDiscreteDirectionalWaveSpectrum A flat spectrum
         (i.e. one where the freq & direct. loops have been unrolled)
-        )")
-        ;
+        )");
 
-    m_env.def("equal_area_abscissae", &equal_area_abscissae, py::arg("xs"), py::arg("ys"),
+    m_env.def(
+        "equal_area_abscissae",
+        &equal_area_abscissae,
+        py::arg("xs"),
+        py::arg("ys"),
         R"(
         Calculates consecutive intervals where a function has constant area.
 
@@ -664,8 +873,7 @@ void py_add_module_xdyn_env_wave(py::module& m_env)
         If `f` denotes a function such that ys[i] = f(xs[i]), this function
         returns a list of increasing `x`-values such that integrating f between x[i-1]
         and x[i] will give a constant value, for each i between 1 and n-1.
-        )")
-        ;
+        )");
 }
 
 void py_add_module_xdyn_env_wind_io(py::module& m);
@@ -675,8 +883,9 @@ void py_add_module_xdyn_env_wind_io(py::module& m)
         .def(py::init<>())
         .def_readwrite("model", &YamlModel::model)
         .def_readwrite("yaml", &YamlModel::yaml)
-        .def_readwrite("index_of_first_line_in_global_yaml", &YamlModel::index_of_first_line_in_global_yaml)
-        ;
+        .def_readwrite(
+            "index_of_first_line_in_global_yaml",
+            &YamlModel::index_of_first_line_in_global_yaml);
 }
 
 void py_add_module_xdyn_env_wind(py::module& m_env);
@@ -691,60 +900,60 @@ void py_add_module_xdyn_env_wind(py::module& m_env)
         ;
 
     py::class_<DefaultWindModel, WindModel>(m_env, "DefaultWindModel")
-        .def(py::init<int>(), "Constructor argument is a dummy in order to be able to call DefaultWindModel(DefaultWindModel::parse(...)) from parser")
+        .def(
+            py::init<int>(),
+            "Constructor argument is a dummy in order to be able to call DefaultWindModel(DefaultWindModel::parse(...)) from parser")
         .def_static("model_name", &DefaultWindModel::model_name)
         .def_static("parse", &DefaultWindModel::parse)
-        .def("get_wind", &DefaultWindModel::get_wind,
-            py::arg("position"),
-            py::arg("t")
-            )
-        ;
+        .def("get_wind", &DefaultWindModel::get_wind, py::arg("position"), py::arg("t"));
 
     py::class_<WindMeanVelocityProfile::Input>(m_env, "WindMeanVelocityProfileInput")
         .def(py::init<>())
         .def_readwrite("velocity", &WindMeanVelocityProfile::Input::velocity)
-        .def_readwrite("direction", &WindMeanVelocityProfile::Input::direction)
-        ;
+        .def_readwrite("direction", &WindMeanVelocityProfile::Input::direction);
 
     py::class_<WindMeanVelocityProfile, WindModel>(m_env, "WindMeanVelocityProfile")
         // .def(py::init<const WindMeanVelocityProfile::Input& /*input*/>())
-        .def("get_wind", &WindMeanVelocityProfile::get_wind,
+        .def(
+            "get_wind",
+            &WindMeanVelocityProfile::get_wind,
             py::arg("position"),
-            py::arg("t") = 0.0
-            )
-        .def_static("parse", &WindMeanVelocityProfile::parse)
-        ;
+            py::arg("t") = 0.0)
+        .def_static("parse", &WindMeanVelocityProfile::parse);
 
-    py::class_<LogWindVelocityProfile::Input, WindMeanVelocityProfile::Input>(m_env, "LogWindVelocityProfileInput")
+    py::class_<LogWindVelocityProfile::Input, WindMeanVelocityProfile::Input>(
+        m_env,
+        "LogWindVelocityProfileInput")
         .def(py::init<>())
         .def_readwrite("z0", &LogWindVelocityProfile::Input::z0)
-        .def_readwrite("z_ref", &LogWindVelocityProfile::Input::z_ref)
-        ;
+        .def_readwrite("z_ref", &LogWindVelocityProfile::Input::z_ref);
 
     py::class_<LogWindVelocityProfile, WindMeanVelocityProfile>(m_env, "LogWindVelocityProfile")
         .def(py::init<const LogWindVelocityProfile::Input& /*input*/>())
         .def_static("model_name", &LogWindVelocityProfile::model_name)
-        .def_static("parse", &LogWindVelocityProfile::parse)
-        ;
+        .def_static("parse", &LogWindVelocityProfile::parse);
 
-    py::class_<PowerLawWindVelocityProfile::Input, WindMeanVelocityProfile::Input>(m_env, "PowerLawWindVelocityProfileInput")
+    py::class_<PowerLawWindVelocityProfile::Input, WindMeanVelocityProfile::Input>(
+        m_env,
+        "PowerLawWindVelocityProfileInput")
         .def(py::init<>())
         .def(py::init<const WindMeanVelocityProfile::Input& /*parent*/>())
         .def_readwrite("alpha", &PowerLawWindVelocityProfile::Input::alpha)
-        .def_readwrite("z_ref", &PowerLawWindVelocityProfile::Input::z_ref)
-        ;
+        .def_readwrite("z_ref", &PowerLawWindVelocityProfile::Input::z_ref);
 
-    py::class_<PowerLawWindVelocityProfile, WindMeanVelocityProfile>(m_env, "PowerLawWindVelocityProfile")
+    py::class_<PowerLawWindVelocityProfile, WindMeanVelocityProfile>(
+        m_env,
+        "PowerLawWindVelocityProfile")
         .def(py::init<const PowerLawWindVelocityProfile::Input& /*input*/>())
         .def_static("model_name", &PowerLawWindVelocityProfile::model_name)
-        .def_static("parse", &PowerLawWindVelocityProfile::parse)
-        ;
+        .def_static("parse", &PowerLawWindVelocityProfile::parse);
 
-    py::class_<UniformWindVelocityProfile, WindMeanVelocityProfile>(m_env, "UniformWindVelocityProfile")
+    py::class_<UniformWindVelocityProfile, WindMeanVelocityProfile>(
+        m_env,
+        "UniformWindVelocityProfile")
         .def(py::init<const WindMeanVelocityProfile::Input& /*input*/>())
         .def_static("model_name", &UniformWindVelocityProfile::model_name)
-        .def_static("parse", &UniformWindVelocityProfile::parse)
-        ;
+        .def_static("parse", &UniformWindVelocityProfile::parse);
 }
 
 void py_add_module_xdyn_env(py::module& m)

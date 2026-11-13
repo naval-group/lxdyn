@@ -8,9 +8,9 @@
 #ifndef WAVEMODELBUILDER_HPP_
 #define WAVEMODELBUILDER_HPP_
 
-#include <ssc/macros.hpp>
 #include <memory>
 #include <optional>
+#include <ssc/macros.hpp>
 #include <string>
 #include <vector>
 
@@ -24,31 +24,49 @@ struct FlatDiscreteDirectionalWaveSpectrum;
  *  \addtogroup simulator
  *  \ingroup simulator
  */
-class WaveModelBuilderInterface
-{
-    public:
-        WaveModelBuilderInterface(
-            const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >& directional_spreading_parsers_,
-            const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) :
-                directional_spreading_parsers(directional_spreading_parsers_),
-                spectrum_parsers(spectrum_parsers_)
-                {}
-        virtual ~WaveModelBuilderInterface() = default;
-        virtual std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const DiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const = 0;
-        virtual std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const = 0;
+class WaveModelBuilderInterface {
+public:
+    WaveModelBuilderInterface(
+        const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr>>&
+            directional_spreading_parsers_,
+        const std::shared_ptr<std::vector<SpectrumBuilderPtr>>& spectrum_parsers_)
+        : directional_spreading_parsers(directional_spreading_parsers_)
+        , spectrum_parsers(spectrum_parsers_)
+    {
+    }
+    virtual ~WaveModelBuilderInterface() = default;
+    virtual std::optional<std::shared_ptr<WaveModel>> try_to_parse(
+        const std::string& model,
+        const DiscreteDirectionalWaveSpectrum& spectrum,
+        const std::string& yaml) const = 0;
+    virtual std::optional<std::shared_ptr<WaveModel>> try_to_parse(
+        const std::string& model,
+        const FlatDiscreteDirectionalWaveSpectrum& spectrum,
+        const std::string& yaml) const = 0;
 
-    protected:
-        std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> > directional_spreading_parsers;
-        std::shared_ptr<std::vector<SpectrumBuilderPtr> > spectrum_parsers;
+protected:
+    std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr>> directional_spreading_parsers;
+    std::shared_ptr<std::vector<SpectrumBuilderPtr>> spectrum_parsers;
 };
 
-template <typename T> class WaveModelBuilder : public WaveModelBuilderInterface
-{
-    public:
-        WaveModelBuilder(const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >& directional_spreading_parsers_,
-                         const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) : WaveModelBuilderInterface(directional_spreading_parsers_,spectrum_parsers_) {}
-        std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const DiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
-        std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
+template <typename T>
+class WaveModelBuilder : public WaveModelBuilderInterface {
+public:
+    WaveModelBuilder(
+        const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr>>&
+            directional_spreading_parsers_,
+        const std::shared_ptr<std::vector<SpectrumBuilderPtr>>& spectrum_parsers_)
+        : WaveModelBuilderInterface(directional_spreading_parsers_, spectrum_parsers_)
+    {
+    }
+    std::optional<std::shared_ptr<WaveModel>> try_to_parse(
+        const std::string& model,
+        const DiscreteDirectionalWaveSpectrum& spectrum,
+        const std::string& yaml) const override;
+    std::optional<std::shared_ptr<WaveModel>> try_to_parse(
+        const std::string& model,
+        const FlatDiscreteDirectionalWaveSpectrum& spectrum,
+        const std::string& yaml) const override;
 };
 
 using WaveModelBuilderPtr = std::shared_ptr<WaveModelBuilderInterface>;

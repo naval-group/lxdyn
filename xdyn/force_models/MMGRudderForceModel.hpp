@@ -11,36 +11,41 @@
 #include "MMGPropellerForceModel.hpp"
 
 /** \details This class was created to define the rudder model used in the MMG model
- * 
+ *
  *  It was originally based on the 3 DOF MMG model as described in
- * H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y.
- * 
+ * H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering
+ * predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014,
+ * doi: 10.1007/s00773-014-0293-y.
+ *
  * More recently, it has been extended to 4 DOF, as described in
- * R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174, Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
- * 
+ * R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at
+ * different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174,
+ * Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
+ *
  *  \addtogroup ForceModels
  *  \ingroup module
- *  \section 
+ *  \section
  *  \snippet module/unit_tests/MMGRudderForceModelTest.cpp
  */
-class MMGRudderForceModel : public ForceModel
-{
-  public:
-    struct Yaml : MMGPropellerForceModel::Yaml
-    {
+class MMGRudderForceModel : public ForceModel {
+public:
+    struct Yaml : MMGPropellerForceModel::Yaml {
         /// Rudder projected area without considering the horn part(in m^2)
         double Ar{};
         /// Rudder span (in m)
         double b{};
-        /// Non-dimensional longitudinal coordinate of acting point of the additional lateral force in MMG frame
+        /// Non-dimensional longitudinal coordinate of acting point of the additional lateral force
+        /// in MMG frame
         double xH_adim{};
-        /// Non-dimensional effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame
+        /// Non-dimensional effective longitudinal coordinate of rudder position in formula of
+        /// $\beta_R$ in MMG frame
         double lR_adim{};
         /// Steering resistance deduction factor
         double tR{};
         /// Rudder force increase factor
         double aH{};
-        /// Flow straightening coefficient (first value for negative $\beta_R$,second value for positive $\beta_R$)
+        /// Flow straightening coefficient (first value for negative $\beta_R$,second value for
+        /// positive $\beta_R$)
         std::vector<double> gammaR;
         /// Ratio of wake fraction at propeller and rudder positions
         double epsilon{};
@@ -54,20 +59,26 @@ class MMGRudderForceModel : public ForceModel
         double Lpp{};
     };
 
-    MMGRudderForceModel(const Yaml& input, const std::string& body_name,
-                        const EnvironmentAndFrames& env);
+    MMGRudderForceModel(
+        const Yaml& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
 
-    Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env,
-                     const std::map<std::string, double>& commands) const override;
-    ssc::kinematics::Vector6d get_rudder_force(const BodyStates& states, const double t,
-                                               const EnvironmentAndFrames& env,
-                                               const std::map<std::string, double>& commands,
-                                               const double T) const;
+    Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const override;
+    ssc::kinematics::Vector6d get_rudder_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands,
+        const double T) const;
     static Yaml parse(const std::string& yaml);
     static std::string model_name();
 
-    struct RudderModel
-    {
+    struct RudderModel {
         RudderModel(const Yaml& parameters, const double rho);
         virtual ~RudderModel() = default;
 
@@ -84,49 +95,50 @@ class MMGRudderForceModel : public ForceModel
          */
         double get_angle_of_attack(
             const double
-                rudder_angle,        //!< Rudder angle (in radian): positive if rudder on port side
-            const double fluid_angle //!< Angle of the fluid at the rudder location in the ship's
-                                     //!< reference frame (0 if the fluid is propagating along -X,
-                                     //!< positive if fluid is coming from starboard)
+                rudder_angle,         //!< Rudder angle (in radian): positive if rudder on port side
+            const double fluid_angle  //!< Angle of the fluid at the rudder location in the ship's
+                                      //!< reference frame (0 if the fluid is propagating along -X,
+                                      //!< positive if fluid is coming from starboard)
         ) const;
 
         /**  \brief Calculates the norm of the gradient force acting on the rudder
          *  \returns force (in Newton)
          */
         double get_Fn(
-            const double area,  //!< Rudder area (in m^2)
-            const double speed, //!< Norm of the fluid velocity at the rudder location (in m/s)
+            const double area,   //!< Rudder area (in m^2)
+            const double speed,  //!< Norm of the fluid velocity at the rudder location (in m/s)
             /// Effective angle between the rudder and the inflow (in rad)
-            const double rudder_inflow_angle)
-            const;
+            const double rudder_inflow_angle) const;
 
-        /**  \brief Wrench (tensor) created by the rudder on the ship \details Expressed in body frame at the rudder location
+        /**  \brief Wrench (tensor) created by the rudder on the ship \details Expressed in body
+         * frame at the rudder location
          */
         ssc::kinematics::Vector6d get_wrench(
             const double
-                rudder_angle, //!< Rudder angle (in radian): positive if rudder on port side
-            const ssc::kinematics::Point& Vs, //!< Mean inflow velocity (body frame) relative to the ship
-                                             //!< at the rudder location in m/s
-            const double area               //!< Rudder area in m^2
+                rudder_angle,  //!< Rudder angle (in radian): positive if rudder on port side
+            const ssc::kinematics::Point& Vs,  //!< Mean inflow velocity (body frame) relative to
+                                               //!< the ship at the rudder location in m/s
+            const double area                  //!< Rudder area in m^2
         ) const;
 
-        /**  \brief Tota wrench created by the rudder on the ship \details Expressed in body frame at the rudder
-         * location
+        /**  \brief Tota wrench created by the rudder on the ship \details Expressed in body frame
+         * at the rudder location
          */
-        ssc::kinematics::Vector6d get_force(const double Fn, //!< Norm of the rudder force (in N)
-                                            const double rudder_angle //!< Rudder angle (in rad)
+        ssc::kinematics::Vector6d get_force(
+            const double Fn,           //!< Norm of the rudder force (in N)
+            const double rudder_angle  //!< Rudder angle (in rad)
         ) const;
 
-        /**  \brief Calculates the mean inflow velocity relative to the ship at the rudder location \returns Mean inlow velocity relative to the ship at the rudder
-         * location in m/s
+        /**  \brief Calculates the mean inflow velocity relative to the ship at the rudder location
+         * \returns Mean inlow velocity relative to the ship at the rudder location in m/s
          */
         ssc::kinematics::Point get_vs(
-            const double CTh, //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual",
-                              //!< J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
-            const double Va,  //!< Longitudinal inflow velocity (body frame) at the propeller
-                              //!< location (in m/s)
+            const double CTh,  //!< Thrust loading coefficient, Cf. "Manoeuvring Technical Manual",
+                               //!< J. Brix, Seehafen Verlag p. 84, eq. 1.2.20
+            const double Va,   //!< Longitudinal inflow velocity (body frame) at the propeller
+                               //!< location (in m/s)
             const double
-                vR //!< Lateral inflow velocity (body frame) at the rudder location (in m/s)
+                vR  //!< Lateral inflow velocity (body frame) at the rudder location (in m/s)
         ) const;
 
         double get_vr(const double u, const double v, const double r, const double dphi_dt) const;
@@ -135,8 +147,8 @@ class MMGRudderForceModel : public ForceModel
          *  \returns Angle in radian
          */
         double get_fluid_angle(
-            const ssc::kinematics::Point& Vs //!< Inflow velocity relative to the ship in body frame
-                                            //!< (m/s)
+            const ssc::kinematics::Point& Vs  //!< Inflow velocity relative to the ship in body
+                                              //!< frame (m/s)
         ) const;
 
         /**  \brief Returns propeller diameter
@@ -144,7 +156,7 @@ class MMGRudderForceModel : public ForceModel
          */
         double get_D() const;
 
-        /**  \brief Returns rudder frame (=MMG frame here) in body frame 
+        /**  \brief Returns rudder frame (=MMG frame here) in body frame
          *  \returns Rudder frame (=MMG frame here)location in body frame
          */
         Eigen::Vector3d get_rudder_frame_location() const;
@@ -154,24 +166,26 @@ class MMGRudderForceModel : public ForceModel
          */
         Eigen::Vector3d get_rudder_location_in_MMG_frame() const;
 
-
-      private:
-        RudderModel(); // Disabled
+    private:
+        RudderModel();  // Disabled
         /// Rudder projected area without considering the horn part (in m^2)
         double m_Ar;
         /// Rudder span (in m)
         double m_b;
         /// Propeller diameter (in m)
         double m_D;
-        /// Longitudinal coordinate of acting point of the additional lateral force in MMG frame (in m)
+        /// Longitudinal coordinate of acting point of the additional lateral force in MMG frame (in
+        /// m)
         double m_xH;
-        /// Effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame (in m)
+        /// Effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG
+        /// frame (in m)
         double m_lR;
         /// Steering resistance deduction factor
         double m_tR;
         /// Rudder force increase factor
         double m_aH;
-        /// Flow straightening coefficient (first value for negative $\beta_R$,second value for positive $\beta_R$)
+        /// Flow straightening coefficient (first value for negative $\beta_R$,second value for
+        /// positive $\beta_R$)
         std::vector<double> m_gammaR;
         /// Ratio of wake fraction at propeller and rudder positions
         double m_epsilon;
@@ -186,13 +200,13 @@ class MMGRudderForceModel : public ForceModel
         Eigen::Vector3d position_of_the_rudder_in_the_body_frame;
     };
 
-  protected:
+protected:
     void extra_observations(Observer& observer) const override;
 
-  private:
-    MMGPropellerForceModel m_propulsionModel; //!< Propeller model
-    RudderModel m_rudderModel;                //!< Rudder model
-    
+private:
+    MMGPropellerForceModel m_propulsionModel;  //!< Propeller model
+    RudderModel m_rudderModel;                 //!< Rudder model
+
     // The following variables are computed at each time step and stored only for outputting
     /// Propeller tensor in internal frame
     std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P;

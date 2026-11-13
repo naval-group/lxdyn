@@ -10,14 +10,28 @@
 
 #include "xdyn/core/Body.hpp"
 
-class BodyWithSurfaceForces : public Body
-{
-    public:
-        BodyWithSurfaceForces(const size_t idx, const BlockedDOF& blocked_states, const YamlFilteredStates& filtered_states);
-        BodyWithSurfaceForces(const BodyStates& states, const size_t idx, const BlockedDOF& blocked_states, const YamlFilteredStates& filtered_states);
-        BodyWithSurfaceForces(const size_t idx, const BlockedDOF& blocked_states, const StatesFilter& states_filter);
-        BodyWithSurfaceForces(const BodyStates& states, const size_t idx, const BlockedDOF& blocked_states, const StatesFilter& states_filter);
-        void update_intersection_with_free_surface(const EnvironmentAndFrames& env, const double t) override;
+class BodyWithSurfaceForces : public Body {
+public:
+    BodyWithSurfaceForces(
+        const size_t idx,
+        const BlockedDOF& blocked_states,
+        const YamlFilteredStates& filtered_states);
+    BodyWithSurfaceForces(
+        const BodyStates& states,
+        const size_t idx,
+        const BlockedDOF& blocked_states,
+        const YamlFilteredStates& filtered_states);
+    BodyWithSurfaceForces(
+        const size_t idx,
+        const BlockedDOF& blocked_states,
+        const StatesFilter& states_filter);
+    BodyWithSurfaceForces(
+        const BodyStates& states,
+        const size_t idx,
+        const BlockedDOF& blocked_states,
+        const StatesFilter& states_filter);
+    void update_intersection_with_free_surface(const EnvironmentAndFrames& env, const double t)
+        override;
 };
 
 #endif /* BODYWITHSURFACEFORCES_HPP_ */

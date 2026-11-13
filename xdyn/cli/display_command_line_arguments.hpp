@@ -8,11 +8,10 @@
 #ifndef EXECUTABLES_INC_DISPLAY_COMMAND_LINE_ARGUMENTS_HPP_
 #define EXECUTABLES_INC_DISPLAY_COMMAND_LINE_ARGUMENTS_HPP_
 
-#include <fstream> // std::cout
+#include <fstream>  // std::cout
 #include <string>
 
-struct BooleanArguments
-{
+struct BooleanArguments {
     bool help;
     bool debug;
     bool verbose;
@@ -25,8 +24,12 @@ struct BooleanArguments
 namespace po = boost::program_options;
 
 std::string description(const std::string& des);
-void print_usage(std::ostream& os, const po::options_description& desc, const std::string& program_name, const std::string& des);
-BooleanArguments parse_input(int argc, char **argv, const po::options_description& desc);
+void print_usage(
+    std::ostream& os,
+    const po::options_description& desc,
+    const std::string& program_name,
+    const std::string& des);
+BooleanArguments parse_input(int argc, char** argv, const po::options_description& desc);
 po::options_description assets_path_option(std::string& assets_path);
 void copy_stream(const std::ostream& from_stream, std::ostream& to_stream);
 

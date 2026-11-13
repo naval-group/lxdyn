@@ -7,14 +7,22 @@
 
 #include "LinearFroudeKrylovForceModel.hpp"
 
-
-LinearFroudeKrylovForceModel::LinearFroudeKrylovForceModel(const LinearFroudeKrylovForceModel::Input& data, const std::string& body_name, const EnvironmentAndFrames& env)
+LinearFroudeKrylovForceModel::LinearFroudeKrylovForceModel(
+    const LinearFroudeKrylovForceModel::Input& data,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
     : AbstractRaoForceModel(data, body_name, env)
-{}
+{
+}
 
-LinearFroudeKrylovForceModel::LinearFroudeKrylovForceModel(const LinearFroudeKrylovForceModel::Input& data, const std::string& body_name, const EnvironmentAndFrames& env, const std::string& hdb_file_contents)
+LinearFroudeKrylovForceModel::LinearFroudeKrylovForceModel(
+    const LinearFroudeKrylovForceModel::Input& data,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env,
+    const std::string& hdb_file_contents)
     : AbstractRaoForceModel(data, body_name, env, hdb_file_contents)
-{}
+{
+}
 
 std::string LinearFroudeKrylovForceModel::model_name()
 {

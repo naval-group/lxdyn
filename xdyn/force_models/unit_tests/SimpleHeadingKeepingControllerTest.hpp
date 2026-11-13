@@ -8,14 +8,14 @@
 #ifndef SIMPLETRACKKEEPINGCONTROLLERTEST_HPP_
 #define SIMPLETRACKKEEPINGCONTROLLERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class SimpleHeadingKeepingControllerTest : public ::testing::Test
-{
-    protected:
-        SimpleHeadingKeepingControllerTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class SimpleHeadingKeepingControllerTest : public ::testing::Test {
+protected:
+    SimpleHeadingKeepingControllerTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* SIMPLETRACKKEEPINGCONTROLLERTEST_HPP_ */
+#endif /* SIMPLETRACKKEEPINGCONTROLLERTEST_HPP_ */

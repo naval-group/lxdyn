@@ -3,25 +3,26 @@
  */
 
 #include "Seabed.hpp"
-#include "xdyn/core/AssetPath.hpp"
+
+#include <stb_image.h>
 
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-#include <stb_image.h>
+
+#include "xdyn/core/AssetPath.hpp"
 
 Seabed::Seabed(const std::string& sea_bed_file)
-    :  width(), height(), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
+    : width(), height(), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
 {
     const std::string seabed_path = xdyn::resolve_asset(sea_bed_file);
     int channels;
     unsigned char* img = stbi_load(seabed_path.c_str(), &width, &height, &channels, 1);
-    if (!img)
-    {
-        std::cerr << "Failed to load seabed image " << seabed_path << ": " << stbi_failure_reason() << std::endl;
+    if (!img) {
+        std::cerr << "Failed to load seabed image " << seabed_path << ": " << stbi_failure_reason()
+                  << std::endl;
     }
-    for (int i = 0; i < width * height; i++)
-    {
+    for (int i = 0; i < width * height; i++) {
         int x = i % width;
         int y = i / width;
         seabed[{x, y}] = img[i];
@@ -30,15 +31,14 @@ Seabed::Seabed(const std::string& sea_bed_file)
 }
 
 Seabed::Seabed(const double depth)
-    :  width(1), height(1), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
+    : width(1), height(1), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
 {
     seabed[{0, 0}] = depth;
 }
 
 double Seabed::get_height(const double x, const double y) const
 {
-    if (width == 1 && height == 1)
-    {
+    if (width == 1 && height == 1) {
         return seabed.at({0, 0});
     }
     const InterpolationWeights weights = calculateWeights(x, y);
@@ -46,10 +46,9 @@ double Seabed::get_height(const double x, const double y) const
     const double h_ur = seabed.at({weights.xright, weights.yup});
     const double h_dl = seabed.at({weights.xleft, weights.ydown});
     const double h_dr = seabed.at({weights.xright, weights.ydown});
-    const double interpolated = weights.left * weights.up * h_ul +
-                                weights.right * weights.up * h_ur +
-                                weights.left * weights.down * h_dl +
-                                weights.right * weights.down * h_dr;
+    const double interpolated =
+        weights.left * weights.up * h_ul + weights.right * weights.up * h_ur +
+        weights.left * weights.down * h_dl + weights.right * weights.down * h_dr;
     return zscale * interpolated;
 }
 
@@ -57,8 +56,7 @@ Eigen::Vector2d Seabed::get_gradient(const double x, const double y) const
 {
     const double x_rel = x / xscale - xoffset;
     const double y_rel = y / yscale - yoffset;
-    if (x_rel < 0 || x_rel > width || y_rel < 0 || y_rel > height)
-    {
+    if (x_rel < 0 || x_rel > width || y_rel < 0 || y_rel > height) {
         return Eigen::Vector2d::Zero();
     }
     const InterpolationWeights weights = calculateWeights(x, y);
@@ -80,33 +78,23 @@ InterpolationWeights Seabed::calculateWeights(const double x_abs, const double y
     const int ydown = std::max(0, std::min(height - 1, (int)std::floor(y)));
     const int yup = std::max(0, std::min(height - 1, (int)std::ceil(y)));
     double left, right, down, up;
-    if (x <= 0)
-    {
+    if (x <= 0) {
         left = 1;
         right = 0;
-    }
-    else if (x >= width - 1)
-    {
+    } else if (x >= width - 1) {
         left = 0;
         right = 1;
-    }
-    else
-    {
+    } else {
         left = x - xleft;
         right = xright - x;
     }
-    if (y <= 0)
-    {
+    if (y <= 0) {
         up = 0;
         down = 1;
-    }
-    else if (y >= height - 1)
-    {
+    } else if (y >= height - 1) {
         up = 1;
         down = 0;
-    }
-    else
-    {
+    } else {
         up = yup - y;
         down = y - ydown;
     }

@@ -4,12 +4,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class ODEintTests : public ::testing::Test
-{
-    protected:
-        ODEintTests();
-        ssc::random_data_generator::DataGenerator a;
-
+class ODEintTests : public ::testing::Test {
+protected:
+    ODEintTests();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* ODEINTTESTS_HPP_ */
+#endif /* ODEINTTESTS_HPP_ */

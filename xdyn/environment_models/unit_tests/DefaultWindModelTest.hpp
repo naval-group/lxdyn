@@ -8,14 +8,14 @@
 #ifndef ENVIRONMENT_MODELS_UNIT_TESTS_INC_DEFAULTWINDMODELTEST_HPP_
 #define ENVIRONMENT_MODELS_UNIT_TESTS_INC_DEFAULTWINDMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class DefaultWindModelTest : public ::testing::Test
-{
-    protected:
-        DefaultWindModelTest ();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class DefaultWindModelTest : public ::testing::Test {
+protected:
+    DefaultWindModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
 #endif /* ENVIRONMENT_MODELS_UNIT_TESTS_INC_DEFAULTWINDMODELTEST_HPP_ */

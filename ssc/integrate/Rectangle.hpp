@@ -10,19 +10,16 @@
 
 #include "ssc/integrate/Integrator.hpp"
 
-namespace ssc
-{
-    namespace integrate
-    {
-        class Rectangle : public Integrator
-        {
-            public:
-                Rectangle() = default;
-                explicit Rectangle(const Function& f);
+namespace ssc {
+namespace integrate {
+class Rectangle : public Integrator {
+public:
+    Rectangle() = default;
+    explicit Rectangle(const Function& f);
 
-            private:
-                double integrate_impl(const Function& f, double a, double b, double eps=1e-6) override;
-        };
-    }
-}
+private:
+    double integrate_impl(const Function& f, double a, double b, double eps = 1e-6) override;
+};
+}  // namespace integrate
+}  // namespace ssc
 #endif /* RECTANGLE_HPP_ */

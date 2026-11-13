@@ -5,8 +5,6 @@
  *      Author: cady
  */
 
-
 #include "YamlWaveOutput.hpp"
 
-YamlWaveOutput::YamlWaveOutput() : frame_of_reference("")
-{}
+YamlWaveOutput::YamlWaveOutput() : frame_of_reference("") {}

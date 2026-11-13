@@ -8,11 +8,10 @@
 #ifndef GRPC_UNIT_TESTS_INC_GRPCFORCEMODELTEST_HPP_
 #define GRPC_UNIT_TESTS_INC_GRPCFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class GRPCForceModelTest : public ::testing::Test
-{
-};
+#include "gtest/gtest.h"
+
+class GRPCForceModelTest : public ::testing::Test {};
 
 #endif /* GRPC_UNIT_TESTS_INC_GRPCFORCEMODELTEST_HPP_ */

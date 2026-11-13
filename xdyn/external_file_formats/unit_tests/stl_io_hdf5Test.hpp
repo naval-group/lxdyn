@@ -3,8 +3,6 @@
 
 #include "gtest/gtest.h"
 
-class stl_io_hdf5Test : public ::testing::Test
-{
-};
+class stl_io_hdf5Test : public ::testing::Test {};
 
 #endif

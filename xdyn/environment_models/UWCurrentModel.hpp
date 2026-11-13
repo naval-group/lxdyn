@@ -9,48 +9,55 @@
 
 #include <Eigen/Dense>
 #include <memory>
-#include <ssc/macros.hpp>
 #include <optional>
-#include "yaml-cpp/exceptions.h"
+#include <ssc/macros.hpp>
 
-#include "xdyn/external_data_structures/YamlModel.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/external_data_structures/YamlModel.hpp"
+#include "yaml-cpp/exceptions.h"
 
 class UWCurrentModel;
 using UWCurrentModelPtr = std::shared_ptr<UWCurrentModel>;
 using UWCurrentParser = std::function<std::optional<UWCurrentModelPtr>(const YamlModel&)>;
 
-class UWCurrentModel
-{
+class UWCurrentModel {
 public:
     virtual ~UWCurrentModel() = default;
     /**  \param wave_height z of the free surface above the queried point, in NED (so positive down)
-      */
-    virtual Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d& position, const double t, const double wave_height) const=0;
+     */
+    virtual Eigen::Vector3d get_UWCurrent(
+        const Eigen::Vector3d& position,
+        const double t,
+        const double wave_height) const = 0;
 
     template <typename UWCurrentType>
     static UWCurrentParser build_parser()
     {
-        auto parser = [](const YamlModel& yaml) -> std::optional<UWCurrentModelPtr>
-        {
+        auto parser = [](const YamlModel& yaml) -> std::optional<UWCurrentModelPtr> {
             std::optional<UWCurrentModelPtr> ret;
-            if (yaml.model == UWCurrentType::model_name())
-            {
-                std::string context = "Invalid input data for model '" + UWCurrentType::model_name() + "'.";
-                try
-                {
+            if (yaml.model == UWCurrentType::model_name()) {
+                std::string context =
+                    "Invalid input data for model '" + UWCurrentType::model_name() + "'.";
+                try {
                     ret = UWCurrentModelPtr(new UWCurrentType(UWCurrentType::parse(yaml.yaml)));
-                }
-                catch (const InvalidInputException& exception)
-                {
-                    THROW(__PRETTY_FUNCTION__, InvalidInputException, context << std::endl << "The error was: " << exception.get_message() << std::endl << "Model containing error is defined line "
-                          << yaml.index_of_first_line_in_global_yaml << " of the YAML file." << std::endl);
-                }
-                catch (const YAML::Exception& exception)
-                {
+                } catch (const InvalidInputException& exception) {
+                    THROW(
+                        __PRETTY_FUNCTION__,
+                        InvalidInputException,
+                        context << std::endl
+                                << "The error was: " << exception.get_message() << std::endl
+                                << "Model containing error is defined line "
+                                << yaml.index_of_first_line_in_global_yaml << " of the YAML file."
+                                << std::endl);
+                } catch (const YAML::Exception& exception) {
                     const size_t line_number = yaml.index_of_first_line_in_global_yaml;
-                    THROW(__PRETTY_FUNCTION__, InvalidInputException, context << std::endl << "Model containing error is defined line "
-                          << line_number << " of the YAML file." << std::endl << "The error was: " << exception.msg);
+                    THROW(
+                        __PRETTY_FUNCTION__,
+                        InvalidInputException,
+                        context << std::endl
+                                << "Model containing error is defined line " << line_number
+                                << " of the YAML file." << std::endl
+                                << "The error was: " << exception.msg);
                 }
             }
             return ret;

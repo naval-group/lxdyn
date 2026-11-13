@@ -3,9 +3,8 @@
 
 #include "gtest/gtest.h"
 
-class AeroPolarForceModelTest : public ::testing::Test
-{
-    public:
+class AeroPolarForceModelTest : public ::testing::Test {
+public:
 };
 
 #endif /* FORCE_MODELS_UNIT_TESTS_INC_AEROPOLARFORCEMODELTEST_HPP_ */

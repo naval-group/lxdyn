@@ -8,8 +8,7 @@
 #ifndef YAMLANGLE_HPP_
 #define YAMLANGLE_HPP_
 
-struct YamlAngle
-{
+struct YamlAngle {
     YamlAngle();
     YamlAngle(const double phi, const double theta, const double psi);
     double phi;

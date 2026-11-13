@@ -9,26 +9,23 @@
 #define CUBICRUNOUTSPLINES_HPP_
 #include "Splines.hpp"
 
+namespace ssc {
+namespace interpolation {
+/** \author cec
+ *  \brief This class was created to choose a cubic runout for cubic splines
+ *  \details It has the following responsibility:
+ *  - Implement the get_endpoint_value method
+ */
+class CubicRunoutSplines : public Splines {
+public:
+    CubicRunoutSplines();
+    CubicRunoutSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
+    ~CubicRunoutSplines() override = default;
 
-namespace ssc
-{
-    namespace interpolation
-    {
-        /** \author cec
-         *  \brief This class was created to choose a cubic runout for cubic splines
-         *  \details It has the following responsibility:
-         *  - Implement the get_endpoint_value method
-         */
-        class CubicRunoutSplines : public Splines
-        {
-            public:
-                CubicRunoutSplines();
-                CubicRunoutSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
-                ~CubicRunoutSplines() override = default;
-            private:
-                double get_endpoint_value() const override;
-        };
-    }
-}
+private:
+    double get_endpoint_value() const override;
+};
+}  // namespace interpolation
+}  // namespace ssc
 
 #endif /* CUBICRUNOUTSPLINES_HPP_ */

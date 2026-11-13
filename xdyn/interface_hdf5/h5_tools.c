@@ -1,30 +1,30 @@
-#include <stddef.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include "h5_tools.h"
 
-herr_t _h5_addRawStringsAsAnAttributeToADataSet(
-        const hid_t                dset,
-        char         const * const attributeName,
-        const size_t               numberOfStringsToAdd,
-        const size_t               maxLengthStringsToAdd,
-        char const * const         rawStringsToWrite);
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-char * _h5_concatenatePaddedArrayOfStrings(
-        size_t numberOfStrings,
-        char * * strings,
-        size_t * const maxLengthStringsToAdd);
+herr_t _h5_addRawStringsAsAnAttributeToADataSet(
+    const hid_t dset,
+    char const* const attributeName,
+    const size_t numberOfStringsToAdd,
+    const size_t maxLengthStringsToAdd,
+    char const* const rawStringsToWrite);
+
+char* _h5_concatenatePaddedArrayOfStrings(
+    size_t numberOfStrings,
+    char** strings,
+    size_t* const maxLengthStringsToAdd);
 
 /**
  * \param[in] fileName Name of the HDF5 file
  * \return Boolean indicating whether the file exists
  */
-hbool_t h5_doesFileExists(char const * const fileName)
+hbool_t h5_doesFileExists(char const* const fileName)
 {
-    FILE * const file = fopen(fileName, "rb");
-    if(file != NULL)
-    {
+    FILE* const file = fopen(fileName, "rb");
+    if (file != NULL) {
         fclose(file);
         return 1;
     }
@@ -36,16 +36,12 @@ hbool_t h5_doesFileExists(char const * const fileName)
  * \param[in] fileName Name of the HDF5 file
  * \return idFile
  */
-hid_t h5_getFileId(
-        char const * const fileName)
+hid_t h5_getFileId(char const* const fileName)
 {
     hid_t idFile = 0;
-    if(h5_doesFileExists(fileName) == 1)
-    {
+    if (h5_doesFileExists(fileName) == 1) {
         idFile = H5Fopen(fileName, H5F_ACC_RDWR, H5P_DEFAULT);
-    }
-    else
-    {
+    } else {
         idFile = H5Fcreate(fileName, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
     }
     return idFile;
@@ -64,25 +60,23 @@ hid_t h5_getFileId(
  *       the new one.
  */
 herr_t h5_addDataSetAtRoot(
-        const hid_t           file,
-        const hid_t           id,
-        char const * const    dataSetName,
-        const int             ndims,
-        hsize_t const * const dims,
-        void const * const    dataSet)
+    const hid_t file,
+    const hid_t id,
+    char const* const dataSetName,
+    const int ndims,
+    hsize_t const* const dims,
+    void const* const dataSet)
 {
     herr_t status = 0;
     hid_t space = 0;
     hid_t dset = 0;
-    if(H5Lexists(file, dataSetName, H5P_DEFAULT)==1)
-    {
-        if(H5Ldelete(file, dataSetName, H5P_DEFAULT) < 0)
-        {
-            printf("%s : H5Ldelete failed\n",__FILE__);
+    if (H5Lexists(file, dataSetName, H5P_DEFAULT) == 1) {
+        if (H5Ldelete(file, dataSetName, H5P_DEFAULT) < 0) {
+            printf("%s : H5Ldelete failed\n", __FILE__);
         }
     }
-    space  = H5Screate_simple(ndims, dims, NULL);
-    dset   = H5Dcreate2(file, dataSetName, id, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+    space = H5Screate_simple(ndims, dims, NULL);
+    dset = H5Dcreate2(file, dataSetName, id, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     status = H5Dwrite(dset, id, H5S_ALL, H5S_ALL, H5P_DEFAULT, dataSet);
     status = H5Dclose(dset);
     status = H5Sclose(space);
@@ -90,21 +84,27 @@ herr_t h5_addDataSetAtRoot(
 }
 
 herr_t h5_addAnArrayOfStringsAsAnAttributeToADataSet(
-    hid_t                      dset,
-    char         const * const attributeName,
-    size_t                     numberOfStringsToAdd,
-    char               * *     stringsToAdd)
+    hid_t dset,
+    char const* const attributeName,
+    size_t numberOfStringsToAdd,
+    char** stringsToAdd)
 {
-    herr_t      status = 0;
-    size_t      maxLengthStringsToAdd = 0;
-    char        * m = NULL;
-    if((attributeName==NULL) || (numberOfStringsToAdd==0) || (stringsToAdd==NULL))
-    {
+    herr_t status = 0;
+    size_t maxLengthStringsToAdd = 0;
+    char* m = NULL;
+    if ((attributeName == NULL) || (numberOfStringsToAdd == 0) || (stringsToAdd == NULL)) {
         return status;
     }
-    m = _h5_concatenatePaddedArrayOfStrings(numberOfStringsToAdd, stringsToAdd, &maxLengthStringsToAdd);
+    m = _h5_concatenatePaddedArrayOfStrings(
+        numberOfStringsToAdd,
+        stringsToAdd,
+        &maxLengthStringsToAdd);
     status = _h5_addRawStringsAsAnAttributeToADataSet(
-                dset, attributeName, numberOfStringsToAdd, maxLengthStringsToAdd,m);
+        dset,
+        attributeName,
+        numberOfStringsToAdd,
+        maxLengthStringsToAdd,
+        m);
     free(m);
     return status;
 }
@@ -117,33 +117,31 @@ herr_t h5_addAnArrayOfStringsAsAnAttributeToADataSet(
  * \param[out] maxLengthStrings
  * \return m Pointer to the newly allocated concatenated string
  */
-char * _h5_concatenatePaddedArrayOfStrings(
-        size_t numberOfStrings,
-        char * * strings,
-        size_t * const maxLengthStrings)
+char* _h5_concatenatePaddedArrayOfStrings(
+    size_t numberOfStrings,
+    char** strings,
+    size_t* const maxLengthStrings)
 {
-    char * m = NULL;
-    size_t i =0, tmp = 0;
+    char* m = NULL;
+    size_t i = 0, tmp = 0;
     size_t maxLength = 0;
     *maxLengthStrings = 0;
-    if(numberOfStrings==0)
-    {
+    if (numberOfStrings == 0) {
         return m;
     }
-    for(i=0;i<numberOfStrings;++i)
-    {
+    for (i = 0; i < numberOfStrings; ++i) {
         tmp = strlen(strings[i]);
-        maxLength = (tmp>maxLength)?tmp:maxLength;
+        maxLength = (tmp > maxLength) ? tmp : maxLength;
     }
-    m = (char *) calloc((maxLength+1)*numberOfStrings,sizeof(char));
-    for(i=0;i<numberOfStrings;++i)
-    {
-        // Maybe this requires a bit more testing. This is a workaround but doesn't really solve any underlying issue (if any)
+    m = (char*)calloc((maxLength + 1) * numberOfStrings, sizeof(char));
+    for (i = 0; i < numberOfStrings; ++i) {
+        // Maybe this requires a bit more testing. This is a workaround but doesn't really solve any
+        // underlying issue (if any)
         // - https://developers.redhat.com/blog/2018/05/24/detecting-string-truncation-with-gcc-8/
         // - https://github.com/zmartzone/liboauth2/issues/9
         // - https://stackoverflow.com/a/52265482
         // - https://github.com/facebookarchive/xcbuild/issues/297#issuecomment-570531099
-        memcpy(m+(i*(maxLength+1)),strings[i],strlen(strings[i]));
+        memcpy(m + (i * (maxLength + 1)), strings[i], strlen(strings[i]));
     }
     *maxLengthStrings = maxLength;
     return m;
@@ -159,85 +157,65 @@ char * _h5_concatenatePaddedArrayOfStrings(
  * \return status HDF5 error code
  */
 herr_t _h5_addRawStringsAsAnAttributeToADataSet(
-        const hid_t                dset,
-        char         const * const attributeName,
-        const size_t               numberOfStringsToAdd,
-        const size_t               maxLengthStringsToAdd,
-        char const * const         rawStringsToWrite)
+    const hid_t dset,
+    char const* const attributeName,
+    const size_t numberOfStringsToAdd,
+    const size_t maxLengthStringsToAdd,
+    char const* const rawStringsToWrite)
 {
-    herr_t      status = 0;
-    hid_t       filetype = 0;
-    hid_t       space = 0;
-    hid_t       memtype = 0;
-    hid_t       attr = 0;
-    hsize_t     dims[1] = {0};
+    herr_t status = 0;
+    hid_t filetype = 0;
+    hid_t space = 0;
+    hid_t memtype = 0;
+    hid_t attr = 0;
+    hsize_t dims[1] = {0};
     dims[0] = numberOfStringsToAdd;
-    filetype= H5Tcopy(H5T_FORTRAN_S1);
-    status  = H5Tset_size(filetype, maxLengthStringsToAdd);
+    filetype = H5Tcopy(H5T_FORTRAN_S1);
+    status = H5Tset_size(filetype, maxLengthStringsToAdd);
     memtype = H5Tcopy(H5T_C_S1);
-    status  = H5Tset_size(memtype, maxLengthStringsToAdd+1);
-    space   = H5Screate_simple(1, dims, NULL);
-    attr    = H5Acreate(dset, attributeName, filetype, space, H5P_DEFAULT, H5P_DEFAULT);
-    status  = H5Awrite(attr, memtype, rawStringsToWrite);
-    status  = H5Aclose(attr);
-    status  = H5Sclose(space);
-    status  = H5Tclose(filetype);
-    status  = H5Tclose(memtype);
+    status = H5Tset_size(memtype, maxLengthStringsToAdd + 1);
+    space = H5Screate_simple(1, dims, NULL);
+    attr = H5Acreate(dset, attributeName, filetype, space, H5P_DEFAULT, H5P_DEFAULT);
+    status = H5Awrite(attr, memtype, rawStringsToWrite);
+    status = H5Aclose(attr);
+    status = H5Sclose(space);
+    status = H5Tclose(filetype);
+    status = H5Tclose(memtype);
     return status;
 }
 
 /**
  *  \brief displays the data type of a HDF5 element
  */
-void h5_displayDataType(FILE *f, hid_t tid)
+void h5_displayDataType(FILE* f, hid_t tid)
 {
     const H5T_class_t t_class = H5Tget_class(tid);
     h5_displayDataTypeFromClass(f, t_class);
 }
 
-void h5_displayDataTypeFromClass(FILE * const f, H5T_class_t t_class)
+void h5_displayDataTypeFromClass(FILE* const f, H5T_class_t t_class)
 {
-    if(t_class < 0)
-    {
-        fprintf(f," Invalid datatype.\n");
-    }
-    else
-    {
-        if(t_class == H5T_INTEGER)
-        {
-            fprintf(f," Datatype is 'H5T_INTEGER'.\n");
-        }
-        else if(t_class == H5T_FLOAT)
-        {
-            fprintf(f," Datatype is 'H5T_FLOAT'.\n");
-        }
-        else if(t_class == H5T_STRING)
-        {
-            fprintf(f," Datatype is 'H5T_STRING'.\n");
-        }
-        else if(t_class == H5T_BITFIELD)
-        {
-            fprintf(f," Datatype is 'H5T_BITFIELD'.\n");
-        }
-        else if(t_class == H5T_OPAQUE)
-        {
-            fprintf(f," Datatype is 'H5T_OPAQUE'.\n");
-        }
-        else if(t_class == H5T_COMPOUND)
-        {
-            fprintf(f," Datatype is 'H5T_COMPOUND'.\n");
-        }
-        else if(t_class == H5T_ARRAY)
-        {
-            fprintf(f," Datatype is 'H5T_ARRAY'.\n");
-        }
-        else if(t_class == H5T_ENUM)
-        {
-            fprintf(f," Datatype is 'H5T_ENUM'.\n");
-        }
-        else
-        {
-            fprintf(f," Datatype is 'Other'.\n");
+    if (t_class < 0) {
+        fprintf(f, " Invalid datatype.\n");
+    } else {
+        if (t_class == H5T_INTEGER) {
+            fprintf(f, " Datatype is 'H5T_INTEGER'.\n");
+        } else if (t_class == H5T_FLOAT) {
+            fprintf(f, " Datatype is 'H5T_FLOAT'.\n");
+        } else if (t_class == H5T_STRING) {
+            fprintf(f, " Datatype is 'H5T_STRING'.\n");
+        } else if (t_class == H5T_BITFIELD) {
+            fprintf(f, " Datatype is 'H5T_BITFIELD'.\n");
+        } else if (t_class == H5T_OPAQUE) {
+            fprintf(f, " Datatype is 'H5T_OPAQUE'.\n");
+        } else if (t_class == H5T_COMPOUND) {
+            fprintf(f, " Datatype is 'H5T_COMPOUND'.\n");
+        } else if (t_class == H5T_ARRAY) {
+            fprintf(f, " Datatype is 'H5T_ARRAY'.\n");
+        } else if (t_class == H5T_ENUM) {
+            fprintf(f, " Datatype is 'H5T_ENUM'.\n");
+        } else {
+            fprintf(f, " Datatype is 'Other'.\n");
         }
     }
 }

@@ -8,27 +8,28 @@
 #ifndef DIRECTIONALSPREADINGBUILDER_HPP_
 #define DIRECTIONALSPREADINGBUILDER_HPP_
 
-#include <optional>
-
-#include <string>
-#include <ssc/macros.hpp>
 #include <memory>
+#include <optional>
+#include <ssc/macros.hpp>
+#include <string>
 
 class WaveDirectionalSpreading;
 
-class DirectionalSpreadingBuilderInterface
-{
-    public:
-        virtual ~DirectionalSpreadingBuilderInterface()= default;
-        virtual std::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
+class DirectionalSpreadingBuilderInterface {
+public:
+    virtual ~DirectionalSpreadingBuilderInterface() = default;
+    virtual std::optional<std::shared_ptr<WaveDirectionalSpreading>> try_to_parse(
+        const std::string& model,
+        const std::string& yaml) const = 0;
 };
 
 template <typename T>
-class DirectionalSpreadingBuilder : public DirectionalSpreadingBuilderInterface
-{
-    public:
-        DirectionalSpreadingBuilder() : DirectionalSpreadingBuilderInterface(){}
-        std::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const override;
+class DirectionalSpreadingBuilder : public DirectionalSpreadingBuilderInterface {
+public:
+    DirectionalSpreadingBuilder() : DirectionalSpreadingBuilderInterface() {}
+    std::optional<std::shared_ptr<WaveDirectionalSpreading>> try_to_parse(
+        const std::string& model,
+        const std::string& yaml) const override;
 };
 
 using DirectionalSpreadingBuilderPtr = std::shared_ptr<DirectionalSpreadingBuilderInterface>;

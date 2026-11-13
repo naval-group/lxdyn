@@ -9,15 +9,12 @@
 #define TYPECOERCIONTEST_HPP_
 
 #include "gtest/gtest.h"
-
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class TypeCoercionTest : public ::testing::Test
-{
-    protected:
-        TypeCoercionTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class TypeCoercionTest : public ::testing::Test {
+protected:
+    TypeCoercionTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* TYPECOERCIONTEST_HPP_ */
+#endif /* TYPECOERCIONTEST_HPP_ */

@@ -8,14 +8,14 @@
 #ifndef QUADRATICDAMPINGFORCEMODELTEST_HPP_
 #define QUADRATICDAMPINGFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class QuadraticDampingForceModelTest : public ::testing::Test
-{
-    protected:
+#include "gtest/gtest.h"
+
+class QuadraticDampingForceModelTest : public ::testing::Test {
+protected:
     QuadraticDampingForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* QUADRATICDAMPINGFORCEMODELTEST_HPP_ */
+#endif /* QUADRATICDAMPINGFORCEMODELTEST_HPP_ */

@@ -9,15 +9,12 @@
 #define SIGNALCONTAINERTEST_HPP_
 
 #include "gtest/gtest.h"
-
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class SignalContainerTest : public ::testing::Test
-{
-    protected:
-        SignalContainerTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class SignalContainerTest : public ::testing::Test {
+protected:
+    SignalContainerTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* SIGNALCONTAINERTEST_HPP_ */
+#endif /* SIGNALCONTAINERTEST_HPP_ */

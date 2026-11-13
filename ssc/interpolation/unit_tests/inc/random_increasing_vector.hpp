@@ -11,15 +11,14 @@
 #include <cstddef>
 #include <vector>
 
-namespace ssc
-{
-    namespace random_data_generator
-    {
-        class DataGenerator;
-    }
+namespace ssc {
+namespace random_data_generator {
+class DataGenerator;
 }
+}  // namespace ssc
 
-std::vector<double> a_random_vector_of_doubles_in_increasing_order_of_size(const ssc::random_data_generator::DataGenerator& a, const size_t& n);
-
+std::vector<double> a_random_vector_of_doubles_in_increasing_order_of_size(
+    const ssc::random_data_generator::DataGenerator& a,
+    const size_t& n);
 
 #endif /* RANDOM_INCREASING_VECTOR_HPP_ */

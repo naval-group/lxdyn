@@ -7,10 +7,9 @@
 
 #include "gtest/gtest.h"
 
-class AssetPathTest : public ::testing::Test
-{
-    protected:
-        void TearDown() override;
+class AssetPathTest : public ::testing::Test {
+protected:
+    void TearDown() override;
 };
 
 #endif /* ASSETPATHTEST_HPP_ */

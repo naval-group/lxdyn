@@ -11,32 +11,38 @@
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/ForceModel.hpp"
 
-class GRPCForceModel : public ForceModel
-{
-    public:
-        struct Input
-        {
-            std::string url;
-            std::string name;
-            std::string yaml;
-            std::string hdb_filename;
-            std::string precal_filename;
-        };
-        GRPCForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        ~GRPCForceModel() override;
-        Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
-        static Input parse(const std::string& yaml);
-        static std::string model_name();
-        double get_Tmax() const override;
+class GRPCForceModel : public ForceModel {
+public:
+    struct Input {
+        std::string url;
+        std::string name;
+        std::string yaml;
+        std::string hdb_filename;
+        std::string precal_filename;
+    };
+    GRPCForceModel(
+        const Input& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    ~GRPCForceModel() override;
+    Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const override;
+    static Input parse(const std::string& yaml);
+    static std::string model_name();
+    double get_Tmax() const override;
 
-    private:
-        void extra_observations(Observer& observer) const override;
-        GRPCForceModel(); // Disabled
-        class Impl;
-        std::unique_ptr<Impl> pimpl;
-        GRPCForceModel(std::unique_ptr<Impl> pimpl, const std::string& body_name, const EnvironmentAndFrames& env);
-
+private:
+    void extra_observations(Observer& observer) const override;
+    GRPCForceModel();  // Disabled
+    class Impl;
+    std::unique_ptr<Impl> pimpl;
+    GRPCForceModel(
+        std::unique_ptr<Impl> pimpl,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
 };
-
 
 #endif /* GRPC_INC_GRPCFORCEMODEL_HPP_ */

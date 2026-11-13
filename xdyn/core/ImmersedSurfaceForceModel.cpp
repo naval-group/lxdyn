@@ -10,8 +10,8 @@
 ImmersedSurfaceForceModel::ImmersedSurfaceForceModel(
     const std::string& name_,
     const std::string& body_name_,
-    const EnvironmentAndFrames& env) :
-        SurfaceForceModel(name_, body_name_, env)
+    const EnvironmentAndFrames& env)
+    : SurfaceForceModel(name_, body_name_, env)
 {
 }
 

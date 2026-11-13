@@ -1,14 +1,14 @@
 #include "Hdf5ObserverTest.hpp"
+
+#include <ssc/solver/steppers.hpp>
+
 #include "Hdf5Observer.hpp"
 #include "ListOfObservers.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
-#include <ssc/solver/steppers.hpp>
 
-Hdf5ObserverTest::Hdf5ObserverTest() : a(ssc::random_data_generator::DataGenerator(546545))
-{
-}
+Hdf5ObserverTest::Hdf5ObserverTest() : a(ssc::random_data_generator::DataGenerator(546545)) {}
 
 TEST_F(Hdf5ObserverTest, should_be_able_to_create_an_observer)
 {
@@ -21,11 +21,9 @@ TEST_F(Hdf5ObserverTest, should_be_able_to_create_an_observer)
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (const auto& output:yaml)
-    {
-        if (output.format == "hdf5")
-        {
-            EXPECT_EQ(0,remove(output.filename.c_str()));
+    for (const auto& output : yaml) {
+        if (output.format == "hdf5") {
+            EXPECT_EQ(0, remove(output.filename.c_str()));
         }
     }
 }
@@ -41,12 +39,10 @@ TEST_F(Hdf5ObserverTest, LONG_should_be_able_to_create_an_observer_with_wave_out
         ListOfObservers observers(yaml);
         ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     }
-    for (const auto& output:yaml)
-    {
-        if (output.format == "hdf5")
-        {
-            //std::cout<<output.filename;
-            //EXPECT_EQ(0,remove(output.filename.c_str()));
+    for (const auto& output : yaml) {
+        if (output.format == "hdf5") {
+            // std::cout<<output.filename;
+            // EXPECT_EQ(0,remove(output.filename.c_str()));
         }
     }
 }

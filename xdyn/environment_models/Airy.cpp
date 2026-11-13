@@ -6,71 +6,83 @@
  */
 
 #include "Airy.hpp"
+
+#include <Eigen/Dense>
+#include <ssc/macros.hpp>
+#include <vector>
+
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
-#include <ssc/macros.hpp>
-#include <Eigen/Dense>
-#include <vector>
+Airy::Airy(const FlatDiscreteDirectionalWaveSpectrum& spectrum) : WaveModel(spectrum) {}
 
-Airy::Airy(const FlatDiscreteDirectionalWaveSpectrum& spectrum) : WaveModel(spectrum)
+Airy::Airy(const DiscreteDirectionalWaveSpectrum& spectrum_) : WaveModel(spectrum_) {}
+
+Airy::Airy(const DiscreteDirectionalWaveSpectrum& spectrum_, const double constant_random_phase)
+    : WaveModel(spectrum_, constant_random_phase)
 {
 }
 
-Airy::Airy(const DiscreteDirectionalWaveSpectrum& spectrum_): WaveModel(spectrum_)
+Airy::Airy(const DiscreteDirectionalWaveSpectrum& spectrum_, const int random_number_generator_seed)
+    : WaveModel(spectrum_, random_number_generator_seed)
 {
 }
-
-Airy::Airy(const DiscreteDirectionalWaveSpectrum& spectrum_, const double constant_random_phase) : WaveModel(spectrum_, constant_random_phase)
-{
-}
-
-Airy::Airy(const DiscreteDirectionalWaveSpectrum& spectrum_, const int random_number_generator_seed) : WaveModel(spectrum_, random_number_generator_seed)
-{
-}
-
 
 double Airy::evaluate_rao(
-        const double x,                           //!< x-position of the RAO's calculation point in the NED frame (in meters)
-        const double y,                           //!< y-position of the RAO's calculation point in the NED frame (in meters)
-        const double t,                           //!< Current time instant (in seconds)
-        const std::vector<double>& rao_module_for_each_frequency_and_incidence,    //!< "Flattened" matrix containing the module of the RAO for each angular frequency omega and each wave incidence beta
-        const std::vector<double>& rao_phase_for_each_frequency_and_incidence      //!< "Flattened" matrix containing the phase of the RAO for each angular frequency omega and each wave incidence beta
-        ) const
+    const double x,  //!< x-position of the RAO's calculation point in the NED frame (in meters)
+    const double y,  //!< y-position of the RAO's calculation point in the NED frame (in meters)
+    const double t,  //!< Current time instant (in seconds)
+    const std::vector<double>&
+        rao_module_for_each_frequency_and_incidence,  //!< "Flattened" matrix containing the module
+                                                      //!< of the RAO for each angular frequency
+                                                      //!< omega and each wave incidence beta
+    const std::vector<double>&
+        rao_phase_for_each_frequency_and_incidence  //!< "Flattened" matrix containing the phase of
+                                                    //!< the RAO for each angular frequency omega
+                                                    //!< and each wave incidence beta
+) const
 {
     double F = 0;
-    const size_t nb_of_omegas_x_nb_of_directions = rao_module_for_each_frequency_and_incidence.size();
-    if (nb_of_omegas_x_nb_of_directions != flat_spectrum.k.size())
-    {
-        THROW(__PRETTY_FUNCTION__, InternalErrorException, "Number of angular frequencies times number of incidences in HDB RAO is " << nb_of_omegas_x_nb_of_directions << ", which does not match spectrum size (" << flat_spectrum.k.size() << " (omega,psi) pairs)");
+    const size_t nb_of_omegas_x_nb_of_directions =
+        rao_module_for_each_frequency_and_incidence.size();
+    if (nb_of_omegas_x_nb_of_directions != flat_spectrum.k.size()) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InternalErrorException,
+            "Number of angular frequencies times number of incidences in HDB RAO is "
+                << nb_of_omegas_x_nb_of_directions << ", which does not match spectrum size ("
+                << flat_spectrum.k.size() << " (omega,psi) pairs)");
     }
     // For each (omega,beta) pair
-    for (size_t i = 0 ; i < nb_of_omegas_x_nb_of_directions ; ++i)
-    {
-        const double rao_amplitude = rao_module_for_each_frequency_and_incidence[i] * flat_spectrum.a[i];
+    for (size_t i = 0; i < nb_of_omegas_x_nb_of_directions; ++i) {
+        const double rao_amplitude =
+            rao_module_for_each_frequency_and_incidence[i] * flat_spectrum.a[i];
         const double omega_t = flat_spectrum.omega[i] * t;
-        const double k_xCosPsi_ySinPsi = flat_spectrum.k[i] * (x * flat_spectrum.cos_psi[i] + y * flat_spectrum.sin_psi[i]);
+        const double k_xCosPsi_ySinPsi =
+            flat_spectrum.k[i] * (x * flat_spectrum.cos_psi[i] + y * flat_spectrum.sin_psi[i]);
         const double theta = flat_spectrum.phase[i];
-        F -= rao_amplitude * sin(-omega_t + k_xCosPsi_ySinPsi + theta + rao_phase_for_each_frequency_and_incidence[i]);
+        F -= rao_amplitude * sin(-omega_t + k_xCosPsi_ySinPsi + theta +
+                                 rao_phase_for_each_frequency_and_incidence[i]);
     }
     return F;
 }
 
 std::vector<double> Airy::elevation(
-    const std::vector<double> &x, //!< x-positions in the NED frame (in meters)
-    const std::vector<double> &y, //!< y-positions in the NED frame (in meters)
-    const double t                //!< Current time instant (in seconds)
-    ) const
+    const std::vector<double>& x,  //!< x-positions in the NED frame (in meters)
+    const std::vector<double>& y,  //!< y-positions in the NED frame (in meters)
+    const double t                 //!< Current time instant (in seconds)
+) const
 {
     std::vector<double> zeta(x.size());
     const size_t n = flat_spectrum.psi.size();
 
     for (size_t j = 0; j < zeta.size(); ++j) {
-        for (size_t i = 0 ; i < n ; ++i)
-        {
+        for (size_t i = 0; i < n; ++i) {
             const double a = flat_spectrum.a[i];
             const double omega_t = flat_spectrum.omega[i] * t;
-            const double k_xCosPsi_ySinPsi = flat_spectrum.k[i] * (x.at(j) * flat_spectrum.cos_psi[i] + y.at(j) * flat_spectrum.sin_psi[i]);
+            const double k_xCosPsi_ySinPsi =
+                flat_spectrum.k[i] *
+                (x.at(j) * flat_spectrum.cos_psi[i] + y.at(j) * flat_spectrum.sin_psi[i]);
             const double theta = flat_spectrum.phase[i];
             zeta.at(j) -= a * sin(-omega_t + k_xCosPsi_ySinPsi + theta);
         }
@@ -80,42 +92,42 @@ std::vector<double> Airy::elevation(
 }
 
 std::vector<double> Airy::dynamic_pressure(
-    const double rho,               //!< water density (in kg/m^3)
-    const double g,                 //!< gravity (in m/s^2)
-    const std::vector<double> &x,   //!< x-positions in the NED frame (in meters)
-    const std::vector<double> &y,   //!< y-positions in the NED frame (in meters)
-    const std::vector<double> &z,   //!< z-positions in the NED frame (in meters)
-    const std::vector<double> &eta, //!< Wave elevations at (x,y) in the NED frame (in meters)
-    const double t                  //!< Current time instant (in seconds)
-    ) const
+    const double rho,                //!< water density (in kg/m^3)
+    const double g,                  //!< gravity (in m/s^2)
+    const std::vector<double>& x,    //!< x-positions in the NED frame (in meters)
+    const std::vector<double>& y,    //!< y-positions in the NED frame (in meters)
+    const std::vector<double>& z,    //!< z-positions in the NED frame (in meters)
+    const std::vector<double>& eta,  //!< Wave elevations at (x,y) in the NED frame (in meters)
+    const double t                   //!< Current time instant (in seconds)
+) const
 {
     std::vector<double> p(x.size(), 0);
 
-    for (size_t j = 0; j < p.size(); ++j)
-    {
-        if (std::isnan(z[j]))
-        {
-            THROW(__PRETTY_FUNCTION__, InternalErrorException, "z (value to rescale, in meters) was NaN");
+    for (size_t j = 0; j < p.size(); ++j) {
+        if (std::isnan(z[j])) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InternalErrorException,
+                "z (value to rescale, in meters) was NaN");
         }
-        if (std::isnan(eta[j]))
-        {
-            THROW(__PRETTY_FUNCTION__, InternalErrorException, "eta (wave height, in meters) was NaN");
+        if (std::isnan(eta[j])) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InternalErrorException,
+                "eta (wave height, in meters) was NaN");
         }
 
-        if (z[j] < eta[j])
-        {
+        if (z[j] < eta[j]) {
             p[j] = 0;
-        }
-        else
-        {
+        } else {
             const size_t n = flat_spectrum.psi.size();
-            for (size_t i = 0; i < n; ++i)
-            {
+            for (size_t i = 0; i < n; ++i) {
                 const double a = flat_spectrum.a[i];
                 const double k = flat_spectrum.k[i];
                 const double omega_t = flat_spectrum.omega[i] * t;
                 const double pdyn_fact = flat_spectrum.pdyn_factor(k, z[j], eta[j]);
-                const double k_xCosPsi_ySinPsi = k * (x[j] * flat_spectrum.cos_psi[i] + y[j] * flat_spectrum.sin_psi[i]);
+                const double k_xCosPsi_ySinPsi =
+                    k * (x[j] * flat_spectrum.cos_psi[i] + y[j] * flat_spectrum.sin_psi[i]);
                 const double theta = flat_spectrum.phase[i];
                 p[j] += a * pdyn_fact * sin(-omega_t + k_xCosPsi_ySinPsi + theta);
             }
@@ -126,18 +138,17 @@ std::vector<double> Airy::dynamic_pressure(
 }
 
 ssc::kinematics::PointMatrix Airy::orbital_velocity(
-        const double g,                //!< gravity (in m/s^2)
-        const std::vector<double>& x,  //!< x-positions in the NED frame (in meters)
-        const std::vector<double>& y,  //!< y-positions in the NED frame (in meters)
-        const std::vector<double>& z,  //!< z-positions in the NED frame (in meters)
-        const double t,                //!< Current time instant (in seconds)
-        const std::vector<double>& eta //!< Wave heights at x,y,t (in meters)
-        ) const
+    const double g,                 //!< gravity (in m/s^2)
+    const std::vector<double>& x,   //!< x-positions in the NED frame (in meters)
+    const std::vector<double>& y,   //!< y-positions in the NED frame (in meters)
+    const std::vector<double>& z,   //!< z-positions in the NED frame (in meters)
+    const double t,                 //!< Current time instant (in seconds)
+    const std::vector<double>& eta  //!< Wave heights at x,y,t (in meters)
+) const
 {
     ssc::kinematics::PointMatrix M("NED", x.size());
     for (size_t point_index = 0; point_index < x.size(); ++point_index) {
-        if (z.at(point_index) < eta.at(point_index))
-        {
+        if (z.at(point_index) < eta.at(point_index)) {
             M.m(0, static_cast<Eigen::Index>(point_index)) = 0;
             M.m(1, static_cast<Eigen::Index>(point_index)) = 0;
             M.m(2, static_cast<Eigen::Index>(point_index)) = 0;
@@ -146,15 +157,15 @@ ssc::kinematics::PointMatrix Airy::orbital_velocity(
             double u = 0;
             double v = 0;
             double w = 0;
-            for (size_t i = 0 ; i < n ; ++i)
-            {
+            for (size_t i = 0; i < n; ++i) {
                 const double omega = flat_spectrum.omega[i];
                 const double k = flat_spectrum.k[i];
                 // No stretching for the orbital velocity
-                const double pdyn_factor = flat_spectrum.pdyn_factor(k,z[point_index],0);
+                const double pdyn_factor = flat_spectrum.pdyn_factor(k, z[point_index], 0);
                 // No stretching for the orbital velocity
-                const double pdyn_factor_sh = flat_spectrum.pdyn_factor_sh(k,z[point_index],0);
-                const double k_xCosPsi_ySinPsi = k * (x[point_index] * flat_spectrum.cos_psi[i] + y[point_index] * flat_spectrum.sin_psi[i]);
+                const double pdyn_factor_sh = flat_spectrum.pdyn_factor_sh(k, z[point_index], 0);
+                const double k_xCosPsi_ySinPsi = k * (x[point_index] * flat_spectrum.cos_psi[i] +
+                                                      y[point_index] * flat_spectrum.sin_psi[i]);
                 const double theta = -omega * t + k_xCosPsi_ySinPsi + flat_spectrum.phase[i];
                 const double cos_theta = cos(theta);
                 const double sin_theta = sin(theta);

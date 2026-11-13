@@ -8,15 +8,14 @@
 #ifndef DIRACSPECTRALDENSITYTEST_HPP_
 #define DIRACSPECTRALDENSITYTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class DiracSpectralDensityTest : public ::testing::Test
-{
-    protected:
-        DiracSpectralDensityTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class DiracSpectralDensityTest : public ::testing::Test {
+protected:
+    DiracSpectralDensityTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* DIRACSPECTRALDENSITYTEST_HPP_ */
+#endif /* DIRACSPECTRALDENSITYTEST_HPP_ */

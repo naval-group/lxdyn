@@ -17,7 +17,7 @@ namespace po = boost::program_options;
 
 bool invalid(const XdynForMECommandLineArguments& input);
 po::options_description get_options_description(XdynForMECommandLineArguments& input_data);
-int get_input_data(int argc, char **argv, XdynForMECommandLineArguments& input_data);
-int fill_input_or_display_help(char *argv, XdynForMECommandLineArguments& input_data);
+int get_input_data(int argc, char** argv, XdynForMECommandLineArguments& input_data);
+int fill_input_or_display_help(char* argv, XdynForMECommandLineArguments& input_data);
 
 #endif /* PARSE_XDYN_FOR_ME_COMMAND_LINE_ARGUMENTSHPP */

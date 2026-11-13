@@ -8,17 +8,14 @@
 #include "DataSourceTest.hpp"
 
 #include <memory>
-
-#include "gmock/gmock.h"
+#include <set>
 
 #include "DataSourceModuleMock.hpp"
 #include "TestModules.hpp"
-
+#include "gmock/gmock.h"
 #include "ssc/data_source/DataSource.hpp"
-#include "ssc/data_source/DataSourceModule.hpp"
 #include "ssc/data_source/DataSourceException.hpp"
-
-#include <set>
+#include "ssc/data_source/DataSourceModule.hpp"
 
 using namespace ssc::data_source;
 
@@ -32,13 +29,12 @@ static std::string random_module_name()
     return a_.random<std::string>();
 }
 
-using ::testing::Return;
-using ::testing::NiceMock;
-using ::testing::StrictMock;
 using ::testing::InSequence;
+using ::testing::NiceMock;
+using ::testing::Return;
+using ::testing::StrictMock;
 MockableDataSourceModule::MockableDataSourceModule() : DataSourceModule(ds_, random_module_name())
 {
-
 }
 
 DataSourceTest::DataSourceTest() : a(ssc::random_data_generator::DataGenerator(654))
@@ -51,33 +47,31 @@ DataSourceTest::~DataSourceTest()
     delete ds_;
 }
 
-MODULE(M1,ds->set<double>("s1",123))
-MODULE(M2,const double s1 = ds->get<double>("s1");\
-          ds->set<double>("s2", s1))
-MODULE(M3,ds->get<double>("s2"))
-MODULE(OneInputTwoOutputs,const double x = ds->get<double>("x");\
-          ds->set<double>("y1", 2*x);\
-          ds->set<double>("y2", 3*x))
+MODULE(M1, ds->set<double>("s1", 123))
+MODULE(M2, const double s1 = ds->get<double>("s1"); ds->set<double>("s2", s1))
+MODULE(M3, ds->get<double>("s2"))
+MODULE(
+    OneInputTwoOutputs, const double x = ds->get<double>("x"); ds->set<double>("y1", 2 * x);
+    ds->set<double>("y2", 3 * x))
 
 TEST_F(DataSourceTest, example)
 {
-//! [DataSourceTest example]
+    //! [DataSourceTest example]
     std::shared_ptr<DataSource> ds = std::make_shared<DataSource>();
     NiceMock<MockDataSourceModule>* mock = new NiceMock<MockDataSourceModule>();
     ON_CALL(*mock, clone()).WillByDefault(Return(mock));
     EXPECT_CALL(*mock, initialize()).Times(1);
     ds->add(*mock);
-//! [DataSourceTest example]
-//! [DataSourceTest expected output]
-//! [DataSourceTest expected output]
+    //! [DataSourceTest example]
+    //! [DataSourceTest expected output]
+    //! [DataSourceTest expected output]
 }
 
 TEST_F(DataSourceTest, all_mock_modules_generated_for_tests_should_have_different_names)
 {
     std::set<std::string> module_names;
     const size_t nb_of_mocks = NB_OF_TRIALS;
-    for (size_t i = 0 ; i < nb_of_mocks ; ++i)
-    {
+    for (size_t i = 0; i < nb_of_mocks; ++i) {
         MockDataSourceModule mock;
         module_names.insert(mock.get_name());
     }
@@ -90,9 +84,9 @@ TEST_F(DataSourceTest, should_be_able_to_clear_a_datasource_to_empty_it)
     ds.add<M1>();
     ds.add<M2>();
     ds.add<M3>();
-    ASSERT_EQ(3,ds.get_modules().size());
+    ASSERT_EQ(3, ds.get_modules().size());
     ds.clear();
-    ASSERT_EQ(0,ds.get_modules().size());
+    ASSERT_EQ(0, ds.get_modules().size());
 }
 
 TEST_F(DataSourceTest, should_be_able_to_add_a_module_and_get_the_list_of_modules)
@@ -107,15 +101,14 @@ TEST_F(DataSourceTest, should_be_able_to_add_a_module_and_get_the_list_of_module
 
     ON_CALL(*mock_1, clone()).WillByDefault(Return(mock_1));
     ON_CALL(*mock_2, clone()).WillByDefault(Return(mock_2));
-    ASSERT_EQ(0,ds.get_modules().size());
+    ASSERT_EQ(0, ds.get_modules().size());
     ds.add(*mock_1);
     ds.add(*mock_2);
     const FromName2Module modules = ds.get_modules();
-    ASSERT_EQ(2,modules.size());
+    ASSERT_EQ(2, modules.size());
     std::set<std::string> module_names;
     std::set<std::string> expected_module_names;
-    for (FromName2Module::const_iterator it = modules.begin() ; it != modules.end() ; ++it)
-    {
+    for (FromName2Module::const_iterator it = modules.begin(); it != modules.end(); ++it) {
         module_names.insert(it->first.get_signal_name());
     }
     expected_module_names.insert(mock_1->get_name());
@@ -133,7 +126,8 @@ TEST_F(DataSourceTest, check_that_the_correct_functions_are_called_for_add_modul
     // calls)
     // There's a 'new' but no 'delete' because the clone() method will return
     // this pointer, therefore it will be garbage-collected by std::shared_ptr
-    StrictMock<MockDataSourceModuleWithGetName>* mock = new StrictMock<MockDataSourceModuleWithGetName>();
+    StrictMock<MockDataSourceModuleWithGetName>* mock =
+        new StrictMock<MockDataSourceModuleWithGetName>();
     ON_CALL(*mock, clone()).WillByDefault(Return(mock));
     EXPECT_CALL(*mock, get_name()).Times(1);
     EXPECT_CALL(*mock, clone()).Times(1);
@@ -149,17 +143,17 @@ TEST_F(DataSourceTest, should_not_be_able_to_add_two_modules_with_the_same_name)
     DataSource ds;
     // Using NiceMock because we only want to specify the behavior of the method
     // of interest
-    NiceMock<MockDataSourceModuleWithGetName>* mock = new NiceMock<MockDataSourceModuleWithGetName>();
+    NiceMock<MockDataSourceModuleWithGetName>* mock =
+        new NiceMock<MockDataSourceModuleWithGetName>();
     ON_CALL(*mock, clone()).WillByDefault(Return(mock));
     ds.add(*mock);
-    ASSERT_THROW(ds.add(*mock),DataSourceException);
+    ASSERT_THROW(ds.add(*mock), DataSourceException);
 }
 
 TEST_F(DataSourceTest, should_be_able_to_set_and_retrieve_a_constant)
 {
     DataSource ds;
-    for (size_t i = 0 ; i < NB_OF_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_OF_TRIALS; ++i) {
         const double d = a.random<double>();
         ds.set("d", d);
         ASSERT_DOUBLE_EQ(d, ds.get<double>("d"));
@@ -214,7 +208,7 @@ TEST_F(DataSourceTest, test_module_should_work_properly)
     ds.add<TestModule>(a.random<std::string>());
     const size_t i = a.random<size_t>();
     ds.set<size_t>("nb_of_updates", i);
-    ASSERT_EQ(i+1, ds.get<size_t>("nb_of_updates2"));
+    ASSERT_EQ(i + 1, ds.get<size_t>("nb_of_updates2"));
 }
 
 TEST_F(DataSourceTest, data_source_should_not_update_unnecessarily)
@@ -223,15 +217,16 @@ TEST_F(DataSourceTest, data_source_should_not_update_unnecessarily)
     ds.add<TestModule>(a.random<std::string>());
     const size_t i = a.random<size_t>();
     ds.set<size_t>("nb_of_updates", i);
-    for (size_t k = 0 ; k < NB_OF_TRIALS ; ++k)
-    {
-        ASSERT_EQ(i+1, ds.get<size_t>("nb_of_updates2"));
+    for (size_t k = 0; k < NB_OF_TRIALS; ++k) {
+        ASSERT_EQ(i + 1, ds.get<size_t>("nb_of_updates2"));
     }
-    ds.set<size_t>("nb_of_updates", i+1);
-    ASSERT_EQ(i+2, ds.get<size_t>("nb_of_updates2"));
+    ds.set<size_t>("nb_of_updates", i + 1);
+    ASSERT_EQ(i + 2, ds.get<size_t>("nb_of_updates2"));
 }
 
-TEST_F(DataSourceTest, two_signals_with_same_name_but_different_types_do_not_create_a_circular_dependencies)
+TEST_F(
+    DataSourceTest,
+    two_signals_with_same_name_but_different_types_do_not_create_a_circular_dependencies)
 {
     DataSource ds;
     ASSERT_NO_THROW(ds.add<ModuleD>("Module D"));
@@ -260,7 +255,7 @@ TEST_F(DataSourceTest, should_be_able_to_remove_a_module)
 {
     DataSource data_source;
     data_source.add<M1>();
-    ASSERT_THROW(data_source.add<M1>(),DataSourceException);
+    ASSERT_THROW(data_source.add<M1>(), DataSourceException);
     data_source.remove<M1>();
     ASSERT_NO_THROW(data_source.add<M1>());
     ASSERT_THROW(data_source.add<M1>("module name"), DataSourceException);
@@ -290,24 +285,24 @@ TEST_F(DataSourceTest, can_declare_and_define_a_module_using_a_macro)
     // The test is that the macro expands in a function body; the local class is never used.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-member-function"
-    MODULE(modulename,const double x1 = ds->get<double>("x1");\
-                      const double x2 = ds->get<double>("x2");\
-                      ds->set<double>("y1",x1+x2);\
-                      ds->set<double>("y2",x1*x2))
+    MODULE(
+        modulename, const double x1 = ds->get<double>("x1");
+        const double x2 = ds->get<double>("x2");
+        ds->set<double>("y1", x1 + x2);
+        ds->set<double>("y2", x1 * x2))
 #pragma clang diagnostic pop
 }
 
-MODULE(ode,const double x = ds->get<double>("x");\
-           ds->set<double>("dx_dt",2*x))
+MODULE(ode, const double x = ds->get<double>("x"); ds->set<double>("dx_dt", 2 * x))
 
-MODULE(ode2,const double x = ds->get<double>("x");\
-            ds->set<double>("dy_dt",x*x);\
-            ds->set<double>("dz_dt",sin(x)))
+MODULE(
+    ode2, const double x = ds->get<double>("x"); ds->set<double>("dy_dt", x* x);
+    ds->set<double>("dz_dt", sin(x)))
 
-MODULE(ode3,const double x = ds->get<double>("x");\
-            const double y = ds->get<double>("y");\
-            ds->set<double>("dx_dt",x*y);\
-            ds->set<double>("dy_dt",sin(x)))
+MODULE(
+    ode3, const double x = ds->get<double>("x"); const double y = ds->get<double>("y");
+    ds->set<double>("dx_dt", x* y);
+    ds->set<double>("dy_dt", sin(x)))
 
 TEST_F(DataSourceTest, should_be_able_to_define_a_state_derivative)
 {
@@ -324,14 +319,13 @@ TEST_F(DataSourceTest, can_retrieve_derivatives)
     data_source.define_derivative("x", "dx_dt");
     data_source.define_derivative("y", "dy_dt");
     data_source.define_derivative("z", "dz_dt");
-    for (size_t i = 0 ; i < NB_OF_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_OF_TRIALS; ++i) {
         const double x = a.random<double>();
-        data_source.set<double>("x",x);
-        std::vector<double> dx(3,0);
+        data_source.set<double>("x", x);
+        std::vector<double> dx(3, 0);
         data_source.get_derivatives(dx);
-        ASSERT_DOUBLE_EQ(2*x, dx[0]);
-        ASSERT_DOUBLE_EQ(x*x, dx[1]);
+        ASSERT_DOUBLE_EQ(2 * x, dx[0]);
+        ASSERT_DOUBLE_EQ(x * x, dx[1]);
         ASSERT_DOUBLE_EQ(sin(x), dx[2]);
     }
 }
@@ -346,19 +340,19 @@ TEST_F(DataSourceTest, bug_detected_when_fixing_uptodate_module_map_error)
     data_source.define_derivative("z", "dz_dt");
 
     double x = 1;
-    data_source.set<double>("x",x);
-    std::vector<double> dx(3,0);
+    data_source.set<double>("x", x);
+    std::vector<double> dx(3, 0);
     data_source.get_derivatives(dx);
-    ASSERT_DOUBLE_EQ(2*x, dx[0]);
-    ASSERT_DOUBLE_EQ(x*x, dx[1]);
+    ASSERT_DOUBLE_EQ(2 * x, dx[0]);
+    ASSERT_DOUBLE_EQ(x * x, dx[1]);
     ASSERT_DOUBLE_EQ(sin(x), dx[2]);
 
     x = 2;
-    data_source.set<double>("x",x);
-    dx = std::vector<double>(3,0);
+    data_source.set<double>("x", x);
+    dx = std::vector<double>(3, 0);
     data_source.get_derivatives(dx);
-    ASSERT_DOUBLE_EQ(2*x, dx[0]);
-    ASSERT_DOUBLE_EQ(x*x, dx[1]);
+    ASSERT_DOUBLE_EQ(2 * x, dx[0]);
+    ASSERT_DOUBLE_EQ(x * x, dx[1]);
     ASSERT_DOUBLE_EQ(sin(x), dx[2]);
 }
 
@@ -370,15 +364,14 @@ TEST_F(DataSourceTest, can_retrieve_derivatives_out_of_order)
     ASSERT_NO_THROW(data_source.get_derivatives(v));
     data_source.define_derivative("y", "dy_dt");
     data_source.define_derivative("x", "dx_dt");
-    for (size_t i = 0 ; i < NB_OF_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_OF_TRIALS; ++i) {
         const double x = a.random<double>();
         const double y = a.random<double>();
-        data_source.set<double>("x",x);
-        data_source.set<double>("y",y);
-        std::vector<double> dx(2,0);
+        data_source.set<double>("x", x);
+        data_source.set<double>("y", y);
+        std::vector<double> dx(2, 0);
         data_source.get_derivatives(dx);
-        ASSERT_DOUBLE_EQ(y*x, dx[1]);
+        ASSERT_DOUBLE_EQ(y * x, dx[1]);
         ASSERT_DOUBLE_EQ(sin(x), dx[0]);
     }
 }
@@ -390,12 +383,11 @@ TEST_F(DataSourceTest, get_derivatives_should_throw_if_input_vector_is_not_the_r
     data_source.define_derivative("x", "dx_dt");
     data_source.define_derivative("y", "dy_dt");
     std::vector<double> empty;
-    std::vector<double> one_element(1,0);
+    std::vector<double> one_element(1, 0);
     ASSERT_THROW(data_source.get_derivatives(empty), DataSourceException);
     ASSERT_THROW(data_source.get_derivatives(one_element), DataSourceException);
-    for (size_t i = 2 ; i < NB_OF_TRIALS ; ++i)
-    {
-        std::vector<double> dx_dt(i,0);
+    for (size_t i = 2; i < NB_OF_TRIALS; ++i) {
+        std::vector<double> dx_dt(i, 0);
         ASSERT_THROW(data_source.get_derivatives(dx_dt), DataSourceException);
     }
 }
@@ -414,9 +406,14 @@ TEST_F(DataSourceTest, cant_define_the_same_derivative_twice)
     const std::string state_name = a.random<std::string>();
     const std::string derivative_name = a.random<std::string>();
     data_source.define_derivative(state_name, derivative_name);
-    ASSERT_THROW(data_source.define_derivative(state_name, a.random<std::string>()), DataSourceException);
-    ASSERT_THROW(data_source.define_derivative(a.random<std::string>(), derivative_name), DataSourceException);
-    ASSERT_NO_THROW(data_source.define_derivative(a.random<std::string>(), a.random<std::string>()));
+    ASSERT_THROW(
+        data_source.define_derivative(state_name, a.random<std::string>()),
+        DataSourceException);
+    ASSERT_THROW(
+        data_source.define_derivative(a.random<std::string>(), derivative_name),
+        DataSourceException);
+    ASSERT_NO_THROW(
+        data_source.define_derivative(a.random<std::string>(), a.random<std::string>()));
 }
 
 TEST_F(DataSourceTest, cant_add_the_same_derivative_twice)
@@ -430,27 +427,26 @@ TEST_F(DataSourceTest, cant_add_the_same_derivative_twice)
 TEST_F(DataSourceTest, can_set_the_states_to_an_arbitrary_value)
 {
     DataSource data_source;
-    const size_t nb_of_states = a .random<size_t>().between(0,NB_OF_TRIALS);
+    const size_t nb_of_states = a.random<size_t>().between(0, NB_OF_TRIALS);
     const std::vector<double> x = a.random_vector_of<double>().of_size(nb_of_states);
-    const std::vector<std::string> state_names = a.random_vector_of<std::string>().of_size(nb_of_states);
-    for (size_t i = 0 ; i < nb_of_states ; ++i)
-    {
-        data_source.define_derivative(state_names[nb_of_states-i-1], a.random<std::string>());
+    const std::vector<std::string> state_names =
+        a.random_vector_of<std::string>().of_size(nb_of_states);
+    for (size_t i = 0; i < nb_of_states; ++i) {
+        data_source.define_derivative(state_names[nb_of_states - i - 1], a.random<std::string>());
     }
     data_source.set_states(x);
-    for (size_t i = 0 ; i < nb_of_states ; ++i)
-    {
-        ASSERT_DOUBLE_EQ(x[i],data_source.get<double>(state_names[nb_of_states-i-1]));
+    for (size_t i = 0; i < nb_of_states; ++i) {
+        ASSERT_DOUBLE_EQ(x[i], data_source.get<double>(state_names[nb_of_states - i - 1]));
     }
 }
 
 TEST_F(DataSourceTest, set_states_should_throw_if_vector_has_incorrect_size)
 {
     DataSource data_source;
-    const size_t nb_of_states = a .random<size_t>().between(0,NB_OF_TRIALS);
-    const std::vector<double> x = a.random_vector_of<double>().of_size(a.random<size_t>().between(0,500).but_not(nb_of_states));
-    for (size_t i = 0 ; i < nb_of_states ; ++i)
-    {
+    const size_t nb_of_states = a.random<size_t>().between(0, NB_OF_TRIALS);
+    const std::vector<double> x = a.random_vector_of<double>().of_size(
+        a.random<size_t>().between(0, 500).but_not(nb_of_states));
+    for (size_t i = 0; i < nb_of_states; ++i) {
         data_source.define_derivative(a.random<std::string>(), a.random<std::string>());
     }
     ASSERT_THROW(data_source.set_states(x), DataSourceException);
@@ -470,7 +466,9 @@ TEST_F(DataSourceTest, can_retrieve_a_list_containing_the_names_of_all_states)
     //! [DataSourceTest get_state_names_example]
 }
 
-TEST_F(DataSourceTest, when_copying_a_data_source_the_references_to_it_should_be_updated_inside_the_modules)
+TEST_F(
+    DataSourceTest,
+    when_copying_a_data_source_the_references_to_it_should_be_updated_inside_the_modules)
 {
     // When copying a DataSource, if nothing is done, all the modules will maintain
     // a pointer to the copied DataSource: we need to update the pointer maintained
@@ -482,7 +480,7 @@ TEST_F(DataSourceTest, when_copying_a_data_source_the_references_to_it_should_be
     const double x = a.random<double>();
     ds.set<double>("x", x);
     ASSERT_NO_THROW(ds.get<double>("dx_dt"));
-    ASSERT_DOUBLE_EQ(ds.get<double>("dx_dt"), 2*x);
+    ASSERT_DOUBLE_EQ(ds.get<double>("dx_dt"), 2 * x);
 }
 
 TEST_F(DataSourceTest, a_copied_DataSource_should_be_independant_from_its_copy)
@@ -494,8 +492,8 @@ TEST_F(DataSourceTest, a_copied_DataSource_should_be_independant_from_its_copy)
     const double x2 = a.random<double>();
     data_source.set<double>("x", x1);
     ds.set<double>("x", x2);
-    ASSERT_DOUBLE_EQ(data_source.get<double>("dx_dt"), 2*x1);
-    ASSERT_DOUBLE_EQ(ds.get<double>("dx_dt"), 2*x2);
+    ASSERT_DOUBLE_EQ(data_source.get<double>("dx_dt"), 2 * x1);
+    ASSERT_DOUBLE_EQ(ds.get<double>("dx_dt"), 2 * x2);
 }
 
 TEST_F(DataSourceTest, cannot_add_a_module_named_DataSource_user)
@@ -508,24 +506,20 @@ TEST_F(DataSourceTest, can_force_a_value_computed_by_a_module)
 {
     DataSource ds;
     ds.add<OneInputTwoOutputs>();
-    for (size_t i = 0 ; i < NB_OF_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_OF_TRIALS; ++i) {
         const double x = a.random<double>();
         const double another_x = a.random<double>();
         const double forced_value = a.random<double>();
-        ds.set("x",x);
-        ASSERT_DOUBLE_EQ(2*x, ds.get<double>("y1"));
-        if (i==0)
-        {
-            ASSERT_DOUBLE_EQ(3*x, ds.get<double>("y2"));
-        }
-        else
-        {
-            ASSERT_NE(3*x, ds.get<double>("y2"));
+        ds.set("x", x);
+        ASSERT_DOUBLE_EQ(2 * x, ds.get<double>("y1"));
+        if (i == 0) {
+            ASSERT_DOUBLE_EQ(3 * x, ds.get<double>("y2"));
+        } else {
+            ASSERT_NE(3 * x, ds.get<double>("y2"));
         }
         ds.force("y2", forced_value);
-        ds.set("x",another_x);
-        ASSERT_DOUBLE_EQ(2*another_x, ds.get<double>("y1"));
+        ds.set("x", another_x);
+        ASSERT_DOUBLE_EQ(2 * another_x, ds.get<double>("y1"));
         ASSERT_DOUBLE_EQ(forced_value, ds.get<double>("y2"));
     }
 }
@@ -533,8 +527,7 @@ TEST_F(DataSourceTest, can_force_a_value_computed_by_a_module)
 TEST_F(DataSourceTest, should_throw_if_forcing_a_value_that_has_not_been_set_yet)
 {
     DataSource ds;
-    for (size_t i = 0 ; i < NB_OF_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_OF_TRIALS; ++i) {
         ASSERT_THROW(ds.force(a.random<std::string>(), a.random<double>()()), DataSourceException);
     }
 }
@@ -542,8 +535,7 @@ TEST_F(DataSourceTest, should_throw_if_forcing_a_value_that_has_not_been_set_yet
 TEST_F(DataSourceTest, should_throw_if_forcing_a_value_that_is_set_manually)
 {
     DataSource ds;
-    for (size_t i = 0 ; i < NB_OF_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_OF_TRIALS; ++i) {
         ds.set("x", a.random<double>()());
         ASSERT_THROW(ds.force("x", a.random<double>()()), DataSourceException);
     }
@@ -553,7 +545,7 @@ TEST_F(DataSourceTest, cannot_set_a_value_computed_by_a_module)
 {
     DataSource ds;
     ds.add<OneInputTwoOutputs>();
-    ds.set("x",a.random<double>()());
+    ds.set("x", a.random<double>()());
     ds.get<double>("y1");
     ASSERT_THROW(ds.set("y1", a.random<double>()()), DataSourceException);
     ASSERT_NO_THROW(ds.get<double>("y1"));
@@ -569,10 +561,10 @@ TEST_F(DataSourceTest, can_release_a_value_that_has_been_forced)
     ds.add<OneInputTwoOutputs>();
     const double forced_value = a.random<double>();
     ds.force("y1", forced_value);
-    ds.set("x",a.random<double>()());
+    ds.set("x", a.random<double>()());
     ASSERT_DOUBLE_EQ(forced_value, ds.get<double>("y1"));
     ds.release<double>("y1");
-    ds.set<double>("x",111);
+    ds.set<double>("x", 111);
     ASSERT_DOUBLE_EQ(222, ds.get<double>("y1"));
 }
 
@@ -589,10 +581,10 @@ TEST_F(DataSourceTest, can_force_the_same_value_twice)
     const double forced_value = a.random<double>();
     const double another_forced_value = a.random<double>();
     ds.force("y1", forced_value);
-    ds.set("x",a.random<double>()());
+    ds.set("x", a.random<double>()());
     ASSERT_DOUBLE_EQ(forced_value, ds.get<double>("y1"));
     ds.force("y1", another_forced_value);
-    ds.set("x",a.random<double>()());
+    ds.set("x", a.random<double>()());
     ASSERT_DOUBLE_EQ(another_forced_value, ds.get<double>("y1"));
 }
 
@@ -630,8 +622,7 @@ TEST_F(DataSourceTest, cannot_give_the_same_alias_two_different_meanings)
 
 TEST_F(DataSourceTest, can_squash_user_value_with_module)
 {
-    for (size_t i = 0 ; i < NB_OF_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_OF_TRIALS; ++i) {
         DataSource ds;
         const double x = a.random<double>();
         const double y1 = a.random<double>();
@@ -639,20 +630,17 @@ TEST_F(DataSourceTest, can_squash_user_value_with_module)
         ASSERT_DOUBLE_EQ(y1, ds.get<double>("y1"));
         ds.add<OneInputTwoOutputs>();
         ds.set("x", x);
-        ASSERT_DOUBLE_EQ(2*x, ds.get<double>("y1"));
+        ASSERT_DOUBLE_EQ(2 * x, ds.get<double>("y1"));
     }
 }
 
-MODULE(M4, const double x = ds->get<double>("x");\
-           size_t *i = ds->get<size_t*>("nb of updates");\
-           ds->set<double>("y1", 2*x);\
-           ds->set<double>("y2", 3*x);\
-           if (not(ds->read_only())) *i = *i+1;\
-           )
+MODULE(
+    M4, const double x = ds->get<double>("x"); size_t* i = ds->get<size_t*>("nb of updates");
+    ds->set<double>("y1", 2 * x);
+    ds->set<double>("y2", 3 * x);
+    if (not(ds->read_only())) * i = *i + 1;)
 
-MODULE(M5, const double y1 = ds->get<double>("y1");\
-           ds->set<double>("z", 4*y1);\
-           )
+MODULE(M5, const double y1 = ds->get<double>("y1"); ds->set<double>("z", 4 * y1);)
 
 TEST_F(DataSourceTest, when_forcing_a_signal_dependencies_should_not_be_updated)
 {
@@ -664,11 +652,11 @@ TEST_F(DataSourceTest, when_forcing_a_signal_dependencies_should_not_be_updated)
     ASSERT_EQ(0, *ds.get<size_t*>("nb of updates"));
     const double x = a.random<double>();
     ds.set("x", x);
-    ASSERT_DOUBLE_EQ(8*x,ds.get<double>("z"));
+    ASSERT_DOUBLE_EQ(8 * x, ds.get<double>("z"));
     ASSERT_EQ(1, *ds.get<size_t*>("nb of updates"));
     const double y1 = a.random<double>();
     ds.force("y1", y1);
-    ASSERT_DOUBLE_EQ(4*y1,ds.get<double>("z"));
+    ASSERT_DOUBLE_EQ(4 * y1, ds.get<double>("z"));
     ASSERT_EQ(1, *ds.get<size_t*>("nb of updates"));
 }
 
@@ -688,7 +676,7 @@ TEST_F(DataSourceTest, crash_if_assignment_operator_is_not_well_defined)
      * not defined (the default compiler-generated operator was used) which
      * meant that the modules were not cloned. This caused a crash in certain
      * situations.
-    */
+     */
     DataSource ds1;
     ds1 = conf_ds();
     ds1.get<double>("CO2");
@@ -744,19 +732,21 @@ TEST_F(DataSourceTest, signals_not_set_or_got_by_any_module_should_still_be_outp
     ASSERT_EQ(expected.str(), data_source.draw());
 }
 
-MODULE(VarUp, const double x = ds->get<double>("x");\
-              const ssc::random_data_generator::DataGenerator *rng = ds->get<ssc::random_data_generator::DataGenerator*>("rng");\
-              (void)x;\
-              double y = 0;\
-              if (rng) y = rng->random<double>();\
-              ds->set("y",y);\
-)
+MODULE(
+    VarUp, const double x = ds->get<double>("x");
+    const ssc::random_data_generator::DataGenerator* rng =
+        ds->get<ssc::random_data_generator::DataGenerator*>("rng");
+    (void)x;
+    double y = 0;
+    if (rng) y = rng->random<double>();
+    ds->set("y", y);)
 
 TEST_F(DataSourceTest, should_not_update_dependencies_if_setting_signal_to_its_current_value)
 {
     DataSource ds;
-    std::shared_ptr<ssc::random_data_generator::DataGenerator> rng(new ssc::random_data_generator::DataGenerator(1));
-    ds.set<ssc::random_data_generator::DataGenerator*>("rng",rng.get());
+    std::shared_ptr<ssc::random_data_generator::DataGenerator> rng(
+        new ssc::random_data_generator::DataGenerator(1));
+    ds.set<ssc::random_data_generator::DataGenerator*>("rng", rng.get());
     ds.add<VarUp>("VarUp");
     const double x0 = a.random<double>()();
     ds.set("x", x0);
@@ -785,10 +775,10 @@ TEST_F(DataSourceTest, can_get_all_signals_of_a_given_type)
     ds.set<int>("bak", 457);
     ds.set<std::string>("baz", "789");
 
-    std::map<std::string,double> value_of_double = ds.get_all<double>();
-    std::map<std::string,int> value_of_int = ds.get_all<int>();
-    std::map<std::string,std::string> value_of_string = ds.get_all<std::string>();
-    std::map<std::string,float> value_of_float = ds.get_all<float>();
+    std::map<std::string, double> value_of_double = ds.get_all<double>();
+    std::map<std::string, int> value_of_int = ds.get_all<int>();
+    std::map<std::string, std::string> value_of_string = ds.get_all<std::string>();
+    std::map<std::string, float> value_of_float = ds.get_all<float>();
 
     ASSERT_TRUE(value_of_float.empty());
     ASSERT_EQ(1, value_of_double.size());

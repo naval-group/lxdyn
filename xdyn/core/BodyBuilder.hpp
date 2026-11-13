@@ -24,43 +24,61 @@ struct YamlRotation;
  *  \section ex2 Expected output
  *  \snippet core/unit_tests/BodyBuilderTest.cpp BodyBuilderTest expected output
  */
-class BodyBuilder
-{
-    public:
-        /** \details It makes no sense to build a 'Body' object without knowing
-         *           the rotation conventions, which is why this is the only
-         *           constructor available.
-         */
-        explicit BodyBuilder(const YamlRotation& convention);
+class BodyBuilder {
+public:
+    /** \details It makes no sense to build a 'Body' object without knowing
+     *           the rotation conventions, which is why this is the only
+     *           constructor available.
+     */
+    explicit BodyBuilder(const YamlRotation& convention);
 
-        /** \brief Build a 'Body' object from YAML & STL data
-         *  \returns New Body object
-         */
-        BodyPtr build(const YamlBody& input, const VectorOfVectorOfPoints& mesh, const size_t idx, const double t0, const YamlRotation& convention, const double Tmax, const bool has_surface_forces = false) const;
+    /** \brief Build a 'Body' object from YAML & STL data
+     *  \returns New Body object
+     */
+    BodyPtr build(
+        const YamlBody& input,
+        const VectorOfVectorOfPoints& mesh,
+        const size_t idx,
+        const double t0,
+        const YamlRotation& convention,
+        const double Tmax,
+        const bool has_surface_forces = false) const;
 
-        /** \details Only used for testing purposes when we don't want to go
-         *           through the hassle of defining the inertia matrix & initial
-         *           positions
-         *  \returns New Body object
-         */
-        BodyPtr build(const std::string& name, const VectorOfVectorOfPoints& mesh, const size_t idx, const double t0, const YamlRotation& convention, const double Tmax, const bool has_surface_forces = false) const;
+    /** \details Only used for testing purposes when we don't want to go
+     *           through the hassle of defining the inertia matrix & initial
+     *           positions
+     *  \returns New Body object
+     */
+    BodyPtr build(
+        const std::string& name,
+        const VectorOfVectorOfPoints& mesh,
+        const size_t idx,
+        const double t0,
+        const YamlRotation& convention,
+        const double Tmax,
+        const bool has_surface_forces = false) const;
 
-    private:
-        BodyBuilder(); //Disabled
+private:
+    BodyBuilder();  // Disabled
 
-        void add_inertia(BodyStates& states, const YamlDynamics6x6Matrix& rigid_body_inertia, const YamlDynamics6x6Matrix& added_mass) const;
+    void add_inertia(
+        BodyStates& states,
+        const YamlDynamics6x6Matrix& rigid_body_inertia,
+        const YamlDynamics6x6Matrix& added_mass) const;
 
-        /** \brief Puts the mesh in the body frame
-         *  \details Uses the body frame's initial position relative to the mesh
-         */
-        void change_mesh_ref_frame(BodyStates& states, const VectorOfVectorOfPoints& mesh) const;
+    /** \brief Puts the mesh in the body frame
+     *  \details Uses the body frame's initial position relative to the mesh
+     */
+    void change_mesh_ref_frame(BodyStates& states, const VectorOfVectorOfPoints& mesh) const;
 
-        /// Rotation convention (describes how we can build a rotation matrix from three angles)
-        YamlRotation rotations;
+    /// Rotation convention (describes how we can build a rotation matrix from three angles)
+    YamlRotation rotations;
 };
 
 bool is_symmetric(const Eigen::MatrixXd& m);
 bool is_symmetric_definite_positive(const Eigen::MatrixXd& m);
-Eigen::Matrix<double,6,6> build_added_matrix(const std::string& states_name, const YamlDynamics6x6Matrix& added_mass);
+Eigen::Matrix<double, 6, 6> build_added_matrix(
+    const std::string& states_name,
+    const YamlDynamics6x6Matrix& added_mass);
 
 #endif /* BODYBUILDER_HPP_ */

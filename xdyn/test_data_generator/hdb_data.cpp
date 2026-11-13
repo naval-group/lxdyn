@@ -1,4 +1,5 @@
 #include "hdb_data.hpp"
+
 #include <cmath>
 
 std::string test_data::test_ship_hdb()
@@ -1195,12 +1196,13 @@ std::string test_data::test_ship_hdb_deprecated_aquaplus_format()
 
 double test_data::analytical_Br(const double omega)
 {
-    return 0.5*(0.1/(0.01+(0.5-omega)*(0.5-omega))+0.1/(0.01+(0.5+omega)*(0.5+omega)));
+    return 0.5 * (0.1 / (0.01 + (0.5 - omega) * (0.5 - omega)) +
+                  0.1 / (0.01 + (0.5 + omega) * (0.5 + omega)));
 }
 
 double test_data::analytical_K(const double tau)
 {
-    return exp(-0.1*tau)*cos(0.5*tau);
+    return exp(-0.1 * tau) * cos(0.5 * tau);
 }
 
 std::string test_data::bug_3210()

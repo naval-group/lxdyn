@@ -6,11 +6,13 @@
  */
 
 #include "update_kinematicsTests.hpp"
+
+#include <ssc/kinematics.hpp>
+
 #include "BodyBuilderTest.hpp"
 #include "xdyn/core/update_kinematics.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#include <ssc/kinematics.hpp>
 
 constexpr double EPS = 1E-10;
 
@@ -33,8 +35,20 @@ TEST_F(update_kinematicsTests, can_get_initial_states)
     ASSERT_DOUBLE_EQ(7, x.at(7));
     ASSERT_DOUBLE_EQ(6, x.at(8));
 
-    ASSERT_NEAR(cos(1.3/2)*cos(1.4/2)*cos(1.5/2)+sin(1.3/2)*sin(1.4/2)*sin(1.5/2), x.at(9), EPS);
-    ASSERT_NEAR(sin(1.3/2)*cos(1.4/2)*cos(1.5/2)-cos(1.3/2)*sin(1.4/2)*sin(1.5/2), x.at(10), EPS);
-    ASSERT_NEAR(cos(1.3/2)*sin(1.4/2)*cos(1.5/2)+sin(1.3/2)*cos(1.4/2)*sin(1.5/2), x.at(11), EPS);
-    ASSERT_NEAR(cos(1.3/2)*cos(1.4/2)*sin(1.5/2)-sin(1.3/2)*sin(1.4/2)*cos(1.5/2), x.at(12), EPS);
+    ASSERT_NEAR(
+        cos(1.3 / 2) * cos(1.4 / 2) * cos(1.5 / 2) + sin(1.3 / 2) * sin(1.4 / 2) * sin(1.5 / 2),
+        x.at(9),
+        EPS);
+    ASSERT_NEAR(
+        sin(1.3 / 2) * cos(1.4 / 2) * cos(1.5 / 2) - cos(1.3 / 2) * sin(1.4 / 2) * sin(1.5 / 2),
+        x.at(10),
+        EPS);
+    ASSERT_NEAR(
+        cos(1.3 / 2) * sin(1.4 / 2) * cos(1.5 / 2) + sin(1.3 / 2) * cos(1.4 / 2) * sin(1.5 / 2),
+        x.at(11),
+        EPS);
+    ASSERT_NEAR(
+        cos(1.3 / 2) * cos(1.4 / 2) * sin(1.5 / 2) - sin(1.3 / 2) * sin(1.4 / 2) * cos(1.5 / 2),
+        x.at(12),
+        EPS);
 }

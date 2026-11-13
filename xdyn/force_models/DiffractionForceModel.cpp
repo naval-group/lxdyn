@@ -7,16 +7,22 @@
 
 #include "DiffractionForceModel.hpp"
 
-
-
-
-DiffractionForceModel::DiffractionForceModel(const DiffractionForceModel::Input& data, const std::string& body_name, const EnvironmentAndFrames& env)
+DiffractionForceModel::DiffractionForceModel(
+    const DiffractionForceModel::Input& data,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
     : AbstractRaoForceModel(data, body_name, env)
-{}
+{
+}
 
-DiffractionForceModel::DiffractionForceModel(const DiffractionForceModel::Input& data, const std::string& body_name, const EnvironmentAndFrames& env, const std::string& hdb_file_contents)
+DiffractionForceModel::DiffractionForceModel(
+    const DiffractionForceModel::Input& data,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env,
+    const std::string& hdb_file_contents)
     : AbstractRaoForceModel(data, body_name, env, hdb_file_contents)
-{}
+{
+}
 
 std::string DiffractionForceModel::model_name()
 {

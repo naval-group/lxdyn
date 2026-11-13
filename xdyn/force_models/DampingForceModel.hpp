@@ -9,6 +9,7 @@
 #define DAMPINGFORCEMODEL_HPP_
 
 #include <Eigen/Dense>
+
 #include "xdyn/core/ForceModel.hpp"
 
 class Body;
@@ -17,17 +18,26 @@ class Body;
  *  \addtogroup model_wrappers
  *  \ingroup model_wrappers
  */
-class DampingForceModel : public ForceModel
-{
-    public:
-        DampingForceModel(const std::string& name, const std::string& body_name, const EnvironmentAndFrames& env, const Eigen::Matrix<double,6,6>& D);
-        Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
+class DampingForceModel : public ForceModel {
+public:
+    DampingForceModel(
+        const std::string& name,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env,
+        const Eigen::Matrix<double, 6, 6>& D);
+    Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const override;
 
-    private:
-        virtual Eigen::Matrix<double, 6, 1> get_force_and_torque(const Eigen::Matrix<double,6,6>& D, const Eigen::Matrix<double, 6, 1>& W) const = 0;
-        DampingForceModel();
-        /// 6x6 matrix corresponding to the quadratic damping matrix expressed in the body frame
-        Eigen::Matrix<double,6,6> D;
+private:
+    virtual Eigen::Matrix<double, 6, 1> get_force_and_torque(
+        const Eigen::Matrix<double, 6, 6>& D,
+        const Eigen::Matrix<double, 6, 1>& W) const = 0;
+    DampingForceModel();
+    /// 6x6 matrix corresponding to the quadratic damping matrix expressed in the body frame
+    Eigen::Matrix<double, 6, 6> D;
 };
 
 #endif /* DAMPINGFORCEMODEL_HPP_ */

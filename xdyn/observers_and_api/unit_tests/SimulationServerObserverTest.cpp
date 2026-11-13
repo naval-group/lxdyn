@@ -1,12 +1,12 @@
 #include "SimulationServerObserverTest.hpp"
 
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "SimulationServerObserver.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 
-#include "SimulationServerObserver.hpp"
-
-SimulationServerObserverTest::SimulationServerObserverTest() : a(ssc::random_data_generator::DataGenerator(7926843))
+SimulationServerObserverTest::SimulationServerObserverTest()
+    : a(ssc::random_data_generator::DataGenerator(7926843))
 {
 }
 
@@ -21,9 +21,8 @@ TEST_F(SimulationServerObserverTest, requested_additional_variables_are_availabl
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer);
     auto results = observer.get();
 
-    for(const auto& res:results)
-    {
-        ASSERT_TRUE(res.extra_observations.find("Fz(gravity,ball,ball)") != res.extra_observations.end());
+    for (const auto& res : results) {
+        ASSERT_TRUE(
+            res.extra_observations.find("Fz(gravity,ball,ball)") != res.extra_observations.end());
     }
-
 }

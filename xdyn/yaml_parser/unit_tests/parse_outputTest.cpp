@@ -6,12 +6,11 @@
  */
 
 #include "parse_outputTest.hpp"
-#include "xdyn/yaml_parser/parse_output.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
-parse_outputTest::parse_outputTest() : a(ssc::random_data_generator::DataGenerator(215451))
-{
-}
+#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/yaml_parser/parse_output.hpp"
+
+parse_outputTest::parse_outputTest() : a(ssc::random_data_generator::DataGenerator(215451)) {}
 
 TEST_F(parse_outputTest, can_parse_outputs)
 {
@@ -39,10 +38,11 @@ TEST_F(parse_outputTest, should_work_even_if_string_is_empty)
 
 TEST_F(parse_outputTest, DISABLED_can_create_list_of_all_outputs_for_a_given_yaml)
 {
-    const YamlOutput res; // This test is no longer relevant and should be moved to ObserverTest to test the behavior of Observer's default constructor.
+    const YamlOutput res;  // This test is no longer relevant and should be moved to ObserverTest to
+                           // test the behavior of Observer's default constructor.
     ASSERT_EQ("", res.filename);
     ASSERT_EQ("tsv", res.format);
-    ASSERT_EQ(13+1+3,res.data.size());
+    ASSERT_EQ(13 + 1 + 3, res.data.size());
     ASSERT_EQ("t", res.data.at(0));
     ASSERT_EQ("x(body 1)", res.data.at(1));
     ASSERT_EQ("y(body 1)", res.data.at(2));

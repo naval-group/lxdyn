@@ -1,23 +1,37 @@
 #include "MMGManeuveringForceModel.hpp"
+
+#include <Eigen/Dense>
+#include <cmath>
+#include <ssc/kinematics.hpp>
+
+#include "MMGPropellerForceModel.hpp"
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/BodyStates.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/external_data_structures/YamlPosition.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
-#include <ssc/kinematics.hpp>
-#include <Eigen/Dense>
 #include "xdyn/yaml_parser/yaml_compat.h"
-#include <cmath>
-#include "MMGPropellerForceModel.hpp"
 
 #define PI M_PI
 
-std::string MMGManeuveringForceModel::model_name() {return "MMG maneuvering";}
+std::string MMGManeuveringForceModel::model_name()
+{
+    return "MMG maneuvering";
+}
 
-MMGManeuveringForceModel::MMGManeuveringForceModel(const Input& input_, const std::string& body_name, const EnvironmentAndFrames& env):
-        ForceModel(MMGManeuveringForceModel::model_name(), {}, YamlPosition(input_.application_point, YamlAngle(), body_name), body_name, env),
-        input(input_)
-{}
+MMGManeuveringForceModel::MMGManeuveringForceModel(
+    const Input& input_,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
+    : ForceModel(
+          MMGManeuveringForceModel::model_name(),
+          {},
+          YamlPosition(input_.application_point, YamlAngle(), body_name),
+          body_name,
+          env)
+    , input(input_)
+{
+}
 
 MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::string& yaml)
 {
@@ -45,7 +59,7 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
     node["Yphivv"] >> ret.Yphivv;
     node["Yvphiphi"] >> ret.Yvphiphi;
     node["Yphirr"] >> ret.Yphirr;
-    node["Yrphiphi"] >> ret.Yrphiphi;  
+    node["Yrphiphi"] >> ret.Yrphiphi;
     node["Nv"] >> ret.Nv;
     node["Nr"] >> ret.Nr;
     node["Nvvv"] >> ret.Nvvv;
@@ -59,41 +73,46 @@ MMGManeuveringForceModel::Input MMGManeuveringForceModel::parse(const std::strin
     node["Nrphiphi"] >> ret.Nrphiphi;
     node["a"] >> ret.a;
     node["b"] >> ret.b;
-    xdyn::yaml_parser::parse_uv(node["GM"],ret.GM);
-    xdyn::yaml_parser::parse_uv(node["zH"],ret.zH);
+    xdyn::yaml_parser::parse_uv(node["GM"], ret.GM);
+    xdyn::yaml_parser::parse_uv(node["zH"], ret.zH);
 
     return ret;
 }
 
-Matrix66 MMGManeuveringForceModel::get_inertia_matrix_in_Ob(Matrix66 inertia_matrix_in_G, Eigen::Vector3d G_in_MMG_frame)
+Matrix66 MMGManeuveringForceModel::get_inertia_matrix_in_Ob(
+    Matrix66 inertia_matrix_in_G,
+    Eigen::Vector3d G_in_MMG_frame)
 {
     /* The transport of the inertia matrix from G to Ob is done as in
-     T. I. Fossen, Handbook of Marine Craft Hydrodynamics and Motion Control. Wiley, 2011. doi: 10.1002/9781119994138.
+     T. I. Fossen, Handbook of Marine Craft Hydrodynamics and Motion Control. Wiley, 2011.
+     doi: 10.1002/9781119994138.
     */
 
     // First the cross product operator S is defined (eq. 2.10, p20)
     Matrix3x3 S = Matrix3x3::Zero();
-    S(0,1)=-G_in_MMG_frame(2);
-    S(0,2)=G_in_MMG_frame(1);
-    S(1,2)=-G_in_MMG_frame(0);
-    S(1,0)=-S(0,1);
-    S(2,0)=-S(0,2);
-    S(2,1)=-S(1,2);
-    
+    S(0, 1) = -G_in_MMG_frame(2);
+    S(0, 2) = G_in_MMG_frame(1);
+    S(1, 2) = -G_in_MMG_frame(0);
+    S(1, 0) = -S(0, 1);
+    S(2, 0) = -S(0, 2);
+    S(2, 1) = -S(1, 2);
+
     // The transformation matrix is defined (eq. 3.24, p49)
     Matrix66 H_mat = Matrix6x6::Zero();
-    for (int i = 0; i < 6; i++)
-    {
-        H_mat(i,i)=1.;
+    for (int i = 0; i < 6; i++) {
+        H_mat(i, i) = 1.;
     }
-    H_mat.block<3,3>(0,3)=S.transpose();
+    H_mat.block<3, 3>(0, 3) = S.transpose();
 
     // The inertia matrix at MMG center of frame is then computed (eq. 3.26, p50)
-    return H_mat.transpose()*inertia_matrix_in_G*H_mat;
+    return H_mat.transpose() * inertia_matrix_in_G * H_mat;
 }
 
-
-Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const double /*t*/, const EnvironmentAndFrames& env, const std::map<std::string,double>& /*commands*/) const
+Wrench MMGManeuveringForceModel::get_force(
+    const BodyStates& states,
+    const double /*t*/,
+    const EnvironmentAndFrames& env,
+    const std::map<std::string, double>& /*commands*/) const
 {
     // Initialize the output tensor
     ssc::kinematics::Vector6d tau = ssc::kinematics::Vector6d::Zero();
@@ -111,43 +130,55 @@ Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const doubl
 
     // Get inertia and added mass
     // body mass
-    const double body_mass = states.solid_body_inertia(2,2);
+    const double body_mass = states.solid_body_inertia(2, 2);
     // roll moment of solid inertia in G
-    const double Ix = states.solid_body_inertia(3,3);
-    const double mx = states.added_mass_matrix(0,0);
-    const double my = states.added_mass_matrix(1,1);
-    // roll moment of added mass in Ob 
-    const double Jx = get_inertia_matrix_in_Ob(states.added_mass_matrix,G_mmg_frame)(3,3);
+    const double Ix = states.solid_body_inertia(3, 3);
+    const double mx = states.added_mass_matrix(0, 0);
+    const double my = states.added_mass_matrix(1, 1);
+    // roll moment of added mass in Ob
+    const double Jx = get_inertia_matrix_in_Ob(states.added_mass_matrix, G_mmg_frame)(3, 3);
 
     // Compute roll damping coefficients
-    // Warning : the solid inertia is in G while the added mass inertia is in Ob ! This is strange but it is the way it is done in the reference article.
-    const double K_phidot=-2*input.a/PI*sqrt(body_mass*env.g*input.GM*(Jx+Ix)) ;
-    const double K_phidot2=-0.75*input.b*180/PI*(Jx+Ix);
+    // Warning : the solid inertia is in G while the added mass inertia is in Ob ! This is strange
+    // but it is the way it is done in the reference article.
+    const double K_phidot = -2 * input.a / PI * sqrt(body_mass * env.g * input.GM * (Jx + Ix));
+    const double K_phidot2 = -0.75 * input.b * 180 / PI * (Jx + Ix);
 
     // vertical position of the hull force point of application in MMG frame
     const double zH_mmg_frame = input.zH - env.k->get(body_name, name).get_point().z();
 
     // Compute the hull tensor
-    const double vm = v - G_mmg_frame(0)*r+G_mmg_frame(2)*dphi_dt;
+    const double vm = v - G_mmg_frame(0) * r + G_mmg_frame(2) * dphi_dt;
     const double U = hypot(u, vm);
-    if (U!=0)
-    {
-        const double vm_ = vm/U;
-        const double r_ = r*input.Lpp/U;
-        const double X_ = -input.R0 + input.Xvv*vm_*vm_ + input.Xrr*r_*r_ + input.Xvr*vm_*r_ + input.Xvvvv*vm_*vm_*vm_*vm_ + input.Xvphi*vm_*phi + input.Xrphi*r_*phi + input.Xphiphi*phi*phi;
-        const double Y_ = input.Yv*vm_ + input.Yr*r_ + input.Yvvv*vm_*vm_*vm_ + input.Yvrr*vm_*r_*r_  + input.Yrrr*r_*r_*r_ + input.Yrvv*r_*vm_*vm_ + input.Yphi*phi + input.Yphivv*phi*vm_*vm_ + input.Yvphiphi*vm_*phi*phi + input.Yphirr*phi*r_*r_ + input.Yrphiphi*r_*phi*phi;
-        const double N_ = input.Nv*vm_ + input.Nr*r_ + input.Nvvv*vm_*vm_*vm_ + input.Nvrr*vm_*r_*r_  + input.Nrrr*r_*r_*r_ + input.Nrvv*r_*vm_*vm_ + input.Nphi*phi + input.Nphivv*phi*vm_*vm_ + input.Nvphiphi*vm_*phi*phi + input.Nphirr*phi*r_*r_ + input.Nrphiphi*r_*phi*phi;
+    if (U != 0) {
+        const double vm_ = vm / U;
+        const double r_ = r * input.Lpp / U;
+        const double X_ = -input.R0 + input.Xvv * vm_ * vm_ + input.Xrr * r_ * r_ +
+                          input.Xvr * vm_ * r_ + input.Xvvvv * vm_ * vm_ * vm_ * vm_ +
+                          input.Xvphi * vm_ * phi + input.Xrphi * r_ * phi +
+                          input.Xphiphi * phi * phi;
+        const double Y_ = input.Yv * vm_ + input.Yr * r_ + input.Yvvv * vm_ * vm_ * vm_ +
+                          input.Yvrr * vm_ * r_ * r_ + input.Yrrr * r_ * r_ * r_ +
+                          input.Yrvv * r_ * vm_ * vm_ + input.Yphi * phi +
+                          input.Yphivv * phi * vm_ * vm_ + input.Yvphiphi * vm_ * phi * phi +
+                          input.Yphirr * phi * r_ * r_ + input.Yrphiphi * r_ * phi * phi;
+        const double N_ = input.Nv * vm_ + input.Nr * r_ + input.Nvvv * vm_ * vm_ * vm_ +
+                          input.Nvrr * vm_ * r_ * r_ + input.Nrrr * r_ * r_ * r_ +
+                          input.Nrvv * r_ * vm_ * vm_ + input.Nphi * phi +
+                          input.Nphivv * phi * vm_ * vm_ + input.Nvphiphi * vm_ * phi * phi +
+                          input.Nphirr * phi * r_ * r_ + input.Nrphiphi * r_ * phi * phi;
 
-        tau(0) = 0.5*env.rho*pow(U,2)*input.Lpp*input.T*X_;
-        tau(1) = 0.5*env.rho*pow(U,2)*input.Lpp*input.T*Y_;
-        tau(3) = -zH_mmg_frame*tau(1);
-        tau(5) = 0.5*env.rho*pow(U,2)*input.Lpp*input.Lpp*input.T*N_;
+        tau(0) = 0.5 * env.rho * pow(U, 2) * input.Lpp * input.T * X_;
+        tau(1) = 0.5 * env.rho * pow(U, 2) * input.Lpp * input.T * Y_;
+        tau(3) = -zH_mmg_frame * tau(1);
+        tau(5) = 0.5 * env.rho * pow(U, 2) * input.Lpp * input.Lpp * input.T * N_;
     }
     // We had the heeling righting moment and the roll damping terms
-    tau(3)+=- body_mass*env.g*input.GM*phi + K_phidot*dphi_dt + K_phidot2 * dphi_dt*abs(dphi_dt);
+    tau(3) += -body_mass * env.g * input.GM * phi + K_phidot * dphi_dt +
+              K_phidot2 * dphi_dt * abs(dphi_dt);
     // We then had the coriolis and centripetal hydrodynamic forces
-    tau(0)+= my*vm*r;
-    tau(1)-= mx*u*r;
+    tau(0) += my * vm * r;
+    tau(1) -= mx * u * r;
 
     return Wrench(ssc::kinematics::Point(name, 0, 0, 0), body_name, tau);
 }

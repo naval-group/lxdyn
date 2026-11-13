@@ -1,12 +1,12 @@
 #ifndef FORCE_MODELS_UNIT_TESTS_INC_HOLTROPMENNENFORCEMODELTEST_HPP_
 #define FORCE_MODELS_UNIT_TESTS_INC_HOLTROPMENNENFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
-#include "HoltropMennenForceModel.hpp"
 
-class HoltropMennenForceModelTest : public ::testing::Test
-{
+#include "HoltropMennenForceModel.hpp"
+#include "gtest/gtest.h"
+
+class HoltropMennenForceModelTest : public ::testing::Test {
 protected:
     HoltropMennenForceModelTest();
     ssc::random_data_generator::DataGenerator a;

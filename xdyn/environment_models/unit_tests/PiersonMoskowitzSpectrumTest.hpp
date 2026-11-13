@@ -8,15 +8,14 @@
 #ifndef PIERSONMOSKOWITZSPECTRUMTEST_HPP_
 #define PIERSONMOSKOWITZSPECTRUMTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class PiersonMoskowitzSpectrumTest : public ::testing::Test
-{
-    protected:
-        PiersonMoskowitzSpectrumTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class PiersonMoskowitzSpectrumTest : public ::testing::Test {
+protected:
+    PiersonMoskowitzSpectrumTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* PIERSONMOSKOWITZSPECTRUMTEST_HPP_ */
+#endif /* PIERSONMOSKOWITZSPECTRUMTEST_HPP_ */

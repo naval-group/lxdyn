@@ -6,78 +6,97 @@
  */
 
 #include "BodyStates.hpp"
+
 #include "EnvironmentAndFrames.hpp"
 #include "StateLayout.hpp"
 #include "StatesFilter.hpp"
-#include "yaml2eigen.hpp"
 #include "xdyn/external_data_structures/YamlBody.hpp"
+#include "yaml2eigen.hpp"
 
-BodyStates::BodyStates(const double Tmax) : AbstractStates<History>(Tmax),
+BodyStates::BodyStates(const double Tmax)
+    : AbstractStates<History>(Tmax)
+    ,
 
-x_relative_to_mesh(),
-y_relative_to_mesh(),
-z_relative_to_mesh(),
-mesh_to_body(),
+    x_relative_to_mesh()
+    , y_relative_to_mesh()
+    , z_relative_to_mesh()
+    , mesh_to_body()
+    ,
 
-g_in_mesh_frame(),
+    g_in_mesh_frame()
+    ,
 
-states_filter(YamlFilteredStates())
+    states_filter(YamlFilteredStates())
 {
 }
 
-BodyStates::BodyStates(const YamlFilteredStates& filtered_states, const double Tmax) : AbstractStates<History>(Tmax),
+BodyStates::BodyStates(const YamlFilteredStates& filtered_states, const double Tmax)
+    : AbstractStates<History>(Tmax)
+    ,
 
-x_relative_to_mesh(),
-y_relative_to_mesh(),
-z_relative_to_mesh(),
-mesh_to_body(),
+    x_relative_to_mesh()
+    , y_relative_to_mesh()
+    , z_relative_to_mesh()
+    , mesh_to_body()
+    ,
 
-g_in_mesh_frame(),
+    g_in_mesh_frame()
+    ,
 
-states_filter(filtered_states)
+    states_filter(filtered_states)
 {
 }
 
-BodyStates::BodyStates(const StatesFilter& states_filter_, const double Tmax) : AbstractStates<History>(Tmax),
+BodyStates::BodyStates(const StatesFilter& states_filter_, const double Tmax)
+    : AbstractStates<History>(Tmax)
+    ,
 
-x_relative_to_mesh(),
-y_relative_to_mesh(),
-z_relative_to_mesh(),
-mesh_to_body(),
+    x_relative_to_mesh()
+    , y_relative_to_mesh()
+    , z_relative_to_mesh()
+    , mesh_to_body()
+    ,
 
-g_in_mesh_frame(),
+    g_in_mesh_frame()
+    ,
 
-states_filter(states_filter_)
+    states_filter(states_filter_)
 {
 }
 
-ssc::kinematics::EulerAngles BodyStates::convert(const ssc::kinematics::RotationMatrix& R, const YamlRotation& rotations)
+ssc::kinematics::EulerAngles BodyStates::convert(
+    const ssc::kinematics::RotationMatrix& R,
+    const YamlRotation& rotations)
 {
     using namespace ssc::kinematics;
-    if (rotations.order_by == "angle")
-    {
+    if (rotations.order_by == "angle") {
         if (match(rotations.convention, "z", "y'", "x''"))
             return euler_angles<INTRINSIC, CHANGING_ANGLE_ORDER, 3, 2, 1>(R);
         std::stringstream ss;
-        ss << "Rotation convention '" << rotations.convention.at(0) << "," << rotations.convention.at(1) << "," << rotations.convention.at(2) << "' is not currently supported.";
+        ss << "Rotation convention '" << rotations.convention.at(0) << ","
+           << rotations.convention.at(1) << "," << rotations.convention.at(2)
+           << "' is not currently supported.";
         THROW(__PRETTY_FUNCTION__, ssc::exception_handling::Exception, ss.str());
-    }
-    else
-    {
-        THROW(__PRETTY_FUNCTION__, ssc::exception_handling::Exception, std::string("Ordering rotations by '") + rotations.order_by + "' is not currently supported");
+    } else {
+        THROW(
+            __PRETTY_FUNCTION__,
+            ssc::exception_handling::Exception,
+            std::string("Ordering rotations by '") + rotations.order_by +
+                "' is not currently supported");
     }
     return EulerAngles();
 }
 
-std::tuple<double,double,double,double> BodyStates::convert(const ssc::kinematics::EulerAngles& R, const YamlRotation& rotations)
+std::tuple<double, double, double, double> BodyStates::convert(
+    const ssc::kinematics::EulerAngles& R,
+    const YamlRotation& rotations)
 {
     using namespace ssc::kinematics;
-    if (rotations.order_by == "angle")
-    {
-        if (match(rotations.convention, "z", "y'", "x''"))
-        {
-            Eigen::Quaternion<double> quat(rotation_matrix<INTRINSIC, CHANGING_ANGLE_ORDER, 3, 2, 1>(R));
-            std::tuple<double,double,double,double> ret;
+    if (rotations.order_by == "angle") {
+        if (match(rotations.convention, "z", "y'", "x''")) {
+            Eigen::Quaternion<double> quat(
+                rotation_matrix<INTRINSIC, CHANGING_ANGLE_ORDER, 3, 2, 1>(R));
+            std::tuple<double, double, double, double> ret;
             std::get<0>(ret) = quat.w();
             std::get<1>(ret) = quat.x();
             std::get<2>(ret) = quat.y();
@@ -86,40 +105,47 @@ std::tuple<double,double,double,double> BodyStates::convert(const ssc::kinematic
         }
 
         std::stringstream ss;
-        ss << "Rotation convention '" << rotations.convention.at(0) << "," << rotations.convention.at(1) << "," << rotations.convention.at(2) << "' is not currently supported.";
+        ss << "Rotation convention '" << rotations.convention.at(0) << ","
+           << rotations.convention.at(1) << "," << rotations.convention.at(2)
+           << "' is not currently supported.";
         THROW(__PRETTY_FUNCTION__, ssc::exception_handling::Exception, ss.str());
+    } else {
+        THROW(
+            __PRETTY_FUNCTION__,
+            ssc::exception_handling::Exception,
+            std::string("Ordering rotations by '") + rotations.order_by +
+                "' is not currently supported");
     }
-    else
-    {
-        THROW(__PRETTY_FUNCTION__, ssc::exception_handling::Exception, std::string("Ordering rotations by '") + rotations.order_by + "' is not currently supported");
-    }
-    return std::make_tuple(0.,0.,0.,0.);
+    return std::make_tuple(0., 0., 0., 0.);
 }
 
 ssc::kinematics::EulerAngles BodyStates::get_angles() const
 {
-    return convert(get_rot_from_ned_to_body(),convention);
+    return convert(get_rot_from_ned_to_body(), convention);
 }
 
 ssc::kinematics::EulerAngles BodyStates::get_angles(const YamlRotation& c) const
 {
-    return convert(get_rot_from_ned_to_body(),c);
+    return convert(get_rot_from_ned_to_body(), c);
 }
 
-ssc::kinematics::EulerAngles BodyStates::get_angles(const StateType& all_states, const size_t idx, const YamlRotation& c) const
+ssc::kinematics::EulerAngles
+BodyStates::get_angles(const StateType& all_states, const size_t idx, const YamlRotation& c) const
 {
-    return convert(get_rot_from_ned_to(all_states,idx),c);
+    return convert(get_rot_from_ned_to(all_states, idx), c);
 }
 
 ssc::kinematics::RotationMatrix BodyStates::get_rot_from_ned_to_body() const
 {
-    return Eigen::Quaternion<double>(qr(),qi(),qj(),qk()).matrix();
+    return Eigen::Quaternion<double>(qr(), qi(), qj(), qk()).matrix();
 }
 
-ssc::kinematics::RotationMatrix BodyStates::get_rot_from_ned_to(const StateType& x, const size_t idx) const
+ssc::kinematics::RotationMatrix BodyStates::get_rot_from_ned_to(
+    const StateType& x,
+    const size_t idx) const
 {
     ConstBodyStateView s(x, idx);
-    return Eigen::Quaternion<double>(s.qr(),s.qi(),s.qj(),s.qk()).matrix();
+    return Eigen::Quaternion<double>(s.qr(), s.qi(), s.qj(), s.qk()).matrix();
 }
 
 std::vector<double> BodyStates::get_current_state_values() const

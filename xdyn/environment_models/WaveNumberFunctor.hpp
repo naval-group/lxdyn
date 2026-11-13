@@ -20,22 +20,23 @@
  *  \section ex1 Example
  *  \snippet environment_models/unit_tests/WaveNumberFunctorTest.cpp WaveNumberFunctorTest example
  *  \section ex2 Expected output
- *  \snippet environment_models/unit_tests/WaveNumberFunctorTest.cpp WaveNumberFunctorTest expected output
+ *  \snippet environment_models/unit_tests/WaveNumberFunctorTest.cpp WaveNumberFunctorTest expected
+ * output
  */
-class WaveNumberFunctor
-{
-    public:
-        WaveNumberFunctor(const double h,    //!< Water depth (in meters)
-                          const double omega //!< Angular frequency (in rad/s)
-                          );
+class WaveNumberFunctor {
+public:
+    WaveNumberFunctor(
+        const double h,     //!< Water depth (in meters)
+        const double omega  //!< Angular frequency (in rad/s)
+    );
 
-        std::tuple<double, double, double> operator()(const double& k) const;
+    std::tuple<double, double, double> operator()(const double& k) const;
 
-    private:
-        double h;
-        double h2;
-        double omega2;
-        double g{9.81};
+private:
+    double h;
+    double h2;
+    double omega2;
+    double g{9.81};
 };
 
 #endif /* WAVENUMBERFUNCTOR_HPP_ */

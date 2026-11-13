@@ -11,8 +11,7 @@
 #include <string>
 #include <vector>
 
-struct XdynCommandLineArguments
-{
+struct XdynCommandLineArguments {
     std::vector<std::string> yaml_filenames;
     std::string solver;
     std::string output_filename;

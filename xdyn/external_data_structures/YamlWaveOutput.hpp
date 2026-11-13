@@ -10,8 +10,7 @@
 
 #include <string>
 
-struct YamlWaveOutput
-{
+struct YamlWaveOutput {
     YamlWaveOutput();
     /// Name of the frame of reference the x & y coordinates are expressed in
     std::string frame_of_reference;
@@ -28,6 +27,5 @@ struct YamlWaveOutput
     /// Discretization of the mesh along the y axis (number of different x values)
     size_t ny{0};
 };
-
 
 #endif /* EXTERNAL_DATA_STRUCTURES_INC_YAMLWAVEOUTPUT_HPP_ */

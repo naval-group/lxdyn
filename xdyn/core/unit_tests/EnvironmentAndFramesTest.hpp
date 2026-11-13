@@ -10,8 +10,6 @@
 
 #include "gtest/gtest.h"
 
-class EnvironmentAndFramesTest : public ::testing::Test
-{
-};
+class EnvironmentAndFramesTest : public ::testing::Test {};
 
 #endif /* CORE_UNIT_TESTS_INC_ENVIRONMENTANDFRAMESTEST_HPP_ */

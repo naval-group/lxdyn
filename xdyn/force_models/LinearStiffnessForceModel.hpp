@@ -3,27 +3,33 @@
 
 #include <Eigen/Dense>
 #include <optional>
+
 #include "xdyn/core/ForceModel.hpp"
 
-class LinearStiffnessForceModel : public ForceModel
-{
-    public:
-        struct Input
-        {
-            std::string name;
-            Eigen::Matrix<double,6,6> K{Eigen::Matrix<double,6,6>::Zero()};
-            std::optional<YamlPosition> equilibrium_position;
-        };
-
-        LinearStiffnessForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        LinearStiffnessForceModel() = delete;
-        static Input parse(const std::string& yaml);
-        static std::string model_name();
-        Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
-
-    private:
-        Eigen::Matrix<double,6,6> K; //!< 6x6 linear stiffness matrix expressed in the body frame
+class LinearStiffnessForceModel : public ForceModel {
+public:
+    struct Input {
+        std::string name;
+        Eigen::Matrix<double, 6, 6> K{Eigen::Matrix<double, 6, 6>::Zero()};
         std::optional<YamlPosition> equilibrium_position;
+    };
+
+    LinearStiffnessForceModel(
+        const Input& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    LinearStiffnessForceModel() = delete;
+    static Input parse(const std::string& yaml);
+    static std::string model_name();
+    Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const override;
+
+private:
+    Eigen::Matrix<double, 6, 6> K;  //!< 6x6 linear stiffness matrix expressed in the body frame
+    std::optional<YamlPosition> equilibrium_position;
 };
 
 #endif /* LINEARSTIFFNESSFORCEMODEL_HPP_ */

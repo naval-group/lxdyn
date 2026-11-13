@@ -6,36 +6,39 @@
  */
 
 #include "Stretching.hpp"
+
+#include <cmath>  // For isnan
+#include <ssc/macros.hpp>
+
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
-#include <ssc/macros.hpp>
-#include <cmath> // For isnan
 
-Stretching::Stretching(const YamlStretching& input //!< Usually read from YAML
-                  )
-: delta(input.delta)
-, h(input.h)
-{}
-
-double Stretching::rescaled_z(const double z, //!< z value we wish to rescale (in meters)
-                              const double ksi //!< Wave height (in meters), z being oriented downwards
-                             ) const
+Stretching::Stretching(
+    const YamlStretching& input  //!< Usually read from YAML
+    )
+    : delta(input.delta), h(input.h)
 {
-    if (std::isnan(z))
-    {
-        THROW(__PRETTY_FUNCTION__, InternalErrorException, "z (value to rescale, in meters) was NaN");
+}
+
+double Stretching::rescaled_z(
+    const double z,   //!< z value we wish to rescale (in meters)
+    const double ksi  //!< Wave height (in meters), z being oriented downwards
+) const
+{
+    if (std::isnan(z)) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InternalErrorException,
+            "z (value to rescale, in meters) was NaN");
     }
-    if (std::isnan(ksi))
-    {
+    if (std::isnan(ksi)) {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "ksi (wave height, in meters) was NaN");
     }
-    if (h == 0)
-    {
-        return z; // No stretching if h = 0
+    if (h == 0) {
+        return z;  // No stretching if h = 0
     }
-    if (z > h)
-    {
+    if (z > h) {
         return z;
     }
-    return (z-h)*(delta*ksi-h)/(ksi-h)+h;
+    return (z - h) * (delta * ksi - h) / (ksi - h) + h;
 }

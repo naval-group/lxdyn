@@ -1,28 +1,32 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include <vector>
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
-
-#include <ssc/macros.hpp>
 #include <memory>
+#include <ssc/macros.hpp>
+#include <vector>
+
+#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 
 /**
  * \author gj
  * \brief Contains a triangular mesh
  * \ingroup mesh
  */
-class Mesh
-{
+class Mesh {
     Mesh();
-public:
-    Mesh(const Matrix3x& nodes_,
-         const ArrayOfEdges& edges_,
-         const std::vector<Facet>& facets_,
-         const std::vector<std::vector<size_t> >& facetsPerEdge_ , //!< for each Edge (index), the list of Facet (indices) to which the edge belongs
-         const std::vector<std::vector<size_t> >& orientedEdgesPerFacet_  //!< for each Facet (index), the list of Edges composing the facet and their running direction of each edge
-         );
 
+public:
+    Mesh(
+        const Matrix3x& nodes_,
+        const ArrayOfEdges& edges_,
+        const std::vector<Facet>& facets_,
+        const std::vector<std::vector<size_t>>&
+            facetsPerEdge_,  //!< for each Edge (index), the list of Facet (indices) to which the
+                             //!< edge belongs
+        const std::vector<std::vector<size_t>>&
+            orientedEdgesPerFacet_  //!< for each Facet (index), the list of Edges composing the
+                                    //!< facet and their running direction of each edge
+    );
 
     /** \brief Reset the dynamic data related to the mesh intersection with free surface */
     void reset_dynamic_data();
@@ -30,28 +34,31 @@ public:
     /** \brief add an edge
      * \return the edge index
      */
-    size_t add_edge(const size_t first_vertex_index,const size_t last_vertex_index);
+    size_t add_edge(const size_t first_vertex_index, const size_t last_vertex_index);
 
     /** \brief add an vertex
      * \return the vertex index
      */
-    size_t add_vertex(const EPoint &vertex_coords);
+    size_t add_vertex(const EPoint& vertex_coords);
 
     /**
      * \brief create a new facet dynamically
      * \return the facet index in facets vector
      */
     size_t create_facet_from_edges(
-            const std::vector<size_t>& oriented_edge_list, //!< The list of edges and running direction composing the facet
-            const EPoint &unit_normal                      //!< The unit_normal is shared in case of facet split, let's not recompute it
-            );
+        const std::vector<size_t>&
+            oriented_edge_list,    //!< The list of edges and running direction composing the facet
+        const EPoint& unit_normal  //!< The unit_normal is shared in case of facet split, let's not
+                                   //!< recompute it
+    );
 
     /**
      * \brief make an oriented edge
-     * \details an oriented edge is composed of an edge_index and a boolean indicating if the order of vertices must be reversed
-     * To avoid ctors/dtors, this is encoded in a single int, index being left shifted, and direction encoded on low bit
+     * \details an oriented edge is composed of an edge_index and a boolean indicating if the order
+     * of vertices must be reversed To avoid ctors/dtors, this is encoded in a single int, index
+     * being left shifted, and direction encoded on low bit
      */
-    static size_t convert_index_to_oriented_edge_id(size_t edge_index_,bool reverse_direction_);
+    static size_t convert_index_to_oriented_edge_id(size_t edge_index_, bool reverse_direction_);
     static size_t convert_oriented_edge_id_to_edge_index(size_t node_index);
     static bool get_oriented_edge_direction(size_t oriented_edge);
 
@@ -72,16 +79,18 @@ public:
     /// For each facet, the indexes of its nodes, unit normal, barycenter & area
     std::vector<Facet> facets;
     /// For each Edge (index), the list of Facet (indices) to which the edge belongs
-    std::vector<std::vector<size_t> > facets_per_edge;
-    /// For each Facet (index), the list of Edges composing the facet and running direction of each edge
-    std::vector<std::vector<size_t> > oriented_edges_per_facet;
+    std::vector<std::vector<size_t>> facets_per_edge;
+    /// For each Facet (index), the list of Edges composing the facet and running direction of each
+    /// edge
+    std::vector<std::vector<size_t>> oriented_edges_per_facet;
     /// Number of static nodes (ie. read from an STL file & not generated dynamically)
     size_t nb_of_static_nodes;
     /// Number of static edges (ie. read from an STL file & not generated dynamically)
     size_t nb_of_static_edges;
     /// Number of static facets (ie. read from an STL file & not generated dynamically)
     size_t nb_of_static_facets;
-    /// Coordinates of all vertices in mesh, including dynamic ones added for free surface intersection
+    /// Coordinates of all vertices in mesh, including dynamic ones added for free surface
+    /// intersection
     Matrix3x all_nodes;
     /// Total number of nodes used, including dynamic ones
     size_t total_number_of_nodes;
@@ -90,4 +99,4 @@ public:
 using MeshPtr = std::shared_ptr<Mesh>;
 using const_MeshPtr = std::shared_ptr<const Mesh>;
 
-#endif //MESH_HPP
+#endif  // MESH_HPP

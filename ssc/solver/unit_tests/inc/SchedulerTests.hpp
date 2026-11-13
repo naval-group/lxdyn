@@ -4,12 +4,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class SchedulerTests : public ::testing::Test
-{
-    protected:
-        SchedulerTests();
-        ssc::random_data_generator::DataGenerator a;
-
+class SchedulerTests : public ::testing::Test {
+protected:
+    SchedulerTests();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* SCHEDULER_TESTS_HPP_ */
+#endif /* SCHEDULER_TESTS_HPP_ */

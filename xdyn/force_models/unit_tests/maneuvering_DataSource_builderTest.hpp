@@ -8,14 +8,14 @@
 #ifndef MANEUVERINGDATASOURCEBUILDERTEST_HPP_
 #define MANEUVERINGDATASOURCEBUILDERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class maneuvering_DataSource_builderTest : public ::testing::Test
-{
-    protected:
-        maneuvering_DataSource_builderTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class maneuvering_DataSource_builderTest : public ::testing::Test {
+protected:
+    maneuvering_DataSource_builderTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* MANEUVERINGDATASOURCEBUILDERTEST_HPP_ */
+#endif /* MANEUVERINGDATASOURCEBUILDERTEST_HPP_ */

@@ -8,18 +8,18 @@
 #ifndef GRPC_INC_FROMGRPC_HPP_
 #define GRPC_INC_FROMGRPC_HPP_
 
-#include <ssc/kinematics.hpp>
 #include <grpcpp/grpcpp.h>
-#include "force.pb.h"
-#include "force.grpc.pb.h"
+
+#include <ssc/kinematics.hpp>
+
 #include "GRPCTypes.hpp"
+#include "force.grpc.pb.h"
+#include "force.pb.h"
 
-class FromGRPC
-{
-    public:
-        WaveRequest to_wave_request(const RequiredWaveInformationResponse& response) const;
-        ssc::kinematics::Vector6d to_force(const ForceResponse& response) const;
+class FromGRPC {
+public:
+    WaveRequest to_wave_request(const RequiredWaveInformationResponse& response) const;
+    ssc::kinematics::Vector6d to_force(const ForceResponse& response) const;
 };
-
 
 #endif /* GRPC_INC_FROMGRPC_HPP_ */

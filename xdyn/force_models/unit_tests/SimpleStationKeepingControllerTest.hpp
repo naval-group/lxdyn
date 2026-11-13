@@ -8,14 +8,14 @@
 #ifndef SIMPLESTATIONKEEPINGCONTROLLERTEST_HPP_
 #define SIMPLESTATIONKEEPINGCONTROLLERTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class SimpleStationKeepingControllerTest : public ::testing::Test
-{
-    protected:
-        SimpleStationKeepingControllerTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class SimpleStationKeepingControllerTest : public ::testing::Test {
+protected:
+    SimpleStationKeepingControllerTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* SIMPLESTATIONKEEPINGCONTROLLERTEST_HPP_ */
+#endif /* SIMPLESTATIONKEEPINGCONTROLLERTEST_HPP_ */

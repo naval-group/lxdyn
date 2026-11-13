@@ -12,8 +12,7 @@
 
 /** \brief Stores the controller parameters used to generate a command for a controlled force
  */
-struct YamlController
-{
+struct YamlController {
     /// Type of the controller (PID, gRPC, CSV)
     std::string type;
     /// Time step of the discrete system
@@ -23,6 +22,5 @@ struct YamlController
     /// All other fields that are spectific to the controller type
     std::string rest_of_the_yaml;
 };
-
 
 #endif /* YAMLCONTROLLER_HPP_ */

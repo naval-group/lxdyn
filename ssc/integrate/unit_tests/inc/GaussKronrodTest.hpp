@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class GaussKronrodTest : public ::testing::Test
-{
-    protected:
-        GaussKronrodTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class GaussKronrodTest : public ::testing::Test {
+protected:
+    GaussKronrodTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* QUADPACKTEST_HPP_ */
+#endif /* QUADPACKTEST_HPP_ */

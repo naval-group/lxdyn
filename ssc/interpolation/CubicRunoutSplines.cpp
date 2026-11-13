@@ -11,18 +11,19 @@ using namespace ssc::interpolation;
 
 CubicRunoutSplines::CubicRunoutSplines()
 {
-    M = (h != 0) ? compute_second_derivative() : std::vector<double>(2,0);
+    M = (h != 0) ? compute_second_derivative() : std::vector<double>(2, 0);
 }
 
-CubicRunoutSplines::CubicRunoutSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y) : Splines(xmin_, xmax_,y)
+CubicRunoutSplines::CubicRunoutSplines(
+    const double& xmin_,
+    const double& xmax_,
+    const std::vector<double>& y)
+    : Splines(xmin_, xmax_, y)
 {
-    if (n>1)
-    {
-        M = (h != 0) ? compute_second_derivative() : std::vector<double>(2,0);
-    }
-    else
-    {
-        M = std::vector<double>(1,0.);
+    if (n > 1) {
+        M = (h != 0) ? compute_second_derivative() : std::vector<double>(2, 0);
+    } else {
+        M = std::vector<double>(1, 0.);
     }
 }
 

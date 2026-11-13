@@ -5,38 +5,26 @@
  *      Author: cady
  */
 
-
 #include "ManeuveringInternal.hpp"
 
 using namespace maneuvering;
 
-Node::Node(const std::vector<NodePtr>& children_) : children(children_)
-{
-}
+Node::Node(const std::vector<NodePtr>& children_) : children(children_) {}
 
 std::vector<NodePtr> Node::get_children() const
 {
     return children;
 }
 
-Nullary::Nullary() : Node(std::vector<NodePtr>())
-{
-}
+Nullary::Nullary() : Node(std::vector<NodePtr>()) {}
 
-Binary::Binary(const NodePtr& lhs, const NodePtr& rhs) : Node({lhs,rhs})
-{
-}
+Binary::Binary(const NodePtr& lhs, const NodePtr& rhs) : Node({lhs, rhs}) {}
 
-Constant::Constant(const double val_) : val(val_)
-{
-}
+Constant::Constant(const double val_) : val(val_) {}
 
 Function Constant::get_lambda() const
 {
-    return [this](const BodyStates& , ssc::data_source::DataSource& , const double )
-            {
-                return val;
-            };
+    return [this](const BodyStates&, ssc::data_source::DataSource&, const double) { return val; };
 }
 
 void Constant::accept(AbstractNodeVisitor& visitor) const
@@ -54,25 +42,20 @@ double Constant::get_min() const
     return val;
 }
 
-Unary::Unary(const NodePtr& operand) : Node({operand})
-{
-}
+Unary::Unary(const NodePtr& operand) : Node({operand}) {}
 
 NodePtr Unary::get_operand() const
 {
     return children.front();
 }
 
-Cos::Cos(const NodePtr& operand) : Unary(operand)
-{
-}
+Cos::Cos(const NodePtr& operand) : Unary(operand) {}
 Function Cos::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-            {
-                const auto op = get_operand()->get_lambda();
-                return cos(op(states, ds, t));
-            };
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
+        const auto op = get_operand()->get_lambda();
+        return cos(op(states, ds, t));
+    };
 }
 
 void Cos::accept(AbstractNodeVisitor& visitor) const
@@ -90,16 +73,13 @@ double Cos::get_min() const
     return -1;
 }
 
-Sin::Sin(const NodePtr& operand) : Unary(operand)
-{
-}
+Sin::Sin(const NodePtr& operand) : Unary(operand) {}
 Function Sin::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-            {
-                const auto op = get_operand()->get_lambda();
-                return sin(op(states, ds, t));
-            };
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
+        const auto op = get_operand()->get_lambda();
+        return sin(op(states, ds, t));
+    };
 }
 
 void Sin::accept(AbstractNodeVisitor& visitor) const
@@ -117,17 +97,14 @@ double Sin::get_min() const
     return -1;
 }
 
-Abs::Abs(const NodePtr& operand) : Unary(operand)
-{
-}
+Abs::Abs(const NodePtr& operand) : Unary(operand) {}
 
 Function Abs::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-            {
-                const auto op = get_operand()->get_lambda();
-                return std::abs(op(states, ds, t));
-            };
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
+        const auto op = get_operand()->get_lambda();
+        return std::abs(op(states, ds, t));
+    };
 }
 
 void Abs::accept(AbstractNodeVisitor& visitor) const
@@ -145,10 +122,7 @@ double Abs::get_min() const
     return 0;
 }
 
-
-Log::Log(const NodePtr& operand) : Unary(operand)
-{
-}
+Log::Log(const NodePtr& operand) : Unary(operand) {}
 
 double Log::get_max() const
 {
@@ -162,11 +136,10 @@ double Log::get_min() const
 
 Function Log::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-            {
-                const auto op = get_operand()->get_lambda();
-                return std::log(op(states, ds, t));
-            };
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
+        const auto op = get_operand()->get_lambda();
+        return std::log(op(states, ds, t));
+    };
 }
 
 void Log::accept(AbstractNodeVisitor& visitor) const
@@ -184,14 +157,11 @@ NodePtr Binary::get_rhs() const
     return children.at(1);
 }
 
-Sum::Sum(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_)
-{
-}
+Sum::Sum(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_) {}
 
 Function Sum::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-    {
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
         const auto op1 = get_lhs()->get_lambda();
         const auto op2 = get_rhs()->get_lambda();
         return op1(states, ds, t) + op2(states, ds, t);
@@ -213,14 +183,11 @@ double Sum::get_min() const
     return get_lhs()->get_min() + get_rhs()->get_min();
 }
 
-Pow::Pow(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_)
-{
-}
+Pow::Pow(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_) {}
 
 Function Pow::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-    {
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
         const auto op1 = get_lhs()->get_lambda();
         const auto op2 = get_rhs()->get_lambda();
         return std::pow(op1(states, ds, t), op2(states, ds, t));
@@ -238,7 +205,7 @@ double Pow::get_min() const
     const double m2 = std::pow(get_lhs()->get_min(), get_rhs()->get_max());
     const double m3 = std::pow(get_lhs()->get_max(), get_rhs()->get_min());
     const double m4 = std::pow(get_lhs()->get_max(), get_rhs()->get_max());
-    return std::min(std::min(m1,m2),std::min(m3,m4));
+    return std::min(std::min(m1, m2), std::min(m3, m4));
 }
 
 double Pow::get_max() const
@@ -247,20 +214,17 @@ double Pow::get_max() const
     const double m2 = std::pow(get_lhs()->get_min(), get_rhs()->get_max());
     const double m3 = std::pow(get_lhs()->get_max(), get_rhs()->get_min());
     const double m4 = std::pow(get_lhs()->get_max(), get_rhs()->get_max());
-    return std::max(std::max(m1,m2),std::max(m3,m4));
+    return std::max(std::max(m1, m2), std::max(m3, m4));
 }
 
-Exp::Exp(const NodePtr& operand) : Unary(operand)
-{
-}
+Exp::Exp(const NodePtr& operand) : Unary(operand) {}
 
 Function Exp::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-            {
-                const auto op = get_operand()->get_lambda();
-                return std::exp(op(states, ds, t));
-            };
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
+        const auto op = get_operand()->get_lambda();
+        return std::exp(op(states, ds, t));
+    };
 }
 
 double Exp::get_min() const
@@ -280,16 +244,13 @@ void Exp::accept(AbstractNodeVisitor& visitor) const
 
 Function Sqrt::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-            {
-                const auto op = get_operand()->get_lambda();
-                return std::sqrt(op(states, ds, t));
-            };
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
+        const auto op = get_operand()->get_lambda();
+        return std::sqrt(op(states, ds, t));
+    };
 }
 
-Sqrt::Sqrt(const NodePtr& operand) : Unary(operand)
-{
-}
+Sqrt::Sqrt(const NodePtr& operand) : Unary(operand) {}
 
 void Sqrt::accept(AbstractNodeVisitor& visitor) const
 {
@@ -306,14 +267,11 @@ double Sqrt::get_max() const
     return std::sqrt(get_operand()->get_max());
 }
 
-Difference::Difference(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_)
-{
-}
+Difference::Difference(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_) {}
 
 Function Difference::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-    {
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
         const auto op1 = get_lhs()->get_lambda();
         const auto op2 = get_rhs()->get_lambda();
         return op1(states, ds, t) - op2(states, ds, t);
@@ -335,14 +293,11 @@ double Difference::get_max() const
     return get_lhs()->get_max() - get_rhs()->get_min();
 }
 
-Divide::Divide(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_)
-{
-}
+Divide::Divide(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_) {}
 
 Function Divide::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-    {
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
         const auto op1 = get_lhs()->get_lambda();
         const auto op2 = get_rhs()->get_lambda();
         return op1(states, ds, t) / op2(states, ds, t);
@@ -356,7 +311,7 @@ void Divide::accept(AbstractNodeVisitor& visitor) const
 
 double Divide::get_min() const
 {
-    return get_lhs()->get_min()/get_rhs()->get_max();
+    return get_lhs()->get_min() / get_rhs()->get_max();
 }
 
 double Divide::get_max() const
@@ -364,14 +319,11 @@ double Divide::get_max() const
     return get_lhs()->get_max() / get_rhs()->get_min();
 }
 
-Multiply::Multiply(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_)
-{
-}
+Multiply::Multiply(const NodePtr& lhs_, const NodePtr& rhs_) : Binary(lhs_, rhs_) {}
 
 Function Multiply::get_lambda() const
 {
-    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t)
-    {
+    return [this](const BodyStates& states, ssc::data_source::DataSource& ds, const double t) {
         const auto op1 = get_lhs()->get_lambda();
         const auto op2 = get_rhs()->get_lambda();
         return op1(states, ds, t) * op2(states, ds, t);
@@ -385,7 +337,7 @@ void Multiply::accept(AbstractNodeVisitor& visitor) const
 
 double Multiply::get_min() const
 {
-    return get_lhs()->get_min()*get_rhs()->get_min();
+    return get_lhs()->get_min() * get_rhs()->get_min();
 }
 
 double Multiply::get_max() const
@@ -395,10 +347,7 @@ double Multiply::get_max() const
 
 Function Time::get_lambda() const
 {
-    return [](const BodyStates& , ssc::data_source::DataSource& , const double t)
-            {
-                return t;
-            };
+    return [](const BodyStates&, ssc::data_source::DataSource&, const double t) { return t; };
 }
 
 void Time::accept(AbstractNodeVisitor& visitor) const
@@ -416,16 +365,16 @@ double Time::get_max() const
     return 0;
 }
 
-UnknownIdentifier::UnknownIdentifier(const std::string& identifier_name_) : identifier_name(identifier_name_)
+UnknownIdentifier::UnknownIdentifier(const std::string& identifier_name_)
+    : identifier_name(identifier_name_)
 {
 }
 
 Function UnknownIdentifier::get_lambda() const
 {
-    return [this](const BodyStates& , ssc::data_source::DataSource& ds, const double )
-            {
-                return ds.get<double>(identifier_name);
-            };
+    return [this](const BodyStates&, ssc::data_source::DataSource& ds, const double) {
+        return ds.get<double>(identifier_name);
+    };
 }
 
 void UnknownIdentifier::accept(AbstractNodeVisitor& visitor) const
@@ -437,7 +386,6 @@ std::string UnknownIdentifier::get_name() const
 {
     return identifier_name;
 }
-
 
 double UnknownIdentifier::get_min() const
 {
@@ -475,12 +423,12 @@ NodePtr maneuvering::make_log(const NodePtr& n)
 
 NodePtr maneuvering::make_sum(const NodePtr& lhs, const NodePtr& rhs)
 {
-    return NodePtr(new Sum(lhs,rhs));
+    return NodePtr(new Sum(lhs, rhs));
 }
 
 NodePtr maneuvering::make_pow(const NodePtr& lhs, const NodePtr& rhs)
 {
-    return NodePtr(new Pow(lhs,rhs));
+    return NodePtr(new Pow(lhs, rhs));
 }
 
 NodePtr maneuvering::make_exp(const NodePtr& n)
@@ -495,97 +443,97 @@ NodePtr maneuvering::make_sqrt(const NodePtr& n)
 
 NodePtr maneuvering::make_difference(const NodePtr& lhs, const NodePtr& rhs)
 {
-    return NodePtr(new Difference(lhs,rhs));
+    return NodePtr(new Difference(lhs, rhs));
 }
 
 NodePtr maneuvering::make_divide(const NodePtr& lhs, const NodePtr& rhs)
 {
-    return NodePtr(new Divide(lhs,rhs));
+    return NodePtr(new Divide(lhs, rhs));
 }
 
 NodePtr maneuvering::make_multiply(const NodePtr& lhs, const NodePtr& rhs)
 {
-    return NodePtr(new Multiply(lhs,rhs));
+    return NodePtr(new Multiply(lhs, rhs));
 }
 
 NodePtr maneuvering::make_state_x(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::X>(n,rot));
+    return NodePtr(new State<StateType::X>(n, rot));
 }
 
 NodePtr maneuvering::make_state_y(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::Y>(n,rot));
+    return NodePtr(new State<StateType::Y>(n, rot));
 }
 
 NodePtr maneuvering::make_state_z(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::Z>(n,rot));
+    return NodePtr(new State<StateType::Z>(n, rot));
 }
 
 NodePtr maneuvering::make_state_u(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::U>(n,rot));
+    return NodePtr(new State<StateType::U>(n, rot));
 }
 
 NodePtr maneuvering::make_state_v(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::V>(n,rot));
+    return NodePtr(new State<StateType::V>(n, rot));
 }
 
 NodePtr maneuvering::make_state_w(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::W>(n,rot));
+    return NodePtr(new State<StateType::W>(n, rot));
 }
 
 NodePtr maneuvering::make_state_p(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::P>(n,rot));
+    return NodePtr(new State<StateType::P>(n, rot));
 }
 
 NodePtr maneuvering::make_state_q(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::Q>(n,rot));
+    return NodePtr(new State<StateType::Q>(n, rot));
 }
 
 NodePtr maneuvering::make_state_r(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::R>(n,rot));
+    return NodePtr(new State<StateType::R>(n, rot));
 }
 
 NodePtr maneuvering::make_state_phi(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::PHI>(n,rot));
+    return NodePtr(new State<StateType::PHI>(n, rot));
 }
 
 NodePtr maneuvering::make_state_theta(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::THETA>(n,rot));
+    return NodePtr(new State<StateType::THETA>(n, rot));
 }
 
 NodePtr maneuvering::make_state_psi(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::PSI>(n,rot));
+    return NodePtr(new State<StateType::PSI>(n, rot));
 }
 
 NodePtr maneuvering::make_state_qr(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::QR>(n,rot));
+    return NodePtr(new State<StateType::QR>(n, rot));
 }
 
 NodePtr maneuvering::make_state_qi(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::QI>(n,rot));
+    return NodePtr(new State<StateType::QI>(n, rot));
 }
 
 NodePtr maneuvering::make_state_qj(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::QJ>(n,rot));
+    return NodePtr(new State<StateType::QJ>(n, rot));
 }
 
 NodePtr maneuvering::make_state_qk(const NodePtr& n, const YamlRotation& rot)
 {
-    return NodePtr(new State<StateType::QK>(n,rot));
+    return NodePtr(new State<StateType::QK>(n, rot));
 }
 
 NodePtr maneuvering::make_time()
@@ -598,179 +546,189 @@ NodePtr maneuvering::make_unknown_identifier(const std::string& identifier_name)
     return NodePtr(new UnknownIdentifier(identifier_name));
 }
 
-namespace maneuvering
+namespace maneuvering {
+template <>
+void State<StateType::X>::accept(AbstractNodeVisitor& visitor) const
 {
-    template <> void State<StateType::X>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::Y>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::Z>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::U>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::V>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::W>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::P>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::Q>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::R>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::PHI>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::THETA>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::PSI>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::QR>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::QI>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::QJ>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
-    template <> void State<StateType::QK>::accept(AbstractNodeVisitor& visitor) const
-    {
-        visitor.visit(*this);
-    }
+    visitor.visit(*this);
 }
-namespace maneuvering
+template <>
+void State<StateType::Y>::accept(AbstractNodeVisitor& visitor) const
 {
-    double FindTmax::get_Tmax() const
-    {
-        return Tmax;
-    }
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::Z>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::U>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::V>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::W>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::P>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::Q>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::R>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::PHI>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::THETA>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::PSI>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::QR>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::QI>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::QJ>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+template <>
+void State<StateType::QK>::accept(AbstractNodeVisitor& visitor) const
+{
+    visitor.visit(*this);
+}
+}  // namespace maneuvering
+namespace maneuvering {
+double FindTmax::get_Tmax() const
+{
+    return Tmax;
+}
 
-    void FindTmax::visit(const UnknownIdentifier& )
-    {
-    }
-    void FindTmax::visit(const Time& /*f*/) {}
-    void FindTmax::visit(const State<StateType::X>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_min());
-    }
-    void FindTmax::visit(const State<StateType::Y>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::Z>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::U>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::V>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::W>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::P>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::Q>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::R>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::PHI>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::THETA>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::PSI>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::QR>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::QI>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::QJ>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const State<StateType::QK>& f)
-    {
-        const auto op = f.get_operand();
-        Tmax = std::max(Tmax, -op->get_max());
-    }
-    void FindTmax::visit(const Binary& f)
-    {
-        auto children  = f.get_children();
-        for (const auto& child:children)
-        {
-            child->accept(*this);
-        }
-    }
-    void FindTmax::visit(const Unary& f)
-    {
-        auto children  = f.get_children();
-        for (const auto& child:children)
-        {
-            child->accept(*this);
-        }
-    }
-    void FindTmax::visit(const Constant& ) {}
+void FindTmax::visit(const UnknownIdentifier&) {}
+void FindTmax::visit(const Time& /*f*/) {}
+void FindTmax::visit(const State<StateType::X>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_min());
 }
+void FindTmax::visit(const State<StateType::Y>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::Z>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::U>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::V>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::W>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::P>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::Q>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::R>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::PHI>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::THETA>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::PSI>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::QR>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::QI>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::QJ>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const State<StateType::QK>& f)
+{
+    const auto op = f.get_operand();
+    Tmax = std::max(Tmax, -op->get_max());
+}
+void FindTmax::visit(const Binary& f)
+{
+    auto children = f.get_children();
+    for (const auto& child : children) {
+        child->accept(*this);
+    }
+}
+void FindTmax::visit(const Unary& f)
+{
+    auto children = f.get_children();
+    for (const auto& child : children) {
+        child->accept(*this);
+    }
+}
+void FindTmax::visit(const Constant&) {}
+}  // namespace maneuvering

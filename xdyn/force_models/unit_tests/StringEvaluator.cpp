@@ -7,65 +7,68 @@
 
 #include "StringEvaluator.hpp"
 
+StringEvaluator::StringEvaluator(std::stringstream& os_) : os(os_) {}
 
-StringEvaluator::StringEvaluator(std::stringstream& os_) : os(os_)
-{
-}
-
-template <> void StringEvaluator::operator()(const double& d)
+template <>
+void StringEvaluator::operator()(const double& d)
 {
     os << d;
 }
 
-template <> void StringEvaluator::operator()(const maneuvering::Identifier& d)
+template <>
+void StringEvaluator::operator()(const maneuvering::Identifier& d)
 {
     os << d;
 }
 
-template <> void StringEvaluator::operator()(const maneuvering::Base& d)
+template <>
+void StringEvaluator::operator()(const maneuvering::Base& d)
 {
-    boost::apply_visitor(*this,d);
+    boost::apply_visitor(*this, d);
 }
 
-template <> void StringEvaluator::operator()(const maneuvering::Factor& d)
+template <>
+void StringEvaluator::operator()(const maneuvering::Factor& d)
 {
-    this->operator ()(d.base);
-    for (const auto& e:d.exponents)
-    {
+    this->operator()(d.base);
+    for (const auto& e : d.exponents) {
         os << "^(";
-        this->operator ()(e);
+        this->operator()(e);
     }
-    for (auto e:d.exponents) os << ")";
+    for (auto e : d.exponents)
+        os << ")";
 }
-template <> void StringEvaluator::operator()(const maneuvering::Term& d)
+template <>
+void StringEvaluator::operator()(const maneuvering::Term& d)
 {
-    this->operator ()(d.first);
-    for (const auto& op:d.rest)
-    {
+    this->operator()(d.first);
+    for (const auto& op : d.rest) {
         os << op.operator_ << "(";
         this->operator()(op.factor);
         os << ")";
     }
 }
 
-template <> void StringEvaluator::operator()(const maneuvering::Expr& d)
+template <>
+void StringEvaluator::operator()(const maneuvering::Expr& d)
 {
-    this->operator ()(d.first);
-    for (const auto& op:d.rest)
-    {
+    this->operator()(d.first);
+    for (const auto& op : d.rest) {
         os << op.operator_;
         this->operator()(op.term);
     }
 }
 
-template <> void StringEvaluator::operator()(const maneuvering::FunctionCall& d)
+template <>
+void StringEvaluator::operator()(const maneuvering::FunctionCall& d)
 {
     os << d.function << "(";
-    this->operator ()(d.expr);
+    this->operator()(d.expr);
     os << ")";
 }
 
-template <> void StringEvaluator::operator()(const maneuvering::Atom& d)
+template <>
+void StringEvaluator::operator()(const maneuvering::Atom& d)
 {
-    boost::apply_visitor(*this,d);
+    boost::apply_visitor(*this, d);
 }

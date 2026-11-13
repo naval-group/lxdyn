@@ -4,12 +4,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class VelocityTest : public ::testing::Test
-{
-    protected:
-        VelocityTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class VelocityTest : public ::testing::Test {
+protected:
+    VelocityTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* VELOCITYTEST_HPP_ */
+#endif /* VELOCITYTEST_HPP_ */

@@ -2,12 +2,13 @@
 #define OBSERVERS_AND_API_UNIT_TESTS_INC_SIMULATIONSERVEROBSERVERTEST_HPP_
 
 #include <gtest/gtest.h>
+
 #include <ssc/random_data_generator.hpp>
 
-class SimulationServerObserverTest : public testing::Test
-{
+class SimulationServerObserverTest : public testing::Test {
 public:
     SimulationServerObserverTest();
+
 private:
     ssc::random_data_generator::DataGenerator a;
 };

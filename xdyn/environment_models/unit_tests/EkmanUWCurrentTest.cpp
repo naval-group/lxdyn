@@ -3,15 +3,16 @@
  */
 
 #include "EkmanUWCurrentTest.hpp"
-#include "EkmanUWCurrentModel.hpp"
+
+#include <stb_image_write.h>
 
 #include <Eigen/Dense>
 #include <cstdio>
 #include <vector>
-#include <stb_image_write.h>
 
-namespace
-{
+#include "EkmanUWCurrentModel.hpp"
+
+namespace {
 // Written here rather than reused from SeabedTest: depending on another fixture's side effect makes
 // the suite order-dependent and breaks under --gtest_filter.
 std::string write_seabed_image()
@@ -21,18 +22,17 @@ std::string write_seabed_image()
     const unsigned height = 4;
     const unsigned channels = 4;
     std::vector<uint8_t> rgba_image = {
-        75, 75, 75, 255,  72, 72, 72, 255,  73, 73, 73, 255,  69, 69, 69, 255,
-        74, 74, 74, 255,  68, 68, 68, 255,  64, 64, 64, 255,  62, 62, 62, 255,
-        77, 77, 77, 255,  69, 69, 69, 255,  63, 63, 63, 255,  62, 62, 62, 255,
-        84, 84, 84, 255,  73, 73, 73, 255,  65, 65, 65, 255,  64, 64, 64, 255,
+        75, 75, 75, 255, 72, 72, 72, 255, 73, 73, 73, 255, 69, 69, 69, 255,
+        74, 74, 74, 255, 68, 68, 68, 255, 64, 64, 64, 255, 62, 62, 62, 255,
+        77, 77, 77, 255, 69, 69, 69, 255, 63, 63, 63, 255, 62, 62, 62, 255,
+        84, 84, 84, 255, 73, 73, 73, 255, 65, 65, 65, 255, 64, 64, 64, 255,
     };
     stbi_write_png(path, width, height, channels, rgba_image.data(), width * channels);
     return path;
 }
-}
+}  // namespace
 
-EkmanUWCurrentTest::EkmanUWCurrentTest() : a(ssc::random_data_generator::DataGenerator(149555))
-{}
+EkmanUWCurrentTest::EkmanUWCurrentTest() : a(ssc::random_data_generator::DataGenerator(149555)) {}
 
 TEST_F(EkmanUWCurrentTest, test_velocity)
 {
@@ -48,7 +48,8 @@ TEST_F(EkmanUWCurrentTest, test_velocity)
 TEST_F(EkmanUWCurrentTest, can_read_a_seabed_from_an_image)
 {
     const std::string seabed_file = write_seabed_image();
-    const std::string yaml_input = "{seabed file: " + seabed_file + ","
+    const std::string yaml_input = "{seabed file: " + seabed_file +
+                                   ","
                                    " latitude: { value: 47, unit: rad },"
                                    " top layer thickness: { value: 10, unit: m },"
                                    " bottom layer thickness: { value: 20, unit: m },"

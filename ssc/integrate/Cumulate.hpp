@@ -23,23 +23,20 @@ scheme is trapezoidal integration.
  *  \section ex2 Expected output
  *  \snippet integrate/unit_tests/src/CumulateTest.cpp CumulateTest expected output
  */
-namespace ssc
-{
-    namespace integrate
-    {
-        class Cumulate
-        {
-            public:
-                Cumulate();
-                ~Cumulate();
-                void add(const double x, const double y);
-                double integrate(const double a, const double b);
+namespace ssc {
+namespace integrate {
+class Cumulate {
+public:
+    Cumulate();
+    ~Cumulate();
+    void add(const double x, const double y);
+    double integrate(const double a, const double b);
 
-            private:
-                class Impl;
-                Pimpl<Impl> pimpl;
-        };
-    }
-}
+private:
+    class Impl;
+    Pimpl<Impl> pimpl;
+};
+}  // namespace integrate
+}  // namespace ssc
 
 #endif /* CUMULATE_HPP_ */

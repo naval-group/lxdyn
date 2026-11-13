@@ -8,17 +8,17 @@
 #ifndef CSVCONTROLLERTEST_HPP_
 #define CSVCONTROLLERTEST_HPP_
 
-#include "xdyn/listeners_and_controllers/TempFile.hpp"
 #include <ssc/random_data_generator/DataGenerator.hpp>
-#include "gtest/gtest.h"
 
-class CSVControllerTest : public ::testing::Test
-{
-    protected:
-        CSVControllerTest();
-        std::string test_yaml() const;
-        TempFile csv;
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+#include "xdyn/listeners_and_controllers/TempFile.hpp"
+
+class CSVControllerTest : public ::testing::Test {
+protected:
+    CSVControllerTest();
+    std::string test_yaml() const;
+    TempFile csv;
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* CSVCONTROLLERTEST_HPP_ */
+#endif /* CSVCONTROLLERTEST_HPP_ */

@@ -1,60 +1,83 @@
 #include "AeroPolarForceModel.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
-#include "xdyn/yaml_parser/parse_unit_value.hpp"
-#include <memory>
-#include <ssc/kinematics.hpp>
-#include "xdyn/yaml_parser/yaml_compat.h"
-#include <iostream>
+
 #include <algorithm>
 #include <cmath>
+#include <iostream>
+#include <memory>
+#include <ssc/kinematics.hpp>
+
+#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/yaml_parser/parse_unit_value.hpp"
+#include "xdyn/yaml_parser/yaml_compat.h"
 
 std::string AeroPolarForceModel::model_name()
 {
     return "aerodynamic polar";
 }
 
-AeroPolarForceModel::AeroPolarForceModel(const Input& input, const std::string& body_name_, const EnvironmentAndFrames& env):
-        ForceModel(input.name, input.angle_command ? std::vector<std::string>({input.angle_command.value()}) : std::vector<std::string>(), body_name_, env),
-        reference_area(input.reference_area),
-        calculation_point(input.calculation_point_in_body_frame.x, input.calculation_point_in_body_frame.y, input.calculation_point_in_body_frame.z),
-        symmetry(),
-        angle_command(input.angle_command)
+AeroPolarForceModel::AeroPolarForceModel(
+    const Input& input,
+    const std::string& body_name_,
+    const EnvironmentAndFrames& env)
+    : ForceModel(
+          input.name,
+          input.angle_command ? std::vector<std::string>({input.angle_command.value()})
+                              : std::vector<std::string>(),
+          body_name_,
+          env)
+    , reference_area(input.reference_area)
+    , calculation_point(
+          input.calculation_point_in_body_frame.x,
+          input.calculation_point_in_body_frame.y,
+          input.calculation_point_in_body_frame.z)
+    , symmetry()
+    , angle_command(input.angle_command)
 {
-    const double min_beta = *std::min_element(input.apparent_wind_angle.begin(),input.apparent_wind_angle.end());
-    const double max_beta = *std::max_element(input.apparent_wind_angle.begin(),input.apparent_wind_angle.end());
-    const double eps = 0.1*M_PI/180;
-    if (input.lift_coefficient.size()!=input.apparent_wind_angle.size() || input.drag_coefficient.size()!=input.apparent_wind_angle.size())
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Apparent wind angle, lift coefficient and drag coefficient must all have the same size.");
+    const double min_beta =
+        *std::min_element(input.apparent_wind_angle.begin(), input.apparent_wind_angle.end());
+    const double max_beta =
+        *std::max_element(input.apparent_wind_angle.begin(), input.apparent_wind_angle.end());
+    const double eps = 0.1 * M_PI / 180;
+    if (input.lift_coefficient.size() != input.apparent_wind_angle.size() ||
+        input.drag_coefficient.size() != input.apparent_wind_angle.size()) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "Apparent wind angle, lift coefficient and drag coefficient must all have the same size.");
     }
-    if(min_beta > eps || max_beta < M_PI-eps)
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException, "Apparent wind angle must be provided from 0deg to either 180deg (symmetry) or 360deg.");
+    if (min_beta > eps || max_beta < M_PI - eps) {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "Apparent wind angle must be provided from 0deg to either 180deg (symmetry) or 360deg.");
     }
-    if (max_beta < M_PI+eps)
-    {
+    if (max_beta < M_PI + eps) {
         // max_beta is close to pi
         symmetry = true;
-    }
-    else if (max_beta < 2*M_PI-eps)
-    {
+    } else if (max_beta < 2 * M_PI - eps) {
         // max_beta is between pi and 2*pi (but not close enough to either)
-        std::cerr << "WARNING: In an aerodynamic polar force model '" << name << "', you provided a maximum apparent wind angle between 180deg and 360deg. Symmetry will be assumed and values over 180deg will be ignored." << std::endl;
+        std::cerr
+            << "WARNING: In an aerodynamic polar force model '" << name
+            << "', you provided a maximum apparent wind angle between 180deg and 360deg. Symmetry will be assumed and values over 180deg will be ignored."
+            << std::endl;
         symmetry = true;
-    }
-    else if (max_beta < 2*M_PI+eps)
-    {
+    } else if (max_beta < 2 * M_PI + eps) {
         // max_beta is close to 2*pi
         symmetry = false;
-    }
-    else
-    {
+    } else {
         // max_beta is over 2*pi (but not close enough)
-        std::cerr << "WARNING: In an aerodynamic polar force model '" << name << "', you provided a maximum apparent wind higher than 360deg. All values over 360deg will be ignored." << std::endl;
+        std::cerr
+            << "WARNING: In an aerodynamic polar force model '" << name
+            << "', you provided a maximum apparent wind higher than 360deg. All values over 360deg will be ignored."
+            << std::endl;
         symmetry = false;
     }
-    Cl = std::make_unique<ssc::interpolation::SplineVariableStep>(input.apparent_wind_angle, input.lift_coefficient);
-    Cd = std::make_unique<ssc::interpolation::SplineVariableStep>(input.apparent_wind_angle, input.drag_coefficient);
+    Cl = std::make_unique<ssc::interpolation::SplineVariableStep>(
+        input.apparent_wind_angle,
+        input.lift_coefficient);
+    Cd = std::make_unique<ssc::interpolation::SplineVariableStep>(
+        input.apparent_wind_angle,
+        input.drag_coefficient);
 }
 
 AeroPolarForceModel::Input AeroPolarForceModel::parse(const std::string& yaml)
@@ -71,50 +94,50 @@ AeroPolarForceModel::Input AeroPolarForceModel::parse(const std::string& yaml)
     return ret;
 }
 
-Wrench AeroPolarForceModel::get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const
+Wrench AeroPolarForceModel::get_force(
+    const BodyStates& states,
+    const double t,
+    const EnvironmentAndFrames& env,
+    const std::map<std::string, double>& commands) const
 {
     using namespace std;
     const Eigen::Vector3d omega(states.p(), states.q(), states.r());
     const Eigen::Vector3d Vo(states.u(), states.v(), states.w());
     const Eigen::Vector3d Vp = Vo - calculation_point.cross(omega);
     const auto rotation = states.get_rot_from_ned_to_body();
-    const Eigen::Vector3d application_point_in_NED = Eigen::Vector3d(states.x(), states.y(), states.z()) + rotation*calculation_point;
+    const Eigen::Vector3d application_point_in_NED =
+        Eigen::Vector3d(states.x(), states.y(), states.z()) + rotation * calculation_point;
     const Eigen::Vector3d wind_in_NED = env.wind->get_wind(application_point_in_NED, t);
-    const Eigen::Vector3d true_wind_in_body_frame = rotation.transpose()*wind_in_NED;
+    const Eigen::Vector3d true_wind_in_body_frame = rotation.transpose() * wind_in_NED;
     // Apparent wind in body frame
     const Eigen::Vector3d W = true_wind_in_body_frame - Vp;
     // Apparent wind speed projected in the body horizontal plane
-    const double U = sqrt(W(0)*W(0) + W(1)*W(1));
+    const double U = sqrt(W(0) * W(0) + W(1) * W(1));
     // Incident angle of the flow, in [-pi,pi]
     const double beta = atan2(-W(1), -W(0));
     // Angle of attack
     double alpha = beta;
-    if (angle_command)
-    {
+    if (angle_command) {
         alpha -= commands.at(angle_command.value());
     }
     // Putting alpha in [-pi,pi]
-    alpha = remainder(alpha, 2*M_PI);
-    if (alpha<0)
-    {
+    alpha = remainder(alpha, 2 * M_PI);
+    if (alpha < 0) {
         // Putting alpha in [0,2*pi]
-        alpha += 2*M_PI;
+        alpha += 2 * M_PI;
     }
-    const double alpha_prime = (symmetry && alpha>M_PI) ? 2*M_PI - alpha : alpha;
-    const double lift = 0.5*Cl->f(alpha_prime)*env.get_rho_air()*pow(U, 2)*reference_area;
-    const double drag = 0.5*Cd->f(alpha_prime)*env.get_rho_air()*pow(U, 2)*reference_area;
+    const double alpha_prime = (symmetry && alpha > M_PI) ? 2 * M_PI - alpha : alpha;
+    const double lift = 0.5 * Cl->f(alpha_prime) * env.get_rho_air() * pow(U, 2) * reference_area;
+    const double drag = 0.5 * Cd->f(alpha_prime) * env.get_rho_air() * pow(U, 2) * reference_area;
     Wrench ret(ssc::kinematics::Point(body_name, calculation_point), body_name);
-    if (alpha<=M_PI)
-    {
+    if (alpha <= M_PI) {
         // Starboard wind
-        ret.X() = -drag*cos(beta) + lift*sin(beta);
-        ret.Y() = -drag*sin(beta) - lift*cos(beta);
-    }
-    else
-    {
+        ret.X() = -drag * cos(beta) + lift * sin(beta);
+        ret.Y() = -drag * sin(beta) - lift * cos(beta);
+    } else {
         // Port wind
-        ret.X() = -drag*cos(beta) - lift*sin(beta);
-        ret.Y() = -drag*sin(beta) + lift*cos(beta);
+        ret.X() = -drag * cos(beta) - lift * sin(beta);
+        ret.Y() = -drag * sin(beta) + lift * cos(beta);
     }
     return ret;
 }

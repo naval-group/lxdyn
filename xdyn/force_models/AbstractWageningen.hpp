@@ -18,43 +18,59 @@
  *  \section ex2 Expected output
  *  \snippet module/unit_tests/AbstractWageningenTest.cpp AbstractWageningenTest expected output
  */
-class AbstractWageningen : public ForceModel
-{
-    public:
-        struct Yaml
-        {
-            std::string name;
-            YamlPosition position_of_propeller_frame;
-            double wake_coefficient{0.0};
-            double relative_rotative_efficiency{0.0};
-            double thrust_deduction_factor{0.0};
-            bool rotating_clockwise{false};
-            double diameter{0.0};
-        };
-        AbstractWageningen(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
-        virtual double get_Kt(const std::map<std::string,double>& commands, const double J) const = 0;
-        virtual double get_Kq(const std::map<std::string,double>& commands, const double J) const = 0;
-        virtual double get_wake_factor(const BodyStates& states)  const;
-        /// Compute the pure thrust (before applying the thrust deduction)
-        Wrench get_pure_thrust_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const;
-        Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
-        /// Get the inflow advance speed at the propeller location (along the body frame x-axis)
-        double get_advance_speed_in_body_frame(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const;
-        /// Get the inflow advance speed at the propeller location projected on the propeller frame x-axis
-        double get_advance_speed_in_propeller_frame(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const;
-        double get_advance_ratio(const std::map<std::string,double>& commands, const double Va) const;
-        static Yaml parse(const std::string& yaml);
+class AbstractWageningen : public ForceModel {
+public:
+    struct Yaml {
+        std::string name;
+        YamlPosition position_of_propeller_frame;
+        double wake_coefficient{0.0};
+        double relative_rotative_efficiency{0.0};
+        double thrust_deduction_factor{0.0};
+        bool rotating_clockwise{false};
+        double diameter{0.0};
+    };
+    AbstractWageningen(
+        const Yaml& input,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env);
+    virtual double get_Kt(const std::map<std::string, double>& commands, const double J) const = 0;
+    virtual double get_Kq(const std::map<std::string, double>& commands, const double J) const = 0;
+    virtual double get_wake_factor(const BodyStates& states) const;
+    /// Compute the pure thrust (before applying the thrust deduction)
+    Wrench get_pure_thrust_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const;
+    Wrench get_force(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env,
+        const std::map<std::string, double>& commands) const override;
+    /// Get the inflow advance speed at the propeller location (along the body frame x-axis)
+    double get_advance_speed_in_body_frame(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env) const;
+    /// Get the inflow advance speed at the propeller location projected on the propeller frame
+    /// x-axis
+    double get_advance_speed_in_propeller_frame(
+        const BodyStates& states,
+        const double t,
+        const EnvironmentAndFrames& env) const;
+    double get_advance_ratio(const std::map<std::string, double>& commands, const double Va) const;
+    static Yaml parse(const std::string& yaml);
 
-    protected:
-        double w;
+protected:
+    double w;
 
-    private:
-        AbstractWageningen();
-        double eta_R;
-        double t;
-        double kappa;
-        double D;
-        double D4;
-        double D5;
+private:
+    AbstractWageningen();
+    double eta_R;
+    double t;
+    double kappa;
+    double D;
+    double D4;
+    double D5;
 };
 #endif /* ABSTRACTWAGENINGEN_HPP_ */

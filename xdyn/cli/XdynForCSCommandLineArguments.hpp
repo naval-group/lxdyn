@@ -11,8 +11,7 @@
 #include <string>
 #include <vector>
 
-struct XdynForCSCommandLineArguments
-{
+struct XdynForCSCommandLineArguments {
     XdynForCSCommandLineArguments();
     bool empty() const;
     std::vector<std::string> yaml_filenames;

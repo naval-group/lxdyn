@@ -12,7 +12,8 @@
 #include <vector>
 
 /** \author cec
- *  \brief This class was created to store the international standard's value of a physical quantity.
+ *  \brief This class was created to store the international standard's value of a physical
+ * quantity.
  *  \details It has the following responsibility:
  *  - Store & retrieve the USI value of a quantity (eg. seconds for Time, meters for Length, etc.)
  *  \section ex1 Example
@@ -21,25 +22,20 @@
  *  \snippet physical_types/unit_tests/src/LengthTest.cpp LengthTest expected output
  */
 
-namespace ssc
-{
-    namespace data_source
-    {
-        class PhysicalQuantity
-        {
-            public:
-                PhysicalQuantity() = default;
-                virtual ~PhysicalQuantity() = default;
-                void coerce(std::list<double>& ret) const;
-                void decoerce(std::list<double>& ret);
+namespace ssc {
+namespace data_source {
+class PhysicalQuantity {
+public:
+    PhysicalQuantity() = default;
+    virtual ~PhysicalQuantity() = default;
+    void coerce(std::list<double>& ret) const;
+    void decoerce(std::list<double>& ret);
 
-            protected:
-                explicit PhysicalQuantity(const std::vector<double>& v);
-                std::vector<double> val;
-        };
-    }
-}
-
-
+protected:
+    explicit PhysicalQuantity(const std::vector<double>& v);
+    std::vector<double> val;
+};
+}  // namespace data_source
+}  // namespace ssc
 
 #endif /* PHYSICALQUANTITY_HPP_ */

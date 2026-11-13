@@ -2,8 +2,6 @@
 #define MMGMANEUVERINGFORCEMODELTEST_HPP_
 
 #include "gtest/gtest.h"
-class MMGManeuveringForceModelTest : public ::testing::Test
-{
-};
+class MMGManeuveringForceModelTest : public ::testing::Test {};
 
-#endif  /* MMGMANEUVERINGFORCEMODELTEST_HPP_ */
+#endif /* MMGMANEUVERINGFORCEMODELTEST_HPP_ */

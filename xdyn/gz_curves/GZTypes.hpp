@@ -10,16 +10,14 @@
 
 #include <Eigen/Dense>
 
-namespace GZ
-{
-    using State = Eigen::Vector3d;
+namespace GZ {
+using State = Eigen::Vector3d;
 
-    struct Resultant
-    {
-        Resultant();
-        State state;
-        double gz{0};
-    };
-}
+struct Resultant {
+    Resultant();
+    State state;
+    double gz{0};
+};
+}  // namespace GZ
 
 #endif /* GZTYPES_HPP_ */

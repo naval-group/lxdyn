@@ -5,29 +5,31 @@
  * \author cec
  */
 
-
 #include "ConnectionMetadata.hpp"
 
 #include <utility>
 
 ConnectionMetadata::ConnectionMetadata(
-        int id, websocketpp::connection_hdl hdl, const std::string& uri)
-          : m_id(id)
-          , hdl(std::move(hdl))
-          , status("Connecting...")
-          , uri(uri)
-          , server("N/A")
-          , error_reason("")
-          {}
+    int id,
+    websocketpp::connection_hdl hdl,
+    const std::string& uri)
+    : m_id(id)
+    , hdl(std::move(hdl))
+    , status("Connecting...")
+    , uri(uri)
+    , server("N/A")
+    , error_reason("")
+{
+}
 
-void ConnectionMetadata::on_open(client * c, websocketpp::connection_hdl hdl)
+void ConnectionMetadata::on_open(client* c, websocketpp::connection_hdl hdl)
 {
     status = "Open";
     client::connection_ptr con = c->get_con_from_hdl(std::move(hdl));
     server = con->get_response_header("Server");
 }
 
-void ConnectionMetadata::on_fail(client * c, websocketpp::connection_hdl hdl)
+void ConnectionMetadata::on_fail(client* c, websocketpp::connection_hdl hdl)
 {
     status = "Failed";
     client::connection_ptr con = c->get_con_from_hdl(std::move(hdl));
@@ -35,7 +37,7 @@ void ConnectionMetadata::on_fail(client * c, websocketpp::connection_hdl hdl)
     error_reason = con->get_ec().message();
 }
 
-void ConnectionMetadata::on_close(client * c, websocketpp::connection_hdl hdl)
+void ConnectionMetadata::on_close(client* c, websocketpp::connection_hdl hdl)
 {
     status = "Closed";
     client::connection_ptr con = c->get_con_from_hdl(std::move(hdl));
@@ -47,14 +49,12 @@ void ConnectionMetadata::on_close(client * c, websocketpp::connection_hdl hdl)
 }
 
 void ConnectionMetadata::on_message(
-        const websocketpp::connection_hdl&, const client::message_ptr& msg)
+    const websocketpp::connection_hdl&,
+    const client::message_ptr& msg)
 {
-    if (msg->get_opcode() == websocketpp::frame::opcode::text)
-    {
+    if (msg->get_opcode() == websocketpp::frame::opcode::text) {
         messages.push_back("<< " + msg->get_payload());
-    }
-    else
-    {
+    } else {
         messages.push_back("<< " + websocketpp::utility::to_hex(msg->get_payload()));
     }
 }
@@ -76,19 +76,20 @@ std::string ConnectionMetadata::get_status() const
 
 void ConnectionMetadata::record_sent_message(const std::string& message)
 {
-        messages.push_back(">> " + message);
+    messages.push_back(">> " + message);
 }
 
-std::ostream & operator<< (std::ostream & out, ConnectionMetadata const & data) {
+std::ostream& operator<<(std::ostream& out, ConnectionMetadata const& data)
+{
     out << "> URI: " << data.uri << "\n"
         << "> Status: " << data.status << "\n"
         << "> Remote Server: " << (data.server.empty() ? "None Specified" : data.server) << "\n"
-        << "> Error/close reason: " << (data.error_reason.empty() ? "N/A" : data.error_reason) << "\n";
+        << "> Error/close reason: " << (data.error_reason.empty() ? "N/A" : data.error_reason)
+        << "\n";
     out << "> Messages Processed: (" << data.messages.size() << ") \n";
 
     std::vector<std::string>::const_iterator it;
-    for (it = data.messages.begin(); it != data.messages.end(); ++it)
-    {
+    for (it = data.messages.begin(); it != data.messages.end(); ++it) {
         out << *it << "\n";
     }
     return out;

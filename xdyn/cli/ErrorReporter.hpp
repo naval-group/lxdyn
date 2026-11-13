@@ -5,40 +5,44 @@
 #include <sstream>
 #include <string>
 
-class ErrorReporter
-{
-    public:
-        enum class Status
-        {
-            OK,
-            INVALID_INPUT,
-            SIMULATION_ERROR,
-            INTERNAL_ERROR,
-            NETWORK_ERROR
-        };
-        void invalid_request(const std::string &function, const int line);
-        void empty_history();
-        void invalid_state_size(const std::string& state_name, const size_t state_size, const size_t t_size);
-        void simulation_error(const std::string& error_message);
-        void invalid_command_line(const std::string& error_message);
-        void invalid_input(const std::string& error_message);
-        void internal_error(const std::string& error_message);
-        void network_error(const std::string& error_message);
+class ErrorReporter {
+public:
+    enum class Status
+    {
+        OK,
+        INVALID_INPUT,
+        SIMULATION_ERROR,
+        INTERNAL_ERROR,
+        NETWORK_ERROR
+    };
+    void invalid_request(const std::string& function, const int line);
+    void empty_history();
+    void
+    invalid_state_size(const std::string& state_name, const size_t state_size, const size_t t_size);
+    void simulation_error(const std::string& error_message);
+    void invalid_command_line(const std::string& error_message);
+    void invalid_input(const std::string& error_message);
+    void internal_error(const std::string& error_message);
+    void network_error(const std::string& error_message);
 
-        void run_and_report_errors_with_yaml_dump(const std::function<void(void)>& f, const std::string& yaml_dump);
-        void run_and_report_errors_without_yaml_dump(const std::function<void(void)>& f);
+    void run_and_report_errors_with_yaml_dump(
+        const std::function<void(void)>& f,
+        const std::string& yaml_dump);
+    void run_and_report_errors_without_yaml_dump(const std::function<void(void)>& f);
 
-        bool contains_errors() const;
-        std::string get_message() const;
-        Status get_status() const;
+    bool contains_errors() const;
+    std::string get_message() const;
+    Status get_status() const;
 
-        void reset();
+    void reset();
 
-      private:
-          void run_and_report_errors(const std::function<void(void)>& f, const bool dump_yaml, const std::string& yaml_dump);
-          std::stringstream ss;
-          Status status{Status::OK};
-
+private:
+    void run_and_report_errors(
+        const std::function<void(void)>& f,
+        const bool dump_yaml,
+        const std::string& yaml_dump);
+    std::stringstream ss;
+    Status status{Status::OK};
 };
 
 #endif

@@ -8,14 +8,14 @@
 #ifndef WAVESPECTRALDENSITYTEST_HPP_
 #define WAVESPECTRALDENSITYTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class WaveSpectralDensityTest : public ::testing::Test
-{
-    protected:
-        WaveSpectralDensityTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class WaveSpectralDensityTest : public ::testing::Test {
+protected:
+    WaveSpectralDensityTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* WAVESPECTRALDENSITYTEST_HPP_ */
+#endif /* WAVESPECTRALDENSITYTEST_HPP_ */

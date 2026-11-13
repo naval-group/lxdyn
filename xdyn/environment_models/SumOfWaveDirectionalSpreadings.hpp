@@ -8,34 +8,37 @@
 #ifndef SUMOFWAVEDIRECTIONALSPREADINGS_HPP_
 #define SUMOFWAVEDIRECTIONALSPREADINGS_HPP_
 
-#include "xdyn/environment_models/WaveDirectionalSpreading.hpp"
-#include <ssc/macros.hpp>
 #include <memory>
+#include <ssc/macros.hpp>
 
+#include "xdyn/environment_models/WaveDirectionalSpreading.hpp"
 
 /** \brief
  *  \details
  *  \addtogroup waves
  *  \ingroup waves
  *  \section ex1 Example
- *  \snippet waves/unit_tests/SumOfWaveDirectionalSpreadingsTest.cpp SumOfWaveDirectionalSpreadingsTest example
+ *  \snippet waves/unit_tests/SumOfWaveDirectionalSpreadingsTest.cpp
+ * SumOfWaveDirectionalSpreadingsTest example
  *  \section ex2 Expected output
- *  \snippet waves/unit_tests/SumOfWaveDirectionalSpreadingsTest.cpp SumOfWaveDirectionalSpreadingsTest expected output
+ *  \snippet waves/unit_tests/SumOfWaveDirectionalSpreadingsTest.cpp
+ * SumOfWaveDirectionalSpreadingsTest expected output
  */
-class SumOfWaveDirectionalSpreadings : public WaveDirectionalSpreading
-{
-    public:
-        explicit SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& s);
-        SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& s1, const WaveDirectionalSpreading& s2);
-        explicit SumOfWaveDirectionalSpreadings(const std::vector<WaveDirectionalSpreading>& s);
+class SumOfWaveDirectionalSpreadings : public WaveDirectionalSpreading {
+public:
+    explicit SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& s);
+    SumOfWaveDirectionalSpreadings(
+        const WaveDirectionalSpreading& s1,
+        const WaveDirectionalSpreading& s2);
+    explicit SumOfWaveDirectionalSpreadings(const std::vector<WaveDirectionalSpreading>& s);
 
-        double operator()(const double psi) const override;
-        WaveDirectionalSpreading* clone() const override;
-        std::vector<double> get_directions(const size_t n, const bool periodic = false) const override;
+    double operator()(const double psi) const override;
+    WaveDirectionalSpreading* clone() const override;
+    std::vector<double> get_directions(const size_t n, const bool periodic = false) const override;
 
-    private:
-        SumOfWaveDirectionalSpreadings(); // Disabled
-        std::vector<std::shared_ptr<WaveDirectionalSpreading> > terms;
+private:
+    SumOfWaveDirectionalSpreadings();  // Disabled
+    std::vector<std::shared_ptr<WaveDirectionalSpreading>> terms;
 };
 
 #endif /* SUMOFWAVEDIRECTIONALSPREADINGS_HPP_ */

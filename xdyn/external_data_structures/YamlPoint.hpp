@@ -12,8 +12,7 @@
 
 #include "xdyn/external_data_structures/YamlCoordinates.hpp"
 
-struct YamlPoint : public YamlCoordinates
-{
+struct YamlPoint : public YamlCoordinates {
     YamlPoint();
     explicit YamlPoint(const YamlCoordinates& c);
     std::string name;

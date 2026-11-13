@@ -8,15 +8,15 @@
 #ifndef DISCRETIZETEST_HPP_
 #define DISCRETIZETEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class discretizeTest : public ::testing::Test
-{
-    protected:
-        discretizeTest();
-        std::vector<double> random_increasing_vector_of_size(const size_t n) const;
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class discretizeTest : public ::testing::Test {
+protected:
+    discretizeTest();
+    std::vector<double> random_increasing_vector_of_size(const size_t n) const;
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* DISCRETIZETEST_HPP_ */
+#endif /* DISCRETIZETEST_HPP_ */

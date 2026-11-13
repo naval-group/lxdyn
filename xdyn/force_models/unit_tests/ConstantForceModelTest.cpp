@@ -6,22 +6,25 @@
  */
 
 #include "ConstantForceModelTest.hpp"
+
+#include <memory>
+#include <ssc/data_source.hpp>
+#include <ssc/kinematics.hpp>
+
 #include "ConstantForceModel.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include <memory>
-#include <ssc/kinematics.hpp>
-#include <ssc/data_source.hpp>
+#include "xdyn/test_data_generator/yaml_data.hpp"
 
 #define BODY "body 1"
 
 #include <cmath>
 #define PI M_PI
 
-ConstantForceModelTest::ConstantForceModelTest() : a(ssc::random_data_generator::DataGenerator(45454))
+ConstantForceModelTest::ConstantForceModelTest()
+    : a(ssc::random_data_generator::DataGenerator(45454))
 {
 }
 
@@ -96,7 +99,11 @@ BodyPtr ConstantForceModelTest::get_body(const std::string& name) const
     return BodyBuilder(rot).build(name, two_triangles(), 0, 0, rot, true);
 }
 
-BodyStates ConstantForceModelTest::get_states(const double phi, const double theta, const double psi, EnvironmentAndFrames& env) const
+BodyStates ConstantForceModelTest::get_states(
+    const double phi,
+    const double theta,
+    const double psi,
+    EnvironmentAndFrames& env) const
 {
     auto body = get_body("Anthineas");
     auto states = body->get_states();
@@ -105,8 +112,7 @@ BodyStates ConstantForceModelTest::get_states(const double phi, const double the
     rotations.convention.push_back("z");
     rotations.convention.push_back("y'");
     rotations.convention.push_back("x''");
-    const auto angle = states.convert(
-            ssc::kinematics::EulerAngles(phi, theta, psi), rotations);
+    const auto angle = states.convert(ssc::kinematics::EulerAngles(phi, theta, psi), rotations);
     states.x.record(0, 0.1);
     states.y.record(0, 2.04);
     states.z.record(0, 6.28);
@@ -171,9 +177,14 @@ Eigen::Matrix3d ctm_z(double angle)
     return ctm;
 }
 
-// Template function to check output from ConstantForceModel, where T is either `Wrench` or `ssc::kinematics::Wrench`
-template<typename T>
-void wrench_checks(const T& W, const std::string& frame_name, const Eigen::Vector3d& force, const Eigen::Vector3d& torque)
+// Template function to check output from ConstantForceModel, where T is either `Wrench` or
+// `ssc::kinematics::Wrench`
+template <typename T>
+void wrench_checks(
+    const T& W,
+    const std::string& frame_name,
+    const Eigen::Vector3d& force,
+    const Eigen::Vector3d& torque)
 {
     const double eps = 1e-7;
     ASSERT_NEAR(force(0), W.X(), eps);
@@ -191,9 +202,9 @@ void wrench_checks(const T& W, const std::string& frame_name, const Eigen::Vecto
 
 TEST_F(ConstantForceModelTest, should_be_able_to_call_get_force)
 {
-    // Whatever the ship state is, calling `get_force` should return the same wrench in `constant frame`
-    for (size_t i = 0 ; i < 100 ; ++i)
-    {
+    // Whatever the ship state is, calling `get_force` should return the same wrench in `constant
+    // frame`
+    for (size_t i = 0; i < 100; ++i) {
         EnvironmentAndFrames env = get_env();
         const double phi = a.random<double>().between(-PI, PI);
         const double theta = a.random<double>().between(-PI, PI);
@@ -230,8 +241,7 @@ TEST_F(ConstantForceModelTest, should_evaluate_correctly_wrench_in_ship_frame_wi
     const Eigen::Vector3d force(10e3, 20e3, 30e3);
     const Eigen::Vector3d torque(100e3, 200e3, 300e3);
     const Eigen::Vector3d torque_ship_ned = torque + pos_force.cross(force);
-    for (size_t i = 0 ; i < 100 ; ++i)
-    {
+    for (size_t i = 0; i < 100; ++i) {
         const double psi = a.random<double>().between(-PI, PI);
         auto states = get_states(phi, theta, psi, env);
         const auto W = get_constant_force(env)(states, a.random<double>(), env);
@@ -239,17 +249,18 @@ TEST_F(ConstantForceModelTest, should_evaluate_correctly_wrench_in_ship_frame_wi
     }
 }
 
-TEST_F(ConstantForceModelTest, should_evaluate_correctly_wrench_in_ship_frame_with_random_phi_theta_psi)
+TEST_F(
+    ConstantForceModelTest,
+    should_evaluate_correctly_wrench_in_ship_frame_with_random_phi_theta_psi)
 {
     EnvironmentAndFrames env = get_env();
     const Eigen::Vector3d pos_force(+0.5 - 0.1, -0.2 - 2.04, -440.0 - 6.28);
     const Eigen::Vector3d force(10e3, 20e3, 30e3);
     const Eigen::Vector3d torque(100e3, 200e3, 300e3);
     const Eigen::Vector3d torque_ship_ned = torque + pos_force.cross(force);
-    for (size_t i = 0 ; i < 100 ; ++i)
-    {
+    for (size_t i = 0; i < 100; ++i) {
         const double phi = a.random<double>().between(-PI, PI);
-        const double theta = a.random<double>().between(-PI/2 + 0.1, +PI/2 - 0.1);
+        const double theta = a.random<double>().between(-PI / 2 + 0.1, +PI / 2 - 0.1);
         const double psi = a.random<double>().between(-PI, PI);
         auto states = get_states(phi, theta, psi, env);
         const auto W = get_constant_force(env)(states, a.random<double>(), env);

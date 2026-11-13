@@ -8,16 +8,17 @@
 #ifndef PARSE_CONTROLLERS_HPP_
 #define PARSE_CONTROLLERS_HPP_
 
-#include "xdyn/external_data_structures/YamlController.hpp"
 #include <yaml-cpp/yaml.h>
 
-/**  \brief Parses the controllers for use by controlled forces.
-  *  \snippet yaml_parser/unit_tests/parse_controllersTest.cpp parse_controllersTest example
-  */
-std::vector<YamlController> parse_controller_yaml(
-    const std::string& yaml //!< YAML data
-    );
+#include "xdyn/external_data_structures/YamlController.hpp"
 
-void operator >> (const YAML::Node& node, YamlController& c);
+/**  \brief Parses the controllers for use by controlled forces.
+ *  \snippet yaml_parser/unit_tests/parse_controllersTest.cpp parse_controllersTest example
+ */
+std::vector<YamlController> parse_controller_yaml(
+    const std::string& yaml  //!< YAML data
+);
+
+void operator>>(const YAML::Node& node, YamlController& c);
 
 #endif /* PARSE_CONTROLLERS_HPP_ */

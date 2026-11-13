@@ -11,12 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class TextFileReaderTest : public ::testing::Test
-{
-    protected:
-        TextFileReaderTest();
-        ssc::random_data_generator::DataGenerator a;
-
+class TextFileReaderTest : public ::testing::Test {
+protected:
+    TextFileReaderTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* TEXTFILEREADERTEST_HPP_ */
+#endif /* TEXTFILEREADERTEST_HPP_ */

@@ -20,27 +20,28 @@
 #define YAML_COMPAT_H_
 
 #include <yaml-cpp/yaml.h>
+
+#include <string>
 #include <type_traits>
 #include <vector>
-#include <string>
 
 namespace yaml_compat_detail {
 
 // Trait to detect std::vector
-template<typename T> struct is_vector : std::false_type {};
-template<typename T, typename A> struct is_vector<std::vector<T, A>> : std::true_type {};
+template <typename T>
+struct is_vector : std::false_type {};
+template <typename T, typename A>
+struct is_vector<std::vector<T, A>> : std::true_type {};
 
-} // namespace yaml_compat_detail
+}  // namespace yaml_compat_detail
 
 // Restore operator>> for scalar types that have YAML::convert<T> support.
 // This template has lower priority than any non-template operator>> overload,
 // so user-defined operator>>(const YAML::Node&, CustomType&) still works.
-template<typename T>
-inline typename std::enable_if<
-    !yaml_compat_detail::is_vector<T>::value,
-    void
->::type
-operator>>(const YAML::Node& node, T& value)
+template <typename T>
+inline typename std::enable_if<!yaml_compat_detail::is_vector<T>::value, void>::type operator>>(
+    const YAML::Node& node,
+    T& value)
 {
     value = node.as<T>();
 }
@@ -49,14 +50,14 @@ operator>>(const YAML::Node& node, T& value)
 // Iterates over the YAML sequence and extracts each element using operator>>,
 // which dispatches to either user-defined operator>> (for custom types) or
 // the template above (for basic types).
-template<typename T>
+template <typename T>
 inline void operator>>(const YAML::Node& node, std::vector<T>& vec)
 {
     vec.clear();
-    if (!node.IsDefined() || node.IsNull()) return;
+    if (!node.IsDefined() || node.IsNull())
+        return;
     vec.reserve(node.size());
-    for (std::size_t i = 0; i < node.size(); ++i)
-    {
+    for (std::size_t i = 0; i < node.size(); ++i) {
         T val;
         node[i] >> val;
         vec.push_back(std::move(val));

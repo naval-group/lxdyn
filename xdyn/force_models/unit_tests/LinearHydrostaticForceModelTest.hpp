@@ -8,14 +8,14 @@
 #ifndef LINEARHYDROSTATICFORCEMODELTEST_HPP_
 #define LINEARHYDROSTATICFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class LinearHydrostaticForceModelTest : public ::testing::Test
-{
-    protected:
-        LinearHydrostaticForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class LinearHydrostaticForceModelTest : public ::testing::Test {
+protected:
+    LinearHydrostaticForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* LINEARHYDROSTATICFORCEMODELTEST_HPP_ */
+#endif /* LINEARHYDROSTATICFORCEMODELTEST_HPP_ */

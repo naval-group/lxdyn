@@ -8,14 +8,14 @@
 #ifndef KTKQFORCEMODELTEST_HPP_
 #define KTKQFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class KtKqForceModelTest : public ::testing::Test
-{
-    protected:
-        KtKqForceModelTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class KtKqForceModelTest : public ::testing::Test {
+protected:
+    KtKqForceModelTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* KTKQFORCEMODELTEST_HPP_ */
+#endif /* KTKQFORCEMODELTEST_HPP_ */

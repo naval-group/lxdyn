@@ -8,11 +8,10 @@
 #ifndef YAMLDYNAMICS_HPP_
 #define YAMLDYNAMICS_HPP_
 
-#include "xdyn/external_data_structures/YamlPoint.hpp"
 #include "xdyn/external_data_structures/YamlDynamics6x6Matrix.hpp"
+#include "xdyn/external_data_structures/YamlPoint.hpp"
 
-struct YamlDynamics
-{
+struct YamlDynamics {
     YamlPoint centre_of_inertia;
     YamlDynamics6x6Matrix rigid_body_inertia;
     YamlDynamics6x6Matrix added_mass;

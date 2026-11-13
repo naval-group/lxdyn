@@ -8,14 +8,14 @@
 #ifndef BLOCKEDDOFTEST_HPP_
 #define BLOCKEDDOFTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator/DataGenerator.hpp>
 
-class BlockedDOFTest : public ::testing::Test
-{
-    protected:
-        BlockedDOFTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+
+class BlockedDOFTest : public ::testing::Test {
+protected:
+    BlockedDOFTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* BLOCKEDDOFTEST_HPP_ */
+#endif /* BLOCKEDDOFTEST_HPP_ */

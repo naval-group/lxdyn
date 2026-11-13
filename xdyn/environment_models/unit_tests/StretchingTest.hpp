@@ -8,15 +8,14 @@
 #ifndef STRETCHINGTEST_HPP_
 #define STRETCHINGTEST_HPP_
 
-#include "gtest/gtest.h"
 #include <ssc/random_data_generator.hpp>
 
-class StretchingTest : public ::testing::Test
-{
-    protected:
-        StretchingTest();
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
 
+class StretchingTest : public ::testing::Test {
+protected:
+    StretchingTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* STRETCHINGTEST_HPP_ */
+#endif /* STRETCHINGTEST_HPP_ */

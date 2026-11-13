@@ -3,9 +3,8 @@
 
 #include "gtest/gtest.h"
 
-class FlettnerRotorForceModelTest : public ::testing::Test
-{
-    public:
+class FlettnerRotorForceModelTest : public ::testing::Test {
+public:
 };
 
 #endif /* FORCE_MODELS_UNIT_TESTS_INC_FLETTNERROTORFORCEMODELTEST_HPP_ */

@@ -6,22 +6,23 @@
  */
 
 #include "TextFileReaderTest.hpp"
+
+#include <fstream>
+#include <iostream>
+
+#include "ssc/macros/test_macros.hpp"
 #include "ssc/text_file_reader/TextFileReader.hpp"
 #include "ssc/text_file_reader/TextFileReaderException.hpp"
-#include "ssc/macros/test_macros.hpp"
-#include <iostream>
-#include <fstream>
 
 using namespace ssc::text_file_reader;
 
-TextFileReaderTest::TextFileReaderTest() : a(ssc::random_data_generator::DataGenerator(718293))
-{
-}
+TextFileReaderTest::TextFileReaderTest() : a(ssc::random_data_generator::DataGenerator(718293)) {}
 
-inline void remove_file_if_it_exists (const std::string& name)
+inline void remove_file_if_it_exists(const std::string& name)
 {
-  struct stat buffer{};
-  if (stat (name.c_str(), &buffer) == 0) remove (name.c_str());
+    struct stat buffer{};
+    if (stat(name.c_str(), &buffer) == 0)
+        remove(name.c_str());
 }
 
 void create_file(const std::string& filename, const std::string& contents);
@@ -35,7 +36,7 @@ void create_file(const std::string& filename, const std::string& contents)
 
 TEST_F(TextFileReaderTest, example)
 {
-//! [TextFileReaderTest example]
+    //! [TextFileReaderTest example]
     const std::string filename1 = "data_for_TextFileReaderTest_1";
     const std::string contents_file1 = a.random<std::string>();
     create_file(filename1, contents_file1);
@@ -48,21 +49,19 @@ TEST_F(TextFileReaderTest, example)
     TextFileReader reader(filenames);
     remove_file_if_it_exists(filename1);
     remove_file_if_it_exists(filename2);
-//! [TextFileReaderTest example]
-//! [TextFileReaderTest expected output]
+    //! [TextFileReaderTest example]
+    //! [TextFileReaderTest expected output]
     const std::string newline = "\n";
-    ASSERT_EQ(contents_file1+newline+newline+contents_file2, reader.get_contents());
-//! [TextFileReaderTest expected output]
+    ASSERT_EQ(contents_file1 + newline + newline + contents_file2, reader.get_contents());
+    //! [TextFileReaderTest expected output]
 }
 
 TEST_F(TextFileReaderTest, should_represent_newlines_correctly)
 {
     const std::string filename = "data_for_TextFileReaderTest";
-    const std::string contents_file = a.random<std::string>()()
-                                             + std::string("\n")
-                                     + a.random<std::string>()()
-                                     + std::string("\n")
-                                     + a.random<std::string>()();
+    const std::string contents_file = a.random<std::string>()() + std::string("\n") +
+                                      a.random<std::string>()() + std::string("\n") +
+                                      a.random<std::string>()();
     create_file(filename, contents_file);
     TextFileReader reader(std::vector<std::string>(1, filename));
     remove_file_if_it_exists(filename);

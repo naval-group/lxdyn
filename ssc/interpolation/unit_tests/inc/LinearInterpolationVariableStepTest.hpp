@@ -11,13 +11,11 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class LinearInterpolationVariableStepTest : public ::testing::Test
-{
-    protected:
-        LinearInterpolationVariableStepTest();
+class LinearInterpolationVariableStepTest : public ::testing::Test {
+protected:
+    LinearInterpolationVariableStepTest();
 
-        ssc::random_data_generator::DataGenerator a;
-
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* LINEARINTERPOLATIONVARIABLESTEPTEST_HPP_ */
+#endif /* LINEARINTERPOLATIONVARIABLESTEPTEST_HPP_ */

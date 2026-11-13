@@ -8,11 +8,11 @@
 #ifndef CSVCONTROLLER_HPP_
 #define CSVCONTROLLER_HPP_
 
-#include "Controller.hpp"
-#include "CSVLineByLineReader.hpp"
-#include <string>
 #include <map>
+#include <string>
 
+#include "CSVLineByLineReader.hpp"
+#include "Controller.hpp"
 
 /*
  * Tests for CSVController are found in `observers_and_api/unit_tests/CSVControllerTest.cpp`
@@ -21,11 +21,9 @@
  * observers_and_api/unit_tests.
  */
 
-class CSVController : public Controller
-{
-  public:
-    struct Yaml
-    {
+class CSVController : public Controller {
+public:
+    struct Yaml {
         explicit Yaml(const std::string& yaml);
         /// Path to CSV file containing the commands
         std::string path;
@@ -33,20 +31,28 @@ class CSVController : public Controller
         std::string time_column;
         /// Column separator (either ',' or ';')
         char separator{','};
-        /// If set to true, the time values are shifted so the first time value in the CSV matches the beginning of the simulation. Otherwise, the time values read from the CSV file are left unchanged.
+        /// If set to true, the time values are shifted so the first time value in the CSV matches
+        /// the beginning of the simulation. Otherwise, the time values read from the CSV file are
+        /// left unchanged.
         bool shift_time_column{};
         /// Command name to column name mapping
-        std::map<std::string,std::string> commands;
+        std::map<std::string, std::string> commands;
     };
 
-    CSVController(const double tstart //!< Date of beginning of simulation (usually 0): this is needed by the parent class, but the date of the first call can only be known after reading the first line of the CSV file (or if shift_time_column is true)
-                , const std::string& name, const std::string& yaml);
+    CSVController(
+        const double
+            tstart  //!< Date of beginning of simulation (usually 0): this is needed by the parent
+                    //!< class, but the date of the first call can only be known after reading the
+                    //!< first line of the CSV file (or if shift_time_column is true)
+        ,
+        const std::string& name,
+        const std::string& yaml);
 
     std::vector<std::string> get_command_names() const override;
 
-    const Yaml yaml; //!< Controller-specific yaml
+    const Yaml yaml;  //!< Controller-specific yaml
 
-  private:
+private:
     /**
      * @brief Updates the controller output value in the datasource
      *
@@ -61,7 +67,6 @@ class CSVController : public Controller
      */
     double get_date_of_next_update(const double current_time) const override;
 
-
     /**
      * @brief Initializes member tstart on the first controller call: for the CSV controller, this
      * is the first simulation step. This value does not necessarily correspond to the date of the
@@ -73,11 +78,11 @@ class CSVController : public Controller
     void initialize_tstart_on_first_call(const double t);
 
     /**
-     * @brief Calculates a shifted time value if shift_time_column is set to true. If shift_time_column
-     * is false, simply return the 'time' input unchanged. If the time is shifted, it is done so the
-     * date of the first line in the CSV file matches the simulation start date. This means only the
-     * time span between two consecutive lines of the CSV file is preserved: all original dates will
-     * be changed.
+     * @brief Calculates a shifted time value if shift_time_column is set to true. If
+     * shift_time_column is false, simply return the 'time' input unchanged. If the time is shifted,
+     * it is done so the date of the first line in the CSV file matches the simulation start date.
+     * This means only the time span between two consecutive lines of the CSV file is preserved: all
+     * original dates will be changed.
      * @param time Current simulation time
      * @return Shifted time (or just 'time' if no shift was requested)
      */

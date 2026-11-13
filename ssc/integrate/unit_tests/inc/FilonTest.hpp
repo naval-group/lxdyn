@@ -11,11 +11,10 @@
 #include "gtest/gtest.h"
 #include "ssc/random_data_generator/DataGenerator.hpp"
 
-class FilonTest : public ::testing::Test
-{
-    protected:
-        FilonTest();
-        ssc::random_data_generator::DataGenerator a;
+class FilonTest : public ::testing::Test {
+protected:
+    FilonTest();
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* FILONTEST_HPP_ */
+#endif /* FILONTEST_HPP_ */

@@ -8,21 +8,21 @@
 #ifndef FROUDEKRYLOVFORCEMODELTEST_HPP_
 #define FROUDEKRYLOVFORCEMODELTEST_HPP_
 
-#include "gtest/gtest.h"
-#include <ssc/random_data_generator/DataGenerator.hpp>
-#include "xdyn/core/EnvironmentAndFrames.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
-#include <ssc/macros.hpp>
-#include "xdyn/environment_models/WaveModel.hpp"
 #include <memory>
+#include <ssc/macros.hpp>
+#include <ssc/random_data_generator/DataGenerator.hpp>
 
-class FroudeKrylovForceModelTest : public ::testing::Test
-{
-    protected:
-        FroudeKrylovForceModelTest();
-        VectorOfVectorOfPoints get_points() const;
-        std::shared_ptr<WaveModel> get_wave_model() const;
-        ssc::random_data_generator::DataGenerator a;
+#include "gtest/gtest.h"
+#include "xdyn/core/EnvironmentAndFrames.hpp"
+#include "xdyn/environment_models/WaveModel.hpp"
+#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+
+class FroudeKrylovForceModelTest : public ::testing::Test {
+protected:
+    FroudeKrylovForceModelTest();
+    VectorOfVectorOfPoints get_points() const;
+    std::shared_ptr<WaveModel> get_wave_model() const;
+    ssc::random_data_generator::DataGenerator a;
 };
 
-#endif  /* FROUDEKRYLOVFORCEMODELTEST_HPP_ */
+#endif /* FROUDEKRYLOVFORCEMODELTEST_HPP_ */

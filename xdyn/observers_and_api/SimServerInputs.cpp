@@ -5,8 +5,8 @@
  *      Author: cady
  */
 
-
 #include "SimServerInputs.hpp"
+
 #include "xdyn/external_data_structures/YamlSimServerInputs.hpp"
 #include "xdyn/external_data_structures/YamlState.hpp"
 
@@ -28,7 +28,9 @@ void record(State& state, const YamlState& ystate)
     state.qk.record(ystate.t, ystate.qk);
 }
 
-SimServerInputs::SimServerInputs(const YamlSimServerInputs& server_inputs, const double max_history_length)
+SimServerInputs::SimServerInputs(
+    const YamlSimServerInputs& server_inputs,
+    const double max_history_length)
     : t(0)
     , Dt(server_inputs.Dt)
     , state_at_t(state::N, 0)
@@ -38,10 +40,8 @@ SimServerInputs::SimServerInputs(const YamlSimServerInputs& server_inputs, const
     , requested_output(server_inputs.requested_output)
     , controllers(server_inputs.controllers)
 {
-    if (not(server_inputs.states.empty()))
-    {
-        for(size_t i=0 ; i< (server_inputs.states.size()-1) ; i++)
-        {
+    if (not(server_inputs.states.empty())) {
+        for (size_t i = 0; i < (server_inputs.states.size() - 1); i++) {
             record(state_history_except_last_point, server_inputs.states[i]);
             record(full_state_history, server_inputs.states[i]);
         }

@@ -10,19 +10,20 @@
 
 #include "ssc/exception_handling/Exception.hpp"
 
-namespace ssc
-{
-    namespace data_source
+namespace ssc {
+namespace data_source {
+class DataSourceException : public ::ssc::exception_handling::Exception {
+public:
+    DataSourceException(
+        const std::string& message,
+        const std::string& file,
+        const std::string& function,
+        const unsigned int line)
+        : Exception(message, file, function, line)
     {
-        class DataSourceException : public ::ssc::exception_handling::Exception
-        {
-            public:
-                DataSourceException(const std::string& message, const std::string& file, const std::string& function, const unsigned int line) :
-                    Exception(message, file, function, line)
-                {
-                }
-        };
     }
-}
+};
+}  // namespace data_source
+}  // namespace ssc
 
-#endif  /* DATASOURCEEXCEPTION_HPP_ */
+#endif /* DATASOURCEEXCEPTION_HPP_ */

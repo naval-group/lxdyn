@@ -10,12 +10,10 @@
 
 #include <Eigen/Dense>
 
-namespace ssc
-{
-    namespace kinematics
-    {
-        using RotationMatrix = Eigen::Matrix<double, 3, 3>;
-    }
+namespace ssc {
+namespace kinematics {
+using RotationMatrix = Eigen::Matrix<double, 3, 3>;
 }
+}  // namespace ssc
 
 #endif /* ROTATIONMATRIX_HPP_ */

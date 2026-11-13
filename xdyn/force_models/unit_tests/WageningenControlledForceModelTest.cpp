@@ -5,11 +5,12 @@
  *      Author: cady
  */
 #include "WageningenControlledForceModelTest.hpp"
-#include "xdyn/force_models/WageningenControlledForceModel.hpp"
-#include "xdyn/core/BodyStates.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
-#include "xdyn/exceptions/InvalidInputException.hpp"
+
 #include "xdyn/core/BodyBuilder.hpp"
+#include "xdyn/core/BodyStates.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/force_models/WageningenControlledForceModel.hpp"
+#include "xdyn/test_data_generator/yaml_data.hpp"
 
 constexpr double EPS = 1E-2;
 constexpr int NB_TRIALS = 100;
@@ -18,7 +19,7 @@ constexpr int NB_TRIALS = 100;
 #include <memory>
 #define PI M_PI
 
-constexpr double DEG2RAD = PI/180.;
+constexpr double DEG2RAD = PI / 180.;
 
 #define BODY "body 1"
 
@@ -27,14 +28,15 @@ EnvironmentAndFrames get_env()
 {
     EnvironmentAndFrames env;
     env.rho = 1024;
-    env.rot = YamlRotation("angle", {"z","y'","x''"});
+    env.rot = YamlRotation("angle", {"z", "y'", "x''"});
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), "mesh(" BODY ")"));
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
     return env;
 }
 
-WageningenControlledForceModelTest::WageningenControlledForceModelTest() : a(ssc::random_data_generator::DataGenerator(7))
+WageningenControlledForceModelTest::WageningenControlledForceModelTest()
+    : a(ssc::random_data_generator::DataGenerator(7))
 {
 }
 
@@ -45,8 +47,8 @@ TEST_F(WageningenControlledForceModelTest, parser)
     ASSERT_EQ("port side propeller", w.name);
     ASSERT_EQ(3, w.number_of_blades);
     ASSERT_DOUBLE_EQ(0, w.position_of_propeller_frame.angle.phi);
-    ASSERT_DOUBLE_EQ(-10*DEG2RAD, w.position_of_propeller_frame.angle.theta);
-    ASSERT_DOUBLE_EQ(-1*DEG2RAD, w.position_of_propeller_frame.angle.psi);
+    ASSERT_DOUBLE_EQ(-10 * DEG2RAD, w.position_of_propeller_frame.angle.theta);
+    ASSERT_DOUBLE_EQ(-1 * DEG2RAD, w.position_of_propeller_frame.angle.psi);
     ASSERT_DOUBLE_EQ(-4, w.position_of_propeller_frame.coordinates.x);
     ASSERT_DOUBLE_EQ(-2, w.position_of_propeller_frame.coordinates.y);
     ASSERT_DOUBLE_EQ(2, w.position_of_propeller_frame.coordinates.z);
@@ -60,23 +62,22 @@ TEST_F(WageningenControlledForceModelTest, parser)
 
 TEST_F(WageningenControlledForceModelTest, should_throw_if_blade_area_ratio_is_outside_bounds)
 {
-    auto input  = WageningenControlledForceModel::parse(test_data::wageningen());
-    for (size_t i = 0 ; i < NB_TRIALS ; ++i)
-    {
-        input.blade_area_ratio = a.random<double>().between(0,0.3);
+    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    for (size_t i = 0; i < NB_TRIALS; ++i) {
+        input.blade_area_ratio = a.random<double>().between(0, 0.3);
         ASSERT_THROW(WageningenControlledForceModel w(input, "", get_env()), InvalidInputException);
-        input.blade_area_ratio = a.random<double>().between(1.05,10);
+        input.blade_area_ratio = a.random<double>().between(1.05, 10);
         ASSERT_THROW(WageningenControlledForceModel w(input, "", get_env()), InvalidInputException);
-        input.blade_area_ratio = a.random<double>().outside(0.3,1.05);
+        input.blade_area_ratio = a.random<double>().outside(0.3, 1.05);
         ASSERT_THROW(WageningenControlledForceModel w(input, "", get_env()), InvalidInputException);
-        input.blade_area_ratio = a.random<double>().between(0.3,1.05);
+        input.blade_area_ratio = a.random<double>().between(0.3, 1.05);
         ASSERT_NO_THROW(WageningenControlledForceModel w(input, "", get_env()));
     }
 }
 
 TEST_F(WageningenControlledForceModelTest, should_throw_if_number_of_blades_is_outside_bounds)
 {
-    auto input  = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     input.number_of_blades = 0;
     ASSERT_THROW(WageningenControlledForceModel w(input, "", get_env()), InvalidInputException);
     input.number_of_blades = 1;
@@ -95,8 +96,7 @@ TEST_F(WageningenControlledForceModelTest, should_throw_if_number_of_blades_is_o
     ASSERT_NO_THROW(WageningenControlledForceModel w(input, "", get_env()));
     input.number_of_blades = 7;
     ASSERT_NO_THROW(WageningenControlledForceModel w(input, "", get_env()));
-    for (size_t i = 0 ; i < NB_TRIALS ; ++i)
-    {
+    for (size_t i = 0; i < NB_TRIALS; ++i) {
         input.number_of_blades = a.random<size_t>().greater_than(7);
         ASSERT_THROW(WageningenControlledForceModel w(input, "", get_env()), InvalidInputException);
     }
@@ -104,38 +104,44 @@ TEST_F(WageningenControlledForceModelTest, should_throw_if_number_of_blades_is_o
 
 TEST_F(WageningenControlledForceModelTest, Kt_should_issue_a_warning_if_P_D_is_outside_bounds)
 {
-    auto input  = WageningenControlledForceModel::parse(test_data::wageningen());
-    const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
+    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    const WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(test_data::wageningen()),
+        "",
+        get_env());
     size_t Z;
     double AE_A0, P_D, J;
     std::stringstream error;
     // Redirect cerr to our stringstream buffer or any other ostream
-    std::streambuf* orig =std::cerr.rdbuf(error.rdbuf());
+    std::streambuf* orig = std::cerr.rdbuf(error.rdbuf());
 
-    for (size_t i = 0 ; i < NB_TRIALS ; ++i)
-    {
-        w.Kt(Z=a.random<size_t>().between(2,7),
-               AE_A0=a.random<double>().between(0.3,1.05),
-               P_D=a.random<double>().between(0,0.5),
-               J = a.random<double>().between(0,1.5));
+    for (size_t i = 0; i < NB_TRIALS; ++i) {
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0, 0.5),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kt(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(1.4,10),
-             J = a.random<double>().between(0,1.5));
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(1.4, 10),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kt(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().outside(0.5,1.4),
-             J = a.random<double>().between(0,1.5));
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().outside(0.5, 1.4),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kt(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().between(0,1.5));
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_TRUE(error.str().empty());
     }
     std::cerr.rdbuf(orig);
@@ -143,37 +149,43 @@ TEST_F(WageningenControlledForceModelTest, Kt_should_issue_a_warning_if_P_D_is_o
 
 TEST_F(WageningenControlledForceModelTest, Kt_should_throw_if_J_is_outside_bounds)
 {
-    auto input  = WageningenControlledForceModel::parse(test_data::wageningen());
-    const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
+    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    const WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(test_data::wageningen()),
+        "",
+        get_env());
     size_t Z;
     double AE_A0, P_D, J;
     std::stringstream error;
     // Redirect cerr to our stringstream buffer or any other ostream
-    std::streambuf* orig =std::cerr.rdbuf(error.rdbuf());
-    for (size_t i = 0 ; i < NB_TRIALS ; ++i)
-    {
-        w.Kt(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().no().greater_than(0));
+    std::streambuf* orig = std::cerr.rdbuf(error.rdbuf());
+    for (size_t i = 0; i < NB_TRIALS; ++i) {
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().no().greater_than(0));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kt(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().between(1.5,15));
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().between(1.5, 15));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kt(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().greater_than(1.5));
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().greater_than(1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kt(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().between(0,1.5));
+        w.Kt(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_TRUE(error.str().empty());
     }
     std::cerr.rdbuf(orig);
@@ -181,37 +193,43 @@ TEST_F(WageningenControlledForceModelTest, Kt_should_throw_if_J_is_outside_bound
 
 TEST_F(WageningenControlledForceModelTest, Kq_should_throw_if_P_D_is_outside_bounds)
 {
-    auto input  = WageningenControlledForceModel::parse(test_data::wageningen());
-    const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
+    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    const WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(test_data::wageningen()),
+        "",
+        get_env());
     size_t Z;
     double AE_A0, P_D, J;
     std::stringstream error;
     // Redirect cerr to our stringstream buffer or any other ostream
-    std::streambuf* orig =std::cerr.rdbuf(error.rdbuf());
-    for (size_t i = 0 ; i < NB_TRIALS ; ++i)
-    {
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0,0.5),
-             J = a.random<double>().between(0,1.5));
+    std::streambuf* orig = std::cerr.rdbuf(error.rdbuf());
+    for (size_t i = 0; i < NB_TRIALS; ++i) {
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0, 0.5),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(1.4,10),
-             J = a.random<double>().between(0,1.5));
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(1.4, 10),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().outside(0.5,1.4),
-             J = a.random<double>().between(0,1.5));
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().outside(0.5, 1.4),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().between(0,1.5));
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_TRUE(error.str().empty());
     }
     std::cerr.rdbuf(orig);
@@ -219,37 +237,43 @@ TEST_F(WageningenControlledForceModelTest, Kq_should_throw_if_P_D_is_outside_bou
 
 TEST_F(WageningenControlledForceModelTest, Kq_should_throw_if_J_is_outside_bounds)
 {
-    auto input  = WageningenControlledForceModel::parse(test_data::wageningen());
-    const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
+    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    const WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(test_data::wageningen()),
+        "",
+        get_env());
     size_t Z;
     double AE_A0, P_D, J;
     std::stringstream error;
     // Redirect cerr to our stringstream buffer or any other ostream
-    std::streambuf* orig =std::cerr.rdbuf(error.rdbuf());
-    for (size_t i = 0 ; i < NB_TRIALS ; ++i)
-    {
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().no().greater_than(0));
+    std::streambuf* orig = std::cerr.rdbuf(error.rdbuf());
+    for (size_t i = 0; i < NB_TRIALS; ++i) {
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().no().greater_than(0));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().between(1.5,15));
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().between(1.5, 15));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().greater_than(1.5));
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().greater_than(1.5));
         EXPECT_FALSE(error.str().empty());
         error.str("");
-        w.Kq(Z=a.random<size_t>().between(2,7),
-             AE_A0=a.random<double>().between(0.3,1.05),
-             P_D=a.random<double>().between(0.5,1.4),
-             J = a.random<double>().between(0,1.5));
+        w.Kq(
+            Z = a.random<size_t>().between(2, 7),
+            AE_A0 = a.random<double>().between(0.3, 1.05),
+            P_D = a.random<double>().between(0.5, 1.4),
+            J = a.random<double>().between(0, 1.5));
         EXPECT_TRUE(error.str().empty());
     }
     std::cerr.rdbuf(orig);
@@ -257,154 +281,179 @@ TEST_F(WageningenControlledForceModelTest, Kq_should_throw_if_J_is_outside_bound
 
 TEST_F(WageningenControlledForceModelTest, KT)
 {
-//! [WageningenControlledForceModelTest KT_example]
-    const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
+    //! [WageningenControlledForceModelTest KT_example]
+    const WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(test_data::wageningen()),
+        "",
+        get_env());
     ASSERT_EQ("wageningen B-series", w.model_name());
     size_t Z;
     double AE_A0, P_D, J;
-    // B6-65 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page 128
-    EXPECT_NEAR(0.603363,    w.Kt(Z=6, AE_A0=0.65, P_D=1.4, J=0), EPS);
-    EXPECT_NEAR(0.544592015, w.Kt(Z=6, AE_A0=0.65, P_D=1.4, J=0.3), EPS);
-    EXPECT_NEAR(0.569237985, w.Kt(Z=6, AE_A0=0.65, P_D=1.4, J=0.2), EPS);
-    EXPECT_NEAR(0.588950654, w.Kt(Z=6, AE_A0=0.65, P_D=1.4, J=0.1), EPS);
-    EXPECT_NEAR(0.161314404, w.Kt(Z=6, AE_A0=0.65, P_D=1.4, J=1.2), EPS);
-    EXPECT_NEAR(0.10751365,  w.Kt(Z=6, AE_A0=0.65, P_D=1.4, J=1.3), EPS);
-    EXPECT_NEAR(0.05281524,  w.Kt(Z=6, AE_A0=0.65, P_D=1.4, J=1.4), EPS);
-    // B2-30 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page 111
-    EXPECT_NEAR(0.242745716, w.Kt(Z=2, AE_A0=0.30, P_D=0.7, J=0), EPS);
-    EXPECT_NEAR(0.21922492, w.Kt(Z=2, AE_A0=0.30, P_D=0.7, J=0.1), EPS);
-    EXPECT_NEAR(0.193313888, w.Kt(Z=2, AE_A0=0.30, P_D=0.7, J=0.2), EPS);
-    EXPECT_NEAR(0.165272939, w.Kt(Z=2, AE_A0=0.30, P_D=0.7, J=0.3), EPS);
-    EXPECT_NEAR(0.13535988, w.Kt(Z=2, AE_A0=0.30, P_D=0.7, J=0.4), EPS);
-    EXPECT_NEAR(0.103833149, w.Kt(Z=2, AE_A0=0.30, P_D=0.7, J=0.5), EPS);
-    EXPECT_NEAR(0.070951181, w.Kt(Z=2, AE_A0=0.30, P_D=0.7, J=0.6), EPS);
+    // B6-65 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page
+    // 128
+    EXPECT_NEAR(0.603363, w.Kt(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0), EPS);
+    EXPECT_NEAR(0.544592015, w.Kt(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0.3), EPS);
+    EXPECT_NEAR(0.569237985, w.Kt(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0.2), EPS);
+    EXPECT_NEAR(0.588950654, w.Kt(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0.1), EPS);
+    EXPECT_NEAR(0.161314404, w.Kt(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 1.2), EPS);
+    EXPECT_NEAR(0.10751365, w.Kt(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 1.3), EPS);
+    EXPECT_NEAR(0.05281524, w.Kt(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 1.4), EPS);
+    // B2-30 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page
+    // 111
+    EXPECT_NEAR(0.242745716, w.Kt(Z = 2, AE_A0 = 0.30, P_D = 0.7, J = 0), EPS);
+    EXPECT_NEAR(0.21922492, w.Kt(Z = 2, AE_A0 = 0.30, P_D = 0.7, J = 0.1), EPS);
+    EXPECT_NEAR(0.193313888, w.Kt(Z = 2, AE_A0 = 0.30, P_D = 0.7, J = 0.2), EPS);
+    EXPECT_NEAR(0.165272939, w.Kt(Z = 2, AE_A0 = 0.30, P_D = 0.7, J = 0.3), EPS);
+    EXPECT_NEAR(0.13535988, w.Kt(Z = 2, AE_A0 = 0.30, P_D = 0.7, J = 0.4), EPS);
+    EXPECT_NEAR(0.103833149, w.Kt(Z = 2, AE_A0 = 0.30, P_D = 0.7, J = 0.5), EPS);
+    EXPECT_NEAR(0.070951181, w.Kt(Z = 2, AE_A0 = 0.30, P_D = 0.7, J = 0.6), EPS);
     // B3-40
-    EXPECT_NEAR(0.188195882, w.Kt(Z=3, AE_A0=0.4, P_D=0.5, J=0.0), EPS);
-    EXPECT_NEAR(0.163443634, w.Kt(Z=3, AE_A0=0.4, P_D=0.5, J=0.1), EPS);
-    EXPECT_NEAR(0.135394546, w.Kt(Z=3, AE_A0=0.4, P_D=0.5, J=0.2), EPS);
-    EXPECT_NEAR(0.104372086, w.Kt(Z=3, AE_A0=0.4, P_D=0.5, J=0.3), EPS);
-//! [WageningenControlledForceModelTest KT_example]
+    EXPECT_NEAR(0.188195882, w.Kt(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.0), EPS);
+    EXPECT_NEAR(0.163443634, w.Kt(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.1), EPS);
+    EXPECT_NEAR(0.135394546, w.Kt(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.2), EPS);
+    EXPECT_NEAR(0.104372086, w.Kt(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.3), EPS);
+    //! [WageningenControlledForceModelTest KT_example]
 }
 
 TEST_F(WageningenControlledForceModelTest, KQ)
 {
     //! [WageningenControlledForceModelTest KQ_example]
-    const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
+    const WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(test_data::wageningen()),
+        "",
+        get_env());
     ASSERT_EQ("wageningen B-series", w.model_name());
     size_t Z;
     double AE_A0, P_D, J;
 
-    EXPECT_NEAR(0.47,    10*w.Kq(Z=2, AE_A0=0.30, P_D=1.4, J=0.8), 1E-2);
-    EXPECT_NEAR(0.51,    10*w.Kq(Z=3, AE_A0=0.65, P_D=1.2, J=0.7), 1E-2);
-    EXPECT_NEAR(0.31,    10*w.Kq(Z=3, AE_A0=0.65, P_D=0.8, J=0.3), 1E-2);
-    EXPECT_NEAR(0.51,    10*w.Kq(Z=6, AE_A0=0.65, P_D=1.2, J=0.8), 1E-2);
-    EXPECT_NEAR(0.99,    10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=0.5), 1E-2);
-    EXPECT_NEAR(0.20,    10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=1), 1E-2);
+    EXPECT_NEAR(0.47, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.4, J = 0.8), 1E-2);
+    EXPECT_NEAR(0.51, 10 * w.Kq(Z = 3, AE_A0 = 0.65, P_D = 1.2, J = 0.7), 1E-2);
+    EXPECT_NEAR(0.31, 10 * w.Kq(Z = 3, AE_A0 = 0.65, P_D = 0.8, J = 0.3), 1E-2);
+    EXPECT_NEAR(0.51, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.2, J = 0.8), 1E-2);
+    EXPECT_NEAR(0.99, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0.5), 1E-2);
+    EXPECT_NEAR(0.20, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 1), 1E-2);
 
-    // B6-65 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page 128
-    EXPECT_NEAR(1.209493726, 10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=0), EPS);
-    EXPECT_NEAR(1.1769086,   10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=0.1), EPS);
-    EXPECT_NEAR(1.138594465, 10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=0.2), EPS);
-    EXPECT_NEAR(1.094459956, 10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=0.3), EPS);
-    EXPECT_NEAR(0.420257329, 10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=1.2), EPS);
-    EXPECT_NEAR(0.312894007, 10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=1.3), EPS);
-    EXPECT_NEAR(0.198705297, 10*w.Kq(Z=6, AE_A0=0.65, P_D=1.4, J=1.4), EPS);
+    // B6-65 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page
+    // 128
+    EXPECT_NEAR(1.209493726, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0), EPS);
+    EXPECT_NEAR(1.1769086, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0.1), EPS);
+    EXPECT_NEAR(1.138594465, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0.2), EPS);
+    EXPECT_NEAR(1.094459956, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 0.3), EPS);
+    EXPECT_NEAR(0.420257329, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 1.2), EPS);
+    EXPECT_NEAR(0.312894007, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 1.3), EPS);
+    EXPECT_NEAR(0.198705297, 10 * w.Kq(Z = 6, AE_A0 = 0.65, P_D = 1.4, J = 1.4), EPS);
 
-    // B2-30 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page 111
-    EXPECT_NEAR(0.654180539, 10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=0), EPS);
-    EXPECT_NEAR(0.618341564, 10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=0.1), EPS);
-    EXPECT_NEAR(0.580406412, 10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=0.2), EPS);
-    EXPECT_NEAR(0.540388943, 10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=0.3), EPS);
-    EXPECT_NEAR(0.498303012, 10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=0.4), EPS);
-    EXPECT_NEAR(0.454162477, 10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=0.5), EPS);
-    EXPECT_NEAR(0.407981197, 10*w.Kq(Z=2, AE_A0=0.30, P_D=1.2, J=0.6), EPS);
+    // B2-30 (cf. The Wageningen Propeller Series, 1992, Gert Kuiper, Marin publication 92-001 page
+    // 111
+    EXPECT_NEAR(0.654180539, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 0), EPS);
+    EXPECT_NEAR(0.618341564, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 0.1), EPS);
+    EXPECT_NEAR(0.580406412, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 0.2), EPS);
+    EXPECT_NEAR(0.540388943, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 0.3), EPS);
+    EXPECT_NEAR(0.498303012, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 0.4), EPS);
+    EXPECT_NEAR(0.454162477, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 0.5), EPS);
+    EXPECT_NEAR(0.407981197, 10 * w.Kq(Z = 2, AE_A0 = 0.30, P_D = 1.2, J = 0.6), EPS);
 
     // B3-40
-    EXPECT_NEAR(0.160531235, 10*w.Kq(Z=3, AE_A0=0.4, P_D=0.5, J=0.0), EPS);
-    EXPECT_NEAR(0.143676942, 10*w.Kq(Z=3, AE_A0=0.4, P_D=0.5, J=0.1), EPS);
-    EXPECT_NEAR(0.125396067, 10*w.Kq(Z=3, AE_A0=0.4, P_D=0.5, J=0.2), EPS);
-    EXPECT_NEAR(0.105448718, 10*w.Kq(Z=3, AE_A0=0.4, P_D=0.5, J=0.3), EPS);
-//! [WageningenControlledForceModelTest KQ_example]
+    EXPECT_NEAR(0.160531235, 10 * w.Kq(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.0), EPS);
+    EXPECT_NEAR(0.143676942, 10 * w.Kq(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.1), EPS);
+    EXPECT_NEAR(0.125396067, 10 * w.Kq(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.2), EPS);
+    EXPECT_NEAR(0.105448718, 10 * w.Kq(Z = 3, AE_A0 = 0.4, P_D = 0.5, J = 0.3), EPS);
+    //! [WageningenControlledForceModelTest KQ_example]
 }
 
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_without_rotations)
 {
     // Load and modify yaml input
-    std::string input_data=test_data::wageningen();
-    std::string old_str="    theta: {value: -10";
-    std::string new_str="    theta: {value:   0";
+    std::string input_data = test_data::wageningen();
+    std::string old_str = "    theta: {value: -10";
+    std::string new_str = "    theta: {value:   0";
     input_data.replace(input_data.find(old_str), old_str.length(), new_str);
-    old_str="    psi: {value: -1";
-    new_str="    psi: {value:  0";
+    old_str = "    psi: {value: -1";
+    new_str = "    psi: {value:  0";
     input_data.replace(input_data.find(old_str), old_str.length(), new_str);
     // Create environnement
-    EnvironmentAndFrames env=get_env();
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
-    WageningenControlledForceModel w(WageningenControlledForceModel::parse(input_data), b->get_name(), env);
+    // Create propeller model
+    WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(input_data),
+        b->get_name(),
+        env);
     // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 4);
     states.v.record(0, 5);
     states.w.record(0, 6);
 
-    const double Va=w.get_advance_speed_in_propeller_frame(states,0,env);
-    ASSERT_NEAR(Va, 4*(1-0.9),EPS);
+    const double Va = w.get_advance_speed_in_propeller_frame(states, 0, env);
+    ASSERT_NEAR(Va, 4 * (1 - 0.9), EPS);
 }
 
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_with_rotations)
 {
     // Load yaml input
-    std::string input_data=test_data::wageningen();
+    std::string input_data = test_data::wageningen();
     // Create environnement
-    EnvironmentAndFrames env=get_env();
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
-    WageningenControlledForceModel w(WageningenControlledForceModel::parse(input_data), b->get_name(), env);
+    // Create propeller model
+    WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(input_data),
+        b->get_name(),
+        env);
     // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 4);
     states.v.record(0, 5);
     states.w.record(0, 6);
 
-    const double Va=w.get_advance_speed_in_propeller_frame(states,0,env);
+    const double Va = w.get_advance_speed_in_propeller_frame(states, 0, env);
     // The advance speed is states.u()*(1-w)*cos(theta)*cos(psi)
-    ASSERT_NEAR(Va,4*(1-0.9)*0.9846577620214009,1E-6);
+    ASSERT_NEAR(Va, 4 * (1 - 0.9) * 0.9846577620214009, 1E-6);
 }
 
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_ratio)
 {
-    const WageningenControlledForceModel w(WageningenControlledForceModel::parse(test_data::wageningen()), "", get_env());
-    std::map<std::string,double> commands;
-    commands["rpm"] = 20*2*PI;
-    ASSERT_DOUBLE_EQ(3./400., w.get_advance_ratio(commands,0.3));
+    const WageningenControlledForceModel w(
+        WageningenControlledForceModel::parse(test_data::wageningen()),
+        "",
+        get_env());
+    std::map<std::string, double> commands;
+    commands["rpm"] = 20 * 2 * PI;
+    ASSERT_DOUBLE_EQ(3. / 400., w.get_advance_ratio(commands, 0.3));
 }
 
 TEST_F(WageningenControlledForceModelTest, force_and_torque)
 {
-// Load and modify yaml input
+    // Load and modify yaml input
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     input.blade_area_ratio = 0.4;
     // Create environnement
-    EnvironmentAndFrames env=get_env();
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
+    // Create propeller model
     WageningenControlledForceModel w(input, b->get_name(), env);
     // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
     // Define a command rpm
-    std::map<std::string,double> commands;
-    commands["rpm"] = 5*(2*PI);
+    std::map<std::string, double> commands;
+    commands["rpm"] = 5 * (2 * PI);
     commands["P/D"] = 0.5;
 
-    ASSERT_NEAR(0.3*1024*25*16*0.185914061, w.get_force(states, a.random<double>(), env, commands).X(), EPS);
+    ASSERT_NEAR(
+        0.3 * 1024 * 25 * 16 * 0.185914061,
+        w.get_force(states, a.random<double>(), env, commands).X(),
+        EPS);
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).Y());
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).Z());
-    ASSERT_NEAR(-1024*25*32*0.0158928234, w.get_force(states, a.random<double>(), env, commands).K(), EPS);
+    ASSERT_NEAR(
+        -1024 * 25 * 32 * 0.0158928234,
+        w.get_force(states, a.random<double>(), env, commands).K(),
+        EPS);
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).M());
     ASSERT_EQ(0, w.get_force(states, a.random<double>(), env, commands).N());
 }
@@ -414,11 +463,11 @@ TEST_F(WageningenControlledForceModelTest, torque_should_have_sign_corresponding
     // Load and modify yaml input
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     // Create environnement
-    EnvironmentAndFrames env=get_env();
+    EnvironmentAndFrames env = get_env();
     env.rho = a.random<double>().greater_than(0);
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
+    // Create propeller model
     WageningenControlledForceModel w_clockwise(input, b->get_name(), env);
     input.rotating_clockwise = false;
     WageningenControlledForceModel w_anti_clockwise(input, b->get_name(), env);
@@ -426,9 +475,9 @@ TEST_F(WageningenControlledForceModelTest, torque_should_have_sign_corresponding
     auto states = b->get_states();
     states.u.record(0, a.random<double>().greater_than(0));
     // Define a command rpm
-    std::map<std::string,double> commands;
-    commands["rpm"] = a.random<double>().between(states.u(),2*states.u());
-    commands["P/D"] = a.random<double>().between(0.5,1.4);
+    std::map<std::string, double> commands;
+    commands["rpm"] = a.random<double>().between(states.u(), 2 * states.u());
+    commands["P/D"] = a.random<double>().between(0.5, 1.4);
 
     ASSERT_GT(0, w_clockwise.get_force(states, a.random<double>(), env, commands).K());
     ASSERT_LT(0, w_anti_clockwise.get_force(states, a.random<double>(), env, commands).K());
@@ -440,16 +489,16 @@ TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_z
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     input.blade_area_ratio = 0.4;
     // Create environnement
-    EnvironmentAndFrames env=get_env();
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
+    // Create propeller model
     WageningenControlledForceModel w(input, b->get_name(), env);
     // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
     // Define a command rpm
-    std::map<std::string,double> commands;
+    std::map<std::string, double> commands;
     commands["rpm"] = 0;
     commands["P/D"] = 0.5;
 
@@ -463,20 +512,20 @@ TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_z
 
 TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_near_zero)
 {
-// Load and modify yaml input
+    // Load and modify yaml input
     auto input = WageningenControlledForceModel::parse(test_data::wageningen());
     input.blade_area_ratio = 0.4;
     // Create environnement
-    EnvironmentAndFrames env=get_env();
+    EnvironmentAndFrames env = get_env();
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
-    // Create propeller model 
+    // Create propeller model
     WageningenControlledForceModel w(input, b->get_name(), env);
     // Define body velocities
     auto states = b->get_states();
     states.u.record(0, 1);
     // Define a command rpm
-    std::map<std::string,double> commands;
+    std::map<std::string, double> commands;
     commands["rpm"] = 1e-16;
     commands["P/D"] = 0.5;
 

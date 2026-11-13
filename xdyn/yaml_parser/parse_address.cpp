@@ -1,8 +1,10 @@
 #include "parse_address.hpp"
-#include "xdyn/exceptions/InvalidInputException.hpp"
+
+#include <boost/regex.hpp>
 #include <charconv>
 #include <iostream>
-#include <boost/regex.hpp>
+
+#include "xdyn/exceptions/InvalidInputException.hpp"
 
 boost::regex websocket_url_regex();
 boost::regex websocket_url_regex()
@@ -17,31 +19,34 @@ bool is_a_websocket_url(const std::string& url)
     return regex_match(url.c_str(), what, ex);
 }
 
-WebsocketURLElements::WebsocketURLElements(const std::string& url) :
-    port()
+WebsocketURLElements::WebsocketURLElements(const std::string& url) : port()
 {
     const boost::regex ex = websocket_url_regex();
     boost::cmatch what;
-    if(regex_match(url.c_str(), what, ex))
-    {
+    if (regex_match(url.c_str(), what, ex)) {
         protocol = std::string(what[1].first, what[1].second);
         domain = std::string(what[2].first, what[2].second);
         const auto parsed = std::from_chars(what[3].first, what[3].second, port);
-        if ( parsed.ec != std::errc() || parsed.ptr != what[3].second || port <= 0 || port > 65535 )
-        {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Port: " << std::string(what[3].first, what[3].second) << " is not valid. It should be between 0 and 65535");
+        if (parsed.ec != std::errc() || parsed.ptr != what[3].second || port <= 0 || port > 65535) {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InvalidInputException,
+                "Port: " << std::string(what[3].first, what[3].second)
+                         << " is not valid. It should be between 0 and 65535");
         }
-        if (protocol!="ws")
-        {
-            THROW(__PRETTY_FUNCTION__, InvalidInputException, "Only 'ws' is valid. wss is not implemented yet");
+        if (protocol != "ws") {
+            THROW(
+                __PRETTY_FUNCTION__,
+                InvalidInputException,
+                "Only 'ws' is valid. wss is not implemented yet");
         }
-    }
-    else
-    {
-        THROW(__PRETTY_FUNCTION__, InvalidInputException,
-                "Address: " << url << " is not valid. Here are some examples"<<std::endl
-                           << "  ws://localhost:8080"<<std::endl
-                           << "  ws://130.66.124.200:8080");
+    } else {
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "Address: " << url << " is not valid. Here are some examples" << std::endl
+                        << "  ws://localhost:8080" << std::endl
+                        << "  ws://130.66.124.200:8080");
     }
 }
 
@@ -67,6 +72,6 @@ YamlOutput build_YamlOutput_from_WS_URL(const std::string& url)
     const WebsocketURLElements url_elements(url);
     out.port = (short unsigned int)url_elements.port;
     out.format = "ws";
-    out.address = url_elements.protocol+"://"+url_elements.domain;
+    out.address = url_elements.protocol + "://" + url_elements.domain;
     return out;
 }

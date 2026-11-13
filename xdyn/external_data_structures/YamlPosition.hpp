@@ -8,14 +8,13 @@
 #ifndef YAMLPOSITION_HPP_
 #define YAMLPOSITION_HPP_
 
-#include "xdyn/external_data_structures/YamlCoordinates.hpp"
-#include "xdyn/external_data_structures/YamlAngle.hpp"
-
 #include <ostream>
 #include <string>
 
-struct YamlPosition
-{
+#include "xdyn/external_data_structures/YamlAngle.hpp"
+#include "xdyn/external_data_structures/YamlCoordinates.hpp"
+
+struct YamlPosition {
     YamlPosition();
     YamlPosition(const YamlCoordinates& c, const YamlAngle& a, const std::string& frame);
     YamlCoordinates coordinates;

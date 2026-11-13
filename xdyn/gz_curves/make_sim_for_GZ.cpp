@@ -6,9 +6,10 @@
  */
 
 #include "make_sim_for_GZ.hpp"
+
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/yaml_parser/check_input_yaml.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 Sim GZ::make_sim(const std::string& yaml, const std::string& stl)
 {
@@ -17,8 +18,8 @@ Sim GZ::make_sim(const std::string& yaml, const std::string& stl)
     body.external_forces.clear();
     YamlModel gravity, hydrostatic, waves;
     gravity.model = "gravity";
-    //hydrostatic.model = "hydrostatic";
-//    hydrostatic.model = "non-linear hydrostatic (exact)";
+    // hydrostatic.model = "hydrostatic";
+    //    hydrostatic.model = "non-linear hydrostatic (exact)";
     hydrostatic.model = "non-linear hydrostatic (fast)";
     body.external_forces.push_back(gravity);
     body.external_forces.push_back(hydrostatic);

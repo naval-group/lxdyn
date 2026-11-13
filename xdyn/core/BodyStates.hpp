@@ -8,37 +8,36 @@
 #ifndef BODYSTATES_HPP_
 #define BODYSTATES_HPP_
 
-#include "StatesFilter.hpp"
+#include <Eigen/Dense>
+#include <memory>
+#include <ssc/kinematics.hpp>
+#include <ssc/macros.hpp>
+#include <tuple>
+
 #include "StateLayout.hpp"
+#include "StatesFilter.hpp"
+#include "xdyn/external_data_structures/AbstractStates.hpp"
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 #include "xdyn/external_data_structures/YamlRotation.hpp"
-#include "xdyn/external_data_structures/AbstractStates.hpp"
 #include "xdyn/hdb_interpolators/History.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
 
-#include <ssc/kinematics.hpp>
-#include <ssc/macros.hpp>
-#include <memory>
-
-#include <Eigen/Dense>
-
-#include <tuple>
-
 class Mesh;
 using MeshPtr = std::shared_ptr<Mesh>;
-using Matrix66 = Eigen::Matrix<double,6,6>;
+using Matrix66 = Eigen::Matrix<double, 6, 6>;
 
-struct BodyStates : AbstractStates<History>
-{
+struct BodyStates : AbstractStates<History> {
     explicit BodyStates(
-        const double Tmax=0 //!< Defines how much history we store
-        );
+        const double Tmax = 0  //!< Defines how much history we store
+    );
     explicit BodyStates(
-        const YamlFilteredStates& filtered_states, const double Tmax=0 //!< Defines how much history we store
-        );
+        const YamlFilteredStates& filtered_states,
+        const double Tmax = 0  //!< Defines how much history we store
+    );
     explicit BodyStates(
-        const StatesFilter& states_filter, const double Tmax=0 //!< Defines how much history we store
-        );
+        const StatesFilter& states_filter,
+        const double Tmax = 0  //!< Defines how much history we store
+    );
     using AbstractStates<History>::operator=;
     /// Body's name
     std::string name;
@@ -46,7 +45,8 @@ struct BodyStates : AbstractStates<History>
     ssc::kinematics::Point G;
     /// Vertices & edges of the body's mesh
     MeshPtr mesh;
-    /// 6x6 matrix corresponding to the sum of the rigid body inertia + added mass expressed in the body frame
+    /// 6x6 matrix corresponding to the sum of the rigid body inertia + added mass expressed in the
+    /// body frame
     Matrix66 total_inertia{Matrix66::Zero()};
     /// 6x6 rigid body inertia matrix (i.e. without added mass) in the body frame
     Matrix66 solid_body_inertia{Matrix66::Zero()};
@@ -72,9 +72,14 @@ struct BodyStates : AbstractStates<History>
 
     ssc::kinematics::EulerAngles get_angles() const;
     ssc::kinematics::EulerAngles get_angles(const YamlRotation& c) const;
-    ssc::kinematics::EulerAngles get_angles(const StateType& all_states, const size_t idx, const YamlRotation& c) const;
-    static ssc::kinematics::EulerAngles convert(const ssc::kinematics::RotationMatrix& R, const YamlRotation& rotations);
-    static std::tuple<double,double,double,double> convert(const ssc::kinematics::EulerAngles& R, const YamlRotation& rotations);
+    ssc::kinematics::EulerAngles
+    get_angles(const StateType& all_states, const size_t idx, const YamlRotation& c) const;
+    static ssc::kinematics::EulerAngles convert(
+        const ssc::kinematics::RotationMatrix& R,
+        const YamlRotation& rotations);
+    static std::tuple<double, double, double, double> convert(
+        const ssc::kinematics::EulerAngles& R,
+        const YamlRotation& rotations);
     ssc::kinematics::RotationMatrix get_rot_from_ned_to_body() const;
     ssc::kinematics::RotationMatrix get_rot_from_ned_to(const StateType& x, const size_t idx) const;
     YamlRotation convention;  //!< Rotation convention
