@@ -1,3 +1,4 @@
+#include "gmock/gmock.h"
 #include "ssc/data_source/DataSourceModule.hpp"
 
 // Defined so we can derive several types of mock
