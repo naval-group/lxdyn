@@ -41,6 +41,8 @@ doc = ["sphinx", "sphinx-autopackagesummary", "myst-parser", "numpy"]
 extend-exclude = ["postprocessing", "external"]
 line-length = 100
 target-version = "py311"
+# Under build/, so `mise run clean` reaches it.
+cache-dir = "build/ruff-cache"
 
 [tool.ruff.lint]
 # RUF009: a call as a dataclass default is shared between instances, and an error on 3.11+.
@@ -72,6 +74,7 @@ replace-imports-with-any = ["xdyn.**", "xdyngrpc._proto.**"]
 
 [tool.pytest.ini_options]
 testpaths = ["xdyn_wrapper_python/unit_tests"]
+cache_dir = "build/pytest-cache"
 filterwarnings = [
     "ignore:cannot collect 'test_ship_hdb':pytest.PytestCollectionWarning",
 ]
