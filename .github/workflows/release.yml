@@ -21,9 +21,6 @@ permissions:
 env:
   NIX_CONFIG: experimental-features = nix-command flakes
   MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
-  # The runner has both, and podman would otherwise win the auto-detection in mise.toml --
-  # but `docker login` below writes to docker's credential store, not podman's.
-  CONTAINER: docker
 
 jobs:
   image:
@@ -38,7 +35,9 @@ jobs:
       - uses: cachix/install-nix-action@v31
 
       - name: Build the image
-        run: nix develop --command mise run deploy:image
+        run: |
+          nix build .#xdyn-image -o build/scratch/xdyn-image
+          docker load < build/scratch/xdyn-image
 
       # Steps 1 and 2 of integration_tests/deploy/run.sh, the two that are about the image.
       # Its step 3 needs the gRPC venv and a native xdyn-for-me, so the gnu closure and a second
@@ -61,7 +60,7 @@ jobs:
       - name: Log in to ghcr.io
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" \
-              | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+              | nix develop --command skopeo login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Push
         # Empty on a tag push, which is the case deploy:publish resolves for itself.

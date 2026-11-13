@@ -235,6 +235,35 @@
         description = "the binaries the deploy image ships, static x86_64-linux-musl";
       };
 
+      # lastModifiedDate is YYYYMMDDHHMMSS; dockerTools defaults to the epoch.
+      commitDate = let d = self.lastModifiedDate; s = start: builtins.substring start; in
+        "${s 0 4 d}-${s 4 2 d}-${s 6 2 d}T${s 8 2 d}:${s 10 2 d}:${s 12 2 d}Z";
+      # Copied rather than linked from the store, so the image has no /nix and the binaries stay in /usr/bin.
+      xdyn-image = pkgs.dockerTools.buildLayeredImage {
+        name = "localhost/lxdyn";
+        tag = "latest";
+        created = commitDate;
+        includeStorePaths = false;
+        extraCommands = ''
+          mkdir -p usr/bin data
+          cp ${xdyn-deploy}/bin/* usr/bin/
+        '';
+        config = {
+          Entrypoint = [ "/usr/bin/xdyn" ];
+          # xdyn writes its .h5/.csv/.json next to the cwd
+          WorkingDir = "/data";
+          Labels = {
+            # GHCR links the package to the repository through this one, which is what lets GITHUB_TOKEN push.
+            "org.opencontainers.image.source" = "https://github.com/naval-group/lxdyn";
+            "org.opencontainers.image.title" = "lxdyn";
+            "org.opencontainers.image.description" = "lxdyn, the LOTUSim fork of xdyn: a time-domain ship simulator";
+            "org.opencontainers.image.licenses" = "EPL-2.0";
+            "org.opencontainers.image.version" = release;
+            "org.opencontainers.image.revision" = revision;
+          };
+        };
+      };
+
       # An importer dlopens the FMU library, so it is a shared object for the importer's libc:
       # glibc on Linux, where xdyn's binaries are static musl.
       mkFmu = { pname, triple, platform, target ? triple }: pkgs.stdenvNoCC.mkDerivation {
@@ -401,7 +430,7 @@
         '';
       };
     in {
-      packages.${system} = closures // { inherit xdyn xdyn-deploy xdyn-fmu xdyn-fmu-win64 xdyn-fmu-zip lxdyn-wheels; }
+      packages.${system} = closures // { inherit xdyn xdyn-deploy xdyn-image xdyn-fmu xdyn-fmu-win64 xdyn-fmu-zip lxdyn-wheels; }
         // pkgs.lib.mapAttrs' (triple: drv: pkgs.lib.nameValuePair "deps-${triple}" drv) fetched;
       checks.${system} = checks;
 
@@ -423,6 +452,7 @@
             pkgs.zstd
             pkgs.hdf5.bin       # h5dump only; pkgs.hdf5 is a C++ library
             clangTidy           # clang-tidy, run-clang-tidy and clangd, at zig's clang version
+            pkgs.skopeo         # publishes the image from its archive: no daemon, no local store
           ];
           # mise.toml requires it: every task runs on these tools, never the host's.
           LXDYN_DEVSHELL = "1";

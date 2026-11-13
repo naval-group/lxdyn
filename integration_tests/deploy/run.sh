@@ -22,8 +22,8 @@ SRC=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO=$(CDPATH= cd -- "$SRC/../.." && pwd)
 WORK=$REPO/build/scratch/deploy-test
 
-# podman first: it reads ./Containerfile without -f, and it is what this was developed
-# against. docker works too; both are invoked with the same arguments below.
+# podman first: it is what this was developed against. docker works too; both are invoked with
+# the same arguments below.
 CONTAINER=${CONTAINER:-}
 if [ -z "$CONTAINER" ]; then
     for c in podman docker; do
