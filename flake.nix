@@ -197,14 +197,14 @@
         '';
       };
 
-      # clang-tidy is the clang zig was built with: one major off, it fails on zig's intrinsic headers.
+      # zig's own clang: one major off, clang-tidy fails on zig's headers and clang-format output drifts.
       zigClang = pkgs.lib.findFirst (p: (p.pname or "") == "clang") (throw "zig has no clang input") pkgs.zig.buildInputs;
       clangTools = pkgs."llvmPackages_${pkgs.lib.versions.major zigClang.version}".clang-tools;
       # Unwrapped: the wrappers put nixpkgs' glibc and libstdc++ headers on CPLUS_INCLUDE_PATH.
-      clangTidy = assert clangTools.version == zigClang.version;
-        pkgs.runCommandLocal "clang-tidy-${clangTools.version}" { } ''
+      clangPinned = assert clangTools.version == zigClang.version;
+        pkgs.runCommandLocal "clang-pinned-${clangTools.version}" { } ''
           mkdir -p $out/bin
-          for tool in clang-tidy clang-apply-replacements clangd; do
+          for tool in clang-tidy clang-apply-replacements clangd clang-format; do
             ln -s ${clangTools}/bin/$tool-unwrapped $out/bin/$tool
           done
           ln -s ${clangTools}/bin/run-clang-tidy $out/bin/run-clang-tidy
@@ -416,7 +416,7 @@
         tidy = mkUnitCheck {
           name = "xdyn-tidy";
           triple = "x86_64-linux-gnu";
-          tools = [ clangTidy ];
+          tools = [ clangPinned ];
           test = ''
             zig build tidy ${zigFlags "x86_64-linux-gnu"} \
               -Dpython=${pkgs.python3.interpreter} -Dpybind11=${pkgs.python3Packages.pybind11}/include
@@ -451,7 +451,7 @@
             pkgs.llvm           # llvm-nm/llvm-strip read every target, unlike binutils
             pkgs.zstd
             pkgs.hdf5.bin       # h5dump only; pkgs.hdf5 is a C++ library
-            clangTidy           # clang-tidy, run-clang-tidy and clangd, at zig's clang version
+            clangPinned         # clang-tidy, clang-format and clangd, at zig's clang version
             pkgs.skopeo         # publishes the image from its archive: no daemon, no local store
           ];
           # mise.toml requires it: every task runs on these tools, never the host's.
