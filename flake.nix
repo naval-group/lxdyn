@@ -145,7 +145,7 @@
         filter = path: _type:
           let rel = pkgs.lib.removePrefix "${self}/" path; in
           !(pkgs.lib.hasPrefix ".github" rel)
-          && !(pkgs.lib.hasPrefix "doxygen" rel)
+          && !(pkgs.lib.hasPrefix "tools/doxygen" rel)
           && !(pkgs.lib.hasSuffix ".md" rel);
       };
 

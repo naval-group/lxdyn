@@ -299,7 +299,7 @@ description = "Build the C++ API reference with Doxygen -> build/doc/doxygen/htm
 run = '''
 set -e
 mkdir -p build/doc/doxygen
-doxygen doxygen/Doxyfile
+doxygen tools/doxygen/Doxyfile
 echo "OK -> $PWD/build/doc/doxygen/html/index.html"
 '''
 
