@@ -38,7 +38,7 @@ class ErrorReporter
       private:
           void run_and_report_errors(const std::function<void(void)>& f, const bool dump_yaml, const std::string& yaml_dump);
           std::stringstream ss;
-          Status status;
+          Status status{Status::OK};
 
 };
 

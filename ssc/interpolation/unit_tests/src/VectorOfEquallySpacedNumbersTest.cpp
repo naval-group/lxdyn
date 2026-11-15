@@ -12,8 +12,8 @@
 using namespace ssc::interpolation;
 using namespace ssc::random_data_generator;
 
-VectorOfEquallySpacedNumbersTest::VectorOfEquallySpacedNumbersTest() : a(ssc::random_data_generator::DataGenerator(666558882)),
-eps(1E-10)
+VectorOfEquallySpacedNumbersTest::VectorOfEquallySpacedNumbersTest() : a(ssc::random_data_generator::DataGenerator(666558882))
+
 {
 }
 

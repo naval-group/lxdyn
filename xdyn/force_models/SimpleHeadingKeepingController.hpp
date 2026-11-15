@@ -17,8 +17,8 @@ class SimpleHeadingKeepingController : public ForceModel
         {
             Yaml();
             std::string name;
-            double ksi;
-            double Tp;
+            double ksi{0};
+            double Tp{0};
         };
         static Yaml parse(const std::string& yaml);
         static std::string model_name();

@@ -14,8 +14,6 @@
 FlettnerRotorForceModel::Input::Input():
     name(""),
     calculation_point_in_body_frame(YamlCoordinates()),
-    diameter(0.0),
-    length(0.0),
     spin_ratio(std::vector<double>()),
     lift_coefficient(std::vector<double>()),
     drag_coefficient(std::vector<double>())

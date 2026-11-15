@@ -16,14 +16,14 @@ struct XdynForMECommandLineArguments
     XdynForMECommandLineArguments();
     std::vector<std::string> yaml_filenames;
     std::string assets_path;
-    bool catch_exceptions;
+    bool catch_exceptions{false};
     std::string address;
-    short unsigned int port;
+    short unsigned int port{0};
     bool empty() const;
-    bool verbose;
-    bool show_help;
-    bool show_websocket_debug_information;
-    bool grpc;
+    bool verbose{false};
+    bool show_help{false};
+    bool show_websocket_debug_information{false};
+    bool grpc{false};
 };
 
 #endif /* XDYNFORMECOMMANDLINEARGUMENTS_HPP_ */

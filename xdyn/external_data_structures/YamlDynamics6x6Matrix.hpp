@@ -14,11 +14,11 @@
 struct YamlDynamics6x6Matrix
 {
     YamlDynamics6x6Matrix();
-    bool read_from_file;
+    bool read_from_file{false};
     std::string hdb_filename;
     std::string precal_filename;
     std::string frame;
-    bool row_convention_xdyn_with_z_down;
+    bool row_convention_xdyn_with_z_down{true};
     std::vector<double> row_1;
     std::vector<double> row_2;
     std::vector<double> row_3;

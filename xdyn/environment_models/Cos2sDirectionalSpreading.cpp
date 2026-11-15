@@ -16,8 +16,8 @@
 
 
 Cos2sDirectionalSpreading::Cos2sDirectionalSpreading(const double psi0, const double s_) : WaveDirectionalSpreading(psi0),
-s(s_),
-Fs(0)
+s(s_)
+
 {
     if (s<0)
     {

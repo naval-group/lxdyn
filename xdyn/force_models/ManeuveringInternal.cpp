@@ -675,7 +675,7 @@ namespace maneuvering
 }
 namespace maneuvering
 {
-    FindTmax::FindTmax() : Tmax(0) {}
+    FindTmax::FindTmax()  {}
 
     double FindTmax::get_Tmax() const
     {

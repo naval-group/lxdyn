@@ -600,7 +600,7 @@ namespace ssc
                 void update_dependencies();
                 void add_dependencies_and_dependent_modules(const std::set<TypedSignalName>& required_signals, const TypedModuleName& module_using_required_signals);
                 FromName2Module name2module; //!< Map giving, for each module name, a (smart) pointer to the corresponding module
-                bool readonly; //!< If this flag is set to true, DataSource::set will not modify the state of the DataSource. This is used so that the first call to DataSourceModule::update (by DataSource::add) can track dependencies between modules
+                bool readonly{false}; //!< If this flag is set to true, DataSource::set will not modify the state of the DataSource. This is used so that the first call to DataSourceModule::update (by DataSource::add) can track dependencies between modules
                 SignalContainer signals_; //!< All signals currently in the DataSource
                 TypedModuleName module_setting_signals; //!< Module currently adding signals to the DataSource (used to track if two different modules set the same signal)
                 FromSignal2Module signal2module; //!< Tracks which module sets which signal
@@ -614,7 +614,7 @@ namespace ssc
                 SignalContainer forced_values; //!< All signals that have been forced
                 std::vector<TypedModuleName> modules; //!< All modules in DataSource
                 std::stack<TypedSignalName> call_stack; //!< Names of modules in call stack (M1 called M2 called...)
-                bool in_module; //!< True if the current setter is a DataSourceModule
+                bool in_module{false}; //!< True if the current setter is a DataSourceModule
         };
     }
 }

@@ -25,17 +25,15 @@ enum class FilterableState {X, Y, Z, U, V, W, P, Q, R, PHI, THETA, PSI};
 template <typename T> struct YamlDOF
 {
     YamlDOF() :
-        state(BlockableState::U),
         t(),
         value(),
-        interpolation(InterpolationType::PIECEWISE_CONSTANT),
         howApplied({0.,0.,0.,0.,0.,0.})
     {}
     virtual ~YamlDOF() {}
-    BlockableState state;
+    BlockableState state{BlockableState::U};
     T t;
     T value;
-    InterpolationType interpolation;
+    InterpolationType interpolation{InterpolationType::PIECEWISE_CONSTANT};
     std::vector<double> howApplied;
 };
 

@@ -13,10 +13,10 @@
 struct YamlEnvironmentalConstants
 {
     YamlEnvironmentalConstants();
-    double g;
-    double rho;
+    double g{0};
+    double rho{0};
     std::optional<double> rho_air;
-    double nu;
+    double nu{0};
 };
 
 #endif /* YAMLENVIRONMENTALCONSTANTS_HPP_ */

@@ -1,8 +1,7 @@
 #include "YamlSimServerInputs.hpp"
 
 YamlSimServerInputs::YamlSimServerInputs()
-    : Dt()
-    , states()
+    : states()
     , commands()
     , requested_output()
     , controllers()

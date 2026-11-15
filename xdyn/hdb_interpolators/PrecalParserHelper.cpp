@@ -105,10 +105,8 @@ class Parser
         , current_section()
         , parsed_sections()
         , current_vector_value()
-        , current_line_number(0)
         , raos()
         , current_rao()
-        , started_parsing_raos(false)
     {
     }
 
@@ -356,10 +354,10 @@ class Parser
     Section current_section;
     std::vector<Section> parsed_sections;
     std::pair<std::string, std::vector<double> > current_vector_value;
-    size_t current_line_number;
+    size_t current_line_number{0};
     std::vector<RAO> raos;
     RAO current_rao;
-    bool started_parsing_raos;
+    bool started_parsing_raos{false};
 };
 
 PrecalFile common_precal_parser(AbstractLineGetter& line_getter);
@@ -410,13 +408,9 @@ PrecalFile::PrecalFile()
 RAOAttributes::RAOAttributes()
     : name()
     , position()
-    , h()
     , h_unit()
-    , phi_a()
     , phi_a_unit()
-    , U()
     , U_unit()
-    , mu()
     , mu_unit()
     , amplitude_unit()
     , phase_unit()

@@ -196,7 +196,6 @@ namespace ssc
         {
             public:
                 explicit TypedVectorDataGenerator(const DataGenerator& rhs) : DataGenerator(rhs),
-                                                                     size(0),
                                                                      min_bound(get_min_bound<T>()),
                                                                      max_bound(get_max_bound<T>()),
                                                                      forbidden_min(get_max_bound<T>()),
@@ -285,7 +284,7 @@ namespace ssc
                 }
 
             private:
-                size_t size;
+                size_t size{0};
                 T min_bound;
                 T max_bound;
                 T forbidden_min;
@@ -298,7 +297,6 @@ namespace ssc
         {
             public:
                 explicit TypedSetDataGenerator(const DataGenerator& rhs) : DataGenerator(rhs),
-                                                                  size(0),
                                                                   min_bound(get_min_bound<T>()),
                                                                   max_bound(get_max_bound<T>())
                 {}
@@ -339,7 +337,7 @@ namespace ssc
 
             private:
                 std::set<T> get() const;
-                size_t size;
+                size_t size{0};
                 T min_bound;
                 T max_bound;
         };

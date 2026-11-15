@@ -42,7 +42,7 @@ namespace GZ
             EnvironmentAndFrames env;
             std::shared_ptr<GravityForceModel> gravity;
             ForcePtr hydrostatic;
-            double current_instant;
+            double current_instant{0};
             ssc::kinematics::Point G;
             double dz;
             double dtheta;

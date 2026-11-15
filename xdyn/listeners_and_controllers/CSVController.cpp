@@ -13,8 +13,6 @@
 CSVController::Yaml::Yaml(const std::string& yaml)
     : path()
     , time_column()
-    , separator(',')
-    , shift_time_column()
     , commands()
 {
     YAML::Node node = YAML::Load(yaml);
@@ -58,7 +56,6 @@ CSVController::CSVController(
         , yaml(yaml_)
         , csv(toCSVYaml(yaml))
         , tstart(-std::numeric_limits<double>::max())
-        , got_tstart(false)
 {
 }
 

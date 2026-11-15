@@ -22,7 +22,6 @@ class CycleException : public ssc::data_source::DataSourceException
 };
 
 ssc::data_source::DataSource::DataSource() :   name2module(FromName2Module()),
-                                               readonly(false),
                                                signals_(SignalContainer()),
                                                module_setting_signals("DataSource user",""),
                                                signal2module(FromSignal2Module()),
@@ -35,8 +34,7 @@ ssc::data_source::DataSource::DataSource() :   name2module(FromName2Module()),
                                                aliases(std::map<TypedSignalName,TypedSignalName>()),
                                                forced_values(SignalContainer()),
                                                modules(std::vector<TypedModuleName>()),
-                                               call_stack(std::stack<TypedSignalName>()),
-                                               in_module(false)
+                                               call_stack(std::stack<TypedSignalName>())
 {
 }
 

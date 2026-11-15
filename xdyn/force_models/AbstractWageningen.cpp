@@ -19,12 +19,7 @@
 
 AbstractWageningen::Yaml::Yaml():
     name(),
-    position_of_propeller_frame(YamlPosition()),
-    wake_coefficient(0.0),
-    relative_rotative_efficiency(0.0),
-    thrust_deduction_factor(0.0),
-    rotating_clockwise(false),
-    diameter(0.0)
+    position_of_propeller_frame(YamlPosition())
 {}
 
 AbstractWageningen::Yaml AbstractWageningen::parse(const std::string& yaml)

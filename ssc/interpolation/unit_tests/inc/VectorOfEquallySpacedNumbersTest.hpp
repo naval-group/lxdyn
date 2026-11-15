@@ -16,7 +16,7 @@ class VectorOfEquallySpacedNumbersTest : public ::testing::Test
     protected:
         VectorOfEquallySpacedNumbersTest();
         ssc::random_data_generator::DataGenerator a;
-        const double eps;
+        const double eps{1E-10};
 
 };
 

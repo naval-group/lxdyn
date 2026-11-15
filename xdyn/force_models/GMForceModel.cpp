@@ -19,7 +19,7 @@
 
 std::string GMForceModel::model_name(){return "GM";}
 
-GMForceModel::Yaml::Yaml() : name_of_hydrostatic_force_model(), roll_step(0), try_to_parse(ForceParser())
+GMForceModel::Yaml::Yaml() : name_of_hydrostatic_force_model(), try_to_parse(ForceParser())
 {
 }
 

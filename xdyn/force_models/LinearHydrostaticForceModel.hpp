@@ -22,9 +22,9 @@ class LinearHydrostaticForceModel : public ForceModel
         struct Input
         {
             Input();
-            double z_eq;
-            double theta_eq;
-            double phi_eq;
+            double z_eq{0.0};
+            double theta_eq{0.0};
+            double phi_eq{0.0};
             std::vector<double> K1;
             std::vector<double> K2;
             std::vector<double> K3;

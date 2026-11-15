@@ -15,9 +15,7 @@ HydroPolarForceModel::Input::Input():
     lift_coefficient(),
     drag_coefficient(),
     moment_coefficient(),
-    reference_area(0.0),
     chord_length(),
-    use_waves_velocity(false),
     angle_command()
 {}
 

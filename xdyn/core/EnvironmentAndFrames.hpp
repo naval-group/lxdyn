@@ -29,9 +29,9 @@ struct EnvironmentAndFrames
     WindModelPtr wind;
     UWCurrentModelPtr UWCurrent;
     ssc::kinematics::KinematicsPtr k;
-    double rho;
-    double nu;
-    double g;
+    double rho{0};
+    double nu{0};
+    double g{0};
     YamlRotation rot;
 
     void set_rho_air (const double value);

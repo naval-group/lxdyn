@@ -13,43 +13,7 @@
 #define PI M_PI
 
 MMGManeuveringForceModel::Input::Input():
-        application_point(YamlCoordinates()),
-        Lpp(0.0),
-        T(0.0),
-        R0(0.0),
-        Xvv(0.0),
-        Xrr(0.0),
-        Xvr(0.0),
-        Xvvvv(0.0),
-        Xvphi(0.0),
-        Xrphi(0.0),
-        Xphiphi(0.0),
-        Yv(0.0),
-        Yr(0.0),
-        Yvvv(0.0),
-        Yrvv(0.0),
-        Yvrr(0.0),
-        Yrrr(0.0),
-        Yphi(0.0),
-        Yphivv(0.0),
-        Yvphiphi(0.0),
-        Yphirr(0.0),
-        Yrphiphi(0.0),
-        Nv(0.0),
-        Nr(0.0),
-        Nvvv(0.0),
-        Nrvv(0.0),
-        Nvrr(0.0),
-        Nrrr(0.0),
-        Nphi(0.0),
-        Nphivv(0.0),
-        Nvphiphi(0.0),
-        Nphirr(0.0),
-        Nrphiphi(0.0),
-        a(0.0),
-        b(0.0),
-        GM(0.0),
-        zH(0.0)
+        application_point(YamlCoordinates())
 {}
 
 std::string MMGManeuveringForceModel::model_name() {return "MMG maneuvering";}

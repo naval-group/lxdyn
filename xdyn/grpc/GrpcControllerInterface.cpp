@@ -120,7 +120,7 @@ GrpcSetParametersResponse::GrpcSetParametersResponse():
     command_names()
 {}
 */
-GrpcControllerResponse::GrpcControllerResponse(): commands(), next_call(0.0){}
+GrpcControllerResponse::GrpcControllerResponse(): commands() {}
 
 GrpcControllerInterface::Input::Input ():url(), name(), yaml(){}
 

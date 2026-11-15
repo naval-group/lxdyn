@@ -55,7 +55,7 @@ namespace ssc
         class DefaultObserver
         {
             public:
-                explicit DefaultObserver(std::ostream& os_) : os(os_), initialized(false) {}
+                explicit DefaultObserver(std::ostream& os_) : os(os_) {}
                 void check_variables_to_serialize_are_available() const {}
                 void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {
@@ -97,7 +97,7 @@ namespace ssc
                 }
 
                 std::ostream& os;
-                bool initialized;
+                bool initialized{false};
         };
 
         class VectorObserver

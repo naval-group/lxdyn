@@ -27,11 +27,11 @@ class AbstractWageningen : public ForceModel
             virtual ~Yaml(){}
             std::string name;
             YamlPosition position_of_propeller_frame;
-            double wake_coefficient;
-            double relative_rotative_efficiency;
-            double thrust_deduction_factor;
-            bool rotating_clockwise;
-            double diameter;
+            double wake_coefficient{0.0};
+            double relative_rotative_efficiency{0.0};
+            double thrust_deduction_factor{0.0};
+            bool rotating_clockwise{false};
+            double diameter{0.0};
         };
         AbstractWageningen(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
         virtual double get_Kt(const std::map<std::string,double>& commands, const double J) const = 0;

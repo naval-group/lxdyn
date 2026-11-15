@@ -7,7 +7,7 @@
 
 #include "YamlWaveModelInput.hpp"
 
-YamlDiscretization::YamlDiscretization() : nfreq(0), ndir(0), omega_min(0), omega_max(0), energy_fraction(0),equal_energy_bins(false), periodic(false), repetition_sizes()
+YamlDiscretization::YamlDiscretization() :  repetition_sizes()
 {}
 
 YamlSpectrum::YamlSpectrum():
@@ -17,13 +17,10 @@ YamlSpectrum::YamlSpectrum():
     directional_spreading_yaml(std::string()),
     spectral_density_type(std::string()),
     spectral_density_yaml(std::string()),
-    depth(0),
     stretching()
 {}
 
-YamlStretching::YamlStretching():
-    delta(0),
-    h(0)
+YamlStretching::YamlStretching()
 {}
 
 YamlWaveModel::YamlWaveModel():
@@ -45,41 +42,28 @@ YamlSpectrumFromRays::YamlSpectrumFromRays():
     model(),
     model_yaml(),
     rays(),
-    depth(0.0),
     stretching()
 {}
 
-YamlJonswap::YamlJonswap():
-    Hs(0),
-    Tp(0),
-    gamma(0)
+YamlJonswap::YamlJonswap()
 {}
 
-YamlBretschneider::YamlBretschneider():
-    Hs(0),
-    Tp(0)
+YamlBretschneider::YamlBretschneider()
 {}
 
-YamlCos2s::YamlCos2s():
-    psi0(0),
-    s(0)
+YamlCos2s::YamlCos2s()
 {}
 
-YamlDiracDirection::YamlDiracDirection():
-    psi0(0) //!< Primary wave direction in radians.
+YamlDiracDirection::YamlDiracDirection()
 {}
 
-YamlDiracSpectrum::YamlDiracSpectrum():
-    omega0(0), //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
-    Hs(0)     //!< Significant wave height (in meters)
+YamlDiracSpectrum::YamlDiracSpectrum()
 {}
 
-YamlPiersonMoskowitz::YamlPiersonMoskowitz() :
-    Hs(0),     //!< Significant wave height (in meters)
-    Tp(0)    //!< Mean wave period (in seconds)
+YamlPiersonMoskowitz::YamlPiersonMoskowitz()
 {}
 
 YamlDefaultWaveModel::YamlDefaultWaveModel():
-    zwave(0),          //!< Constant free surface elevation (in meters)
+              //!< Constant free surface elevation (in meters)
     output(YamlWaveOutput())
 {}

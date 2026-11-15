@@ -24,7 +24,7 @@ class GMForceModel : public ImmersedSurfaceForceModel
         {
             Yaml();
             std::string name_of_hydrostatic_force_model;
-            double roll_step;
+            double roll_step{0};
             ForceParser try_to_parse;
         };
         GMForceModel(const Yaml& data, const std::string& body_name, const EnvironmentAndFrames& env);
