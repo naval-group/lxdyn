@@ -21,7 +21,6 @@ class LinearHydrostaticForceModel : public ForceModel
     public:
         struct Input
         {
-            Input();
             double z_eq{0.0};
             double theta_eq{0.0};
             double phi_eq{0.0};

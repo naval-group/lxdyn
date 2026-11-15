@@ -18,7 +18,6 @@ class BasicBuoyancyForceModel : public ForceModel
     public:
         struct Input
         {
-            Input();
             double V{};
         };
         BasicBuoyancyForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);

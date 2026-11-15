@@ -39,13 +39,11 @@ template <typename T> struct YamlDOF
 
 struct YamlCSVDOF : public YamlDOF<std::string>
 {
-    YamlCSVDOF();
     std::string filename;
 };
 
 struct YamlBlockedDOF
 {
-    YamlBlockedDOF();
     std::vector<YamlDOF<std::vector<double> > > from_yaml;
     std::vector<YamlCSVDOF> from_csv;
 };
@@ -69,7 +67,6 @@ struct YamlFilteredStates
 
 struct YamlBody
 {
-    YamlBody();
     std::string name;
     std::string mesh;
     YamlPosition position_of_body_frame_relative_to_mesh;

@@ -15,8 +15,6 @@
 
 
 
-SimpleStationKeepingController::Yaml::Yaml() = default;
-
 std::string SimpleStationKeepingController::model_name() {return "simple station-keeping controller";}
 
 SimpleStationKeepingController::Yaml SimpleStationKeepingController::parse(const std::string& yaml)

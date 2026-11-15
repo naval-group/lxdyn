@@ -102,7 +102,6 @@ namespace ssc
         */
         struct ConvertibleTypes
         {
-            ConvertibleTypes();
             void clear();
             void erase(const TypedSignalName& name);
             void erase(std::list<ConstSignalIterator>& l, const TypedSignalName& name);

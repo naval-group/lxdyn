@@ -8,8 +8,6 @@
 #include <algorithm>
 #include <cmath>
 
-HydroPolarForceModel::Input::Input() = default;
-
 std::string HydroPolarForceModel::model_name()
 {
     return "hydrodynamic polar";

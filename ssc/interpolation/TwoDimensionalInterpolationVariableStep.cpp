@@ -6,8 +6,6 @@
  */
 #include "TwoDimensionalInterpolationVariableStep.hpp"
 
-ssc::interpolation::TwoDimensionalInterpolationVariableStep::TwoDimensionalInterpolationVariableStep() = default;
-
 ssc::interpolation::TwoDimensionalInterpolationVariableStep::TwoDimensionalInterpolationVariableStep(const std::vector<double>& x_, const std::vector<double>& y, const std::vector<std::vector<double> >& M) :
         x(x_)
 {

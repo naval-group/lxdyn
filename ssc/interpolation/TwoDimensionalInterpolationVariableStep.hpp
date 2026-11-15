@@ -31,7 +31,7 @@ namespace ssc
         class TwoDimensionalInterpolationVariableStep
         {
             public:
-                TwoDimensionalInterpolationVariableStep();
+                TwoDimensionalInterpolationVariableStep() = default;
                 TwoDimensionalInterpolationVariableStep(const std::vector<double>& x, const std::vector<double>& y, const std::vector<std::vector<double> >& M);
                 double f(const double x0, const double y0);
 

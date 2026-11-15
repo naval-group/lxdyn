@@ -8,8 +8,6 @@ DefaultUWCurrentModel::DefaultUWCurrentModel(int)
 {
 }
 
-DefaultUWCurrentModel::~DefaultUWCurrentModel() = default;
-
 std::string DefaultUWCurrentModel::model_name() {return "no UW current";}
 
 int DefaultUWCurrentModel::parse(const std::string&)

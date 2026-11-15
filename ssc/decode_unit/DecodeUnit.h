@@ -98,8 +98,7 @@ namespace ssc
                 class Token
                 {
                     public :
-                        Token();
-                        virtual ~Token();
+                        virtual ~Token() = default;
                         virtual e_token_type type();
                         virtual std::string description();
                         virtual std::string string_value();
@@ -112,7 +111,6 @@ namespace ssc
                     std::string m_word;
                     public :
                         explicit WordToken(std::string word);
-                        ~WordToken() override;
                         e_token_type type() override;
                         std::string description() override;
                         std::string string_value() override;
@@ -123,7 +121,6 @@ namespace ssc
                     int m_num;
                     public :
                         explicit IntToken(int num);
-                        ~IntToken() override;
                         e_token_type type() override;
                         std::string description() override;
                         int    int_value() override;
@@ -133,7 +130,6 @@ namespace ssc
                     double m_num;
                 public :
                     explicit DoubleToken(double num);
-                    ~DoubleToken() override;
                     e_token_type type() override;
                     std::string description() override;
                     double double_value() override;
@@ -144,7 +140,6 @@ namespace ssc
                     int m_op;
                     public :
                         explicit OperationToken(char op);
-                        ~OperationToken() override;
                         e_token_type type() override;
                         std::string description() override;
                         int int_value() override;
@@ -153,8 +148,6 @@ namespace ssc
                 class LeftParToken : public Token
                 {
                     public :
-                        LeftParToken();
-                        ~LeftParToken() override;
                         e_token_type type() override;
                         std::string description() override;
                 };
@@ -162,8 +155,6 @@ namespace ssc
                 class RightParToken : public Token
                 {
                     public :
-                        RightParToken();
-                        ~RightParToken() override;
                         e_token_type type() override;
                         std::string description() override;
                 };

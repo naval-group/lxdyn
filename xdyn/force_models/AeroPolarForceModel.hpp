@@ -13,7 +13,6 @@ class AeroPolarForceModel : public ForceModel
     public:
         struct Input
         {
-            Input();
             std::string name;
             YamlCoordinates calculation_point_in_body_frame;
             std::vector<double> apparent_wind_angle;
@@ -25,7 +24,6 @@ class AeroPolarForceModel : public ForceModel
 
         AeroPolarForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
         AeroPolarForceModel() = delete;
-        ~AeroPolarForceModel() override = default;
 
         static std::string model_name();
         static Input parse(const std::string& yaml_input);

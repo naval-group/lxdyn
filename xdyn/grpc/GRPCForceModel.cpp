@@ -30,8 +30,6 @@ template <> std::string get_type_of_service<GRPCForceModel>()
     return "force model";
 }
 
-GRPCForceModel::Input::Input() = default;
-
 class GRPCForceModel::Impl
 {
     public:

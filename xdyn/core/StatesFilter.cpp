@@ -67,11 +67,6 @@ std::shared_ptr<StateFilter> StateFilter::build(const std::string& yaml)
     return std::shared_ptr<StateFilter>(new MovingAverage(0));
 }
 
-StateFilter::StateFilter() = default;
-
-StateFilter::~StateFilter() = default;
-
-
 StatesFilter::StatesFilter(const YamlFilteredStates& input)
     : x(StateFilter::build(input.x))
     , y(StateFilter::build(input.y))

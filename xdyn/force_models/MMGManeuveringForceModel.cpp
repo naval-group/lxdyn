@@ -12,8 +12,6 @@
 
 #define PI M_PI
 
-MMGManeuveringForceModel::Input::Input() = default;
-
 std::string MMGManeuveringForceModel::model_name() {return "MMG maneuvering";}
 
 MMGManeuveringForceModel::MMGManeuveringForceModel(const Input& input_, const std::string& body_name, const EnvironmentAndFrames& env):

@@ -7,13 +7,6 @@
 
 #include "YamlBody.hpp"
 
-YamlBody::YamlBody() = default;
-
-YamlCSVDOF::YamlCSVDOF() = default;
-
-YamlBlockedDOF::YamlBlockedDOF() = default;
-
-
 YamlFilteredStates::YamlFilteredStates()
     : x("")
     , y("")

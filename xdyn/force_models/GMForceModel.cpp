@@ -19,8 +19,6 @@
 
 std::string GMForceModel::model_name(){return "GM";}
 
-GMForceModel::Yaml::Yaml() = default;
-
 GMForceModel::GMForceModel(const Yaml& data, const std::string& body_name_, const EnvironmentAndFrames& env) :
         ImmersedSurfaceForceModel(model_name(), body_name_, env)
 , dphi(data.roll_step)

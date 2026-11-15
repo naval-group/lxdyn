@@ -15,7 +15,6 @@ class SimpleHeadingKeepingController : public ForceModel
     public:
         struct Yaml
         {
-            Yaml();
             std::string name;
             double ksi{0};
             double Tp{0};

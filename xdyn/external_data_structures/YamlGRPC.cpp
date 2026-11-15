@@ -1,9 +1,0 @@
-/*
- * YamlGRPC.cpp
- *
- *  Created on: Nov 29, 2017
- *      Author: cady
- */
-#include "YamlGRPC.hpp"
-
-YamlGRPC::YamlGRPC() = default;

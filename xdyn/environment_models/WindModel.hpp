@@ -24,8 +24,7 @@ using WindParser = std::function<std::optional<WindModelPtr>(const YamlModel&)>;
 class WindModel
 {
 public:
-    WindModel();
-    virtual ~WindModel();
+    virtual ~WindModel() = default;
     virtual Eigen::Vector3d get_wind(const Eigen::Vector3d& position, const double t) const=0;
 
     template <typename WindType>

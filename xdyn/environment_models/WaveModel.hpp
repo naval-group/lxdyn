@@ -31,7 +31,7 @@ class WaveModel
         explicit WaveModel(const DiscreteDirectionalWaveSpectrum& spectrum);
         WaveModel(const DiscreteDirectionalWaveSpectrum& spectrum, const double constant_random_phase);
         WaveModel(const DiscreteDirectionalWaveSpectrum& spectrum, const int random_number_generator_seed);
-        virtual ~WaveModel();
+        virtual ~WaveModel() = default;
 
         /**  \brief Calculate radiation forces using first order force RAO
           *  \returns Force (or torque), depending on the RAO

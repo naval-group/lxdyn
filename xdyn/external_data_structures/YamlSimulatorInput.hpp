@@ -17,7 +17,6 @@
 
 struct YamlSimulatorInput
 {
-    YamlSimulatorInput();
     YamlRotation rotations;
     YamlEnvironmentalConstants environmental_constants;
     std::vector<YamlModel> environment;

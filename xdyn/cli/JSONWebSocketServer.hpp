@@ -71,7 +71,6 @@ class JSONWebSocketServer
                 JSONHandler(const ServiceT& simserver, const bool verbose_) : sim_server(simserver), verbose(verbose_)
                 {
                 }
-                ~JSONHandler() override = default;
 
                 void operator()(const ssc::websocket::Message& msg) override
                 {

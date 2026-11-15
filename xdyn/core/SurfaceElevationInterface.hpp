@@ -32,7 +32,7 @@ class SurfaceElevationInterface
             const std::pair<std::size_t,std::size_t>& output_mesh_size = std::make_pair((std::size_t)0,(std::size_t)0)
             );
 
-        virtual ~SurfaceElevationInterface();
+        virtual ~SurfaceElevationInterface() = default;
 
         /**  \brief Computes surface elevation for each point on mesh.
           *  \details Updates the absolute surface elevation & the relative wave height.

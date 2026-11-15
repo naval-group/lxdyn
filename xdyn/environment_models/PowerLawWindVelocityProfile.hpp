@@ -22,7 +22,6 @@ public:
     };
 
     explicit PowerLawWindVelocityProfile(const Input& input);
-    ~PowerLawWindVelocityProfile() override;
 
     double get_wind_velocity(const double z) const override;
     static std::string model_name();

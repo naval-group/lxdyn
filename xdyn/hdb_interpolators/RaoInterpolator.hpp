@@ -17,7 +17,7 @@ class RaoInterpolator
             const HydroDBParser& data, //<! Data read from the HDB or Precal_R file
             const YamlRAO& diffraction_yaml //<! Contents of the force model's parsed YAML data
             );
-        virtual ~RaoInterpolator();
+        virtual ~RaoInterpolator() = default;
 
         /**
          * \brief Interpolates the RAO's module for a given axis, a wave period (*not* an encounter period)

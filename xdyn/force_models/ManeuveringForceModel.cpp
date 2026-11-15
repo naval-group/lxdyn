@@ -14,8 +14,6 @@
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-ManeuveringForceModel::Yaml::Yaml() = default;
-
 std::string ManeuveringForceModel::model_name() {return "maneuvering";}
 
 ManeuveringForceModel::Yaml ManeuveringForceModel::parse(const std::string& yaml)

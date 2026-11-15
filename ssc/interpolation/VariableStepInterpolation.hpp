@@ -32,7 +32,6 @@ namespace ssc
         {
             public:
                 VariableStepInterpolation();
-                ~VariableStepInterpolation() override;
                 explicit VariableStepInterpolation(const std::vector<double>& x, const bool allow_queries_outside_bounds = false);
 
             protected:

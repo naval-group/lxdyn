@@ -12,8 +12,6 @@ UniformWindVelocityProfile::UniformWindVelocityProfile(const Input& input) : Win
 {
 }
 
-UniformWindVelocityProfile::~UniformWindVelocityProfile() = default;
-
 std::string UniformWindVelocityProfile::model_name() {return "uniform wind";}
 
 WindMeanVelocityProfile::Input UniformWindVelocityProfile::parse(const std::string& yaml_input)

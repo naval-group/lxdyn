@@ -10,8 +10,6 @@
 
 std::string BasicBuoyancyForceModel::model_name(){return "basic buoyancy";}
 
-BasicBuoyancyForceModel::Input::Input() = default;
-
 BasicBuoyancyForceModel::Input BasicBuoyancyForceModel::parse(const std::string& yaml)
 {
     YAML::Node node = YAML::Load(yaml);

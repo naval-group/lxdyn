@@ -27,7 +27,7 @@ using WaveSpectralDensityPtr = std::shared_ptr<WaveSpectralDensity>;
 class SumOfWaveSpectralDensities : public WaveSpectralDensity
 {
     public:
-        SumOfWaveSpectralDensities();
+        SumOfWaveSpectralDensities() = default;
         explicit SumOfWaveSpectralDensities(const WaveSpectralDensity& w);
         SumOfWaveSpectralDensities(const WaveSpectralDensity& w1, const WaveSpectralDensity& w2);
         explicit SumOfWaveSpectralDensities(const std::vector<WaveSpectralDensity>& ws);

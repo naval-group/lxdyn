@@ -22,8 +22,6 @@ EkmanUWCurrentModel::EkmanUWCurrentModel(const Input& input) :
 {
 }
 
-EkmanUWCurrentModel::~EkmanUWCurrentModel() = default;
-
 std::string EkmanUWCurrentModel::model_name() {return "ekman current";}
 
 EkmanUWCurrentModel::Input EkmanUWCurrentModel::parse(const std::string& yaml_input)

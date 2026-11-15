@@ -22,8 +22,6 @@ LogWindVelocityProfile::LogWindVelocityProfile(const Input& input) : WindMeanVel
     }
 }
 
-LogWindVelocityProfile::~LogWindVelocityProfile() = default;
-
 std::string LogWindVelocityProfile::model_name() {return "log wind profile";}
 
 LogWindVelocityProfile::Input LogWindVelocityProfile::parse(const std::string& yaml_input)

@@ -30,7 +30,6 @@ namespace ssc
         {
             public:
                 ConstantStepInterpolator();
-                ~ConstantStepInterpolator() override;
                 ConstantStepInterpolator(const double& xmin_, const double& xmax_, const std::vector<double>& y);
 
             protected:

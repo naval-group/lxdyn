@@ -16,7 +16,6 @@ class GRPCForceModel : public ForceModel
     public:
         struct Input
         {
-            Input();
             std::string url;
             std::string name;
             std::string yaml;

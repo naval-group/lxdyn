@@ -7,8 +7,6 @@
 
 #include "XdynCommandLineArguments.hpp"
 
-XdynCommandLineArguments::XdynCommandLineArguments() = default;
-
 bool XdynCommandLineArguments::empty() const
 {
     return wave_output.empty() and output_filename.empty()

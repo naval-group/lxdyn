@@ -24,8 +24,6 @@ xmin(0), xmax(0), n(0), delta(0), idx(0), val_sat(0)
 
 }
 
-ConstantStepInterpolator::~ConstantStepInterpolator() = default;
-
 ConstantStepInterpolator::ConstantStepInterpolator(const double& xmin_,
         const double& xmax_,
         const std::vector<double>& y_) : xmin(xmin_), xmax(xmax_), y(y_), n(y.size()), delta(0), idx(0), val_sat(xmin)

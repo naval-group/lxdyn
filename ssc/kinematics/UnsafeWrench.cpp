@@ -9,8 +9,6 @@
 
 using namespace ssc::kinematics;
 
-UnsafeWrench::UnsafeWrench() = default;
-
 UnsafeWrench::UnsafeWrench(const Point& P) : Wrench(P)
 {
 }

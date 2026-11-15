@@ -13,8 +13,6 @@
 #include "xdyn/yaml_parser/yaml_compat.h"
 #include <iostream>
 
-ResistanceCurveForceModel::Yaml::Yaml() = default;
-
 std::string ResistanceCurveForceModel::model_name() {return "resistance curve";}
 
 class ResistanceCurveForceModel::Impl

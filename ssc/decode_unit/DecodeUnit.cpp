@@ -53,8 +53,6 @@ double ssc::decode_unit::decodeUnit( const std::string& unit , std::map<std::str
     return val;
 }
 
-ssc::decode_unit::UnitDecoder::Token::Token() = default;
-ssc::decode_unit::UnitDecoder::Token::~Token() = default;
 ssc::decode_unit::UnitDecoder::e_token_type ssc::decode_unit::UnitDecoder::Token::type() {return k_unknown_token;}
 std::string ssc::decode_unit::UnitDecoder::Token::description() {return std::string("unknown token");}
 std::string ssc::decode_unit::UnitDecoder::Token::string_value() {std::string tmp; return tmp;}
@@ -62,13 +60,11 @@ int         ssc::decode_unit::UnitDecoder::Token::int_value()    {return 0;}
 double      ssc::decode_unit::UnitDecoder::Token::double_value() {return 0.0;}
 
 ssc::decode_unit::UnitDecoder::WordToken::WordToken(std::string word) : m_word(std::move(word)) {}
-ssc::decode_unit::UnitDecoder::WordToken::~WordToken() = default;
 ssc::decode_unit::UnitDecoder::e_token_type ssc::decode_unit::UnitDecoder::WordToken::type() {return k_word;}
 std::string ssc::decode_unit::UnitDecoder::WordToken::description() {return std::string("Word token ") + m_word;}
 std::string ssc::decode_unit::UnitDecoder::WordToken::string_value() {return m_word;}
 
 ssc::decode_unit::UnitDecoder::IntToken::IntToken(int num) : m_num(num) {}
-ssc::decode_unit::UnitDecoder::IntToken::~IntToken() = default;
 ssc::decode_unit::UnitDecoder::e_token_type ssc::decode_unit::UnitDecoder::IntToken::type() {return k_integer;}
 std::string ssc::decode_unit::UnitDecoder::IntToken::description() {
     std::ostringstream tmp;
@@ -79,7 +75,6 @@ int    ssc::decode_unit::UnitDecoder::IntToken::int_value() {return m_num;}
 double ssc::decode_unit::UnitDecoder::IntToken::double_value() {return static_cast<double> (m_num);}
 
 ssc::decode_unit::UnitDecoder::DoubleToken::DoubleToken(double num) : m_num(num) {}
-ssc::decode_unit::UnitDecoder::DoubleToken::~DoubleToken() = default;
 ssc::decode_unit::UnitDecoder::e_token_type ssc::decode_unit::UnitDecoder::DoubleToken::type() {return k_double;}
 std::string ssc::decode_unit::UnitDecoder::DoubleToken::description() {
     std::ostringstream tmp;
@@ -89,18 +84,13 @@ std::string ssc::decode_unit::UnitDecoder::DoubleToken::description() {
 double ssc::decode_unit::UnitDecoder::DoubleToken::double_value() {return m_num;}
 
 ssc::decode_unit::UnitDecoder::OperationToken::OperationToken(char op) : m_op(op) {}
-ssc::decode_unit::UnitDecoder::OperationToken::~OperationToken() = default;
 ssc::decode_unit::UnitDecoder::e_token_type ssc::decode_unit::UnitDecoder::OperationToken::type() {return k_operation;}
 std::string ssc::decode_unit::UnitDecoder::OperationToken::description() {return std::string("Word token ") + std::to_string(m_op);}
 int ssc::decode_unit::UnitDecoder::OperationToken::int_value() {return m_op;}
 
-ssc::decode_unit::UnitDecoder::LeftParToken::LeftParToken() = default;
-ssc::decode_unit::UnitDecoder::LeftParToken::~LeftParToken() = default;
 ssc::decode_unit::UnitDecoder::e_token_type ssc::decode_unit::UnitDecoder::LeftParToken::type() {return k_leftparenthesis;}
 std::string ssc::decode_unit::UnitDecoder::LeftParToken::description() {return std::string("Left parenthese (");}
 
-ssc::decode_unit::UnitDecoder::RightParToken::RightParToken() = default;
-ssc::decode_unit::UnitDecoder::RightParToken::~RightParToken() = default;
 ssc::decode_unit::UnitDecoder::e_token_type ssc::decode_unit::UnitDecoder::RightParToken::type() {return k_rightparenthesis;}
 std::string ssc::decode_unit::UnitDecoder::RightParToken::description() {return std::string("Right parenthese )");}
 

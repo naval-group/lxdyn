@@ -32,8 +32,6 @@ DictObserver::DictObserver(const std::vector<std::string>& d) :
 {
 }
 
-DictObserver::~DictObserver() = default;
-
 std::function<void()> DictObserver::get_serializer(const double val, const DataAddressing& d)
 {
     return [this,d,val]()

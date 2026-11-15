@@ -9,8 +9,6 @@
 #include <cmath>
 #include <cstdlib>
 
-ssc::integrate::Rectangle::Rectangle() = default;
-
 ssc::integrate::Rectangle::Rectangle(const Function& f) : ssc::integrate::Integrator(f)
 {
 }

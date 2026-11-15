@@ -120,9 +120,6 @@ GrpcSetParametersResponse::GrpcSetParametersResponse():
     command_names()
 {}
 */
-GrpcControllerResponse::GrpcControllerResponse() = default;
-
-GrpcControllerInterface::Input::Input () = default;
 
 struct GrpcControllerInterface::Impl
 {

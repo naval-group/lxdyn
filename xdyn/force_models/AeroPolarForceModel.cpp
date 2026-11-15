@@ -8,8 +8,6 @@
 #include <algorithm>
 #include <cmath>
 
-AeroPolarForceModel::Input::Input() = default;
-
 std::string AeroPolarForceModel::model_name()
 {
     return "aerodynamic polar";

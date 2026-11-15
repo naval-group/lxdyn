@@ -28,7 +28,6 @@ class Sim;
 class SimObserver
 {
     public:
-        SimObserver();
         void check_variables_to_serialize_are_available() const;
         void observe_before_solver_step(const Sim& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& discrete_systems);
         void observe_after_solver_step(const Sim& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& discrete_systems);

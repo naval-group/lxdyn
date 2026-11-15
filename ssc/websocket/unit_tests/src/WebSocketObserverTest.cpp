@@ -14,7 +14,6 @@ using namespace ssc::websocket;
 
 struct ListOfStringMessages : public MessageHandler
 {
-    ListOfStringMessages() = default;
     void operator()(const Message& msg) override
     {
         messages.push_back(msg.get_payload());
@@ -25,7 +24,6 @@ struct ListOfStringMessages : public MessageHandler
 
 struct ListOfDoubleMessages : public MessageHandler
 {
-    ListOfDoubleMessages() = default;
     void operator()(const Message& msg) override
     {
         const auto v = msg.get_binary_payload<double>();
