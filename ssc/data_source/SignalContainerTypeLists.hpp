@@ -29,14 +29,12 @@ namespace ssc
         {
             public:
                 TypedSignalName();
-                TypedSignalName(const TypedSignalName& rhs) = default;
                 TypedSignalName(const SignalName& signal_name, const TypeName& type_name);
                 bool operator<(const TypedSignalName& rhs) const;
                 bool operator==(const TypedSignalName& rhs) const;
                 bool operator!=(const TypedSignalName& rhs) const;
                 SignalName get_signal_name() const;
                 TypeName get_type_name() const;
-                TypedSignalName& operator=(const TypedSignalName& rhs);
             private:
                 SignalName _signal_name;
                 TypeName _type_name;

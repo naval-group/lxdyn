@@ -203,12 +203,11 @@ namespace ssc
                 static void extend_with_long_metric_prefix(std::map<std::string,double> &units, const std::string& unit );
                 static void extend_with_short_metric_prefix(std::map<std::string,double> &units, const std::string& unit , double value );
                 static void extend_with_long_metric_prefix(std::map<std::string,double> &units, const std::string& unit , double value );
-                UnitDecoder();
-                UnitDecoder(const UnitDecoder& rhs);
-                UnitDecoder& operator=(const UnitDecoder& rhs);
             public :
                 explicit UnitDecoder(const std::string& unit);
                 UnitDecoder(const std::string& unit , std::map<std::string,double> &known_units);
+                UnitDecoder(const UnitDecoder&) = delete;
+                UnitDecoder& operator=(const UnitDecoder&) = delete;
                 ~UnitDecoder();
                 double decode();
         };
