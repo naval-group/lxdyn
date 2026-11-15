@@ -7,11 +7,6 @@ PointMatrix::PointMatrix() :  frame("")
 {
 }
 
-PointMatrix::PointMatrix(PointMatrix&& other) noexcept :  frame("")
-{
-    swap(other);
-}
-
 PointMatrix::PointMatrix(const std::string& frame_, const size_t nb_of_columns) :  frame(frame_)
 {
     m.resize(3,(int)nb_of_columns);
@@ -19,14 +14,6 @@ PointMatrix::PointMatrix(const std::string& frame_, const size_t nb_of_columns) 
 
 PointMatrix::PointMatrix(const Matrix3Xd& m_, const std::string& frame_) : m(m_), frame(frame_)
 {
-}
-
-PointMatrix::PointMatrix(const PointMatrix& other) = default;
-
-PointMatrix& PointMatrix::operator=(PointMatrix other)
-{
-    swap(other);
-    return *this;
 }
 
 void PointMatrix::swap(PointMatrix& other) noexcept

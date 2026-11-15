@@ -13,16 +13,11 @@ namespace ssc
         {
             public:
                 Exception(const std::string& message, const std::string& file, const std::string& function, const unsigned int line);
-                Exception(const Exception& rhs);
-
-                ~Exception () throw () override;
 
                 const char* what() const throw() override;
                 std::string get_message() const;
 
             private:
-                Exception();
-                Exception& operator=(const Exception& rhs);
                 std::string full_message;
                 std::string short_message;
         };

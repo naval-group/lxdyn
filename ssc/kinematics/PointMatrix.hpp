@@ -18,9 +18,6 @@ namespace ssc
                 PointMatrix();
                 PointMatrix(const std::string& frame, const size_t nb_of_columns);
                 PointMatrix(const Matrix3Xd& m,const std::string& frame);
-                PointMatrix(const PointMatrix& other);
-                PointMatrix(PointMatrix&& other) noexcept;
-                PointMatrix& operator=(PointMatrix other);
                 Matrix3Xd m;
                 std::string get_frame() const;
                 PointMatrix operator+(const Point& P) const;

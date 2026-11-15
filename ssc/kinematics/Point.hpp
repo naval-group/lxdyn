@@ -30,10 +30,8 @@ namespace ssc
             public:
                 Point();
                 explicit Point(const std::string& frame);
-                Point(const Point& P);
                 Point(const std::string& frame, const Eigen::Vector3d& v);
                 Point(const std::string& frame, const double x, const double y, const double z);
-                Point& operator=(Point rhs);
                 Eigen::Vector3d operator-(const Point& P) const;
                 Point operator+(const Point& P) const;
 

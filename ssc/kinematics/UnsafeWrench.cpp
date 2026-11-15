@@ -17,8 +17,6 @@ UnsafeWrench::UnsafeWrench(const Point& P, const Eigen::Vector3d& force, const E
 {
 }
 
-UnsafeWrench::UnsafeWrench(const UnsafeWrench& rhs) = default;
-
 UnsafeWrench::UnsafeWrench(const Wrench& rhs) : Wrench(rhs)
 {
 }

@@ -18,16 +18,6 @@ TypedSignalName::TypedSignalName() : _signal_name(""),
                     _type_name("")
 {}
 
-TypedSignalName& TypedSignalName::operator=(const TypedSignalName& rhs)
-{
-    if (this != &rhs)
-    {
-        _signal_name = rhs._signal_name;
-        _type_name = rhs._type_name;
-    }
-    return *this;
-}
-
 bool TypedSignalName::operator<(const TypedSignalName& rhs) const
 {
     const bool is_lower =  ((_signal_name < rhs._signal_name)

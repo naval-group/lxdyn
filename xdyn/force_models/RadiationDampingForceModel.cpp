@@ -40,8 +40,6 @@ class CSVWriter
         CSVWriter(std::ostream& os_, const std::string& x_name_, const std::vector<double>& x) : os(os_), x_name(x_name_), xs(x)
         {
         }
-        CSVWriter& operator=(const CSVWriter& rhs);
-        CSVWriter(const CSVWriter&);
 
         void add(const std::string& name, const std::function<double(const double)>& f, const size_t i, const size_t j)
         {

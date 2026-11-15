@@ -86,29 +86,15 @@ namespace ssc
                 */
                 virtual void initialize() const;
 
-                DataSourceModule(const DataSourceModule& rhs) = default;
-
                 DataSourceModule(const DataSourceModule& rhs, DataSource* const data_source) : ds(data_source), module_name_(rhs.module_name_)
                 {
 
                 }
 
-                DataSourceModule& operator=(const DataSourceModule& rhs)
-                {
-                    if (&rhs != this)
-                    {
-                        ds = rhs.ds;
-                        module_name_ = rhs.module_name_;
-                    }
-                    return *this;
-                }
-
-
             protected:
                 DataSource* ds;
 
             private:
-                DataSourceModule(); // Disabled by making it private & with no implementation
                 std::string module_name_;
         };
 

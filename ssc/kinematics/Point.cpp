@@ -15,8 +15,6 @@ Point::Point(const std::string& frame_, const Eigen::Vector3d& v_) : v(v_), fram
 {
 }
 
-Point::Point(const Point& P) = default;
-
 Point::Point(const std::string& frame_, const double x_, const double y_, const double z_) : v(x_,y_,z_), frame(frame_)
 {
 }
@@ -31,12 +29,6 @@ void Point::swap(Point& other) noexcept
 void ssc::kinematics::swap(Point& a, Point& b) noexcept
 {
     a.swap(b);
-}
-
-Point& Point::operator=(Point rhs)
-{
-    if (&rhs != this) swap(rhs);
-    return *this;
 }
 
 std::string Point::get_frame() const

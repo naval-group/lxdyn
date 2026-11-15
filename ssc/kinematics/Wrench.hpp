@@ -33,9 +33,7 @@ namespace ssc
                 explicit Wrench(const Point& P);
                 Wrench(const Point& P, const Vector6d& v);
                 Wrench(const Point& P, const Eigen::Vector3d& force, const Eigen::Vector3d& torque);
-                Wrench(const Wrench& rhs);
 
-                Wrench& operator=(Wrench rhs);
                 void swap(Wrench& other) noexcept;
 
                 /**  \author cec

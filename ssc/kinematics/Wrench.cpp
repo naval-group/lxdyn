@@ -55,8 +55,6 @@ Wrench::Wrench(const Point& P_, const Eigen::Vector3d& force_, const Eigen::Vect
 }
 
 
-Wrench::Wrench(const Wrench& rhs) = default;
-
 void Wrench::swap(Wrench& other) noexcept
 {
     using std::swap; // Allow argument-dependent lookup
@@ -65,11 +63,6 @@ void Wrench::swap(Wrench& other) noexcept
     swap(P,other.P);
 }
 
-Wrench& Wrench::operator=(Wrench rhs)
-{
-    swap(rhs);
-    return *this;
-}
 
 Wrench Wrench::operator+(const Wrench& rhs) const
 {

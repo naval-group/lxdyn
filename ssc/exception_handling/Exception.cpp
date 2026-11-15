@@ -10,14 +10,6 @@
     full_message = ss.str();
 }
 
-::ssc::exception_handling::Exception::Exception(const Exception& rhs):
-        full_message(rhs.full_message),
-        short_message(rhs.short_message)
-{
-}
-
-::ssc::exception_handling::Exception::~Exception () throw () = default;
-
 const char* ::ssc::exception_handling::Exception::what() const throw()
 {
     return full_message.c_str();
