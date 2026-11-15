@@ -22,7 +22,6 @@ struct GrpcSetParametersResponse
 
 struct GrpcControllerResponse
 {
-    GrpcControllerResponse();
     std::map<std::string,double> commands; // Commands computed by the controller
     double next_call{0.0}; // Date at which the solver should call the controller again
 };
@@ -34,7 +33,6 @@ class GrpcControllerInterface
         virtual ~GrpcControllerInterface();
         struct Input
         {
-            Input ();
             std::string url;  //!< URL at which the gRPC controller may be reached,
                               //!< e.g. pid:9002
             std::string name; //!< Name used to disambiguate commands created by

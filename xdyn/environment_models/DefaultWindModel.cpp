@@ -11,8 +11,6 @@ DefaultWindModel::DefaultWindModel(int)
 {
 }
 
-DefaultWindModel::~DefaultWindModel() = default;
-
 std::string DefaultWindModel::model_name() {return "no wind";}
 
 int DefaultWindModel::parse(const std::string&)

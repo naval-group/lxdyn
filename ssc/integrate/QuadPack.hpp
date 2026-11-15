@@ -26,9 +26,8 @@ namespace ssc
         class QuadPack : public Integrator
         {
             public:
-                QuadPack();
+                QuadPack() = default;
                 explicit QuadPack(const Function& f_);
-                ~QuadPack() override;
                 double op(double *x);
 
             protected:

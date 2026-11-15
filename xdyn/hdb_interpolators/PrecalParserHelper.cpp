@@ -45,7 +45,6 @@ template <typename T> class LineGetter : public AbstractLineGetter
     explicit LineGetter(const std::string& s) : stream(s)
     {}
 
-    ~LineGetter() override = default;
     std::string get_next_line() override
     {
         std::string normalized_line;
@@ -377,12 +376,6 @@ PrecalFile parse_precal_from_file(const std::string& filename)
     GetLineFromFile line_getter(filename);
     return common_precal_parser(line_getter);
 }
-
-Section::Section() = default;
-
-RAO::RAO() = default;
-
-PrecalFile::PrecalFile() = default;
 
 RAOAttributes::RAOAttributes()
     : position()

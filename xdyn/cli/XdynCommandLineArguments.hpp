@@ -13,7 +13,6 @@
 
 struct XdynCommandLineArguments
 {
-    XdynCommandLineArguments();
     std::vector<std::string> yaml_filenames;
     std::string solver;
     std::string output_filename;

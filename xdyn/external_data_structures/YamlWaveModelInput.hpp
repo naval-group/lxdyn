@@ -15,7 +15,6 @@
 
 struct YamlDiscretization
 {
-    YamlDiscretization();
     size_t nfreq{0};           //!< Nb of frequencies in the discretization
     size_t ndir{0};            //!< Nb of directions in the discretization
     double omega_min{0};       //!< First angular frequency (in rad/s)
@@ -28,14 +27,12 @@ struct YamlDiscretization
 
 struct YamlStretching
 {
-    YamlStretching();
     double delta{0}; //!< 0 for Wheeler stretching, 1 for linear extrapolation
     double h{0}; //!< Depth (in meters) over which the stretching is taken into account. Should usually be equal to "depth" (or 0 for no stretching)
 };
 
 struct YamlSpectrum
 {
-    YamlSpectrum();
     std::string model;                      //!< Wave model (eg. airy)
     std::string model_yaml;                 //!< Model data in YAML format
     std::string directional_spreading_type; //!< Spreading type (eg. cos2s)
@@ -48,7 +45,6 @@ struct YamlSpectrum
 
 struct YamlRays
 {
-    YamlRays();
     std::vector<double> a;
     std::vector<double> psi;
     std::vector<double> omega;
@@ -58,7 +54,6 @@ struct YamlRays
 
 struct YamlSpectrumFromRays
 {
-    YamlSpectrumFromRays();
     std::string model;                      //!< Wave model (eg. airy)
     std::string model_yaml;                 //!< Model data in YAML format
     YamlRays rays;                          //!< List of rays
@@ -68,7 +63,6 @@ struct YamlSpectrumFromRays
 
 struct YamlWaveModel
 {
-    YamlWaveModel();
     YamlDiscretization discretization; //!< Spectral discretization parameters
     std::vector<YamlSpectrum> spectra; //!< Wave spectra to generate
     std::vector<YamlSpectrumFromRays> spectra_from_rays;  //!< Wave spectra to generate
@@ -84,7 +78,6 @@ struct YamlWaveFromRaysModel
 
 struct YamlJonswap
 {
-    YamlJonswap();
     double Hs{0};    //!< Significant wave height (in meters)
     double Tp{0};    //!< Mean wave period (in seconds)
     double gamma{0}; //!< Non-dimensional peak shape parameter
@@ -92,41 +85,35 @@ struct YamlJonswap
 
 struct YamlBretschneider
 {
-    YamlBretschneider();
     double Hs{0};    //!< Significant wave height (in meters)
     double Tp{0};    //!< Mean wave period (in seconds)
 };
 
 struct YamlCos2s
 {
-    YamlCos2s();
     double psi0{0}; //!< Primary wave direction in radians.
     double s{0};    //!< Exponent
 };
 
 struct YamlDiracDirection
 {
-    YamlDiracDirection();
     double psi0{0}; //!< Primary wave direction in radians.
 };
 
 struct YamlDiracSpectrum
 {
-    YamlDiracSpectrum();
     double omega0{0}; //!< Angular frequency (\f$2\pi f\f$) in rad/s of the significant wave height
     double Hs{0};     //!< Significant wave height (in meters)
 };
 
 struct YamlPiersonMoskowitz
 {
-    YamlPiersonMoskowitz();
     double Hs{0};     //!< Significant wave height (in meters)
     double Tp{0};    //!< Mean wave period (in seconds)
 };
 
 struct YamlDefaultWaveModel
 {
-    YamlDefaultWaveModel();
     double zwave{0};          //!< Constant free surface elevation (in meters)
     YamlWaveOutput output; //!< Defines what wave data is outputted during the simulation & how it is generated
 };

@@ -16,7 +16,6 @@ enum class TypeOfQuadrature {RECTANGLE, TRAPEZOIDAL, SIMPSON, GAUSS_KRONROD, BUR
 
 struct YamlRadiationDamping
 {
-    YamlRadiationDamping();
     std::string         hdb_filename;                                         //!< Path to a HDB file storing the radiation damping matrices
     std::string         precal_r_filename;                                    //!< Path to a PRECAL_R file storing the radiation damping matrices
     TypeOfQuadrature    type_of_quadrature_for_cos_transform{};                 //!< What integration algorithm to use to compute retardation functions?

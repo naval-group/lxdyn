@@ -10,8 +10,6 @@
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-LinearHydrostaticForceModel::Input::Input() = default;
-
 std::string LinearHydrostaticForceModel::model_name() {return "linear hydrostatics";}
 
 LinearHydrostaticForceModel::Input LinearHydrostaticForceModel::parse(const std::string& yaml)

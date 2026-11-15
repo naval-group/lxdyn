@@ -19,7 +19,6 @@ class WaveDirectionalSpreading;
 class DirectionalSpreadingBuilderInterface
 {
     public:
-        DirectionalSpreadingBuilderInterface() = default;
         virtual ~DirectionalSpreadingBuilderInterface()= default;
         virtual std::optional<std::shared_ptr<WaveDirectionalSpreading> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;
 };

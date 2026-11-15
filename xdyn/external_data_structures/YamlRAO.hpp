@@ -22,7 +22,6 @@
 struct YamlRAO
 {
     enum class TypeOfRao {DIFFRACTION_RAO, FROUDE_KRYLOV_RAO};
-    YamlRAO();
     std::string           hdb_filename;
     std::string           precal_filename;
     YamlCoordinates       calculation_point;

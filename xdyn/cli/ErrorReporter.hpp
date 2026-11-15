@@ -16,7 +16,6 @@ class ErrorReporter
             INTERNAL_ERROR,
             NETWORK_ERROR
         };
-        ErrorReporter();
         void invalid_request(const std::string &function, const int line);
         void empty_history();
         void invalid_state_size(const std::string& state_name, const size_t state_size, const size_t t_size);

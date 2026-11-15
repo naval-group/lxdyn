@@ -17,7 +17,6 @@
 class ZGCalculator
 {
     public:
-        ZGCalculator()  = default;
         void update_transform(const ssc::kinematics::Transform& T)
         {
             tz = T.get_point().z();
@@ -59,7 +58,6 @@ class SurfaceForceModel : public ForceModel
         };
 
         SurfaceForceModel(const std::string& name, const std::string& body_name_, const EnvironmentAndFrames& env);
-        ~SurfaceForceModel() override;
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;
         virtual std::function<DF(const FacetIterator &,
                                  const size_t,

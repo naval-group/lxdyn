@@ -25,8 +25,7 @@ class SumOfWaveSpectralDensities;
 class WaveSpectralDensity
 {
     public:
-        WaveSpectralDensity();
-        virtual ~WaveSpectralDensity();
+        virtual ~WaveSpectralDensity() = default;
         /**  \brief Computes the amplitude of the power spectrum at a given angular frequency
           *  \returns Amplitude of the power spectrum (in m^2 s)
           *  \snippet environment_models/unit_tests/WaveSpectrumTest.cpp WaveSpectrumTest get_example

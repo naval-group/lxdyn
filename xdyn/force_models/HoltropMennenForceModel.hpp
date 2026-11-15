@@ -12,7 +12,6 @@ class HoltropMennenForceModel : public ForceModel
     public:
         struct Input
         {
-            Input();
             double Lwl{};
             double Lpp{};
             double B{};

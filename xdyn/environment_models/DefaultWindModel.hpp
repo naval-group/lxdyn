@@ -16,7 +16,6 @@ class DefaultWindModel : public WindModel
 {
 public:
     explicit DefaultWindModel(int); // Constructor argument is a dummy in order to be able to call DefaultWindModel(DefaultWindModel::parse(...)) from parser
-    ~DefaultWindModel() override;
 
     Eigen::Vector3d get_wind(const Eigen::Vector3d& position, const double t) const override;
 

@@ -26,7 +26,7 @@ namespace ssc
         class UnsafeWrench : public Wrench
         {
             public:
-                UnsafeWrench();
+                UnsafeWrench() = default;
                 explicit UnsafeWrench(const Point& P);
                 UnsafeWrench(const Point& P, const Eigen::Vector3d& force, const Eigen::Vector3d& torque);
                 UnsafeWrench(const UnsafeWrench& rhs);

@@ -30,7 +30,6 @@ public:
         double wind_stress;         ///< Wind stress (N/m2)
     };
     explicit EkmanUWCurrentModel(const Input& input);
-    ~EkmanUWCurrentModel() override;
 
     Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d& position, const double time, const double wave_height) const override;
 

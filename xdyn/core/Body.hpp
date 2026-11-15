@@ -37,7 +37,7 @@ class Observer;
 class Body
 {
     public:
-        virtual ~Body();
+        virtual ~Body() = default;
 
         /** \brief A constructor for the body object
          *  \details A constructor for a body object.

@@ -34,7 +34,7 @@ class SurfaceElevationBuilderInterface
                 directional_spreading_parsers(directional_spreading_parsers_),
                 spectrum_parsers(spectrum_parsers_)
         {}
-        virtual ~SurfaceElevationBuilderInterface();
+        virtual ~SurfaceElevationBuilderInterface() = default;
         static ssc::kinematics::PointMatrixPtr make_wave_mesh(const YamlWaveOutput& output);
         std::pair<std::size_t,std::size_t> get_wave_mesh_size(const YamlWaveOutput& output) const;
         virtual std::optional<std::shared_ptr<SurfaceElevationInterface> > try_to_parse(const std::string& model, const std::string& yaml) const = 0;

@@ -14,7 +14,6 @@
  */
 struct YamlController
 {
-    YamlController();
     std::string type;             //!< Type of the controller (PID, gRPC, CSV)
     double dt{};                    //!< Time step of the discrete system
     std::string name;             //!< Name of the controller instance (so we can reference it in the outputs section)

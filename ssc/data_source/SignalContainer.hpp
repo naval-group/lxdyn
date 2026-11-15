@@ -44,8 +44,6 @@ namespace ssc
         class SignalContainer
         {
             public:
-                SignalContainer();
-
                 Signals get_all_signals() const;
 
                 std::vector<TypedSignalName> get_closest_match(const TypedSignalName& name) const

@@ -16,8 +16,6 @@ ssc::integrate::Integrator::Integrator(const Function& f_) : f(f_), function_def
 {
 }
 
-ssc::integrate::Integrator::~Integrator() = default;
-
 double ssc::integrate::Integrator::integrate_f(double a, double b, double eps)
 {
     if (not(function_defined))

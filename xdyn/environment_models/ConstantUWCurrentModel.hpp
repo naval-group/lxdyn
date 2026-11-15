@@ -14,12 +14,10 @@ class ConstantUWCurrentModel : public UWCurrentModel
 public:
     struct Input
     {
-        Input();
         double velocity{};
         double orientation{};
     };
     explicit ConstantUWCurrentModel(const Input& input);
-    ~ConstantUWCurrentModel() override;
 
     Eigen::Vector3d get_UWCurrent(const Eigen::Vector3d&, const double, const double) const override;
 

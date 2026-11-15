@@ -8,7 +8,6 @@ class LinearStiffnessForceModelTest : public ::testing::Test
 {
     protected:
         LinearStiffnessForceModelTest();
-        ~LinearStiffnessForceModelTest() override = default;
         ssc::random_data_generator::DataGenerator a;
 };
 

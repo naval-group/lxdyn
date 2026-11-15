@@ -34,7 +34,7 @@ class WaveDirectionalSpreading
         explicit WaveDirectionalSpreading(
           const double psi0 //!< Primary wave direction (NED, "coming from") in radians
                                 );
-        virtual ~WaveDirectionalSpreading();
+        virtual ~WaveDirectionalSpreading() = default;
 
         /** \author cady
           * \date Jul 31, 2014, 12:03:19 PM

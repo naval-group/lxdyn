@@ -28,8 +28,8 @@ namespace ssc
         class PhysicalQuantity
         {
             public:
-                PhysicalQuantity();
-                virtual ~PhysicalQuantity();
+                PhysicalQuantity() = default;
+                virtual ~PhysicalQuantity() = default;
                 void coerce(std::list<double>& ret) const;
                 void decoerce(std::list<double>& ret);
 

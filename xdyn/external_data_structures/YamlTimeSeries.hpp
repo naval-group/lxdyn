@@ -16,7 +16,6 @@
  */
 struct YamlTimeSeries
 {
-    YamlTimeSeries();
     std::string name;                                    //!< Name of the controlled force
     std::vector<double> t;                               //!< Time instants at which the commands change
     std::map<std::string,std::vector<double> > values;   //!< List of command values at each instant

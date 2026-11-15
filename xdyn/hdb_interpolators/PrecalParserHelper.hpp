@@ -13,7 +13,6 @@
 #include <Eigen/Dense>
 struct Section
 {
-    Section();
     std::string title;
     std::map<std::string, double> scalar_values;
     std::map<std::string, std::string> string_values;
@@ -39,7 +38,6 @@ struct RAOAttributes
 
 struct RAO
 {
-    RAO();
     std::string title_line;
     RAOAttributes attributes;
     std::vector<double> left_column;
@@ -48,7 +46,6 @@ struct RAO
 
 struct PrecalFile
 {
-    PrecalFile();
     std::vector<Section> sections;
     std::vector<RAO> raos;
 };

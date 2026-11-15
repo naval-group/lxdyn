@@ -13,7 +13,6 @@
 
 struct YamlOutput
 {
-    YamlOutput();
     std::string filename;
     std::string format;
     std::string address;

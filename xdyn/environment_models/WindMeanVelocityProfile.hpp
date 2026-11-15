@@ -24,13 +24,11 @@ class WindMeanVelocityProfile : public WindModel
 public:
     struct Input
     {
-        Input();
         double velocity{};
         double direction{};
     };
 
     explicit WindMeanVelocityProfile(const Input& input);
-    ~WindMeanVelocityProfile() override;
 
     Eigen::Vector3d get_wind(const Eigen::Vector3d& position, const double t) const override;
     virtual double get_wind_velocity(const double z) const =0;

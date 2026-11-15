@@ -29,7 +29,7 @@ namespace maneuvering
     {
         public:
             explicit Node(const std::vector<NodePtr>& children);
-            virtual ~Node();
+            virtual ~Node() = default;
             virtual Function get_lambda() const = 0;
             std::vector<NodePtr> get_children() const;
             virtual void accept(AbstractNodeVisitor& visitor) const = 0;
@@ -252,7 +252,6 @@ namespace maneuvering
     class Time : public Nullary
     {
         public:
-            Time();
             Function get_lambda() const override;
             void accept(AbstractNodeVisitor& visitor) const override;
             double get_max() const override;
@@ -277,7 +276,6 @@ namespace maneuvering
     class AbstractNodeVisitor
     {
         public:
-            AbstractNodeVisitor()= default;
             virtual ~AbstractNodeVisitor()= default;
             virtual void visit(const UnknownIdentifier& f) = 0;
             virtual void visit(const Time& f) = 0;
@@ -336,7 +334,6 @@ namespace maneuvering
     class FindTmax : public AbstractNodeVisitor
     {
         public:
-            FindTmax();
             double get_Tmax() const;
             void visit(const UnknownIdentifier& f) override;
             void visit(const Time& f) override;

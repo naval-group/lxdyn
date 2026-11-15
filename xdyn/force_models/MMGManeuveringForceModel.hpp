@@ -24,7 +24,6 @@ class MMGManeuveringForceModel : public ForceModel
 public:
     struct Input
     {
-        Input();
         YamlCoordinates application_point;
         double Lpp{0.0};
         double T{0.0};

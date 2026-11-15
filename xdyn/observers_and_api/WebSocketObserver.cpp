@@ -20,8 +20,6 @@ WebSocketObserver::WebSocketObserver(const std::string& address, const short uns
     }
 }
 
-WebSocketObserver::~WebSocketObserver() = default;
-
 void WebSocketObserver::flush_after_write()
 {
     DictObserver::flush_after_write();

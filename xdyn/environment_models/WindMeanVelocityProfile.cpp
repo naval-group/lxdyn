@@ -15,8 +15,6 @@ WindMeanVelocityProfile::WindMeanVelocityProfile(const Input& input) : velocity(
 {
 }
 
-WindMeanVelocityProfile::~WindMeanVelocityProfile() = default;
-
 Eigen::Vector3d WindMeanVelocityProfile::get_wind(const Eigen::Vector3d& position, const double) const
 {
     return get_wind_velocity(position(2)) * direction;
@@ -30,5 +28,3 @@ WindMeanVelocityProfile::Input WindMeanVelocityProfile::parse(const std::string&
     xdyn::yaml_parser::parse_uv(node["direction"], ret.direction);
     return ret;
 }
-
-WindMeanVelocityProfile::Input::Input() = default;

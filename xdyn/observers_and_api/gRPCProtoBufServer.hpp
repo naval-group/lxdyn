@@ -8,7 +8,7 @@ class gRPCProtoBufServer
 {
 public:
     explicit gRPCProtoBufServer(const std::shared_ptr<grpc::Service>& handler);
-    virtual ~gRPCProtoBufServer();
+    virtual ~gRPCProtoBufServer() = default;
 
     void start(const short unsigned int port);
 

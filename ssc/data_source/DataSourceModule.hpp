@@ -33,7 +33,7 @@ namespace ssc
         {
             public:
                 DataSourceModule(DataSource* const data_source, const std::string& module_name);
-                virtual ~DataSourceModule();
+                virtual ~DataSourceModule() = default;
 
                 /** \author cec
                  *  \date 17 juin 2013, 10:20:19

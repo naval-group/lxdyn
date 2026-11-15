@@ -47,7 +47,6 @@ template <typename T> class WaveModelBuilder : public WaveModelBuilderInterface
     public:
         WaveModelBuilder(const std::shared_ptr<std::vector<DirectionalSpreadingBuilderPtr> >& directional_spreading_parsers_,
                          const std::shared_ptr<std::vector<SpectrumBuilderPtr> >& spectrum_parsers_) : WaveModelBuilderInterface(directional_spreading_parsers_,spectrum_parsers_) {}
-        ~WaveModelBuilder() override = default;
         std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const DiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
         std::optional<std::shared_ptr<WaveModel> > try_to_parse(const std::string& model, const FlatDiscreteDirectionalWaveSpectrum& spectrum, const std::string& yaml) const override;
 };

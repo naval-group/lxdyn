@@ -28,7 +28,6 @@ class ResistanceCurveForceModel : public ForceModel
     public:
         struct Yaml
         {
-            Yaml();
             std::vector<double> Va;
             std::vector<double> R;
         };

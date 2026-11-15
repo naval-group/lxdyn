@@ -8,8 +8,6 @@
 #include <algorithm>
 
 
-RaoInterpolator::~RaoInterpolator()= default;
-
 RaoInterpolator::RAO RaoInterpolator::RAO::for_diffraction(const HydroDBParser& parser)
 {
     return RaoInterpolator::RAO(parser.get_diffraction_module_tables(),

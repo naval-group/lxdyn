@@ -16,7 +16,6 @@ class ImmersedSurfaceForceModel : public SurfaceForceModel
 {
     public:
         ImmersedSurfaceForceModel(const std::string& name, const std::string& body_name, const EnvironmentAndFrames& env);
-        ~ImmersedSurfaceForceModel() override;
 
     private:
         ImmersedSurfaceForceModel();

@@ -21,8 +21,6 @@ class Controller : public ssc::solver::DiscreteSystem
     public:
         Controller(const double date_of_first_call, const double dt, const std::string& name);
 
-        ~Controller() override;
-
         /**
          * @brief Get the list of all outputs (commands) computed by the controller.
          *

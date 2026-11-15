@@ -17,7 +17,7 @@ namespace ssc
         class Rectangle : public Integrator
         {
             public:
-                Rectangle();
+                Rectangle() = default;
                 explicit Rectangle(const Function& f);
 
             private:

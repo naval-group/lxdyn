@@ -16,7 +16,6 @@ class DictObserver : public Observer
     public:
         DictObserver();
         explicit DictObserver(const std::vector<std::string>& d);
-        ~DictObserver() override;
 
     protected:
         void flush_after_initialization() override{}
