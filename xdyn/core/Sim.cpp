@@ -31,9 +31,8 @@ class Sim::Impl
              const EnvironmentAndFrames& env_,
              const StateType& x,
              const ssc::data_source::DataSource& command_listener_) :
-                 bodies(bodies_), name2bodyptr(), forces(), env(env_),
-                 _dx_dt(StateType(x.size(),0)), command_listener(command_listener_), sum_of_forces_in_body_frame(),
-                 sum_of_forces_in_NED_frame(), fictitious_forces_in_body_frame(), fictitious_forces_in_NED_frame()
+                 bodies(bodies_), env(env_),
+                 _dx_dt(StateType(x.size(),0)), command_listener(command_listener_)
         {
             size_t i = 0;
             for (const auto& body:bodies)

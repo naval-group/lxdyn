@@ -9,7 +9,7 @@
 #include "xdyn/core/Sim.hpp"
 #include "xdyn/core/StateLayout.hpp"
 
-EverythingObserver::EverythingObserver() : MapObserver(std::vector<std::string>({})), res()
+EverythingObserver::EverythingObserver() : MapObserver(std::vector<std::string>({}))
 {
 }
 

@@ -7,8 +7,7 @@
 
 #include "XdynForMECommandLineArguments.hpp"
 
-XdynForMECommandLineArguments::XdynForMECommandLineArguments() : yaml_filenames(),
-                         assets_path(),
+XdynForMECommandLineArguments::XdynForMECommandLineArguments() :
                          address("127.0.0.1")
 {
 }

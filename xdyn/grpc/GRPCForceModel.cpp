@@ -30,12 +30,7 @@ template <> std::string get_type_of_service<GRPCForceModel>()
     return "force model";
 }
 
-GRPCForceModel::Input::Input():
-    url(),
-    name(),
-    yaml(),
-    hdb_filename(),
-    precal_filename()
+GRPCForceModel::Input::Input()
 {}
 
 class GRPCForceModel::Impl
@@ -45,14 +40,11 @@ class GRPCForceModel::Impl
             : hydro_db_parser(parser_factory(input_.hdb_filename, input_.precal_filename))
             , input(input_)
             , stub(Force::NewStub(grpc::CreateChannel(input.url, grpc::InsecureChannelCredentials())))
-            , extra_observations()
             , max_history_length()
             , needs_wave_outputs()
             , rotation_convention(rotation_convention_)
             , to_grpc(ToGRPC(input))
             , from_grpc(FromGRPC())
-            , commands()
-            , force_frame()
         {
             set_parameters(input.yaml, body_name, input.name);
         }

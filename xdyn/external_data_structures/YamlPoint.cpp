@@ -7,7 +7,7 @@
 
 #include "YamlPoint.hpp"
 
-YamlPoint::YamlPoint() : YamlCoordinates(), name(""), frame("")
+YamlPoint::YamlPoint() :  name(""), frame("")
 {
 
 }

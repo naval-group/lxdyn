@@ -20,7 +20,7 @@ namespace ssc
     {
         struct DSModuleDraw
         {
-            DSModuleDraw() : inputs(std::set<std::string>()),outputs(std::set<std::string>()), type(""), name_in_graph(""){}
+            DSModuleDraw() :  type(""), name_in_graph(""){}
             std::set<std::string> inputs;
             std::set<std::string> outputs;
             std::string type;
@@ -29,7 +29,7 @@ namespace ssc
 
         struct DSSignalDraw
         {
-            DSSignalDraw() : created_by(""),used_by(std::set<std::string>()),type(""){}
+            DSSignalDraw() : created_by(""),type(""){}
             std::string created_by;
             std::set<std::string> used_by;
             std::string type;

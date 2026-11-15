@@ -39,8 +39,8 @@ void TextFileReader::fill(const std::string& filename)
                     std::istreambuf_iterator<char>());
 }
 
-TextFileReader::TextFileReader(const std::vector<std::string>& filenames) :
-contents()
+TextFileReader::TextFileReader(const std::vector<std::string>& filenames)
+
 {
     std::vector<std::string>::const_iterator that_filename = filenames.begin();
     for (;that_filename!=filenames.end();++that_filename)
@@ -49,8 +49,8 @@ contents()
     }
 }
 
-TextFileReader::TextFileReader(const std::string& filename) :
-contents()
+TextFileReader::TextFileReader(const std::string& filename)
+
 {
     fill(filename);
 }

@@ -19,7 +19,7 @@ using TimestampedMatrices = std::vector<TimestampedMatrix>;
 
 struct RAOData
 {
-    RAOData() : periods(), psi(), values() {}
+    RAOData() :  values() {}
     std::vector<double> periods;
     std::vector<double> psi;
     std::array<std::vector<std::vector<double> >, 6 > values;

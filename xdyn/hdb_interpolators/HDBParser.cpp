@@ -29,25 +29,15 @@ class HDBParser::Impl
 {
     public:
         Impl()
-        : omega_rad()
-        , tree()
-        , M()
+        : M()
         , Ma()
         , Br()
         , Tmin(0)
-        , diffraction_module()
-        , diffraction_phase()
-        , total_excitation_forces_module()
-        , total_excitation_forces_phase()
-        , froude_krylov_module()
-        , froude_krylov_phase()
-        , wave_drift_forces()
         {
         }
 
         explicit Impl(const std::string& data)
-        : omega_rad()
-        , tree(hdb::parse(data))
+        : tree(hdb::parse(data))
         , M()
         , Ma()
         , Br()

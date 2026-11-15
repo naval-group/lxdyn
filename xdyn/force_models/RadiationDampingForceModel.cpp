@@ -37,7 +37,7 @@ std::string RadiationDampingForceModel::model_name() {return "radiation damping"
 class CSVWriter
 {
     public:
-        CSVWriter(std::ostream& os_, const std::string& x_name_, const std::vector<double>& x) : os(os_), x_name(x_name_), xs(x), functions(), function_names()
+        CSVWriter(std::ostream& os_, const std::string& x_name_, const std::vector<double>& x) : os(os_), x_name(x_name_), xs(x)
         {
         }
         CSVWriter& operator=(const CSVWriter& rhs);
@@ -120,7 +120,7 @@ class RadiationDampingForceModel::Impl
 {
     public:
         Impl(const std::shared_ptr<HydroDBParser>& parser_, const YamlRadiationDamping& yaml) : parser{parser_}, builder(RadiationDampingBuilder(yaml.type_of_quadrature_for_convolution, yaml.type_of_quadrature_for_cos_transform)),
-        A(), Ka(), Kb(), omega(parser->get_angular_frequencies()), taus(),
+        A(), Ka(), Kb(), omega(parser->get_angular_frequencies()),
         n(yaml.nb_of_points_for_retardation_function_discretization), Tmin(yaml.tau_min), Tmax(yaml.tau_max),
         H0(yaml.calculation_point_in_body_frame.x,yaml.calculation_point_in_body_frame.y,yaml.calculation_point_in_body_frame.y),
         remove_constant_speed(yaml.remove_constant_speed), forward_speed_correction(yaml.forward_speed_correction)

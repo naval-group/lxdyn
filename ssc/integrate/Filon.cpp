@@ -10,7 +10,7 @@
 #include <cmath>
 #define PI M_PI
 
-ssc::integrate::Filon::Filon() : QuadPack(), tau(0)
+ssc::integrate::Filon::Filon() :  tau(0)
 {
 
 }

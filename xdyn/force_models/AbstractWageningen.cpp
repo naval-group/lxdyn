@@ -17,9 +17,7 @@
 #include <cmath>
 #define PI M_PI
 
-AbstractWageningen::Yaml::Yaml():
-    name(),
-    position_of_propeller_frame(YamlPosition())
+AbstractWageningen::Yaml::Yaml()
 {}
 
 AbstractWageningen::Yaml AbstractWageningen::parse(const std::string& yaml)

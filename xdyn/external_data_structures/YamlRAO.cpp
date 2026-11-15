@@ -7,9 +7,6 @@
 
 #include "YamlRAO.hpp"
 
-YamlRAO::YamlRAO() : hdb_filename(),
-                     precal_filename(),
-                     calculation_point(),
-                     use_encounter_period()
+YamlRAO::YamlRAO()
 {
 }

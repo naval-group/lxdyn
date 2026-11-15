@@ -8,8 +8,7 @@
 
 #include "XdynForCSCommandLineArguments.hpp"
 
-XdynForCSCommandLineArguments::XdynForCSCommandLineArguments() : yaml_filenames(),
-solver(), assets_path(), address("127.0.0.1")
+XdynForCSCommandLineArguments::XdynForCSCommandLineArguments() :  address("127.0.0.1")
 {
 }
 

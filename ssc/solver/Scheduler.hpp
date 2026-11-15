@@ -24,8 +24,6 @@ namespace ssc
             using Callback = std::function<void(Scheduler &scheduler, ContinuousSystem& system)>;
             Scheduler(const double tstart, const double tend_, const double dt)
                 : current_time(tstart)
-                , scheduled_time_events()
-                , discrete_state_updaters()
                 , t0(tstart)
                 , tend(tend_)
                 , tolerance(0.001 * dt)

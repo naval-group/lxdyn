@@ -12,8 +12,7 @@
 
 #define PI M_PI
 
-MMGManeuveringForceModel::Input::Input():
-        application_point(YamlCoordinates())
+MMGManeuveringForceModel::Input::Input()
 {}
 
 std::string MMGManeuveringForceModel::model_name() {return "MMG maneuvering";}

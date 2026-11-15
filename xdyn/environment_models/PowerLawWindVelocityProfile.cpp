@@ -45,6 +45,6 @@ PowerLawWindVelocityProfile::Input::Input(const WindMeanVelocityProfile::Input& 
 {
 }
 
-PowerLawWindVelocityProfile::Input::Input() : WindMeanVelocityProfile::Input(), alpha(), z_ref()
+PowerLawWindVelocityProfile::Input::Input() :  alpha(), z_ref()
 {
 }

@@ -8,7 +8,6 @@ constexpr int PRECISION = 3;
 constexpr int WIDTH = PRECISION+6;
 
 TsvObserver::TsvObserver(const std::string& filename) :
-            Observer(),
             output_to_file(not(filename.empty())),
             os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
 {

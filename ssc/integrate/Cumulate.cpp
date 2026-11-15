@@ -12,7 +12,7 @@
 class ssc::integrate::Cumulate::Impl
 {
     public:
-        Impl() : x_y_pairs(std::list<std::pair<double,double> >())
+        Impl()
         {
 
         }

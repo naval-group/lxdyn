@@ -43,7 +43,7 @@ bool almost_equal(const double a, const double b, const int maxUlpsDiff)
     return false;
 }
 
-History::History(const double Tmax_) : Tmax(Tmax_), L(), oldest_recorded_instant(0)
+History::History(const double Tmax_) : Tmax(Tmax_), oldest_recorded_instant(0)
 {
 }
 

@@ -27,7 +27,7 @@ constexpr int WEBSOCKET_PORT = 1234;
 
 struct ListOfStringMessages : public ssc::websocket::MessageHandler
 {
-    ListOfStringMessages() : messages()
+    ListOfStringMessages()
     {
     }
     void operator()(const ssc::websocket::Message& msg) override

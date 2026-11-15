@@ -8,13 +8,7 @@
 #include <algorithm>
 #include <cmath>
 
-AeroPolarForceModel::Input::Input():
-    name(),
-    calculation_point_in_body_frame(),
-    apparent_wind_angle(),
-    lift_coefficient(),
-    drag_coefficient(),
-    angle_command()
+AeroPolarForceModel::Input::Input()
 {}
 
 std::string AeroPolarForceModel::model_name()
@@ -24,8 +18,6 @@ std::string AeroPolarForceModel::model_name()
 
 AeroPolarForceModel::AeroPolarForceModel(const Input& input, const std::string& body_name_, const EnvironmentAndFrames& env):
         ForceModel(input.name, input.angle_command ? std::vector<std::string>({input.angle_command.value()}) : std::vector<std::string>(), body_name_, env),
-        Cl(),
-        Cd(),
         reference_area(input.reference_area),
         calculation_point(input.calculation_point_in_body_frame.x, input.calculation_point_in_body_frame.y, input.calculation_point_in_body_frame.z),
         symmetry(),

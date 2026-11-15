@@ -8,7 +8,7 @@ struct H5Element
     H5::DataType datatype;
     H5::DataSpace dataspace;
     H5::DataSet dataset;
-    H5Element(): datatype(),dataspace(), dataset(){}
+    H5Element(): datatype(), dataset(){}
 };
 
 #endif

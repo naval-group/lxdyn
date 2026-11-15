@@ -19,7 +19,7 @@ VectorOfEquallySpacedNumbers::VectorOfEquallySpacedNumbers(const double& min_bou
 _min_bound(min_bound),
 _max_bound(max_bound),
 _nb_of_values(nb_of_values),
-vec(std::vector<double>()),
+
 delta((_max_bound-_min_bound)/double(_nb_of_values-1))
 {
     if (_min_bound>_max_bound)

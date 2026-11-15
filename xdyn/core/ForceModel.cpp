@@ -19,8 +19,6 @@
 
 Memoization::Memoization(const std::function<Wrench(const BodyStates&, const double, const EnvironmentAndFrames&, const std::map<std::string,double>&)>& callback_)
     : date_of_latest_force_in_body_frame(std::numeric_limits<double>::min())
-    , state_used_for_last_evaluation()
-    , commands_used_for_last_evaluation()
     , callback(callback_)
     , cached_force(ssc::kinematics::Wrench(ssc::kinematics::Point("")))
 {}
@@ -76,7 +74,6 @@ ForceModel::ForceModel(const std::string& name_, const std::vector<std::string>&
     name(name_),
     body_name(body_name_),
     has_internal_frame(false),
-    known_reference_frame(),
     latest_force_in_body_frame(ssc::kinematics::Point(body_name)),
     memo(std::bind(&ForceModel::get_force, this, _1, _2, _3, _4))
 {

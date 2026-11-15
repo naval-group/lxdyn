@@ -43,9 +43,7 @@ SurfaceElevationInterface::SurfaceElevationInterface(
         const ssc::kinematics::PointMatrixPtr& output_mesh_,
         const std::pair<std::size_t,std::size_t>& output_mesh_size_) :
                 output_mesh(output_mesh_),
-                output_mesh_size(output_mesh_size_),
-                relative_wave_height_for_each_point_in_mesh(),
-                surface_elevation_for_each_point_in_mesh()
+                output_mesh_size(output_mesh_size_)
 {
 }
 

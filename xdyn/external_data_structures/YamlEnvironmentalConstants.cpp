@@ -8,6 +8,6 @@
 #include "YamlEnvironmentalConstants.hpp"
 
 
-YamlEnvironmentalConstants::YamlEnvironmentalConstants() :  rho_air()
+YamlEnvironmentalConstants::YamlEnvironmentalConstants()
 {
 }

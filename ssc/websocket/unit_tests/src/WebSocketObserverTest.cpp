@@ -14,7 +14,7 @@ using namespace ssc::websocket;
 
 struct ListOfStringMessages : public MessageHandler
 {
-    ListOfStringMessages() : messages()
+    ListOfStringMessages()
     {
     }
     void operator()(const Message& msg) override
@@ -27,7 +27,7 @@ struct ListOfStringMessages : public MessageHandler
 
 struct ListOfDoubleMessages : public MessageHandler
 {
-    ListOfDoubleMessages() : messages()
+    ListOfDoubleMessages()
     {
     }
     void operator()(const Message& msg) override

@@ -11,7 +11,7 @@
 #include <set>
 
 
-SumOfWaveSpectralDensities::SumOfWaveSpectralDensities() : terms(std::vector<WaveSpectralDensityPtr>())
+SumOfWaveSpectralDensities::SumOfWaveSpectralDensities()
 {
 }
 
@@ -19,13 +19,13 @@ SumOfWaveSpectralDensities::SumOfWaveSpectralDensities(const WaveSpectralDensity
 {
 }
 
-SumOfWaveSpectralDensities::SumOfWaveSpectralDensities(const WaveSpectralDensity& w1, const WaveSpectralDensity& w2) : terms(std::vector<WaveSpectralDensityPtr>())
+SumOfWaveSpectralDensities::SumOfWaveSpectralDensities(const WaveSpectralDensity& w1, const WaveSpectralDensity& w2)
 {
     terms.push_back(WaveSpectralDensityPtr(w1.clone()));
     terms.push_back(WaveSpectralDensityPtr(w2.clone()));
 }
 
-SumOfWaveSpectralDensities::SumOfWaveSpectralDensities(const std::vector<WaveSpectralDensity>& ws) : terms(std::vector<WaveSpectralDensityPtr>())
+SumOfWaveSpectralDensities::SumOfWaveSpectralDensities(const std::vector<WaveSpectralDensity>& ws)
 {
     for (auto t = ws.begin() ; t != ws.end() ; ++t)
     {

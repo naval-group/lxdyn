@@ -7,8 +7,6 @@
 
 #include "YamlRadiationDamping.hpp"
 
-YamlRadiationDamping::YamlRadiationDamping() : hdb_filename(),
-                                               precal_r_filename(),
-                                               calculation_point_in_body_frame()
+YamlRadiationDamping::YamlRadiationDamping()
 {
 }

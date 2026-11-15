@@ -17,8 +17,7 @@
 #define PI M_PI
 
 CSVControllerTest::CSVControllerTest()
-    : csv()
-    , a(ssc::random_data_generator::DataGenerator(54545))
+    : a(ssc::random_data_generator::DataGenerator(54545))
 {
     csv << "t,some column,rpm_co,beta_co\n";
     csv << "0.2,23,65,78\n";

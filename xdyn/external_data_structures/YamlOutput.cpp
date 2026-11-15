@@ -7,6 +7,6 @@
 
 #include "YamlOutput.hpp"
 
-YamlOutput::YamlOutput() : filename(), format(), address(), data()
+YamlOutput::YamlOutput()
 {
 }

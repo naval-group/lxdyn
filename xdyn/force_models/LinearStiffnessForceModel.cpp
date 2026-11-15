@@ -4,7 +4,7 @@
 #include <ssc/kinematics.hpp>
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-LinearStiffnessForceModel::Input::Input(): name(), K(), equilibrium_position() {}
+LinearStiffnessForceModel::Input::Input():  K() {}
 
 std::string LinearStiffnessForceModel::model_name() {return "linear stiffness";}
 

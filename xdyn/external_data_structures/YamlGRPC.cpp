@@ -7,7 +7,5 @@
 #include "YamlGRPC.hpp"
 
 YamlGRPC::YamlGRPC()
-:url()
-,rest_of_the_yaml()
-,output()
+
 {}

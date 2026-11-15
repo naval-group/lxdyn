@@ -18,7 +18,7 @@ ConnectionMetadata::ConnectionMetadata(
           , uri(uri)
           , server("N/A")
           , error_reason("")
-          ,messages(){}
+          {}
 
 void ConnectionMetadata::on_open(client * c, websocketpp::connection_hdl hdl)
 {

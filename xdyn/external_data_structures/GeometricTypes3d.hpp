@@ -19,7 +19,7 @@ using ArrayOfEdges = std::array<std::vector<size_t>,2>;
  */
 struct Facet
 {
-    Facet():vertex_index(),unit_normal(Eigen::MatrixXd::Zero(3,1)),centre_of_gravity(Eigen::MatrixXd::Zero(3,1)),area(0) {}
+    Facet():unit_normal(Eigen::MatrixXd::Zero(3,1)),centre_of_gravity(Eigen::MatrixXd::Zero(3,1)),area(0) {}
     Facet(const std::vector<size_t> &vertex_index_,const Eigen::Vector3d &unit_normal_,const Eigen::Vector3d &barycenter_,double area_)
     :vertex_index(vertex_index_)
     ,unit_normal(unit_normal_)

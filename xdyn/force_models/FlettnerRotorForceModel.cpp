@@ -12,11 +12,7 @@
 #include <string>
 
 FlettnerRotorForceModel::Input::Input():
-    name(""),
-    calculation_point_in_body_frame(YamlCoordinates()),
-    spin_ratio(std::vector<double>()),
-    lift_coefficient(std::vector<double>()),
-    drag_coefficient(std::vector<double>())
+    name("")
 {}
 
 std::string FlettnerRotorForceModel::model_name() {return "Flettner rotor";}

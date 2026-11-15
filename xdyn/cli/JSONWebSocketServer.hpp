@@ -70,7 +70,7 @@ class JSONWebSocketServer
         class JSONHandler : public ssc::websocket::MessageHandler
         {
             public:
-                JSONHandler(const ServiceT& simserver, const bool verbose_) : sim_server(simserver), verbose(verbose_), error_outputter()
+                JSONHandler(const ServiceT& simserver, const bool verbose_) : sim_server(simserver), verbose(verbose_)
                 {
                 }
                 ~JSONHandler() override

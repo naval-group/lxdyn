@@ -20,9 +20,7 @@ namespace ssc
         {
           public:
             ContinuousSystem()
-                : state()
-                , cached_dx_dt()
-                , cached_t(std::numeric_limits<double>::lowest())
+                : cached_t(std::numeric_limits<double>::lowest())
             {
             }
             virtual ~ContinuousSystem() = default;

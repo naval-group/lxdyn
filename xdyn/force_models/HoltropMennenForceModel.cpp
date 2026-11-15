@@ -10,10 +10,7 @@ std::string HoltropMennenForceModel::model_name()
     return "Holtrop & Mennen";
 }
 
-HoltropMennenForceModel::Input::Input() :
-        S(),
-        iE(),
-        hull_form_coeff()
+HoltropMennenForceModel::Input::Input()
 {
 }
 

@@ -19,9 +19,7 @@ MMGPropellerForceModel::Yaml::Yaml() :
         k1(),
         k2(),
         C0(),
-        C1(),
-        C2(),
-        application_point(YamlCoordinates())
+        C1()
 {
 }
 
@@ -31,9 +29,7 @@ MMGPropellerForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
         k1(),
         k2(),
         C0(),
-        C1(),
-        C2(),
-        application_point(YamlCoordinates())
+        C1()
 {
 }
 

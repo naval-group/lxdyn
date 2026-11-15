@@ -18,8 +18,6 @@ bool is_a_websocket_url(const std::string& url)
 }
 
 WebsocketURLElements::WebsocketURLElements(const std::string& url) :
-    protocol(),
-    domain(),
     port()
 {
     const boost::regex ex = websocket_url_regex();

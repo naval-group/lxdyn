@@ -14,11 +14,8 @@
 #include <ssc/kinematics.hpp>
 using namespace ssc::kinematics;
 
-EnvironmentAndFrames::EnvironmentAndFrames() : w(),
-                                               wind(),
-                                               k(std::make_shared<Kinematics>()),
-                                               rot(),
-                                               rho_air()
+EnvironmentAndFrames::EnvironmentAndFrames() :
+                                               k(std::make_shared<Kinematics>())
 {
     if (rho<0.0)
     {

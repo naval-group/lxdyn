@@ -2,9 +2,6 @@
 
 
 CSVYaml::CSVYaml()
-: path()
-, time_column()
-, commands()
 {
 
 }

@@ -20,11 +20,6 @@ PrecalParser PrecalParser::from_file(const std::string& path_to_precal_file)
 
 PrecalParser::PrecalParser(const PrecalFile& precal_file_)
     : precal_file(precal_file_)
-    , diffraction_module()
-    , diffraction_phase()
-    , froude_krylov_module()
-    , froude_krylov_phase()
-    , wave_drift_tables()
     , directions(get_sorted_directions())
     , sorted_indexed_frequencies(get_sorted_indexed_frequencies())
 {

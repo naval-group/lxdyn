@@ -7,15 +7,8 @@
 
 MeshBuilder::MeshBuilder(const VectorOfVectorOfPoints& v_, const bool check_orientation):
         v(v_),
-        xyzMap(Vector3dMap()),
-        edgeMap(EdgeMap()),
         index(0),
-        edgeIndex(0),
-        nodes(Matrix3x()),
-        edges(std::vector<Edge>()),
-        facets(std::vector<Facet>()),
-        facetsPerEdge(std::vector<std::vector<size_t> >()),
-        orientedEdgesPerFacet(std::vector<std::vector<size_t> >())
+        edgeIndex(0)
 {
     if(check_orientation)
     {
@@ -26,15 +19,8 @@ MeshBuilder::MeshBuilder(const VectorOfVectorOfPoints& v_, const bool check_orie
 
 MeshBuilder::MeshBuilder(const VectorOfPoints& tri, const bool check_orientation):
         v(VectorOfVectorOfPoints(1,tri)),
-        xyzMap(Vector3dMap()),
-        edgeMap(EdgeMap()),
         index(0),
-        edgeIndex(0),
-        nodes(Matrix3x()),
-        edges(std::vector<Edge>()),
-        facets(std::vector<Facet>()),
-        facetsPerEdge(std::vector<std::vector<size_t> >()),
-        orientedEdgesPerFacet(std::vector<std::vector<size_t> >())
+        edgeIndex(0)
 {
     if(check_orientation)
     {
@@ -150,16 +136,8 @@ bool MeshBuilder::point_is_in_map(const EPoint& xyz)
 }
 
 MeshBuilder::MeshBuilder(const Matrix3x& tri):
-        v(VectorOfVectorOfPoints()),
-        xyzMap(Vector3dMap()),
-        edgeMap(EdgeMap()),
         index(0),
-        edgeIndex(0),
-        nodes(Matrix3x()),
-        edges(std::vector<Edge>()),
-        facets(std::vector<Facet>()),
-        facetsPerEdge(std::vector<std::vector<size_t> >()),
-        orientedEdgesPerFacet(std::vector<std::vector<size_t> >())
+        edgeIndex(0)
 {
     VectorOfPoints vv;
     for (int i = 0 ; i < tri.cols() ; ++i)

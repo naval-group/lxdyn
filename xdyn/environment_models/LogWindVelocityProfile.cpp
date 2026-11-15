@@ -47,6 +47,6 @@ LogWindVelocityProfile::Input::Input(const WindMeanVelocityProfile::Input& paren
 {
 }
 
-LogWindVelocityProfile::Input::Input() : WindMeanVelocityProfile::Input(), z0(), z_ref()
+LogWindVelocityProfile::Input::Input() :  z0(), z_ref()
 {
 }

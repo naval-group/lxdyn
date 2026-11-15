@@ -11,7 +11,7 @@
 #include <stb_image.h>
 
 Seabed::Seabed(const std::string& sea_bed_file)
-    : seabed(), width(), height(), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
+    :  width(), height(), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
 {
     const std::string seabed_path = xdyn::resolve_asset(sea_bed_file);
     int channels;
@@ -30,7 +30,7 @@ Seabed::Seabed(const std::string& sea_bed_file)
 }
 
 Seabed::Seabed(const double depth)
-    : seabed(), width(1), height(1), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
+    :  width(1), height(1), xscale(1), yscale(1), zscale(1), xoffset(0), yoffset(0)
 {
     seabed[{0, 0}] = depth;
 }

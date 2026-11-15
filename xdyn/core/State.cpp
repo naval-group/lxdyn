@@ -1,8 +1,7 @@
 #include "State.hpp"
 
 State::State(const AbstractStates<double>& vals,
-             const double t0) :
-  AbstractStates<History>()
+             const double t0)
 {
     x.record(t0, vals.x);
     y.record(t0, vals.y);
@@ -27,8 +26,7 @@ State::State(const double Tmax) :
 State::State(const AbstractStates<History>& h) : AbstractStates<History>(h)
 {}
 
-State::State(const StateType& state_values, const double t) :
-        AbstractStates<History>()
+State::State(const StateType& state_values, const double t)
 {
     x.record(t, state_values[0]);
     y.record(t, state_values[1]);

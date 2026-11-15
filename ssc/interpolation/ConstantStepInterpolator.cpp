@@ -19,7 +19,7 @@
 using namespace ssc::interpolation;
 
 ConstantStepInterpolator::ConstantStepInterpolator() :
-xmin(0), xmax(0), y(std::vector<double>()), n(0), delta(0), idx(0), val_sat(0), coefficients_have_been_computed_for_interval(std::vector<bool>())
+xmin(0), xmax(0), n(0), delta(0), idx(0), val_sat(0)
 {
 
 }
@@ -32,7 +32,6 @@ ConstantStepInterpolator::~ConstantStepInterpolator()
 ConstantStepInterpolator::ConstantStepInterpolator(const double& xmin_,
         const double& xmax_,
         const std::vector<double>& y_) : xmin(xmin_), xmax(xmax_), y(y_), n(y.size()), delta(0), idx(0), val_sat(xmin)
-        , coefficients_have_been_computed_for_interval(std::vector<bool>())
 {
     if (n == 0)
     {

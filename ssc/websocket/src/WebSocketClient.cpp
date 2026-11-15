@@ -57,11 +57,11 @@ struct Client::Impl
         endpoint.start_perpetual();
     }
 
-    Impl() : endpoint(), websocket_thread(), id_to_connection(), next_id(0)
+    Impl() :  next_id(0)
     {
     }
 
-    Impl(std::string address, const short unsigned int port) : endpoint(), websocket_thread(), id_to_connection(), next_id(0)
+    Impl(std::string address, const short unsigned int port) :  next_id(0)
     {
         address = append_port_to_address(address, port);
         prepare_endpoint();

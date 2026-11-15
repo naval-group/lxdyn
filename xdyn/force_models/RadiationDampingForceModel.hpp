@@ -23,7 +23,7 @@ class RadiationDampingForceModel : public ForceModel
     public:
         struct Input
         {
-            Input() : parser(), yaml(){}
+            Input()  {}
             std::shared_ptr<HydroDBParser> parser;
             YamlRadiationDamping yaml;
         };

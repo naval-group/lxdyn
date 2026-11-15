@@ -13,11 +13,9 @@
 
 
 CsvObserver::CsvObserver(const std::string& filename) :
-        Observer(),
         flush_during_write(true),
         output_to_file(not(filename.empty())),
-        os(output_to_file ? *(new std::ofstream(filename)) : std::cout),
-        cache()
+        os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
 {
     os << std::scientific;
 }
@@ -26,8 +24,7 @@ CsvObserver::CsvObserver(const std::string& filename, const std::vector<std::str
         Observer(d),
         flush_during_write(true),
         output_to_file(not(filename.empty())),
-        os(output_to_file ? *(new std::ofstream(filename)) : std::cout),
-        cache()
+        os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
 {
     os << std::scientific;
 }

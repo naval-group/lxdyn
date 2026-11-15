@@ -55,8 +55,7 @@ Sim ForceTester::make_sim(const std::string& yaml, const VectorOfVectorOfPoints&
 }
 
 ForceTester::ForceTester(const std::string& yaml, const VectorOfVectorOfPoints& stl) :
-forces(),
-body(),
+
 env(),
 current_instant(0)
 {
@@ -66,8 +65,6 @@ current_instant(0)
 }
 
 ForceTester::ForceTester(const std::string& yaml, const std::string& stl) :
-        forces(),
-        body(),
         env(),
         current_instant(0)
 {

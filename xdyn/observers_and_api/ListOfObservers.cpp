@@ -42,7 +42,7 @@ ObserverPtr ListOfObservers::parse_observer(const YamlOutput& output)
     return obs;
 }
 
-ListOfObservers::ListOfObservers(const std::vector<YamlOutput>& yaml) : observers()
+ListOfObservers::ListOfObservers(const std::vector<YamlOutput>& yaml)
 {
     for (const auto& output:yaml)
     {

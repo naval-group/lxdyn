@@ -10,10 +10,7 @@
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-LinearHydrostaticForceModel::Input::Input():
-    K1(),
-    K2(),
-    K3()
+LinearHydrostaticForceModel::Input::Input()
 {}
 
 std::string LinearHydrostaticForceModel::model_name() {return "linear hydrostatics";}

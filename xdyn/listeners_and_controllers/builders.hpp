@@ -93,7 +93,7 @@ template <>
 class SpectrumBuilder<BretschneiderSpectrum> : public SpectrumBuilderInterface
 {
     public:
-        SpectrumBuilder() : SpectrumBuilderInterface() {}
+        SpectrumBuilder()  {}
         std::optional<WaveSpectralDensityPtr> try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
@@ -101,7 +101,7 @@ template <>
 class SpectrumBuilder<JonswapSpectrum> : public SpectrumBuilderInterface
 {
     public:
-        SpectrumBuilder() : SpectrumBuilderInterface() {}
+        SpectrumBuilder()  {}
         std::optional<WaveSpectralDensityPtr> try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
@@ -109,7 +109,7 @@ template <>
 class SpectrumBuilder<PiersonMoskowitzSpectrum> : public SpectrumBuilderInterface
 {
     public:
-        SpectrumBuilder() : SpectrumBuilderInterface() {}
+        SpectrumBuilder()  {}
         std::optional<WaveSpectralDensityPtr> try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
@@ -117,7 +117,7 @@ template <>
 class SpectrumBuilder<DiracSpectralDensity> : public SpectrumBuilderInterface
 {
     public:
-        SpectrumBuilder() : SpectrumBuilderInterface() {}
+        SpectrumBuilder()  {}
         std::optional<WaveSpectralDensityPtr> try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
@@ -125,7 +125,7 @@ template <>
 class DirectionalSpreadingBuilder<DiracDirectionalSpreading> : public DirectionalSpreadingBuilderInterface
 {
     public:
-        DirectionalSpreadingBuilder() : DirectionalSpreadingBuilderInterface(){}
+        DirectionalSpreadingBuilder()  {}
         std::optional<WaveDirectionalSpreadingPtr> try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 
@@ -133,7 +133,7 @@ template <>
 class DirectionalSpreadingBuilder<Cos2sDirectionalSpreading> : public DirectionalSpreadingBuilderInterface
 {
     public:
-        DirectionalSpreadingBuilder() : DirectionalSpreadingBuilderInterface(){}
+        DirectionalSpreadingBuilder()  {}
         std::optional<WaveDirectionalSpreadingPtr> try_to_parse(const std::string& model, const std::string& yaml) const override;
 };
 

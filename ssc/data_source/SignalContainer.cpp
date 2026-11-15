@@ -26,8 +26,8 @@ void ssc::data_source::decoerce(std::list<double>& ret, ssc::data_source::Physic
 
 
 
-SignalContainer::SignalContainer() : signals_(Signals()), scalar_convertible_types(ConvertibleTypes()),
-vector_convertible_types(ConvertibleTypes())
+SignalContainer::SignalContainer()
+
 {
 
 }

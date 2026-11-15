@@ -36,11 +36,7 @@ void check_edge_index(const size_t idx, const ClosingFacetComputer::ListOfEdges&
 }
 
 ClosingFacetComputer::ClosingFacetComputer(const Eigen::Matrix3Xd& mesh_, const ListOfEdges& edges_, std::vector<size_t> index_of_relevant_edges) :
-        mesh(&mesh_),
-        edges(),
-        node_idx_in_mesh(),
-        node_to_connected_edges(),
-        original_edge_index()
+        mesh(&mesh_)
 {
     if (index_of_relevant_edges.empty()) for (size_t i = 0 ; i < edges_.size() ; ++i) index_of_relevant_edges.push_back(i);
     xmin = mesh->operator()(0,(long)edges_.at(0).first);

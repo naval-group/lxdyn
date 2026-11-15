@@ -20,7 +20,7 @@ namespace hdb
 
     template <typename T> struct Key
     {
-        Key() : header(), value() {}
+        Key() :  value() {}
 
         Header header;
         T      value;
@@ -28,7 +28,7 @@ namespace hdb
 
     struct VectorSection
     {
-            VectorSection() : header(), values() {}
+            VectorSection()  {}
 
         Header header;
         Values values;
@@ -36,7 +36,7 @@ namespace hdb
 
     struct MatrixSection
     {
-            MatrixSection() : header(), values() {}
+            MatrixSection()  {}
 
         Header header;
         ListOfValues values;
@@ -44,7 +44,7 @@ namespace hdb
 
     struct SectionWithId
     {
-        SectionWithId() : header(), values() {}
+        SectionWithId()  {}
 
         Header header;
         Value  id{};
@@ -53,7 +53,7 @@ namespace hdb
 
     struct ListOfMatrixSections
     {
-        ListOfMatrixSections() : header(), sections() {}
+        ListOfMatrixSections()  {}
 
         Header               header;
         std::vector<MatrixSection> sections;
@@ -61,7 +61,7 @@ namespace hdb
 
     struct ListOfMatrixSectionsWithId
     {
-            ListOfMatrixSectionsWithId() : header(), sections_with_id() {}
+            ListOfMatrixSectionsWithId()  {}
 
         Header                     header;
         std::vector<SectionWithId> sections_with_id;
@@ -69,7 +69,7 @@ namespace hdb
 
     struct AST
     {
-        AST() : string_keys(), value_keys(), vector_sections(), matrix_sections(), lists_of_matrix_sections(), lists_of_matrix_sections_with_id() {}
+        AST()  {}
 
         std::vector<Key<std::string> >    string_keys;
         std::vector<Key<double> >         value_keys;

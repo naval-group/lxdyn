@@ -7,5 +7,5 @@
 
 #include "xdyn/external_data_structures/YamlController.hpp"
 
-YamlController::YamlController() : type(), name(), rest_of_the_yaml()
+YamlController::YamlController()
 {}

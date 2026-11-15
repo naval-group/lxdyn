@@ -8,7 +8,7 @@
 #include "SimObserver.hpp"
 #include "xdyn/core/Sim.hpp"
 
-SimObserver::SimObserver() : res(std::vector<Res>())
+SimObserver::SimObserver()
 {
 }
 

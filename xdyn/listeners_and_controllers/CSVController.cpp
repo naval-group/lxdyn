@@ -11,9 +11,6 @@
 #include <numeric>
 
 CSVController::Yaml::Yaml(const std::string& yaml)
-    : path()
-    , time_column()
-    , commands()
 {
     YAML::Node node = YAML::Load(yaml);
     node["path"] >> path;

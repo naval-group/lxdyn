@@ -54,18 +54,8 @@ TypeName TypedSignalName::get_type_name() const
     return _type_name;
 }
 
-ConvertibleTypes::ConvertibleTypes() :
-iter_bool(std::list<ConstSignalIterator>()),
-iter_char(std::list<ConstSignalIterator>()),
-iter_wchar_t(std::list<ConstSignalIterator>()),
-iter_short(std::list<ConstSignalIterator>()),
-iter_int(std::list<ConstSignalIterator>()),
-iter_size_t(std::list<ConstSignalIterator>()),
-iter_long(std::list<ConstSignalIterator>()),
-iter_float(std::list<ConstSignalIterator>()),
-iter_double(std::list<ConstSignalIterator>()),
-iter_phys_qty(std::list<ConstSignalIterator>()),
-bin(std::list<ConstSignalIterator>())
+ConvertibleTypes::ConvertibleTypes()
+
 {
 
 }

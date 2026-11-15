@@ -44,7 +44,7 @@ class ssc::integrate::Simpson::Impl
 
 };
 
-ssc::integrate::Simpson::Simpson() : ssc::integrate::Integrator(), pimpl(new Impl())
+ssc::integrate::Simpson::Simpson() :  pimpl(new Impl())
 {
 }
 

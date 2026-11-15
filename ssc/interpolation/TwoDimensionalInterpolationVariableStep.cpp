@@ -6,13 +6,11 @@
  */
 #include "TwoDimensionalInterpolationVariableStep.hpp"
 
-ssc::interpolation::TwoDimensionalInterpolationVariableStep::TwoDimensionalInterpolationVariableStep() : y_interpolators_for_each_x(),
-        x()
+ssc::interpolation::TwoDimensionalInterpolationVariableStep::TwoDimensionalInterpolationVariableStep()
 {
 }
 
 ssc::interpolation::TwoDimensionalInterpolationVariableStep::TwoDimensionalInterpolationVariableStep(const std::vector<double>& x_, const std::vector<double>& y, const std::vector<std::vector<double> >& M) :
-        y_interpolators_for_each_x(),
         x(x_)
 {
     for (auto it = M.begin() ; it != M.end() ; ++it)

@@ -7,10 +7,10 @@
 
 #include "Res.hpp"
 
-Res::Res() : t(0), x(), extra_observations()
+Res::Res() : t(0)
 {
 }
 
-Res::Res(const double t_, const StateType& x_) : t(t_), x(x_), extra_observations()
+Res::Res(const double t_, const StateType& x_) : t(t_), x(x_)
 {
 }

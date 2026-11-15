@@ -3,7 +3,6 @@
 #include <fstream>
 
 JsonObserver::JsonObserver(const std::string& filename) :
-        DictObserver(),
         output_to_file(not(filename.empty())),
         os(output_to_file ? *(new std::ofstream(filename)) : std::cout)
 {

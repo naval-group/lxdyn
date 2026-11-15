@@ -263,11 +263,9 @@ MMGRudderForceModel::Yaml::Yaml()
     , lR_adim()
     , tR()
     , aH()
-    , gammaR()
     , epsilon()
     , kappaMmg()
     , effective_aspect_ratio()
-    , position_of_the_rudder_in_the_body_frame(YamlCoordinates())
     , Lpp()
 
 {
@@ -281,11 +279,9 @@ MMGRudderForceModel::Yaml::Yaml(const MMGPropellerForceModel::Yaml& yaml)
     , lR_adim()
     , tR()
     , aH()
-    , gammaR()
     , epsilon()
     , kappaMmg()
     , effective_aspect_ratio()
-    , position_of_the_rudder_in_the_body_frame(YamlCoordinates())
     , Lpp()
 {
 }

@@ -77,7 +77,7 @@ double ssc::integrate::ClenshawCurtis::compute_for(const double tau_, const doub
     return integrate_impl(f, a, b, eps);
 }
 
-ssc::integrate::ClenshawCurtis::ClenshawCurtis(const double tau_) : QuadPack(), tau(tau_),
+ssc::integrate::ClenshawCurtis::ClenshawCurtis(const double tau_) :  tau(tau_),
         nb_of_chebychev_moments(25*MAX_NB_OF_CHEBYCHEV_MOMENTS),
         nb_of_calls(1),
         chebychev_moments(new double[nb_of_chebychev_moments]),

@@ -7,11 +7,7 @@
 
 #include "XdynCommandLineArguments.hpp"
 
-XdynCommandLineArguments::XdynCommandLineArguments() : yaml_filenames(),
-                         solver(),
-                         output_filename(),
-                         wave_output(),
-                         assets_path()
+XdynCommandLineArguments::XdynCommandLineArguments()
 {
 }
 

@@ -54,11 +54,11 @@ class InverseTransformComputer : public DataSourceModule
 class CompositeTransformComputer : public DataSourceModule
 {
     public:
-        CompositeTransformComputer(DataSource* const data_source, const std::string& module_name) : DataSourceModule(data_source, module_name), transforms(std::vector<std::pair<std::string,std::string> >())
+        CompositeTransformComputer(DataSource* const data_source, const std::string& module_name) : DataSourceModule(data_source, module_name)
         {
         }
 
-        CompositeTransformComputer(const CompositeTransformComputer& rhs, DataSource* const data_source) : DataSourceModule(rhs, data_source), transforms(std::vector<std::pair<std::string,std::string> >())
+        CompositeTransformComputer(const CompositeTransformComputer& rhs, DataSource* const data_source) : DataSourceModule(rhs, data_source)
         {
         }
 
@@ -91,7 +91,7 @@ class CompositeTransformComputer : public DataSourceModule
 class Kinematics::Impl
 {
     public:
-        Impl() : ds(DataSource()), tree(KinematicTree()) {}
+        Impl() : ds(DataSource()) {}
 
         ~Impl(){}
         Impl& operator=(const Impl& rhs)

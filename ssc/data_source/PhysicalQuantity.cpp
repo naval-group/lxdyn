@@ -19,7 +19,7 @@ class PhysicalQuantityException : public ::ssc::exception_handling::Exception
         }
 };
 
-PhysicalQuantity::PhysicalQuantity() : val(std::vector<double>())
+PhysicalQuantity::PhysicalQuantity()
 {}
 
 PhysicalQuantity::~PhysicalQuantity()
