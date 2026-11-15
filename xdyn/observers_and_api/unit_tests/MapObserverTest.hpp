@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef MAPOBSERVERTEST_HPP_
 #define MAPOBSERVERTEST_HPP_
 
@@ -22,9 +21,6 @@ class MapObserverTest : public ::testing::Test
 {
     protected:
         MapObserverTest();
-        ~MapObserverTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

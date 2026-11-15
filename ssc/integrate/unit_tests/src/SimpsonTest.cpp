@@ -13,18 +13,6 @@ SimpsonTest::SimpsonTest() : a(ssc::random_data_generator::DataGenerator(1))
 {
 }
 
-SimpsonTest::~SimpsonTest()
-{
-}
-
-void SimpsonTest::SetUp()
-{
-}
-
-void SimpsonTest::TearDown()
-{
-}
-
 constexpr double EPS = 1E-6;
 
 TEST_F(SimpsonTest, should_be_able_to_integrate_x)
@@ -66,12 +54,4 @@ TEST_F(SimpsonTest, should_be_able_to_integrate_a_parabola)
         ASSERT_SMALL_RELATIVE_ERROR(integrator.integrate_f(xa,xb), lambda*(pow(xb,3)-pow(xa,3))/3.+mu*(xb-xa), EPS);
     }
 }
-
-
-
-
-
-
-
-
 

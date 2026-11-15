@@ -15,18 +15,6 @@ TypeCoercionTest::TypeCoercionTest() : a(ssc::random_data_generator::DataGenerat
 {
 }
 
-TypeCoercionTest::~TypeCoercionTest()
-{
-}
-
-void TypeCoercionTest::SetUp()
-{
-}
-
-void TypeCoercionTest::TearDown()
-{
-}
-
 TEST_F(TypeCoercionTest, can_coerce_doubles_to_doubles)
 {
     const double d1 = a.random<double>();

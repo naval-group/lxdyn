@@ -12,10 +12,6 @@ size_t get_oriented_edge_index(const size_t &e)
     return e >> 1;
 }
 
-MeshBuilderTest::MeshBuilderTest()
-{
-}
-
 TEST_F(MeshBuilderTest, should_be_able_to_build_a_mesh_from_a_single_triangle)
 {
     const Mesh m = MeshBuilder(one_triangle()).build();

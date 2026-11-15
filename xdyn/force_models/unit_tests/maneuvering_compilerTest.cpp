@@ -5,23 +5,10 @@
  *      Author: cady
  */
 
-
 #include "maneuvering_compilerTest.hpp"
 #include "maneuvering_compiler.hpp"
 
 maneuvering_compilerTest::maneuvering_compilerTest() : a(ssc::random_data_generator::DataGenerator(2121545))
-{
-}
-
-maneuvering_compilerTest::~maneuvering_compilerTest()
-{
-}
-
-void maneuvering_compilerTest::SetUp()
-{
-}
-
-void maneuvering_compilerTest::TearDown()
 {
 }
 

@@ -10,8 +10,6 @@
 #include <cmath>
 #define PI M_PI
 
-EnvironmentTest::EnvironmentTest(){}
-
 TEST_F(EnvironmentTest, can_get_wave_elevation_with_test_data_full_example)
 {
     const std::string stl_filename("test_ship.stl");

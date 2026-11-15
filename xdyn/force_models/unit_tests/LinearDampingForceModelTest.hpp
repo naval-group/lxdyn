@@ -15,9 +15,6 @@ class LinearDampingForceModelTest : public ::testing::Test
 {
     protected:
         LinearDampingForceModelTest();
-        ~LinearDampingForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

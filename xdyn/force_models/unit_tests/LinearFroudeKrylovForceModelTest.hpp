@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef LINEARFROUDEKRYLOVFORCEMODELTEST_HPP_
 #define LINEARFROUDEKRYLOVFORCEMODELTEST_HPP_
 
@@ -16,9 +15,6 @@ class LinearFroudeKrylovForceModelTest : public ::testing::Test
 {
     protected:
         LinearFroudeKrylovForceModelTest();
-        ~LinearFroudeKrylovForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         double small_relative_error(const double val) const;
         ssc::random_data_generator::DataGenerator a;
 };

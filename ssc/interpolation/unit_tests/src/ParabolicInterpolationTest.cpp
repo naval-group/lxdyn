@@ -16,18 +16,6 @@ ParabolicInterpolationTest::ParabolicInterpolationTest() : a(ssc::random_data_ge
 {
 }
 
-ParabolicInterpolationTest::~ParabolicInterpolationTest()
-{
-}
-
-void ParabolicInterpolationTest::SetUp()
-{
-}
-
-void ParabolicInterpolationTest::TearDown()
-{
-}
-
 namespace ssc
 {
     namespace random_data_generator

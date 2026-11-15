@@ -26,18 +26,6 @@ BodyTest::BodyTest() : a(ssc::random_data_generator::DataGenerator(21212)), body
 {
 }
 
-BodyTest::~BodyTest()
-{
-}
-
-void BodyTest::SetUp()
-{
-}
-
-void BodyTest::TearDown()
-{
-}
-
 TEST_F(BodyTest, frame_of_origin_point_is_correct)
 {
     const ssc::kinematics::Point O = body->get_origin(a.random_vector_of<double>().of_size(1000));

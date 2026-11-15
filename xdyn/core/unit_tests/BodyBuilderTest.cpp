@@ -27,18 +27,6 @@ BodyBuilderTest::BodyBuilderTest() : a(ssc::random_data_generator::DataGenerator
 {
 }
 
-BodyBuilderTest::~BodyBuilderTest()
-{
-}
-
-void BodyBuilderTest::SetUp()
-{
-}
-
-void BodyBuilderTest::TearDown()
-{
-}
-
 BodyPtr BodyBuilderTest::build_body(size_t idx)
 {
     const auto yaml = SimulatorYamlParser(test_data::full_example()).parse();
@@ -90,7 +78,6 @@ TEST_F(BodyBuilderTest, should_be_able_to_detect_inconsistent_inertia_matrix)
     m(0,0) = 0.0;
     ASSERT_FALSE(is_symmetric_definite_positive(m));
 }
-
 
 /**
  * \code
@@ -150,7 +137,6 @@ TEST_F(BodyBuilderTest, relative_position_should_be_correct)
     ASSERT_DOUBLE_EQ(0.21,body->get_states().y_relative_to_mesh);
     ASSERT_DOUBLE_EQ(33E3,body->get_states().z_relative_to_mesh);
 }
-
 
 /**
  * \brief Unit test where instructions where generated with MatLab
@@ -497,7 +483,6 @@ TEST_F(BodyBuilderTest, total_inertia_is_correct)
     ctm = [cteta*cpsi                , cteta*spsi                , -steta    ;
            sphi*steta*cpsi-cphi*spsi , sphi*steta*spsi+cphi*cpsi , sphi*cteta;
            cphi*steta*cpsi+sphi*spsi , cphi*steta*spsi-sphi*cpsi , cphi*cteta];
-
 
     n = size(raw_mesh_points,2);
     body_mesh_points = ctm * raw_mesh_points -repmat(ctm*translation,1,n);

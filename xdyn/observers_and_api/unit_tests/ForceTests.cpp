@@ -36,18 +36,6 @@ ForceTests::ForceTests() : a(ssc::random_data_generator::DataGenerator(8222))
 {
 }
 
-ForceTests::~ForceTests()
-{
-}
-
-void ForceTests::SetUp()
-{
-}
-
-void ForceTests::TearDown()
-{
-}
-
 TEST_F(ForceTests, LONG_fast_hydrostatic_should_only_be_along_z)
 {
     ForceTester test(test_data::oscillating_cube_example(), test_data::cube());

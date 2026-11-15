@@ -15,9 +15,6 @@ class RectangleTest : public ::testing::Test
 {
     protected:
         RectangleTest();
-        ~RectangleTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -22,18 +22,6 @@ listenersTest::listenersTest() : a(ssc::random_data_generator::DataGenerator(545
 {
 }
 
-listenersTest::~listenersTest()
-{
-}
-
-void listenersTest::SetUp()
-{
-}
-
-void listenersTest::TearDown()
-{
-}
-
 TEST_F(listenersTest, example)
 {
 //! [listenersTest listen_to_file_example]
@@ -106,7 +94,6 @@ TEST_F(listenersTest, bug_2961_can_have_a_single_value_for_commands)
     }
     ds.check_out();
 }
-
 
 TEST_F(listenersTest, can_add_setpoints_to_an_empty_ds)
 {

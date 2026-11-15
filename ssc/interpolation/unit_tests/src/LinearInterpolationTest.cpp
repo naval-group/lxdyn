@@ -14,18 +14,6 @@ LinearInterpolationTest::LinearInterpolationTest() : a(ssc::random_data_generato
 {
 }
 
-LinearInterpolationTest::~LinearInterpolationTest()
-{
-}
-
-void LinearInterpolationTest::SetUp()
-{
-}
-
-void LinearInterpolationTest::TearDown()
-{
-}
-
 TEST_F(LinearInterpolationTest, example)
 {
 //! [LinearInterpolationTest example]

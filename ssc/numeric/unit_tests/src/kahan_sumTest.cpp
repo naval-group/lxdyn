@@ -10,23 +10,9 @@
 #include <functional> // std::plus
 #include <numeric>    // std::accumulate
 
-
-
 using namespace ssc::numeric;
 
 kahan_sumTest::kahan_sumTest() : a(ssc::random_data_generator::DataGenerator(54212))
-{
-}
-
-kahan_sumTest::~kahan_sumTest()
-{
-}
-
-void kahan_sumTest::SetUp()
-{
-}
-
-void kahan_sumTest::TearDown()
 {
 }
 
@@ -50,5 +36,4 @@ TEST_F(kahan_sumTest, example_from_wikipedia)
     ASSERT_NEAR(8,naive, 1E-1);
     ASSERT_NEAR(15.3,kahan_sum, 1E-1);
 }
-
 

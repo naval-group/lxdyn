@@ -8,9 +8,6 @@ class TransformTest : public ::testing::Test
 {
     protected:
         TransformTest();
-        ~TransformTest() override;
-        void SetUp() override;
-        void TearDown() override;
 
         ssc::random_data_generator::DataGenerator a;
 };

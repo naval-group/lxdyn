@@ -20,12 +20,6 @@ constant_step_stepper_architecture_tests::constant_step_stepper_architecture_tes
 {
 }
 
-constant_step_stepper_architecture_tests::~constant_step_stepper_architecture_tests() {}
-
-void constant_step_stepper_architecture_tests::SetUp() {}
-
-void constant_step_stepper_architecture_tests::TearDown() {}
-
 TEST_F(
     constant_step_stepper_architecture_tests,
     collaborators_should_be_called_in_the_right_sequence_for_constant_step_steppers_event_detected)

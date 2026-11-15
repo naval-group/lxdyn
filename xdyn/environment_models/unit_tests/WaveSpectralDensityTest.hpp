@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef WAVESPECTRALDENSITYTEST_HPP_
 #define WAVESPECTRALDENSITYTEST_HPP_
 
@@ -16,9 +15,6 @@ class WaveSpectralDensityTest : public ::testing::Test
 {
     protected:
         WaveSpectralDensityTest();
-        ~WaveSpectralDensityTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

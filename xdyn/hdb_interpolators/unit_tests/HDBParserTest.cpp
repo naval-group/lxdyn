@@ -18,18 +18,6 @@ HDBParserTest::HDBParserTest() : a(ssc::random_data_generator::DataGenerator(833
 {
 }
 
-HDBParserTest::~HDBParserTest()
-{
-}
-
-void HDBParserTest::SetUp()
-{
-}
-
-void HDBParserTest::TearDown()
-{
-}
-
 TEST_F(HDBParserTest, can_get_added_mass)
 {
     const HDBParser builder = HDBParser::from_string(test_data::test_ship_hdb());

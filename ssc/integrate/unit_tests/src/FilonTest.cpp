@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #include "FilonTest.hpp"
 #include "ssc/integrate/Filon.hpp"
 
@@ -13,20 +12,7 @@
 #define PI M_PI
 constexpr double EPS = 1E-6;
 
-
 FilonTest::FilonTest() : a(ssc::random_data_generator::DataGenerator(1221))
-{
-}
-
-FilonTest::~FilonTest()
-{
-}
-
-void FilonTest::SetUp()
-{
-}
-
-void FilonTest::TearDown()
 {
 }
 
@@ -56,7 +42,6 @@ TEST_F(FilonTest, radiation_damping_1)
 
     ssc::integrate::Filon I(Br, 1);
 
-
     const std::vector<double> taus = {0.5, 1, 1.5, 2, 1.5, 3};
     for (size_t i = 0 ; i < taus.size() ; ++i)
     {
@@ -71,7 +56,6 @@ TEST_F(FilonTest, radiation_damping_2)
     const auto Kr = [](const double tau){return exp(-0.2*tau)*cos(0.6*tau);};
 
     ssc::integrate::Filon I(Br);
-
 
     const std::vector<double> taus = {0.5, 1, 1.5, 2, 1.5, 3};
     for (size_t i = 0 ; i < taus.size() ; ++i)

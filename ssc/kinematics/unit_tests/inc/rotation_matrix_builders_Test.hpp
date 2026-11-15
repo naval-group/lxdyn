@@ -8,9 +8,6 @@ class rotation_matrix_builders_Test : public ::testing::Test
 {
     protected:
         rotation_matrix_builders_Test();
-        ~rotation_matrix_builders_Test() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

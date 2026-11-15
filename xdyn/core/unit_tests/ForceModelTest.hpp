@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef FORCEMODELTEST_HPP_
 #define FORCEMODELTEST_HPP_
 
@@ -16,9 +15,6 @@ class ForceModelTest : public ::testing::Test
 {
     protected:
         ForceModelTest();
-        ~ForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

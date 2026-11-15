@@ -17,9 +17,6 @@ class MMGRudderForceModelTest : public ::testing::Test
 {
     protected:
         MMGRudderForceModelTest();
-        ~MMGRudderForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         EnvironmentAndFrames get_env();
         ssc::random_data_generator::DataGenerator a;
 

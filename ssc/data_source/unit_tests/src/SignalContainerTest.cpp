@@ -14,18 +14,6 @@ SignalContainerTest::SignalContainerTest() : a(ssc::random_data_generator::DataG
 {
 }
 
-SignalContainerTest::~SignalContainerTest()
-{
-}
-
-void SignalContainerTest::SetUp()
-{
-}
-
-void SignalContainerTest::TearDown()
-{
-}
-
 TEST_F(SignalContainerTest, example)
 {
 //! [SignalContainerTest example]
@@ -54,7 +42,6 @@ TEST_F(SignalContainerTest, method_get_should_throw_if_signal_has_incorrect_retu
     ASSERT_THROW(signals.get<double>("signal name"), SignalContainerException);
 }
 
-
 TEST_F(SignalContainerTest, should_be_able_to_retrieve_all_signals_of_a_given_type)
 {
     SignalContainer signals;
@@ -78,8 +65,6 @@ TEST_F(SignalContainerTest, should_be_able_to_retrieve_all_signals_of_a_given_ty
     ASSERT_EQ(d1, double_signals["signal1"]);
     ASSERT_EQ(d2, double_signals["signal2"]);
 }
-
-
 
 TEST_F(SignalContainerTest, should_be_able_to_retrieve_names_of_all_types_in_SignalContainer)
 {
@@ -251,7 +236,6 @@ TEST_F(SignalContainerTest, float_coercion_bug)
     const float f1 = a.random<float>();
 
     signals.set("signal5",f1);
-
 
     const std::vector<float> ref_f = a.random_vector_of<float>().of_size(2);
     std::vector<double> ref(ref_f.begin(), ref_f.end());

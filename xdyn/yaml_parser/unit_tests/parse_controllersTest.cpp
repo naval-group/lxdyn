@@ -13,18 +13,6 @@ parse_controllersTest::parse_controllersTest() : a(ssc::random_data_generator::D
 {
 }
 
-parse_controllersTest::~parse_controllersTest()
-{
-}
-
-void parse_controllersTest::SetUp()
-{
-}
-
-void parse_controllersTest::TearDown()
-{
-}
-
 TEST_F(parse_controllersTest, example)
 {
 //! [parse_controllersTest example]

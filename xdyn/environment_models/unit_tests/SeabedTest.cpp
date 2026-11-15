@@ -14,15 +14,6 @@
 SeabedTest::SeabedTest() : a(ssc::random_data_generator::DataGenerator(149555))
 {}
 
-SeabedTest::~SeabedTest()
-{}
-
-void SeabedTest::SetUp()
-{}
-
-void SeabedTest::TearDown()
-{}
-
 TEST_F(SeabedTest, seabed_write)
 {
     const unsigned width = 4;

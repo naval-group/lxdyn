@@ -8,9 +8,6 @@ class ODEintTests : public ::testing::Test
 {
     protected:
         ODEintTests();
-        ~ODEintTests() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

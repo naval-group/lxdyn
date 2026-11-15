@@ -15,9 +15,6 @@ class ResistanceCurveForceModelTest : public ::testing::Test
 {
     protected:
         ResistanceCurveForceModelTest();
-        ~ResistanceCurveForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

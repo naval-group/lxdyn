@@ -8,7 +8,6 @@ class JSONSerializerTest : public testing::Test
 {
 public:
     JSONSerializerTest();
-    ~JSONSerializerTest() override;
 
     ssc::random_data_generator::DataGenerator a;
     const std::string yaml;

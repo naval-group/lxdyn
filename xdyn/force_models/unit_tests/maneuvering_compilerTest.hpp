@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef MANEUVERING_COMPILERTEST_HPP_
 #define MANEUVERING_COMPILERTEST_HPP_
 
@@ -16,9 +15,6 @@ class maneuvering_compilerTest : public ::testing::Test
 {
     protected:
         maneuvering_compilerTest();
-        ~maneuvering_compilerTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -20,18 +20,6 @@ KinematicsTests::KinematicsTests() : a(ssc::random_data_generator::DataGenerator
 {
 }
 
-KinematicsTests::~KinematicsTests()
-{
-}
-
-void KinematicsTests::SetUp()
-{
-}
-
-void KinematicsTests::TearDown()
-{
-}
-
 TEST_F(KinematicsTests, can_add_a_transform_to_a_kinematics_object)
 {
     ssc::kinematics::Kinematics k;
@@ -150,7 +138,6 @@ TEST_F(KinematicsTests, should_throw_when_adding_tranform_from_a_frame_to_itself
     const auto aTa = random_transform(a, "A", "A");
     ASSERT_THROW(k.add(aTa), KinematicsException);
 }
-
 
 TEST_F(KinematicsTests, can_compose_two_transformations)
 {

@@ -5,23 +5,10 @@
  * \author cec
  */
 
-
 #include "string2vectorTest.hpp"
 #include "ssc/websocket/string2vector.hpp"
 
 string2vectorTest::string2vectorTest() : a(ssc::random_data_generator::DataGenerator(8542222))
-{
-}
-
-string2vectorTest::~string2vectorTest()
-{
-}
-
-void string2vectorTest::SetUp()
-{
-}
-
-void string2vectorTest::TearDown()
 {
 }
 

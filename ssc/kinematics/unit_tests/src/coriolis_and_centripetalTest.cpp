@@ -16,18 +16,6 @@ coriolis_and_centripetalTest::coriolis_and_centripetalTest() : a(ssc::random_dat
 {
 }
 
-coriolis_and_centripetalTest::~coriolis_and_centripetalTest()
-{
-}
-
-void coriolis_and_centripetalTest::SetUp()
-{
-}
-
-void coriolis_and_centripetalTest::TearDown()
-{
-}
-
 TEST_F(coriolis_and_centripetalTest, if_omega_is_zero_force_should_be_zero)
 {
     for (size_t i = 0 ; i < 1000 ; ++i)

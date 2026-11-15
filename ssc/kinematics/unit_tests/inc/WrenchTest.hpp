@@ -15,9 +15,6 @@ class WrenchTest : public ::testing::Test
 {
     protected:
         WrenchTest();
-        ~WrenchTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef OBSERVERTESTS_HPP_
 #define OBSERVERTESTS_HPP_
 
@@ -16,9 +15,6 @@ class ObserverTests : public ::testing::Test
 {
     protected:
         ObserverTests();
-        ~ObserverTests() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

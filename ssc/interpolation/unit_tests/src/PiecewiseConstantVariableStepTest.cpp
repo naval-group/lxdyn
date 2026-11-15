@@ -17,18 +17,6 @@ PiecewiseConstantVariableStepTest::PiecewiseConstantVariableStepTest() : a(ssc::
 {
 }
 
-PiecewiseConstantVariableStepTest::~PiecewiseConstantVariableStepTest()
-{
-}
-
-void PiecewiseConstantVariableStepTest::SetUp()
-{
-}
-
-void PiecewiseConstantVariableStepTest::TearDown()
-{
-}
-
 TEST_F(PiecewiseConstantVariableStepTest, example)
 {
 //! [PiecewiseConstantVariableStepTest example]
@@ -42,7 +30,6 @@ TEST_F(PiecewiseConstantVariableStepTest, example)
     ASSERT_DOUBLE_EQ(4, interpolate.f(7.5));
 //! [PiecewiseConstantVariableStepTest expected output]
 }
-
 
 TEST_F(PiecewiseConstantVariableStepTest, should_be_able_to_retrieve_initial_values)
 {

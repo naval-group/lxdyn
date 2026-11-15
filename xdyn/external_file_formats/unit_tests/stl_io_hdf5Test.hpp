@@ -5,11 +5,6 @@
 
 class stl_io_hdf5Test : public ::testing::Test
 {
-    protected:
-        stl_io_hdf5Test(){}
-        ~stl_io_hdf5Test() override{}
-        void SetUp() override{}
-        void TearDown() override{}
 };
 
 #endif

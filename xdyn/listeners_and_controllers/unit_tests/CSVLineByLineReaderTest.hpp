@@ -17,13 +17,9 @@ class CSVLineByLineReaderTest : public ::testing::Test
 {
     protected:
         CSVLineByLineReaderTest();
-        ~CSVLineByLineReaderTest() override;
-        void SetUp() override;
-        void TearDown() override;
         CSVLineByLineReader get_reader() const;
         TempFile csv;
         ssc::random_data_generator::DataGenerator a;
 };
-
 
 #endif /* CSVFILEREADERTEST_HPP_ */

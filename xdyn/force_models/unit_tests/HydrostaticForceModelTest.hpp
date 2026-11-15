@@ -17,9 +17,6 @@ class HydrostaticForceModelTest : public ::testing::Test
 {
     protected:
         HydrostaticForceModelTest();
-        ~HydrostaticForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         EnvironmentAndFrames get_environment_and_frames() const;
         VectorOfVectorOfPoints get_points() const;
         ssc::random_data_generator::DataGenerator a;

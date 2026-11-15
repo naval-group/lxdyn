@@ -10,10 +10,6 @@ SimulationServerObserverTest::SimulationServerObserverTest() : a(ssc::random_dat
 {
 }
 
-SimulationServerObserverTest::~SimulationServerObserverTest()
-{
-}
-
 TEST_F(SimulationServerObserverTest, requested_additional_variables_are_available)
 {
     const double dt = 1;

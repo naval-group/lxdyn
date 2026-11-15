@@ -4,10 +4,6 @@
 #include "gmock/gmock.h"
 #include <cmath>
 
-HydroPolarForceModelTest::HydroPolarForceModelTest()
-{
-}
-
 std::string get_yaml_input();
 std::string get_yaml_input()
 {
@@ -75,7 +71,6 @@ TEST_F(HydroPolarForceModelTest, can_parse_optional_output)
     }
     ASSERT_THAT(input.angle_command, testing::Optional(std::string("beta")));
 }
-
 
 namespace {
 BodyStates get_states(const double u = 0., const double v = 0.)

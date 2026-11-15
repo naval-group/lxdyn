@@ -17,18 +17,6 @@ maneuvering_parserTest::maneuvering_parserTest() :
 {
 }
 
-maneuvering_parserTest::~maneuvering_parserTest()
-{
-}
-
-void maneuvering_parserTest::SetUp()
-{
-}
-
-void maneuvering_parserTest::TearDown()
-{
-}
-
 using boost::spirit::ascii::blank;
 
 double numerical_parse(const std::string& string_to_parse);

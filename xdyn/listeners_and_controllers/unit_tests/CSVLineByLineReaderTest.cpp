@@ -92,12 +92,6 @@ void non_existent_command_column(TempFile& csv)
     csv.close();
 }
 
-CSVLineByLineReaderTest::~CSVLineByLineReaderTest() {}
-
-void CSVLineByLineReaderTest::SetUp() {}
-
-void CSVLineByLineReaderTest::TearDown() {}
-
 CSVLineByLineReader CSVLineByLineReaderTest::get_reader() const
 {
     CSVYaml yaml;

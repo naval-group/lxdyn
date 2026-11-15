@@ -4,9 +4,6 @@
 #include "gtest/gtest.h"
 class MMGManeuveringForceModelTest : public ::testing::Test
 {
-    protected:
-        MMGManeuveringForceModelTest();
-        ~MMGManeuveringForceModelTest() override;
 };
 
 #endif  /* MMGMANEUVERINGFORCEMODELTEST_HPP_ */

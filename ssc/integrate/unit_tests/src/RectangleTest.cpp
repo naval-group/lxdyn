@@ -15,18 +15,6 @@ RectangleTest::RectangleTest() : a(ssc::random_data_generator::DataGenerator(212
 {
 }
 
-RectangleTest::~RectangleTest()
-{
-}
-
-void RectangleTest::SetUp()
-{
-}
-
-void RectangleTest::TearDown()
-{
-}
-
 TEST_F(RectangleTest, should_be_able_to_integrate_a_constant)
 {
     for (size_t i = 0 ; i < 100 ; ++i)

@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef BODYTEST_HPP_
 #define BODYTEST_HPP_
 
@@ -17,9 +16,6 @@ class BodyTest : public ::testing::Test
 {
     protected:
         BodyTest();
-        ~BodyTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         const BodyPtr& body;
 };

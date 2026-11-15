@@ -43,18 +43,6 @@ RudderForceModelTest::RudderForceModelTest() : a(ssc::random_data_generator::Dat
 {
 }
 
-RudderForceModelTest::~RudderForceModelTest()
-{
-}
-
-void RudderForceModelTest::SetUp()
-{
-}
-
-void RudderForceModelTest::TearDown()
-{
-}
-
 EnvironmentAndFrames RudderForceModelTest::get_env()
 {
     EnvironmentAndFrames env;

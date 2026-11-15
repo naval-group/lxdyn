@@ -38,18 +38,6 @@ WageningenControlledForceModelTest::WageningenControlledForceModelTest() : a(ssc
 {
 }
 
-WageningenControlledForceModelTest::~WageningenControlledForceModelTest()
-{
-}
-
-void WageningenControlledForceModelTest::SetUp()
-{
-}
-
-void WageningenControlledForceModelTest::TearDown()
-{
-}
-
 TEST_F(WageningenControlledForceModelTest, parser)
 {
     const auto w = WageningenControlledForceModel::parse(test_data::wageningen());

@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #include "BurcherTest.hpp"
 #include "ssc/integrate/Burcher.hpp"
 
@@ -16,18 +15,6 @@ constexpr double EPS1 = 1E-6;
 constexpr double EPS2 = 1E-3;
 
 BurcherTest::BurcherTest() : a(ssc::random_data_generator::DataGenerator(212))
-{
-}
-
-BurcherTest::~BurcherTest()
-{
-}
-
-void BurcherTest::SetUp()
-{
-}
-
-void BurcherTest::TearDown()
 {
 }
 
@@ -56,7 +43,6 @@ TEST_F(BurcherTest, radiation_damping_1)
 
     ssc::integrate::Burcher I(Br, 1);
 
-
     const std::vector<double> taus = {0.5, 1, 1.5, 2, 1.5, 3};
     for (size_t i = 0 ; i < taus.size() ; ++i)
     {
@@ -71,7 +57,6 @@ TEST_F(BurcherTest, radiation_damping_2)
     const auto Kr = [](const double tau){return exp(-0.2*tau)*cos(0.6*tau);};
 
     ssc::integrate::Burcher I(Br);
-
 
     const std::vector<double> taus = {0.5, 1, 1.5, 2, 1.5, 3};
     for (size_t i = 0 ; i < taus.size() ; ++i)

@@ -16,9 +16,6 @@ class TypeCoercionTest : public ::testing::Test
 {
     protected:
         TypeCoercionTest();
-        ~TypeCoercionTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -17,18 +17,6 @@ BasicBuoyancyForceModelTest::BasicBuoyancyForceModelTest() : a(ssc::random_data_
 {
 }
 
-BasicBuoyancyForceModelTest::~BasicBuoyancyForceModelTest()
-{
-}
-
-void BasicBuoyancyForceModelTest::SetUp()
-{
-}
-
-void BasicBuoyancyForceModelTest::TearDown()
-{
-}
-
 TEST_F(BasicBuoyancyForceModelTest, example)
 {
 //! [BasicBuoyancyForceModelTest example]

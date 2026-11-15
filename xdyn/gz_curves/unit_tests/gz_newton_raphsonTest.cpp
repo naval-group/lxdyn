@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #include "gz_newton_raphsonTest.hpp"
 #include "gz_newton_raphson.hpp"
 
@@ -18,17 +17,6 @@ gz_newton_raphsonTest::gz_newton_raphsonTest() : a(ssc::random_data_generator::D
 {
 }
 
-gz_newton_raphsonTest::~gz_newton_raphsonTest()
-{
-}
-
-void gz_newton_raphsonTest::SetUp()
-{
-}
-
-void gz_newton_raphsonTest::TearDown()
-{
-}
 GZ::Resultant f(const GZ::State& X);
 GZ::Resultant f(const GZ::State& X)
 {

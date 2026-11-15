@@ -15,9 +15,6 @@ class GaussKronrodTest : public ::testing::Test
 {
     protected:
         GaussKronrodTest();
-        ~GaussKronrodTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

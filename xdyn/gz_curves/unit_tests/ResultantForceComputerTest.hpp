@@ -16,9 +16,6 @@ class ResultantForceComputerTest : public ::testing::Test
 {
     protected:
         ResultantForceComputerTest();
-        ~ResultantForceComputerTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         Sim& sim;
 };

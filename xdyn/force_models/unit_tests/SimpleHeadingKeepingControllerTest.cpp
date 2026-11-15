@@ -19,18 +19,6 @@ SimpleHeadingKeepingControllerTest::SimpleHeadingKeepingControllerTest() : a(ssc
 {
 }
 
-SimpleHeadingKeepingControllerTest::~SimpleHeadingKeepingControllerTest()
-{
-}
-
-void SimpleHeadingKeepingControllerTest::SetUp()
-{
-}
-
-void SimpleHeadingKeepingControllerTest::TearDown()
-{
-}
-
 TEST_F(SimpleHeadingKeepingControllerTest, parser)
 {
     const auto k = SimpleHeadingKeepingController::parse(test_data::simple_track_keeping());

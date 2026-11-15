@@ -16,18 +16,6 @@ Cos2sDirectionalSpreadingTest::Cos2sDirectionalSpreadingTest() : a(ssc::random_d
 {
 }
 
-Cos2sDirectionalSpreadingTest::~Cos2sDirectionalSpreadingTest()
-{
-}
-
-void Cos2sDirectionalSpreadingTest::SetUp()
-{
-}
-
-void Cos2sDirectionalSpreadingTest::TearDown()
-{
-}
-
 TEST_F(Cos2sDirectionalSpreadingTest, example)
 {
 //! [Cos2sDirectionalSpreadingTest example]

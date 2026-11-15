@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef PARSE_OUTPUTTEST_HPP_
 #define PARSE_OUTPUTTEST_HPP_
 
@@ -16,9 +15,6 @@ class parse_outputTest : public ::testing::Test
 {
     protected:
         parse_outputTest();
-        ~parse_outputTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

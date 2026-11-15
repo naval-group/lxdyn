@@ -8,9 +8,6 @@ class constant_step_stepper_architecture_tests : public ::testing::Test
 {
     protected:
         constant_step_stepper_architecture_tests();
-        ~constant_step_stepper_architecture_tests() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

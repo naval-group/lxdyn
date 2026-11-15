@@ -10,23 +10,6 @@
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
-
-GRPCForceModelTest::GRPCForceModelTest()
-{
-}
-
-GRPCForceModelTest::~GRPCForceModelTest()
-{
-}
-
-void GRPCForceModelTest::SetUp()
-{
-}
-
-void GRPCForceModelTest::TearDown()
-{
-}
-
 TEST_F(GRPCForceModelTest, can_parse_reference_frame)
 {
     const auto input = GRPCForceModel::parse(test_data::gRPC_force_model());

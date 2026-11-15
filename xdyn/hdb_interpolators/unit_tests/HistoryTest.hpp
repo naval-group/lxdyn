@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef HISTORYTEST_HPP_
 #define HISTORYTEST_HPP_
 
@@ -16,9 +15,6 @@ class HistoryTest : public ::testing::Test
 {
     protected:
         HistoryTest();
-        ~HistoryTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

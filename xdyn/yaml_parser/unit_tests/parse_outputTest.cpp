@@ -5,24 +5,11 @@
  *      Author: cady
  */
 
-
 #include "parse_outputTest.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
 parse_outputTest::parse_outputTest() : a(ssc::random_data_generator::DataGenerator(215451))
-{
-}
-
-parse_outputTest::~parse_outputTest()
-{
-}
-
-void parse_outputTest::SetUp()
-{
-}
-
-void parse_outputTest::TearDown()
 {
 }
 

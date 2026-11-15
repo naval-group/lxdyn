@@ -18,18 +18,6 @@ JonswapSpectrumTest::JonswapSpectrumTest() : a(ssc::random_data_generator::DataG
 {
 }
 
-JonswapSpectrumTest::~JonswapSpectrumTest()
-{
-}
-
-void JonswapSpectrumTest::SetUp()
-{
-}
-
-void JonswapSpectrumTest::TearDown()
-{
-}
-
 TEST_F(JonswapSpectrumTest, example)
 {
 //! [JonswapSpectrumTest example]

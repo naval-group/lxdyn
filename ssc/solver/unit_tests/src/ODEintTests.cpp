@@ -25,18 +25,6 @@ ODEintTests::ODEintTests() : a(ssc::random_data_generator::DataGenerator(4522513
 {
 }
 
-ODEintTests::~ODEintTests()
-{
-}
-
-void ODEintTests::SetUp()
-{
-}
-
-void ODEintTests::TearDown()
-{
-}
-
 using EulerStepper = boost::numeric::odeint::euler<StateType>;
 using RK4Stepper = boost::numeric::odeint::runge_kutta4<StateType>;
 using RKCK = boost::numeric::odeint::runge_kutta_cash_karp54<StateType>;

@@ -21,18 +21,6 @@ EverythingObserverTest::EverythingObserverTest() : a(ssc::random_data_generator:
 {
 }
 
-EverythingObserverTest::~EverythingObserverTest()
-{
-}
-
-void EverythingObserverTest::SetUp()
-{
-}
-
-void EverythingObserverTest::TearDown()
-{
-}
-
 ListOfObservers observers();
 ListOfObservers observers()
 {

@@ -42,18 +42,6 @@ MeshIntersectorTest::MeshIntersectorTest() : a(ssc::random_data_generator::DataG
 {
 }
 
-MeshIntersectorTest::~MeshIntersectorTest()
-{
-}
-
-void MeshIntersectorTest::SetUp()
-{
-}
-
-void MeshIntersectorTest::TearDown()
-{
-}
-
 TEST_F(MeshIntersectorTest, can_compute_immersed_polygon_for_one_immersed_node)
 {
 //! [MeshIntersectorTest immersed_polygon_example_1]
@@ -86,7 +74,6 @@ TEST_F(MeshIntersectorTest, can_compute_immersed_polygon_for_one_immersed_node)
     ASSERT_DOUBLE_EQ(0,immersions.at(0));
     ASSERT_DOUBLE_EQ(1,immersions.at(1));
 }
-
 
 TEST_F(MeshIntersectorTest, can_compute_immersed_polygon_for_two_immersed_nodes)
 {
@@ -344,7 +331,6 @@ TEST_F(MeshIntersectorTest, another_bug_in_immersed_polygon)
     ASSERT_DOUBLE_EQ(0,immersions.at(2));
 }
 
-
 TEST_F(MeshIntersectorTest, should_be_able_to_compute_intersection_even_if_one_of_the_points_is_exactly_on_the_surface)
 {
     const EPoint A(1,2,3);
@@ -447,7 +433,6 @@ TEST_F(MeshIntersectorTest, bug3_in_immersed_polygon)
     ASSERT_LT(0, (p.col(0)-p.col(2)).norm());
     ASSERT_LT(0, (p.col(1)-p.col(2)).norm());
 }
-
 
 TEST_F(MeshIntersectorTest, can_compute_the_volume_of_a_single_facet)
 {

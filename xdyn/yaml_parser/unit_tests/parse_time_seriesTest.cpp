@@ -13,18 +13,6 @@ parse_time_seriesTest::parse_time_seriesTest() : a(ssc::random_data_generator::D
 {
 }
 
-parse_time_seriesTest::~parse_time_seriesTest()
-{
-}
-
-void parse_time_seriesTest::SetUp()
-{
-}
-
-void parse_time_seriesTest::TearDown()
-{
-}
-
 TEST_F(parse_time_seriesTest, example)
 {
 //! [parse_command_yaml example]
@@ -66,7 +54,6 @@ TEST_F(parse_time_seriesTest, example)
     ASSERT_DOUBLE_EQ(0, commands[1].values["psi_co"][3]);
 //! [parse_command_yaml example]
 }
-
 
 TEST_F(parse_time_seriesTest, setpoints_example)
 {

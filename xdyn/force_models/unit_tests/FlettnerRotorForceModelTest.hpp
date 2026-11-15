@@ -6,7 +6,6 @@
 class FlettnerRotorForceModelTest : public ::testing::Test
 {
     public:
-        FlettnerRotorForceModelTest();
         ~FlettnerRotorForceModelTest() override = default;
 };
 

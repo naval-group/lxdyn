@@ -19,10 +19,6 @@ JSONSerializerTest::JSONSerializerTest(): a(ssc::random_data_generator::DataGene
 {
 }
 
-JSONSerializerTest::~JSONSerializerTest()
-{
-}
-
 TEST_F(JSONSerializerTest, can_parse_simple_history)
 {
     const double t_list[5] = {0,0.1,0.2,0.3,0.4};

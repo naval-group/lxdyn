@@ -23,18 +23,6 @@ PIDControllerTest::PIDControllerTest() : a(ssc::random_data_generator::DataGener
 {
 }
 
-PIDControllerTest::~PIDControllerTest()
-{
-}
-
-void PIDControllerTest::SetUp()
-{
-}
-
-void PIDControllerTest::TearDown()
-{
-}
-
 std::string PIDControllerTest::pid_specific_yaml(const double Kp, const double Ki, const double Kd,
                                                  const std::string& setpoint_name,
                                                  const std::string& command_name
@@ -303,7 +291,6 @@ TEST_F(PIDControllerTest, can_initialize_controllers)
 
     //! [controllersTest initialize_controllers]
 }
-
 
 TEST_F(PIDControllerTest, can_get_the_commands_outputted_by_the_controller)
 {

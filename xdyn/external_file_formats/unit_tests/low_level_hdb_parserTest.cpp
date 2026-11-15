@@ -18,18 +18,6 @@ low_level_hdb_parserTest::low_level_hdb_parserTest() : a(ssc::random_data_genera
 {
 }
 
-low_level_hdb_parserTest::~low_level_hdb_parserTest()
-{
-}
-
-void low_level_hdb_parserTest::SetUp()
-{
-}
-
-void low_level_hdb_parserTest::TearDown()
-{
-}
-
 TEST_F(low_level_hdb_parserTest, can_parse_string_key)
 {
     const hdb::AST hdb_file = hdb::parse("[test this] string");
@@ -67,7 +55,6 @@ TEST_F(low_level_hdb_parserTest, can_parse_key)
     qi::phrase_parse(s.begin(), s.end(), g.header,blank,actual);
     ASSERT_EQ("sdgf sdfgsdgf sdfgsdg",actual);
 }
-
 
 TEST_F(low_level_hdb_parserTest, can_parse_section)
 {

@@ -21,18 +21,6 @@ MapObserverTest::MapObserverTest() : a(ssc::random_data_generator::DataGenerator
 {
 }
 
-MapObserverTest::~MapObserverTest()
-{
-}
-
-void MapObserverTest::SetUp()
-{
-}
-
-void MapObserverTest::TearDown()
-{
-}
-
 ListOfObservers observe(const std::vector<std::string>& stuff_to_watch);
 ListOfObservers observe(const std::vector<std::string>& stuff_to_watch)
 {

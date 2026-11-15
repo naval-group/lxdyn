@@ -36,14 +36,6 @@ constexpr int NB_OF_TRIALS = 100;
 
 using namespace ssc::random_data_generator;
 
-void DataGeneratorTests::SetUp()
-{
-}
-
-void DataGeneratorTests::TearDown()
-{
-}
-
 TEST_F(DataGeneratorTests, should_have_a_random_data_generator_for_doubles)
 {
     std::set<double> S;
@@ -167,8 +159,6 @@ TEST_F(DataGeneratorTests, should_return_zero_if_forbidden_interval_matches_allo
         ASSERT_EQ(a.random<double>().between(min_bound,max_bound).but().outside(min_bound,max_bound)(),0);
     }
 }
-
-
 
 TEST_F(DataGeneratorTests, should_be_able_to_generate_size_ts_for_all_but_one_value)
 {

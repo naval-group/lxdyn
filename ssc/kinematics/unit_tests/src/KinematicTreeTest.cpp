@@ -5,25 +5,12 @@
  * \author cec
  */
 
-
 #include "KinematicTreeTest.hpp"
 #include "ssc/kinematics/KinematicTree.hpp"
 
 using namespace ssc::kinematics;
 
 KinematicTreeTest::KinematicTreeTest() : a(ssc::random_data_generator::DataGenerator(78784))
-{
-}
-
-KinematicTreeTest::~KinematicTreeTest()
-{
-}
-
-void KinematicTreeTest::SetUp()
-{
-}
-
-void KinematicTreeTest::TearDown()
 {
 }
 

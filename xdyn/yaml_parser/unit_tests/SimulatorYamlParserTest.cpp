@@ -39,18 +39,6 @@ SimulatorYamlParserTest::SimulatorYamlParserTest() : a(ssc::random_data_generato
 {
 }
 
-SimulatorYamlParserTest::~SimulatorYamlParserTest()
-{
-}
-
-void SimulatorYamlParserTest::SetUp()
-{
-}
-
-void SimulatorYamlParserTest::TearDown()
-{
-}
-
 TEST_F(SimulatorYamlParserTest, can_parse_rotations)
 {
     const YamlRotation rot = yaml.rotations;

@@ -16,18 +16,6 @@ VelocityTest::VelocityTest() : a(ssc::random_data_generator::DataGenerator(7779)
 {
 }
 
-VelocityTest::~VelocityTest()
-{
-}
-
-void VelocityTest::SetUp()
-{
-}
-
-void VelocityTest::TearDown()
-{
-}
-
 TEST_F(VelocityTest, throws_if_P_and_omega_are_not_projected_in_the_same_frame)
 {
     for (size_t i = 0 ; i < 1000 ; ++i)

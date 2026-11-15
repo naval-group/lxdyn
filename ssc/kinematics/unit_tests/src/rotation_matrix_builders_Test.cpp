@@ -24,18 +24,6 @@ rotation_matrix_builders_Test::rotation_matrix_builders_Test() : a(ssc::random_d
 {
 }
 
-rotation_matrix_builders_Test::~rotation_matrix_builders_Test()
-{
-}
-
-void rotation_matrix_builders_Test::SetUp()
-{
-}
-
-void rotation_matrix_builders_Test::TearDown()
-{
-}
-
 TEST_F(rotation_matrix_builders_Test, can_get_rotation_around_x_axis)
 {
     const RotationMatrix R = rot(1,0,0,PI/3);

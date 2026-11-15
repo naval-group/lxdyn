@@ -32,18 +32,6 @@ FroudeKrylovForceModelTest::FroudeKrylovForceModelTest() : a(ssc::random_data_ge
 {
 }
 
-FroudeKrylovForceModelTest::~FroudeKrylovForceModelTest()
-{
-}
-
-void FroudeKrylovForceModelTest::SetUp()
-{
-}
-
-void FroudeKrylovForceModelTest::TearDown()
-{
-}
-
 std::shared_ptr<WaveModel> FroudeKrylovForceModelTest::get_wave_model() const
 {
     const double psi0 = PI/4;

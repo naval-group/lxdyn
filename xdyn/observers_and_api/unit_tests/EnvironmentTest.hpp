@@ -5,9 +5,6 @@
 
 class EnvironmentTest : public ::testing::Test
 {
-public:
-    EnvironmentTest();
-    ~EnvironmentTest() override{}
 };
 
 #endif /* CORE_UNIT_TESTS_INC_ENVIRONMENTTEST_HPP_ */

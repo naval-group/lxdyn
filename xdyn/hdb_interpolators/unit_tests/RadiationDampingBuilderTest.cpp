@@ -23,18 +23,6 @@ RadiationDampingBuilderTest::RadiationDampingBuilderTest() : a(ssc::random_data_
 {
 }
 
-RadiationDampingBuilderTest::~RadiationDampingBuilderTest()
-{
-}
-
-void RadiationDampingBuilderTest::SetUp()
-{
-}
-
-void RadiationDampingBuilderTest::TearDown()
-{
-}
-
 TEST_F(RadiationDampingBuilderTest, can_calculate_cosine_transform)
 {
     const auto B = [](const double ){return 1;};

@@ -17,18 +17,6 @@ SplineVariableStepTest::SplineVariableStepTest() : a(ssc::random_data_generator:
 {
 }
 
-SplineVariableStepTest::~SplineVariableStepTest()
-{
-}
-
-void SplineVariableStepTest::SetUp()
-{
-}
-
-void SplineVariableStepTest::TearDown()
-{
-}
-
 TEST_F(SplineVariableStepTest, example)
 {
 //! [SplineVariableStepTest example]

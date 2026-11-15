@@ -13,18 +13,6 @@ TrapezoidalIntegrationTest::TrapezoidalIntegrationTest() : a(ssc::random_data_ge
 {
 }
 
-TrapezoidalIntegrationTest::~TrapezoidalIntegrationTest()
-{
-}
-
-void TrapezoidalIntegrationTest::SetUp()
-{
-}
-
-void TrapezoidalIntegrationTest::TearDown()
-{
-}
-
 constexpr double EPS = 1E-6;
 constexpr int NINT = 20000;
 TEST_F(TrapezoidalIntegrationTest, should_be_able_to_integrate_x)
@@ -66,8 +54,4 @@ TEST_F(TrapezoidalIntegrationTest, should_be_able_to_integrate_a_parabola)
         ASSERT_SMALL_RELATIVE_ERROR(integrator.integrate_f(xa,xb,1E-4), lambda*(pow(xb,3)-pow(xa,3))/3.+mu*(xb-xa), EPS);
     }
 }
-
-
-
-
 

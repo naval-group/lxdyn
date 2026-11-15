@@ -15,9 +15,6 @@ class pairwise_sumTest : public ::testing::Test
 {
     protected:
         pairwise_sumTest();
-        ~pairwise_sumTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

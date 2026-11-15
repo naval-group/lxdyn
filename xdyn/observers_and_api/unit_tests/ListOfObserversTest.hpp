@@ -5,11 +5,6 @@
 
 class ListOfObserversTest : public ::testing::Test
 {
-    protected:
-        ListOfObserversTest(){}
-        ~ListOfObserversTest() override{}
-        void SetUp() override{}
-        void TearDown() override{}
 };
 
 #endif

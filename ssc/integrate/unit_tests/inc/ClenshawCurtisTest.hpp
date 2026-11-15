@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #ifndef CLENSHAWCURTISTEST_HPP_
 #define CLENSHAWCURTISTEST_HPP_
 
@@ -16,9 +15,6 @@ class ClenshawCurtisTest : public ::testing::Test
 {
     protected:
         ClenshawCurtisTest();
-        ~ClenshawCurtisTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

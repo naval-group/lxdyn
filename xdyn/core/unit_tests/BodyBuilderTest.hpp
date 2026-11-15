@@ -20,9 +20,6 @@ class BodyBuilderTest : public ::testing::Test
 
     protected:
         BodyBuilderTest();
-        ~BodyBuilderTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         const BodyPtr& body;
 };

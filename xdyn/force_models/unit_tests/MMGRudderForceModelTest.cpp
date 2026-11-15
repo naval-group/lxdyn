@@ -68,12 +68,6 @@ MMGRudderForceModelTest::MMGRudderForceModelTest()
 {
 }
 
-MMGRudderForceModelTest::~MMGRudderForceModelTest() {}
-
-void MMGRudderForceModelTest::SetUp() {}
-
-void MMGRudderForceModelTest::TearDown() {}
-
 EnvironmentAndFrames MMGRudderForceModelTest::get_env()
 {
     EnvironmentAndFrames env;

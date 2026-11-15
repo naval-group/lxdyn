@@ -29,18 +29,6 @@ ResultantForceComputerTest::ResultantForceComputerTest() : a(ssc::random_data_ge
 {
 }
 
-ResultantForceComputerTest::~ResultantForceComputerTest()
-{
-}
-
-void ResultantForceComputerTest::SetUp()
-{
-}
-
-void ResultantForceComputerTest::TearDown()
-{
-}
-
 TEST_F(ResultantForceComputerTest, sim_only_contains_gravity_and_hydrostatic_forces)
 {
     sim.reset_history();

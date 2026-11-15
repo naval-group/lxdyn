@@ -23,21 +23,8 @@ AiryTest::AiryTest() : a(ssc::random_data_generator::DataGenerator(54200))
 {
 }
 
-AiryTest::~AiryTest()
-{
-}
-
-void AiryTest::SetUp()
-{
-}
-
-void AiryTest::TearDown()
-{
-}
-
 constexpr double EPS = 1E-10;
 constexpr double BIG_EPS = 1E-4;
-
 
 TEST_F(AiryTest, single_frequency_single_direction_at_one_point)
 {
@@ -422,7 +409,6 @@ TEST_F(AiryTest, orbital_velocity_sanity_check)
     ys.delta = 1;
     const Stretching ss(ys);
 
-
     for (size_t i = 0 ; i < 100 ; ++i)
     {
         const DiscreteDirectionalWaveSpectrum A = discretize(DiracSpectralDensity(omega0, Hs), DiracDirectionalSpreading(psi), omega_min, omega_max, nfreq, ndir, ss, false);
@@ -456,7 +442,6 @@ TEST_F(AiryTest, orbital_velocity_and_elevation_should_have_opposite_signs)
     ys.h = 0;
     ys.delta = 1;
     const Stretching ss(ys);
-
 
     for (size_t i = 0 ; i < 100 ; ++i)
     {
@@ -585,7 +570,6 @@ TEST_F(AiryTest, orbital_velocities_and_dynamic_pressure_should_decrease_with_de
     const size_t nfreq = 100;
     const size_t ndir = 100;
 
-
     YamlStretching ys;
     ys.h = 0;
     ys.delta = 1;
@@ -632,7 +616,6 @@ TEST_F(AiryTest, orbital_velocities_and_dynamic_pressure_should_decrease_with_de
     const double omega_max = 10;
     const size_t nfreq = 100;
     const size_t ndir = 100;
-
 
     YamlStretching ys;
     ys.h = 0;
@@ -683,7 +666,6 @@ TEST_F(AiryTest, total_pressure_should_always_be_positive_in_finite_depth)
     const size_t nfreq = 100;
     const size_t ndir = 100;
 
-
     YamlStretching ys;
     ys.h = 0;
     ys.delta = 1;
@@ -720,7 +702,6 @@ TEST_F(AiryTest, total_pressure_should_always_be_positive_in_infinite_depth)
     const size_t nfreq = 100;
     const size_t ndir = 100;
 
-
     YamlStretching ys;
     ys.h = 0;
     ys.delta = 1;
@@ -755,7 +736,6 @@ TEST_F(AiryTest, dynamic_pressure_and_orbital_velocities_should_be_0_outside_wat
     const double omega_max = 10;
     const size_t nfreq = 100;
     const size_t ndir = 100;
-
 
     YamlStretching ys;
     ys.h = 0;
@@ -799,7 +779,6 @@ TEST_F(AiryTest, get_dynamic_pressure_and_orbital_velocities_should_be_0_above_w
     const double omega_max = 10;
     const size_t nfreq = 100;
     const size_t ndir = 100;
-
 
     YamlStretching ys;
     ys.h = 0;

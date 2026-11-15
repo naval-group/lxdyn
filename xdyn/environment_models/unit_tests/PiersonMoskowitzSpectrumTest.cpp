@@ -18,18 +18,6 @@ PiersonMoskowitzSpectrumTest::PiersonMoskowitzSpectrumTest() : a(ssc::random_dat
 {
 }
 
-PiersonMoskowitzSpectrumTest::~PiersonMoskowitzSpectrumTest()
-{
-}
-
-void PiersonMoskowitzSpectrumTest::SetUp()
-{
-}
-
-void PiersonMoskowitzSpectrumTest::TearDown()
-{
-}
-
 TEST_F(PiersonMoskowitzSpectrumTest, example)
 {
 //! [PiersonMoskowitzSpectrumTest example]

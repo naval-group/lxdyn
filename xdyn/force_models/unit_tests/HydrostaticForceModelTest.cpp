@@ -23,18 +23,6 @@ HydrostaticForceModelTest::HydrostaticForceModelTest() : a(ssc::random_data_gene
 {
 }
 
-HydrostaticForceModelTest::~HydrostaticForceModelTest()
-{
-}
-
-void HydrostaticForceModelTest::SetUp()
-{
-}
-
-void HydrostaticForceModelTest::TearDown()
-{
-}
-
 EnvironmentAndFrames HydrostaticForceModelTest::get_environment_and_frames() const
 {
     EnvironmentAndFrames env;

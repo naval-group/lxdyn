@@ -16,9 +16,6 @@ class ConstantForceModelTest : public ::testing::Test
 {
     protected:
         ConstantForceModelTest();
-        ~ConstantForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         BodyStates get_states(const double phi, const double theta, const double psi, EnvironmentAndFrames& env) const;
         ConstantForceModel get_constant_force(EnvironmentAndFrames& env) const;

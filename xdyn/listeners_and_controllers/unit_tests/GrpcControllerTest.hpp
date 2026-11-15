@@ -12,12 +12,6 @@
 
 class GrpcControllerTest : public ::testing::Test
 {
-    protected:
-        GrpcControllerTest();
-        ~GrpcControllerTest() override;
-        void SetUp() override;
-        void TearDown() override;
 };
-
 
 #endif /* GRPC_UNIT_TESTS_INC_GRPCCONTROLLERTEST_HPP_ */

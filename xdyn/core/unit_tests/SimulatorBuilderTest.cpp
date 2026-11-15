@@ -28,21 +28,8 @@ static const YamlSimulatorInput& shared_input()
     return ret;
 }
 
-
 SimulatorBuilderTest::SimulatorBuilderTest() : a(ssc::random_data_generator::DataGenerator(1212)), input(shared_input()),
                                                builder(SimulatorBuilder(input, 0))
-{
-}
-
-SimulatorBuilderTest::~SimulatorBuilderTest()
-{
-}
-
-void SimulatorBuilderTest::SetUp()
-{
-}
-
-void SimulatorBuilderTest::TearDown()
 {
 }
 

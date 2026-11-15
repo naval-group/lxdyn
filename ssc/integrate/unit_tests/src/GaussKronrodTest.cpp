@@ -13,20 +13,6 @@ GaussKronrodTest::GaussKronrodTest() : a(ssc::random_data_generator::DataGenerat
 {
 }
 
-GaussKronrodTest::~GaussKronrodTest()
-{
-}
-
-void GaussKronrodTest::SetUp()
-{
-}
-
-void GaussKronrodTest::TearDown()
-{
-}
-
-
-
 TEST_F(GaussKronrodTest, example)
 {
     //! [QuadPackTest example]
@@ -50,6 +36,4 @@ TEST_F(GaussKronrodTest, sine_squared_plus_cosine_squared_should_equal_one)
         ASSERT_DOUBLE_EQ(b_-a_,integrator.integrate_f(a_,b_));
     }
 }
-
-
 

@@ -8,12 +8,9 @@ class StlReaderTest : public ::testing::Test
 {
     protected:
         StlReaderTest() : a(65478) {}
-        void SetUp() override{}
-        void TearDown() override{}
         std::string random_string_of_size(const size_t n);
         ssc::random_data_generator::DataGenerator a;
 };
-
 
 #endif
 

@@ -12,11 +12,6 @@
 
 class PrecalParserTest : public ::testing::Test
 {
-    protected:
-        PrecalParserTest();
-        ~PrecalParserTest() override;
-        void SetUp() override;
-        void TearDown() override;
 };
 
 #endif  /* PRECALPARSERTEST_HPP_ */

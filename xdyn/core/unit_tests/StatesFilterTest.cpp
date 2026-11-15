@@ -18,18 +18,6 @@ StatesFilterTest::StatesFilterTest() :  a(ssc::random_data_generator::DataGenera
 {
 }
 
-StatesFilterTest::~StatesFilterTest()
-{
-}
-
-void StatesFilterTest::SetUp()
-{
-}
-
-void StatesFilterTest::TearDown()
-{
-}
-
 TEST_F(StatesFilterTest, should_throw_if_type_of_filter_is_unknown)
 {
     const std::string yaml = "type of filter: some unknown filter\n"
@@ -68,7 +56,6 @@ TEST_F(StatesFilterTest, should_be_able_to_filter)
     const auto filter = StateFilter::build(yaml);
     ASSERT_DOUBLE_EQ(2.5, filter->filter(h));
 }
-
 
 TEST_F(StatesFilterTest, should_be_able_to_filter_all_states)
 {

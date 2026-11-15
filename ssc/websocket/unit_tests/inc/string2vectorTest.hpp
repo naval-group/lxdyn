@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #ifndef VECTOR2STRINGTEST_HPP_
 #define VECTOR2STRINGTEST_HPP_
 
@@ -16,9 +15,6 @@ class string2vectorTest : public ::testing::Test
 {
     protected:
         string2vectorTest();
-        ~string2vectorTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

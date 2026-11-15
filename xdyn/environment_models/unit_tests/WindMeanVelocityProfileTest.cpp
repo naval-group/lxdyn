@@ -18,18 +18,6 @@ WindMeanVelocityProfileTest::WindMeanVelocityProfileTest() : a(ssc::random_data_
 {
 }
 
-WindMeanVelocityProfileTest::~WindMeanVelocityProfileTest()
-{
-}
-
-void WindMeanVelocityProfileTest::SetUp()
-{
-}
-
-void WindMeanVelocityProfileTest::TearDown()
-{
-}
-
 TEST_F(WindMeanVelocityProfileTest, can_parse_UniformWindVelocityProfile_input)
 {
     std::string yaml_input = "{velocity: {unit: m/s, value: 10}, direction: {unit: rad, value: 1}}";

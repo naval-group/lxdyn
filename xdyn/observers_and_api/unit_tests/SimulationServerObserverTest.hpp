@@ -8,7 +8,6 @@ class SimulationServerObserverTest : public testing::Test
 {
 public:
     SimulationServerObserverTest();
-    ~SimulationServerObserverTest() override;
 private:
     ssc::random_data_generator::DataGenerator a;
 };

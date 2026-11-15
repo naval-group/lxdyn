@@ -25,18 +25,6 @@ discretizeTest::discretizeTest()
 {
 }
 
-discretizeTest::~discretizeTest()
-{
-}
-
-void discretizeTest::SetUp()
-{
-}
-
-void discretizeTest::TearDown()
-{
-}
-
 std::vector<double> discretizeTest::random_increasing_vector_of_size(const size_t n) const
 {
     if (n <= 0)

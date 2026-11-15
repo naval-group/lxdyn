@@ -14,18 +14,6 @@ DefaultSurfaceElevationTest::DefaultSurfaceElevationTest() : a(ssc::random_data_
 {
 }
 
-DefaultSurfaceElevationTest::~DefaultSurfaceElevationTest()
-{
-}
-
-void DefaultSurfaceElevationTest::SetUp()
-{
-}
-
-void DefaultSurfaceElevationTest::TearDown()
-{
-}
-
 TEST_F(DefaultSurfaceElevationTest, example)
 {
 //! [DefaultWaveModelTest example]

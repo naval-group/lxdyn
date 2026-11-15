@@ -19,20 +19,7 @@
 #include <cmath>
 #define PI M_PI
 
-
 ClosingFacetComputerTest::ClosingFacetComputerTest() : a(ssc::random_data_generator::DataGenerator(21233))
-{
-}
-
-ClosingFacetComputerTest::~ClosingFacetComputerTest()
-{
-}
-
-void ClosingFacetComputerTest::SetUp()
-{
-}
-
-void ClosingFacetComputerTest::TearDown()
 {
 }
 
@@ -273,7 +260,6 @@ TEST_F(ClosingFacetComputerTest, can_find_the_next_edge_in_a_contour_for_case_19
 {
     ASSERT_EQ(0, make(case_19()).next_edge(2,true));
 }
-
 
 TEST_F(ClosingFacetComputerTest, can_find_first_extreme_edge_using_xmin_strategy)
 {

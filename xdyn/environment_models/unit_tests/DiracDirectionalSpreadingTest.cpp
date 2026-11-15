@@ -12,18 +12,6 @@ DiracDirectionalSpreadingTest::DiracDirectionalSpreadingTest() : a(ssc::random_d
 {
 }
 
-DiracDirectionalSpreadingTest::~DiracDirectionalSpreadingTest()
-{
-}
-
-void DiracDirectionalSpreadingTest::SetUp()
-{
-}
-
-void DiracDirectionalSpreadingTest::TearDown()
-{
-}
-
 TEST_F(DiracDirectionalSpreadingTest, example)
 {
 //! [DiracDirectionalSpreadingTest example]

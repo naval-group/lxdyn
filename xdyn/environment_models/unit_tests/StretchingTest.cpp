@@ -13,18 +13,6 @@ StretchingTest::StretchingTest() : a(ssc::random_data_generator::DataGenerator(8
 {
 }
 
-StretchingTest::~StretchingTest()
-{
-}
-
-void StretchingTest::SetUp()
-{
-}
-
-void StretchingTest::TearDown()
-{
-}
-
 TEST_F(StretchingTest, example)
 {
     //! [StretchingTest example]

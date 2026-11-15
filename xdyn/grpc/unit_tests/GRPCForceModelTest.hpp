@@ -13,12 +13,6 @@
 
 class GRPCForceModelTest : public ::testing::Test
 {
-    protected:
-        GRPCForceModelTest();
-        ~GRPCForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
 };
-
 
 #endif /* GRPC_UNIT_TESTS_INC_GRPCFORCEMODELTEST_HPP_ */
