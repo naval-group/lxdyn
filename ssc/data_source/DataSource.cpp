@@ -39,8 +39,7 @@ ssc::data_source::DataSource::DataSource(const DataSource& ds) :  name2module(ds
                                                                   state_names(ds.state_names),
                                                                   aliases(ds.aliases),
                                                                   forced_values(ds.forced_values),
-                                                                  call_stack(ds.call_stack),
-                                                                  in_module(false)
+                                                                  call_stack(ds.call_stack)
 {
     // We need to make sure that all modules now refer to the current DataSource
     FromName2Module::iterator it1 = name2module.begin();

@@ -10,6 +10,10 @@ Checks:
   - 'modernize-use-nullptr'
   - 'modernize-use-using'
   - 'google-explicit-constructor'
+  - 'modernize-use-default-member-init'
+  - 'modernize-use-equals-default'
+  - 'readability-redundant-member-init'
+  - 'cppcoreguidelines-pro-type-member-init'
 
   # Off for good.
   - '-bugprone-easily-swappable-parameters'  # an API-design opinion, and noisy

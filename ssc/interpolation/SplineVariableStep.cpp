@@ -73,7 +73,7 @@ std::vector<Coeff> get_coeffs(const std::vector<double>& x, const std::vector<do
     cubspl_(tau, c, n, ibcbeg, ibcend);
     for (int i = 0 ; i < *n-1 ; ++i)
     {
-        Coeff coeff;
+        Coeff coeff{};
         coeff.a = c[4*i + 0];
         coeff.b = c[4*i + 1];
         coeff.c = c[4*i + 2];

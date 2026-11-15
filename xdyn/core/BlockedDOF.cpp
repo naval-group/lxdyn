@@ -126,7 +126,7 @@ class Builder
             std::map<BlockableState, std::array<double,6>> howApplied;
             for (const auto& DoF:input.from_yaml)
             {
-                std::array<double,6> temp;
+                std::array<double,6> temp{};
                 for (std::size_t i=0; i<6; ++i) {temp[i] = DoF.howApplied[i];}
                 howApplied[DoF.state] = temp;
             }

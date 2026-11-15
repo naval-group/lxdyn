@@ -281,7 +281,7 @@ class RadiationDampingForceModel::Impl
 
         std::array<double, 6> get_average_velocities(const BodyStates& states)
         {
-            std::array<double, 6> ret;
+            std::array<double, 6> ret{};
             for (size_t i = 0 ; i < 6 ; i++)
             {
                 ret[i] = get_velocity_history_from_index(i, states).average(Tmax);

@@ -14,9 +14,6 @@
 
 BodyStates::BodyStates(const double Tmax) : AbstractStates<History>(Tmax),
 
-total_inertia(),
-solid_body_inertia(),
-inverse_of_the_total_inertia(),
 x_relative_to_mesh(),
 y_relative_to_mesh(),
 z_relative_to_mesh(),
@@ -30,9 +27,6 @@ states_filter(YamlFilteredStates())
 
 BodyStates::BodyStates(const YamlFilteredStates& filtered_states, const double Tmax) : AbstractStates<History>(Tmax),
 
-total_inertia(),
-solid_body_inertia(),
-inverse_of_the_total_inertia(),
 x_relative_to_mesh(),
 y_relative_to_mesh(),
 z_relative_to_mesh(),
@@ -46,9 +40,6 @@ states_filter(filtered_states)
 
 BodyStates::BodyStates(const StatesFilter& states_filter_, const double Tmax) : AbstractStates<History>(Tmax),
 
-total_inertia(),
-solid_body_inertia(),
-inverse_of_the_total_inertia(),
 x_relative_to_mesh(),
 y_relative_to_mesh(),
 z_relative_to_mesh(),
