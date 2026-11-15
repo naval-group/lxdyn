@@ -14,9 +14,7 @@ ConstantUWCurrentModel::ConstantUWCurrentModel(const Input& input) :
 {
 }
 
-ConstantUWCurrentModel::~ConstantUWCurrentModel()
-{
-}
+ConstantUWCurrentModel::~ConstantUWCurrentModel() = default;
 
 std::string ConstantUWCurrentModel::model_name() {return "constant UW current";}
 
@@ -38,6 +36,4 @@ Eigen::Vector3d ConstantUWCurrentModel::get_UWCurrent(const Eigen::Vector3d& pos
     return Eigen::Vector3d::Zero();
 }
 
-ConstantUWCurrentModel::Input::Input()
-{
-}
+ConstantUWCurrentModel::Input::Input() = default;

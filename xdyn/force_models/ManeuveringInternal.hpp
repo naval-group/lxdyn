@@ -277,8 +277,8 @@ namespace maneuvering
     class AbstractNodeVisitor
     {
         public:
-            AbstractNodeVisitor(){}
-            virtual ~AbstractNodeVisitor(){}
+            AbstractNodeVisitor()= default;
+            virtual ~AbstractNodeVisitor()= default;
             virtual void visit(const UnknownIdentifier& f) = 0;
             virtual void visit(const Time& f) = 0;
             virtual void visit(const State<StateType::X>& f) = 0;

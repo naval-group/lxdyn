@@ -7,6 +7,4 @@
 
 #include "YamlSimulatorInput.hpp"
 
-YamlSimulatorInput::YamlSimulatorInput()
-{
-}
+YamlSimulatorInput::YamlSimulatorInput() = default;

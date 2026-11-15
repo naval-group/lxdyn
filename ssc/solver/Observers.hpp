@@ -36,7 +36,7 @@ namespace ssc
         class NullObserver
         {
             public:
-                NullObserver() {}
+                NullObserver() = default;
                 void check_variables_to_serialize_are_available() const {}
                 void observe_before_solver_step(const ContinuousSystem& , const double, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >& )
                 {
@@ -103,7 +103,7 @@ namespace ssc
         class VectorObserver
         {
             public:
-                VectorObserver()  {}
+                VectorObserver()  = default;
                 void check_variables_to_serialize_are_available() const {}
                 void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {

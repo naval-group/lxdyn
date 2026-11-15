@@ -11,9 +11,7 @@ DefaultWindModel::DefaultWindModel(int)
 {
 }
 
-DefaultWindModel::~DefaultWindModel()
-{
-}
+DefaultWindModel::~DefaultWindModel() = default;
 
 std::string DefaultWindModel::model_name() {return "no wind";}
 

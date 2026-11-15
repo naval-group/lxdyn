@@ -14,9 +14,7 @@ Node::Node(const std::vector<NodePtr>& children_) : children(children_)
 {
 }
 
-Node::~Node()
-{
-}
+Node::~Node() = default;
 
 std::vector<NodePtr> Node::get_children() const
 {
@@ -397,9 +395,7 @@ double Multiply::get_max() const
     return get_lhs()->get_max() * get_rhs()->get_max();
 }
 
-Time::Time()
-{
-}
+Time::Time() = default;
 
 Function Time::get_lambda() const
 {
@@ -675,7 +671,7 @@ namespace maneuvering
 }
 namespace maneuvering
 {
-    FindTmax::FindTmax()  {}
+    FindTmax::FindTmax()  = default;
 
     double FindTmax::get_Tmax() const
     {

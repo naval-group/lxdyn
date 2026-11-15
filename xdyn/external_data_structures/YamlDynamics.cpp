@@ -7,6 +7,4 @@
 
 #include "YamlDynamics.hpp"
 
-YamlDynamics::YamlDynamics()
-{
-}
+YamlDynamics::YamlDynamics() = default;

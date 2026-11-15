@@ -37,10 +37,7 @@ Velocity& Velocity::operator=(Velocity rhs)
     return *this;
 }
 
-Velocity::Velocity(const Velocity& rhs) : P(rhs.P), vP(rhs.vP), omega(rhs.omega)
-{
-
-}
+Velocity::Velocity(const Velocity& rhs) = default;
 
 Velocity::Velocity(const Point& p_, const TranslationVelocityVector& t_, const AngularVelocityVector& w) : P(p_), vP(t_), omega(w)
 {

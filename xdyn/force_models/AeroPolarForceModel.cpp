@@ -8,8 +8,7 @@
 #include <algorithm>
 #include <cmath>
 
-AeroPolarForceModel::Input::Input()
-{}
+AeroPolarForceModel::Input::Input() = default;
 
 std::string AeroPolarForceModel::model_name()
 {

@@ -36,23 +36,7 @@ template <typename T> struct AbstractStates
 
     explicit AbstractStates(const double Tmax=0) : x(Tmax),y(Tmax),z(Tmax),u(Tmax),v(Tmax),w(Tmax),p(Tmax),q(Tmax),r(Tmax),qr(Tmax),qi(Tmax),qj(Tmax),qk(Tmax) {}
     AbstractStates(const AbstractStates<T>& rhs) = default;
-    AbstractStates<T>& operator=(const AbstractStates<T>& rhs)
-    {
-        ASSIGN(x);
-        ASSIGN(y);
-        ASSIGN(z);
-        ASSIGN(u);
-        ASSIGN(v);
-        ASSIGN(w);
-        ASSIGN(p);
-        ASSIGN(q);
-        ASSIGN(r);
-        ASSIGN(qr);
-        ASSIGN(qi);
-        ASSIGN(qj);
-        ASSIGN(qk);
-        return *this;
-    }
+    AbstractStates<T>& operator=(const AbstractStates<T>& rhs) = default;
     T x;  //!< x-coordinate of the body's center of gravity in the NED frame (in m)
     T y;  //!< y-coordinate of the body's center of gravity in the NED frame (in m)
     T z;  //!< z-coordinate of the body's center of gravity in the NED frame (in m)

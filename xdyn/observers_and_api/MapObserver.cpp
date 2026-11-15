@@ -7,9 +7,7 @@
 
 #include "MapObserver.hpp"
 
-MapObserver::MapObserver()
-{
-}
+MapObserver::MapObserver() = default;
 
 MapObserver::MapObserver(const std::vector<std::string>& d) : Observer(d)
 {

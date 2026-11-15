@@ -7,6 +7,4 @@
 
 #include "YamlRadiationDamping.hpp"
 
-YamlRadiationDamping::YamlRadiationDamping()
-{
-}
+YamlRadiationDamping::YamlRadiationDamping() = default;

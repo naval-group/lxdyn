@@ -21,8 +21,7 @@
 #include <sstream>
 #include <iomanip>
 
-ErrorReporter::ErrorReporter()
-{}
+ErrorReporter::ErrorReporter() = default;
 
 std::string replace_whitespace(std::string str);
 std::string replace_whitespace(std::string str)

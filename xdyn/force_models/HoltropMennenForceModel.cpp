@@ -10,9 +10,7 @@ std::string HoltropMennenForceModel::model_name()
     return "Holtrop & Mennen";
 }
 
-HoltropMennenForceModel::Input::Input()
-{
-}
+HoltropMennenForceModel::Input::Input() = default;
 
 HoltropMennenForceModel::Input HoltropMennenForceModel::parse(const std::string& yaml)
 {

@@ -62,7 +62,7 @@ class MMGRudderForceModel : public ForceModel
     struct RudderModel
     {
         RudderModel(const Yaml& parameters, const double rho);
-        virtual ~RudderModel() {}
+        virtual ~RudderModel() = default;
 
         /**  \brief Returns the rudder area
          *  \returns Rudder area (in m^2)

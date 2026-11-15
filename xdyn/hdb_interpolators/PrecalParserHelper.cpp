@@ -34,7 +34,7 @@ void flush(std::string& buffer, std::vector<std::string>& tokens)
 class AbstractLineGetter
 {
     public:
-        virtual ~AbstractLineGetter() {}
+        virtual ~AbstractLineGetter() = default;
         virtual std::string get_next_line() = 0;
         virtual bool has_more_lines() const = 0;
 };
@@ -45,7 +45,7 @@ template <typename T> class LineGetter : public AbstractLineGetter
     explicit LineGetter(const std::string& s) : stream(s)
     {}
 
-    ~LineGetter() override {}
+    ~LineGetter() override = default;
     std::string get_next_line() override
     {
         std::string normalized_line;
@@ -378,17 +378,11 @@ PrecalFile parse_precal_from_file(const std::string& filename)
     return common_precal_parser(line_getter);
 }
 
-Section::Section()
-{
-}
+Section::Section() = default;
 
-RAO::RAO()
-{
-}
+RAO::RAO() = default;
 
-PrecalFile::PrecalFile()
-{
-}
+PrecalFile::PrecalFile() = default;
 
 RAOAttributes::RAOAttributes()
     : position()

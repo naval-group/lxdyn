@@ -9,9 +9,7 @@
 
 using namespace ssc::kinematics;
 
-UnsafeWrench::UnsafeWrench()
-{
-}
+UnsafeWrench::UnsafeWrench() = default;
 
 UnsafeWrench::UnsafeWrench(const Point& P) : Wrench(P)
 {
@@ -21,9 +19,7 @@ UnsafeWrench::UnsafeWrench(const Point& P, const Eigen::Vector3d& force, const E
 {
 }
 
-UnsafeWrench::UnsafeWrench(const UnsafeWrench& rhs)  : Wrench(rhs)
-{
-}
+UnsafeWrench::UnsafeWrench(const UnsafeWrench& rhs) = default;
 
 UnsafeWrench::UnsafeWrench(const Wrench& rhs) : Wrench(rhs)
 {

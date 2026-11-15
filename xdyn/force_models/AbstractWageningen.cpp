@@ -17,8 +17,7 @@
 #include <cmath>
 #define PI M_PI
 
-AbstractWageningen::Yaml::Yaml()
-{}
+AbstractWageningen::Yaml::Yaml() = default;
 
 AbstractWageningen::Yaml AbstractWageningen::parse(const std::string& yaml)
 {

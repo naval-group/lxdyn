@@ -8,6 +8,4 @@
 #include "YamlEnvironmentalConstants.hpp"
 
 
-YamlEnvironmentalConstants::YamlEnvironmentalConstants()
-{
-}
+YamlEnvironmentalConstants::YamlEnvironmentalConstants() = default;

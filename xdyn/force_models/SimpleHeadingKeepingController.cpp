@@ -17,9 +17,7 @@
 
 std::string SimpleHeadingKeepingController::model_name() {return "simple heading controller";}
 
-SimpleHeadingKeepingController::Yaml::Yaml()
-{
-}
+SimpleHeadingKeepingController::Yaml::Yaml() = default;
 
 SimpleHeadingKeepingController::Yaml SimpleHeadingKeepingController::parse(const std::string& yaml)
 {

@@ -7,5 +7,4 @@
 
 #include "YamlDynamics6x6Matrix.hpp"
 
-YamlDynamics6x6Matrix::YamlDynamics6x6Matrix()
-{}
+YamlDynamics6x6Matrix::YamlDynamics6x6Matrix() = default;

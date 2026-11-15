@@ -12,7 +12,7 @@ struct YamlCoordinates
 {
     YamlCoordinates();
     YamlCoordinates(const double x, const double y, const double z);
-    virtual ~YamlCoordinates(){}
+    virtual ~YamlCoordinates()= default;
     double x;
     double y;
     double z;

@@ -11,10 +11,7 @@
 class ssc::integrate::TrapezoidalIntegration::Impl
 {
     public:
-        Impl()
-        {
-
-        }
+        Impl() = default;
 
         double integrate(const Function& f, const double a, const double b, const double eps) const
         {

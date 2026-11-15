@@ -1,5 +1,3 @@
 #include "YamlSimServerInputs.hpp"
 
-YamlSimServerInputs::YamlSimServerInputs()
-{
-}
+YamlSimServerInputs::YamlSimServerInputs() = default;

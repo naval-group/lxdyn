@@ -7,5 +7,4 @@
 
 #include "xdyn/external_data_structures/YamlController.hpp"
 
-YamlController::YamlController()
-{}
+YamlController::YamlController() = default;

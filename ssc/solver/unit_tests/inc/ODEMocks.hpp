@@ -25,7 +25,7 @@ class SystemWithMock;
 class ODEMocks
 {
   public:
-    ODEMocks() {}
+    ODEMocks() = default;
     MOCK_METHOD0(advance_to_next_time_event, void());
     MOCK_METHOD0(flush, void());
     MOCK_METHOD0(check_variables_to_serialize_are_available, void());

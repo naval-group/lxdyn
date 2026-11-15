@@ -19,11 +19,9 @@ class PhysicalQuantityException : public ::ssc::exception_handling::Exception
         }
 };
 
-PhysicalQuantity::PhysicalQuantity()
-{}
+PhysicalQuantity::PhysicalQuantity() = default;
 
-PhysicalQuantity::~PhysicalQuantity()
-{}
+PhysicalQuantity::~PhysicalQuantity() = default;
 
 
 PhysicalQuantity::PhysicalQuantity(const std::vector<double>& v) : val(v)

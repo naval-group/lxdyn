@@ -26,11 +26,7 @@ void ssc::data_source::decoerce(std::list<double>& ret, ssc::data_source::Physic
 
 
 
-SignalContainer::SignalContainer()
-
-{
-
-}
+SignalContainer::SignalContainer() = default;
 
 Signals SignalContainer::get_all_signals() const
 {

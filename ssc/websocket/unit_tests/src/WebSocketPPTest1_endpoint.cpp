@@ -33,7 +33,7 @@ TEST_F(WebSocketPPTest1_endpoint,  initialize_server_asio ) {
 //}
 
 struct endpoint_extension {
-    endpoint_extension()  {}
+    endpoint_extension()  = default;
 
     int extension_method() {
         return extension_value;

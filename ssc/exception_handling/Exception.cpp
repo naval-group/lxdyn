@@ -16,9 +16,7 @@
 {
 }
 
-::ssc::exception_handling::Exception::~Exception () throw ()
-{
-}
+::ssc::exception_handling::Exception::~Exception () throw () = default;
 
 const char* ::ssc::exception_handling::Exception::what() const throw()
 {

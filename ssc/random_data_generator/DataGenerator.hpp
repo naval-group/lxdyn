@@ -44,7 +44,7 @@ namespace ssc
                 }
 
                 explicit DataGenerator(const size_t& seed);
-                virtual ~DataGenerator(){}
+                virtual ~DataGenerator()= default;
 
                 virtual DataGenerator& no();
 

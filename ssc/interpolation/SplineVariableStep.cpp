@@ -27,10 +27,7 @@ extern "C"
 class VectorsAreTheRightSize
 {
     public:
-        VectorsAreTheRightSize()
-        {
-
-        }
+        VectorsAreTheRightSize() = default;
 
         VectorsAreTheRightSize(const std::vector<double>& x, const std::vector<double>& y)
         {

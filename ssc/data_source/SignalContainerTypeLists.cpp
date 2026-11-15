@@ -54,11 +54,7 @@ TypeName TypedSignalName::get_type_name() const
     return _type_name;
 }
 
-ConvertibleTypes::ConvertibleTypes()
-
-{
-
-}
+ConvertibleTypes::ConvertibleTypes() = default;
 
 void ConvertibleTypes::clear()
 {

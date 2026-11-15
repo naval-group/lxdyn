@@ -7,6 +7,4 @@
 
 #include "YamlRAO.hpp"
 
-YamlRAO::YamlRAO()
-{
-}
+YamlRAO::YamlRAO() = default;

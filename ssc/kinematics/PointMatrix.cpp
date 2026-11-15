@@ -21,9 +21,7 @@ PointMatrix::PointMatrix(const Matrix3Xd& m_, const std::string& frame_) : m(m_)
 {
 }
 
-PointMatrix::PointMatrix(const PointMatrix& other) : m(other.m), frame(other.frame)
-{
-}
+PointMatrix::PointMatrix(const PointMatrix& other) = default;
 
 PointMatrix& PointMatrix::operator=(PointMatrix other)
 {

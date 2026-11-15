@@ -93,7 +93,7 @@ class Kinematics::Impl
     public:
         Impl() : ds(DataSource()) {}
 
-        ~Impl(){}
+        ~Impl()= default;
         Impl& operator=(const Impl& rhs)
         {
             if (this!=&rhs)
@@ -104,9 +104,7 @@ class Kinematics::Impl
             return *this;
         }
 
-        Impl(const Impl& rhs) : ds(rhs.ds), tree(rhs.tree)
-        {
-        }
+        Impl(const Impl& rhs) = default;
 
         void add_inverse_module(const std::string& from_frame, const std::string& to_frame)
         {

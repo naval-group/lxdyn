@@ -12,9 +12,7 @@ UniformWindVelocityProfile::UniformWindVelocityProfile(const Input& input) : Win
 {
 }
 
-UniformWindVelocityProfile::~UniformWindVelocityProfile()
-{
-}
+UniformWindVelocityProfile::~UniformWindVelocityProfile() = default;
 
 std::string UniformWindVelocityProfile::model_name() {return "uniform wind";}
 

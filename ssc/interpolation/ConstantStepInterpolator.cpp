@@ -24,10 +24,7 @@ xmin(0), xmax(0), n(0), delta(0), idx(0), val_sat(0)
 
 }
 
-ConstantStepInterpolator::~ConstantStepInterpolator()
-{
-
-}
+ConstantStepInterpolator::~ConstantStepInterpolator() = default;
 
 ConstantStepInterpolator::ConstantStepInterpolator(const double& xmin_,
         const double& xmax_,

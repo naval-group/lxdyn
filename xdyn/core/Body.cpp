@@ -50,9 +50,7 @@ Body::Body(const BodyStates& states_, const size_t i, const BlockedDOF& blocked_
 {
 }
 
-Body::~Body()
-{
-}
+Body::~Body() = default;
 
 BodyStates Body::get_states() const
 {

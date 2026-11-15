@@ -612,9 +612,7 @@ HDBParser::HDBParser() : pimpl(new Impl())
 {
 }
 
-HDBParser::~HDBParser()
-{
-}
+HDBParser::~HDBParser() = default;
 
 HDBParser::HDBParser(HDBParser&&) noexcept = default;
 HDBParser& HDBParser::operator=(HDBParser&&) noexcept = default;

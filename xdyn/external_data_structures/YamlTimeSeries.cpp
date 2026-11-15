@@ -7,5 +7,4 @@
 
 #include "YamlTimeSeries.hpp"
 
-YamlTimeSeries::YamlTimeSeries()
-{}
+YamlTimeSeries::YamlTimeSeries() = default;
