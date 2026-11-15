@@ -37,7 +37,7 @@ EkmanUWCurrentTest::EkmanUWCurrentTest() : a(ssc::random_data_generator::DataGen
 TEST_F(EkmanUWCurrentTest, test_velocity)
 {
     Seabed seabed(65.65);
-    EkmanUWCurrentModel::Input input(seabed);
+    EkmanUWCurrentModel::Input input{seabed};
     EkmanUWCurrentModel model(input);
     const Eigen::Vector3d point1(1.8, 13.2, 1.5);
     model.get_UWCurrent(point1, 0, 5.5);

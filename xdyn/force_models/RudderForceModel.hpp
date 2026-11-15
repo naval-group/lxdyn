@@ -16,13 +16,11 @@ class RudderForceModel : public ForceModel
     public:
         struct Yaml : WageningenControlledForceModel::Yaml
         {
-            Yaml();
-            explicit Yaml(const WageningenControlledForceModel::Yaml& yaml);
-            double Ar;                                                      //!< Rudder area (in m^2) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
-            double b;                                                       //!< Rudder height (in m) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
-            double effective_aspect_ratio_factor;                           //!< Non-dimensional (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 97 § b)
-            double lift_coeff;                                              //!< Non-dimensional: lift is multiplied by it (for tuning)
-            double drag_coeff;                                              //!< Non-dimensional: drag is multiplied by it (for tuning)
+            double Ar{};                                                    //!< Rudder area (in m^2) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
+            double b{};                                                     //!< Rudder height (in m) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
+            double effective_aspect_ratio_factor{};                         //!< Non-dimensional (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 97 § b)
+            double lift_coeff{};                                            //!< Non-dimensional: lift is multiplied by it (for tuning)
+            double drag_coeff{};                                            //!< Non-dimensional: drag is multiplied by it (for tuning)
             YamlCoordinates position_of_the_rudder_frame_in_the_body_frame; //!< Position of the rudder in the body frame
         };
 

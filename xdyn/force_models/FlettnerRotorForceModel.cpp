@@ -11,10 +11,6 @@
 #include <cmath>
 #include <string>
 
-FlettnerRotorForceModel::Input::Input():
-    name("")
-{}
-
 std::string FlettnerRotorForceModel::model_name() {return "Flettner rotor";}
 
 FlettnerRotorForceModel::FlettnerRotorForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env):

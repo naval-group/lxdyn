@@ -4,8 +4,6 @@
 #include <ssc/kinematics.hpp>
 #include "xdyn/yaml_parser/yaml_compat.h"
 
-LinearStiffnessForceModel::Input::Input():  K() {}
-
 std::string LinearStiffnessForceModel::model_name() {return "linear stiffness";}
 
 LinearStiffnessForceModel::LinearStiffnessForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env):

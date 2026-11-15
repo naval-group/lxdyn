@@ -18,16 +18,14 @@ class EkmanUWCurrentModel : public UWCurrentModel
 public:
     struct Input
     {
-        Input();
-        explicit Input(Seabed);
-        Seabed seabed;
-        double top_ekman_depth;     ///< Top layer thickness (m)
-        double bottom_ekman_depth;  ///< Bottom layer thickness (m)
-        double middle_velocity;     ///< Background current velocity (m/s)
-        double middle_orientation;  ///< Background current direction (rad)
-        double f_and_sqrt_rho;      ///< Coriolis parameter times sqrt(water density)
-        double wind_angle;          ///< Wind direction (rad)
-        double wind_stress;         ///< Wind stress (N/m2)
+        Seabed seabed{0.};
+        double top_ekman_depth{};     ///< Top layer thickness (m)
+        double bottom_ekman_depth{};  ///< Bottom layer thickness (m)
+        double middle_velocity{};     ///< Background current velocity (m/s)
+        double middle_orientation{};  ///< Background current direction (rad)
+        double f_and_sqrt_rho{};      ///< Coriolis parameter times sqrt(water density)
+        double wind_angle{};          ///< Wind direction (rad)
+        double wind_stress{};         ///< Wind stress (N/m2)
     };
     explicit EkmanUWCurrentModel(const Input& input);
 

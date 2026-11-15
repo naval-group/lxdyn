@@ -28,23 +28,21 @@ class MMGRudderForceModel : public ForceModel
   public:
     struct Yaml : MMGPropellerForceModel::Yaml
     {
-        Yaml();
-        explicit Yaml(const MMGPropellerForceModel::Yaml& yaml);
-        double Ar; //!< Rudder projected area without considering the horn part(in m^2)
-        double b;  //!< Rudder span (in m)
-        double xH_adim; //!< Non-dimensional longitudinal coordinate of acting point of the additional lateral force in MMG frame
-        double lR_adim; //!< Non-dimensional effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame
-        double tR; //!< Steering resistance deduction factor
-        double aH; //!< Rudder force increase factor
+        double Ar{}; //!< Rudder projected area without considering the horn part(in m^2)
+        double b{}; //!< Rudder span (in m)
+        double xH_adim{}; //!< Non-dimensional longitudinal coordinate of acting point of the additional lateral force in MMG frame
+        double lR_adim{}; //!< Non-dimensional effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame
+        double tR{}; //!< Steering resistance deduction factor
+        double aH{}; //!< Rudder force increase factor
         std::vector<double> gammaR; //!< Flow straightening coefficient (first value for negative
                                     //!< $\beta_R$,second value for positive $\beta_R$)
-        double epsilon;             //!< Ratio of wake fraction at propeller and rudder positions
-        double kappaMmg; //!< An experimental constant for expressing the fluid velocity at the
+        double epsilon{};           //!< Ratio of wake fraction at propeller and rudder positions
+        double kappaMmg{}; //!< An experimental constant for expressing the fluid velocity at the
                          //!< rudder location
-        double effective_aspect_ratio; //!< Rudder aspect ratio (considering the horn part)
+        double effective_aspect_ratio{}; //!< Rudder aspect ratio (considering the horn part)
         YamlCoordinates position_of_the_rudder_in_the_body_frame; //!< Position of the rudder
-                                                                        //!< in the body frame
-        double Lpp;//!< Length between Perpendicular (for scaling xH and lR)
+                                                                  //!< in the body frame
+        double Lpp{}; //!< Length between Perpendicular (for scaling xH and lR)
     };
 
     MMGRudderForceModel(const Yaml& input, const std::string& body_name,
