@@ -19,25 +19,6 @@
 
 std::string RudderForceModel::model_name() {return "propeller+rudder";}
 
-RudderForceModel::Yaml::Yaml() :
-    Ar(0),
-    b(0),
-    effective_aspect_ratio_factor(0),
-    lift_coeff(0),
-    drag_coeff(0)
-{
-}
-
-RudderForceModel::Yaml::Yaml(const WageningenControlledForceModel::Yaml& yaml) :
-    WageningenControlledForceModel::Yaml(yaml),
-    Ar(0),
-    b(0),
-    effective_aspect_ratio_factor(0),
-    lift_coeff(0),
-    drag_coeff(0)
-{
-}
-
 RudderForceModel::RudderModel::RudderModel(
     const Yaml& parameters_, const double rho_, const double nu_) :
         Ar(parameters_.Ar),
@@ -266,7 +247,8 @@ Wrench RudderForceModel::get_force(
 RudderForceModel::Yaml RudderForceModel::parse(const std::string& yaml)
 {
     YAML::Node node = YAML::Load(yaml);
-    Yaml ret(WageningenControlledForceModel::parse(yaml));
+    Yaml ret;
+    static_cast<WageningenControlledForceModel::Yaml&>(ret) = WageningenControlledForceModel::parse(yaml);
 
     xdyn::yaml_parser::parse_uv(node["rudder area"], ret.Ar);
     xdyn::yaml_parser::parse_uv(node["rudder height"], ret.b);

@@ -29,15 +29,11 @@ class KtKqForceModel::Impl
         Impl();
 };
 
-KtKqForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
-        AbstractWageningen::Yaml(y)
-{
-}
-
 KtKqForceModel::Yaml KtKqForceModel::parse(const std::string& yaml)
 {
     YAML::Node node = YAML::Load(yaml);
-    Yaml ret(AbstractWageningen::parse(yaml));
+    Yaml ret;
+    static_cast<AbstractWageningen::Yaml&>(ret) = AbstractWageningen::parse(yaml);
     node["J"]  >> ret.J;
     node["Kt"] >> ret.Kt;
     node["Kq"] >> ret.Kq;

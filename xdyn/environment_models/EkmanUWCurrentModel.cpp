@@ -5,7 +5,6 @@
 #include "EkmanUWCurrentModel.hpp"
 
 #include <cmath>
-#include <utility>
 #include "xdyn/yaml_parser/yaml_compat.h"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
@@ -113,28 +112,4 @@ Eigen::Vector3d EkmanUWCurrentModel::get_bottom_layer_current(const Eigen::Vecto
     const double u = middle_current(0)*(1 - std::exp(-depth_factor)*std::cos(depth_factor)) - middle_current(1)*std::exp(-depth_factor)*std::sin(depth_factor);
     const double v = middle_current(0)*std::exp(-depth_factor)*std::sin(depth_factor) + middle_current(1)*(1 - std::exp(-depth_factor)*std::cos(depth_factor));
     return Eigen::Vector3d(u, v, 0.);
-}
-
-EkmanUWCurrentModel::Input::Input() :
-    seabed(0.),
-    top_ekman_depth(),
-    bottom_ekman_depth(),
-    middle_velocity(),
-    middle_orientation(),
-    f_and_sqrt_rho(),
-    wind_angle(),
-    wind_stress()
-{
-}
-
-EkmanUWCurrentModel::Input::Input(Seabed seabed_input) :
-    seabed(std::move(seabed_input)),
-    top_ekman_depth(),
-    bottom_ekman_depth(),
-    middle_velocity(),
-    middle_orientation(),
-    f_and_sqrt_rho(),
-    wind_angle(),
-    wind_stress()
-{
 }

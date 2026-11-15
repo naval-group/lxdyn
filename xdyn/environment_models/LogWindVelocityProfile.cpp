@@ -26,7 +26,7 @@ std::string LogWindVelocityProfile::model_name() {return "log wind profile";}
 
 LogWindVelocityProfile::Input LogWindVelocityProfile::parse(const std::string& yaml_input)
 {
-    Input ret(WindMeanVelocityProfile::parse(yaml_input));
+    Input ret{WindMeanVelocityProfile::parse(yaml_input)};
     YAML::Node node = YAML::Load(yaml_input);
     xdyn::yaml_parser::parse_uv(node["roughness length"], ret.z0);
     xdyn::yaml_parser::parse_uv(node["reference height"], ret.z_ref);
@@ -37,12 +37,4 @@ double LogWindVelocityProfile::get_wind_velocity(const double z) const
 {
     if(z <= 0) return velocity * std::log(-z / z0) / std::log(z_ref / z0); // -z because the NED frame has negative z above sea level
     else return 0.;
-}
-
-LogWindVelocityProfile::Input::Input(const WindMeanVelocityProfile::Input& parent) : WindMeanVelocityProfile::Input(parent), z0(), z_ref()
-{
-}
-
-LogWindVelocityProfile::Input::Input() :  z0(), z_ref()
-{
 }

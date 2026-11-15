@@ -28,13 +28,11 @@ class MMGPropellerForceModel : public AbstractWageningen
     public:
         struct Yaml : public AbstractWageningen::Yaml
         {
-            Yaml();
-            explicit Yaml(const AbstractWageningen::Yaml& y);
-            double k0;
-            double k1;
-            double k2;
-            double C0;
-            double C1;
+            double k0{};
+            double k1{};
+            double k2{};
+            double C0{};
+            double C1{};
             std::vector<double> C2;
             YamlCoordinates application_point;
         };

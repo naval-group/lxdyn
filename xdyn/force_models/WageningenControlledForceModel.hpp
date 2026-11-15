@@ -22,10 +22,8 @@ class WageningenControlledForceModel : public AbstractWageningen
     public:
         struct Yaml : public AbstractWageningen::Yaml
         {
-            Yaml();
-            explicit Yaml(const AbstractWageningen::Yaml& y);
-            size_t number_of_blades;
-            double blade_area_ratio;
+            size_t number_of_blades{};
+            double blade_area_ratio{};
         };
 
         WageningenControlledForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);

@@ -14,29 +14,11 @@
 
 std::string MMGPropellerForceModel::model_name() {return "MMG propeller";}
 
-MMGPropellerForceModel::Yaml::Yaml() :
-        k0(),
-        k1(),
-        k2(),
-        C0(),
-        C1()
-{
-}
-
-MMGPropellerForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
-        AbstractWageningen::Yaml(y),
-        k0(),
-        k1(),
-        k2(),
-        C0(),
-        C1()
-{
-}
-
 MMGPropellerForceModel::Yaml MMGPropellerForceModel::parse(const std::string& yaml)
 {
     YAML::Node node = YAML::Load(yaml);
-    Yaml ret(AbstractWageningen::parse(yaml));
+    Yaml ret;
+    static_cast<AbstractWageningen::Yaml&>(ret) = AbstractWageningen::parse(yaml);
     node["k0"]  >> ret.k0;
     node["k1"] >> ret.k1;
     node["k2"] >> ret.k2;

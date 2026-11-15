@@ -16,16 +16,7 @@
 #include "xdyn/yaml_parser/yaml_compat.h"
 #include <iostream>
 
-WageningenControlledForceModel::Yaml::Yaml(): number_of_blades(0), blade_area_ratio(0.0){}
-
 std::string WageningenControlledForceModel::model_name() {return "wageningen B-series";}
-
-WageningenControlledForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
-                AbstractWageningen::Yaml(y),
-                number_of_blades(),
-                blade_area_ratio()
-{
-}
 
 double WageningenControlledForceModel::get_Kt(const std::map<std::string,double>& commands, const double J) const
 {
@@ -117,7 +108,7 @@ double WageningenControlledForceModel::Kq(const size_t Z, const double AE_A0_, c
 
 WageningenControlledForceModel::Yaml WageningenControlledForceModel::parse(const std::string& yaml)
 {
-    WageningenControlledForceModel::Yaml ret(AbstractWageningen::parse(yaml));
+    WageningenControlledForceModel::Yaml ret{AbstractWageningen::parse(yaml)};
     YAML::Node node = YAML::Load(yaml);
     node["blade area ratio AE/A0"] >> ret.blade_area_ratio;
     ret.number_of_blades = try_to_parse_positive_integer(node,"number of blades");

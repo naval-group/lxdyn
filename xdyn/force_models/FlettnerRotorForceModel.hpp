@@ -18,7 +18,6 @@ class FlettnerRotorForceModel : public ForceModel
     public:
         struct Input
         {
-            Input();
             std::string name;
             YamlCoordinates calculation_point_in_body_frame;
             double diameter{0.0};
