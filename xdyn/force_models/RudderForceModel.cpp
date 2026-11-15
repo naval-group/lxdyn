@@ -24,8 +24,7 @@ RudderForceModel::Yaml::Yaml() :
     b(0),
     effective_aspect_ratio_factor(0),
     lift_coeff(0),
-    drag_coeff(0),
-    position_of_the_rudder_frame_in_the_body_frame()
+    drag_coeff(0)
 {
 }
 
@@ -35,8 +34,7 @@ RudderForceModel::Yaml::Yaml(const WageningenControlledForceModel::Yaml& yaml) :
     b(0),
     effective_aspect_ratio_factor(0),
     lift_coeff(0),
-    drag_coeff(0),
-    position_of_the_rudder_frame_in_the_body_frame()
+    drag_coeff(0)
 {
 }
 

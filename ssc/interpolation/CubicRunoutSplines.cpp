@@ -9,7 +9,7 @@
 
 using namespace ssc::interpolation;
 
-CubicRunoutSplines::CubicRunoutSplines() : Splines()
+CubicRunoutSplines::CubicRunoutSplines()
 {
     M = (h != 0) ? compute_second_derivative() : std::vector<double>(2,0);
 }

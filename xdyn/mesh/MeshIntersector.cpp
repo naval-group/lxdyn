@@ -19,26 +19,12 @@ Facet flip(Facet facet)
 
 MeshIntersector::MeshIntersector(const VectorOfVectorOfPoints& mesh_, const bool check_orientation) :
  mesh(std::make_shared<Mesh>(MeshBuilder(mesh_, check_orientation).build()))
-,all_relative_immersions()
-,all_absolute_wave_elevations()
-,all_absolute_immersions()
-,index_of_emerged_facets()
-,index_of_immersed_facets()
-,index_of_facets_exactly_on_the_surface()
-,index_of_edges_exactly_on_surface()
-,need_to_update_closing_facet(true)
+, need_to_update_closing_facet(true)
 {}
 
 MeshIntersector::MeshIntersector(const MeshPtr& mesh_)
         :mesh(mesh_)
-        ,all_relative_immersions()
-        ,all_absolute_wave_elevations()
-        ,all_absolute_immersions()
-        ,index_of_emerged_facets()
-        ,index_of_immersed_facets()
-        ,index_of_facets_exactly_on_the_surface()
-        ,index_of_edges_exactly_on_surface()
-        ,need_to_update_closing_facet(true)
+        , need_to_update_closing_facet(true)
 {}
 
 void MeshIntersector::find_intersection_with_free_surface(

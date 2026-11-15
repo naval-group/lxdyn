@@ -8,7 +8,7 @@
 #include "Integrator.hpp"
 #include "IntegratorException.hpp"
 
-ssc::integrate::Integrator::Integrator() : f(), function_defined(false)
+ssc::integrate::Integrator::Integrator() :  function_defined(false)
 {
 }
 

@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstdlib>
 
-ssc::integrate::Rectangle::Rectangle() : ssc::integrate::Integrator()
+ssc::integrate::Rectangle::Rectangle()
 {
 }
 

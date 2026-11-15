@@ -7,14 +7,5 @@
 
 #include "YamlDynamics6x6Matrix.hpp"
 
-YamlDynamics6x6Matrix::YamlDynamics6x6Matrix():
-    hdb_filename(),
-    precal_filename(),
-    frame(),
-    row_1(),
-    row_2(),
-    row_3(),
-    row_4(),
-    row_5(),
-    row_6()
+YamlDynamics6x6Matrix::YamlDynamics6x6Matrix()
 {}

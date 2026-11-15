@@ -23,7 +23,7 @@ std::vector<std::string> PIDController::get_command_names() const
     return {this->yaml.command_name};
 }
 
-PIDController::Yaml::Yaml (const std::string &yaml) :  state_weights (), setpoint_name (), command_name ()
+PIDController::Yaml::Yaml (const std::string &yaml)
 {
     YAML::Node node = YAML::Load(yaml);
 

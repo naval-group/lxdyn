@@ -10,7 +10,7 @@
 #include <boost/math/special_functions/sinc.hpp>
 #include <cmath>
 
-ssc::integrate::Burcher::Burcher() : Integrator() , tau(0)
+ssc::integrate::Burcher::Burcher() :  tau(0)
 {
 
 }

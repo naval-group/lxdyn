@@ -8,10 +8,8 @@
 
 using namespace ssc::csv_file_reader;
 
-CSVFileReader::CSVFileReader(const char* filename, const size_t expected_nb_of_columns, const char separator) : titles(std::vector<std::string>()),
-        values(std::vector<std::vector<double> >()),
-        that_line(values.begin()),
-        map(std::map<std::string,std::vector<double> >())
+CSVFileReader::CSVFileReader(const char* filename, const size_t expected_nb_of_columns, const char separator) :
+        that_line(values.begin())
 {
     std::ifstream file(filename);
     if (not (file.good()))
@@ -32,10 +30,8 @@ CSVFileReader::CSVFileReader(const char* filename, const size_t expected_nb_of_c
     that_line = values.begin();
 }
 
-CSVFileReader::CSVFileReader(const std::string& contents, const char separator) : titles(std::vector<std::string>()),
-        values(std::vector<std::vector<double> >()),
-        that_line(values.begin()),
-        map(std::map<std::string,std::vector<double> >())
+CSVFileReader::CSVFileReader(const std::string& contents, const char separator) :
+        that_line(values.begin())
 {
     std::istringstream ss(contents);
     extract_column_titles(ss, separator);

@@ -8,9 +8,7 @@
 
 #include "WebSocketMessageImpl.hpp"
 
-WebSocketMessageImpl::WebSocketMessageImpl() :
-        handle()
-        ,message()
+WebSocketMessageImpl::WebSocketMessageImpl()
 {}
 
 WebSocketMessageImpl::~WebSocketMessageImpl(){}

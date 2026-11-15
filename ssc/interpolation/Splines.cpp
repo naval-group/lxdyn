@@ -29,27 +29,17 @@ extern "C"
 using namespace ssc::interpolation;
 
 Splines::Splines() :
-        M(std::vector<double>()),
         h(0),
         n(0),
-        x_xi(0),
-        a(std::vector<double>()),
-        b(std::vector<double>()),
-        c(std::vector<double>()),
-        d(std::vector<double>())
+        x_xi(0)
 {
 }
 
 Splines::Splines(const double xmin_, const double xmax_, const std::vector<double>& y) :
         ConstantStepInterpolator(xmin_,xmax_,y),
-        M(std::vector<double>()),
         h(VectorOfEquallySpacedNumbers(xmin_,xmax_,y.size()).get_delta()),
         n(y.size()),
-        x_xi(0),
-        a(std::vector<double>()),
-        b(std::vector<double>()),
-        c(std::vector<double>()),
-        d(std::vector<double>())
+        x_xi(0)
 {
     if (n==0)
     {

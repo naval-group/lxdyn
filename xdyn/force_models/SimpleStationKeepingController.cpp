@@ -15,8 +15,7 @@
 
 
 
-SimpleStationKeepingController::Yaml::Yaml():
-    name()
+SimpleStationKeepingController::Yaml::Yaml()
 {}
 
 std::string SimpleStationKeepingController::model_name() {return "simple station-keeping controller";}

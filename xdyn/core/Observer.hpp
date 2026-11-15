@@ -28,7 +28,7 @@ struct DataAddressing
 {
     std::string name;
     std::vector<std::string> address;
-    DataAddressing():name(),address(){}
+    DataAddressing(){}
     DataAddressing(
             const std::vector<std::string>& address_,
             const std::string& name_):

@@ -32,9 +32,7 @@ std::string DataSourceDrawer::serialize(const std::set<std::string>& s) const
 
 DataSourceDrawer::DataSourceDrawer(const FromSignal2Module& signal2module,
                                            const DependantModules& dependant_modules,
-                                           const SignalContainer& all_signals) : modules(std::map<std::string, DSModuleDraw>()),
-                                                                                        signals(std::map<std::string, DSSignalDraw>()),
-                                                                                        connexions(std::vector<Connexion>())
+                                           const SignalContainer& all_signals)
 {
     for (FromSignal2Module::const_iterator it = signal2module.begin() ; it != signal2module.end() ; ++it)
     {

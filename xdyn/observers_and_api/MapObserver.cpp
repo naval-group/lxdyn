@@ -7,11 +7,11 @@
 
 #include "MapObserver.hpp"
 
-MapObserver::MapObserver() : Observer(), m()
+MapObserver::MapObserver()
 {
 }
 
-MapObserver::MapObserver(const std::vector<std::string>& d) : Observer(d), m()
+MapObserver::MapObserver(const std::vector<std::string>& d) : Observer(d)
 {
 }
 

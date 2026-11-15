@@ -3,16 +3,16 @@
 
 using namespace ssc::kinematics;
 
-PointMatrix::PointMatrix() : m(Matrix3Xd()), frame("")
+PointMatrix::PointMatrix() :  frame("")
 {
 }
 
-PointMatrix::PointMatrix(PointMatrix&& other) noexcept : m(Matrix3Xd()), frame("")
+PointMatrix::PointMatrix(PointMatrix&& other) noexcept :  frame("")
 {
     swap(other);
 }
 
-PointMatrix::PointMatrix(const std::string& frame_, const size_t nb_of_columns) : m(Matrix3Xd()), frame(frame_)
+PointMatrix::PointMatrix(const std::string& frame_, const size_t nb_of_columns) :  frame(frame_)
 {
     m.resize(3,(int)nb_of_columns);
 }

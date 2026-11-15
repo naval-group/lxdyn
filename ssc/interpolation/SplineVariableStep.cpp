@@ -94,23 +94,13 @@ std::vector<Coeff> get_coeffs(const std::vector<double>& x, const std::vector<do
 class SplineVariableStep::Impl
 {
     public:
-        Impl() : check_that(VectorsAreTheRightSize()),
-                 n(0),
-                 x(),
-                 y(),
-                 h(),
-                 coeffs(),
-                 xleft()
+        Impl() :
+                 n(0)
         {
         }
 
         Impl(const std::vector<double>& x_, const std::vector<double>& y_) : check_that(VectorsAreTheRightSize(x_,y_)),
-                                                                             n(x_.size()),
-                                                                             x(),
-                                                                             y(),
-                                                                             h(),
-                                                                             coeffs(),
-                                                                             xleft()
+                                                                             n(x_.size())
         {
             sort_xs(x_,y_);
             coeffs = get_coeffs(x,y);

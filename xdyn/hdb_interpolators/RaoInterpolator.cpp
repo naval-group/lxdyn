@@ -67,7 +67,6 @@ RaoInterpolator::RaoInterpolator(
     : module()
     , phase()
     , mirror(yaml_rao.mirror)
-    , period_bounds()
     , rao(RAO::get(yaml_rao.type_of_rao, parser))
     , rao_calculation_point(yaml_rao.calculation_point.x,yaml_rao.calculation_point.y,yaml_rao.calculation_point.z)
     , use_encounter_period(false)

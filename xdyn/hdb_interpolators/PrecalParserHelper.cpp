@@ -102,11 +102,6 @@ class Parser
   public:
     explicit Parser(AbstractLineGetter& line_getter_)
         : line_getter(line_getter_)
-        , current_section()
-        , parsed_sections()
-        , current_vector_value()
-        , raos()
-        , current_rao()
     {
     }
 
@@ -384,36 +379,19 @@ PrecalFile parse_precal_from_file(const std::string& filename)
 }
 
 Section::Section()
-    : title()
-    , scalar_values()
-    , string_values()
-    , vector_values()
 {
 }
 
 RAO::RAO()
-    : title_line()
-    , attributes()
-    , left_column()
-    , right_column()
 {
 }
 
 PrecalFile::PrecalFile()
-    : sections()
-    , raos()
 {
 }
 
 RAOAttributes::RAOAttributes()
-    : name()
-    , position()
-    , h_unit()
-    , phi_a_unit()
-    , U_unit()
-    , mu_unit()
-    , amplitude_unit()
-    , phase_unit()
+    : position()
 {
 }
 

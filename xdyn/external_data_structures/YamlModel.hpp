@@ -12,7 +12,7 @@
 
 struct YamlModel
 {
-    YamlModel(): model(), yaml(), index_of_first_line_in_global_yaml(0) {}
+    YamlModel():  index_of_first_line_in_global_yaml(0) {}
     YamlModel(
         const std::string& model_,
         const std::string& yaml_,

@@ -9,7 +9,7 @@
 
 using namespace ssc::kinematics;
 
-UnsafeWrench::UnsafeWrench() : Wrench()
+UnsafeWrench::UnsafeWrench()
 {
 }
 

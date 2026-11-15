@@ -16,13 +16,13 @@ SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirecti
 {
 }
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w1, const WaveDirectionalSpreading& w2) : terms(std::vector<std::shared_ptr<WaveDirectionalSpreading> >())
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const WaveDirectionalSpreading& w1, const WaveDirectionalSpreading& w2)
 {
     terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(w1.clone()));
     terms.push_back(std::shared_ptr<WaveDirectionalSpreading>(w2.clone()));
 }
 
-SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const std::vector<WaveDirectionalSpreading>& ws) : terms(std::vector<std::shared_ptr<WaveDirectionalSpreading> >())
+SumOfWaveDirectionalSpreadings::SumOfWaveDirectionalSpreadings(const std::vector<WaveDirectionalSpreading>& ws)
 {
     for (auto t = ws.begin() ; t != ws.end() ; ++t)
     {

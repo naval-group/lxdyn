@@ -72,6 +72,5 @@ SimServerInputs::SimServerInputs(const double Dt_)
     , full_state_history(Dt_)
     , commands({})
     , requested_output({})
-    , controllers()
 {
 }

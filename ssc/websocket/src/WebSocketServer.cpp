@@ -15,7 +15,6 @@ using namespace ssc::websocket;
 struct Server::Impl
 {
     Impl() :
-        server(),
         server_thread()
     {}
 

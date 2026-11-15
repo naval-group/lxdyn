@@ -34,7 +34,6 @@ CSVLineByLineReader::CSVLineByLineReader(const CSVYaml& y)
 , current(yaml.commands)
 , next(yaml.commands)
 , has_more_values(false)
-, date2position()
 , position_of_first_line(file.tellg())
 , zero(yaml.commands)
 , max_date_so_far(-std::numeric_limits<double>::max())
@@ -159,7 +158,6 @@ std::vector<std::string> CSVLineByLineReader::get_headers()
 
 CSVLineByLineReader::DateValues::DateValues()
 : date(std::numeric_limits<double>::max())
-, values()
 {
 }
 

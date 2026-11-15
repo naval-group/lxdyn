@@ -120,9 +120,9 @@ GrpcSetParametersResponse::GrpcSetParametersResponse():
     command_names()
 {}
 */
-GrpcControllerResponse::GrpcControllerResponse(): commands() {}
+GrpcControllerResponse::GrpcControllerResponse() {}
 
-GrpcControllerInterface::Input::Input ():url(), name(), yaml(){}
+GrpcControllerInterface::Input::Input () {}
 
 struct GrpcControllerInterface::Impl
 {

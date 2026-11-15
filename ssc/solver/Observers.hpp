@@ -103,7 +103,7 @@ namespace ssc
         class VectorObserver
         {
             public:
-                VectorObserver() : v(std::vector<std::pair<double,double> >()) {}
+                VectorObserver()  {}
                 void check_variables_to_serialize_are_available() const {}
                 void observe(const ContinuousSystem& sys, const double t, const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem> >&)
                 {

@@ -1,9 +1,7 @@
 #include "SimulationServerObserver.hpp"
 
 SimulationServerObserver::SimulationServerObserver(const std::vector<std::string>& extra_fields_to_serialize):
-    Observer(extra_fields_to_serialize),
-    current_state(),
-    states()
+    Observer(extra_fields_to_serialize)
 {
 }
 

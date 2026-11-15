@@ -34,7 +34,7 @@ class ssc::integrate::TrapezoidalIntegration::Impl
 
 };
 
-ssc::integrate::TrapezoidalIntegration::TrapezoidalIntegration() : Integrator(), pimpl(new Impl())
+ssc::integrate::TrapezoidalIntegration::TrapezoidalIntegration() :  pimpl(new Impl())
 {
 }
 

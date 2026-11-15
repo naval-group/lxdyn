@@ -7,42 +7,22 @@
 
 #include "YamlWaveModelInput.hpp"
 
-YamlDiscretization::YamlDiscretization() :  repetition_sizes()
+YamlDiscretization::YamlDiscretization()
 {}
 
-YamlSpectrum::YamlSpectrum():
-    model(std::string()),
-    model_yaml(std::string()),
-    directional_spreading_type(std::string()),
-    directional_spreading_yaml(std::string()),
-    spectral_density_type(std::string()),
-    spectral_density_yaml(std::string()),
-    stretching()
+YamlSpectrum::YamlSpectrum()
 {}
 
 YamlStretching::YamlStretching()
 {}
 
-YamlWaveModel::YamlWaveModel():
-    discretization(),
-    spectra(),
-    spectra_from_rays(),
-    output()
+YamlWaveModel::YamlWaveModel()
 {}
 
-YamlRays::YamlRays():
-    a(),
-    psi(),
-    omega(),
-    k(),
-    phase()
+YamlRays::YamlRays()
 {}
 
-YamlSpectrumFromRays::YamlSpectrumFromRays():
-    model(),
-    model_yaml(),
-    rays(),
-    stretching()
+YamlSpectrumFromRays::YamlSpectrumFromRays()
 {}
 
 YamlJonswap::YamlJonswap()
@@ -63,7 +43,5 @@ YamlDiracSpectrum::YamlDiracSpectrum()
 YamlPiersonMoskowitz::YamlPiersonMoskowitz()
 {}
 
-YamlDefaultWaveModel::YamlDefaultWaveModel():
-              //!< Constant free surface elevation (in meters)
-    output(YamlWaveOutput())
+YamlDefaultWaveModel::YamlDefaultWaveModel()
 {}

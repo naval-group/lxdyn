@@ -30,10 +30,7 @@ class KtKqForceModel::Impl
 };
 
 KtKqForceModel::Yaml::Yaml(const AbstractWageningen::Yaml& y) :
-        AbstractWageningen::Yaml(y),
-        J(),
-        Kt(),
-        Kq()
+        AbstractWageningen::Yaml(y)
 {
 }
 

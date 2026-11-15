@@ -11,16 +11,7 @@
 #include <cmath>
 #define PI M_PI
 
-FlatDiscreteDirectionalWaveSpectrum::FlatDiscreteDirectionalWaveSpectrum() :
-    a(),
-    omega(),
-    psi(),
-    cos_psi(),
-    sin_psi(),
-    k(),
-    phase(),
-    pdyn_factor(),
-    pdyn_factor_sh()
+FlatDiscreteDirectionalWaveSpectrum::FlatDiscreteDirectionalWaveSpectrum()
 {
 }
 std::vector<double> FlatDiscreteDirectionalWaveSpectrum::get_periods() const
@@ -34,15 +25,7 @@ std::vector<double> FlatDiscreteDirectionalWaveSpectrum::get_periods() const
     return periods;
 }
 
-DiscreteDirectionalWaveSpectrum::DiscreteDirectionalWaveSpectrum() :
-    Si(),
-    Dj(),
-    omega(),
-    psi(),
-    k(),
-    phase(),
-    pdyn_factor(),
-    pdyn_factor_sh()
+DiscreteDirectionalWaveSpectrum::DiscreteDirectionalWaveSpectrum()
 {
 }
 

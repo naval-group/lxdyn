@@ -7,8 +7,7 @@
 
 #include "YamlPosition.hpp"
 
-YamlPosition::YamlPosition() : coordinates(YamlCoordinates()),
-                               angle(YamlAngle()),
+YamlPosition::YamlPosition() :
                                frame("")
 {}
 

@@ -19,7 +19,7 @@ extern "C"
 void dqags_(double f(void*,double*), void*, double*, double*, double*, double*, double*, double*, int*, int*, int*, int*, int* last, int* iwork, double* work);
 }
 
-ssc::integrate::GaussKronrod::GaussKronrod() : QuadPack(),
+ssc::integrate::GaussKronrod::GaussKronrod() :
                                        iwork(new int[LIMIT]),
                                        work(new double[LENW])
 {

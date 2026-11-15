@@ -2,7 +2,6 @@
 #include <ssc/websocket.hpp>
 
 WebSocketObserver::WebSocketObserver(const std::string& address, const short unsigned int port):
-            DictObserver(),
             socket(new ssc::websocket::Client(address, port))
 {
     if (not(socket->good()))

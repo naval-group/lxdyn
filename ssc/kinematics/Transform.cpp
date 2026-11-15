@@ -3,7 +3,7 @@
 
 using namespace ssc::kinematics;
 
-Transform::Transform() : t(Point()), r(RotationMatrix(Eigen::MatrixXd::Identity(3,3))), to_frame("")
+Transform::Transform() :  r(RotationMatrix(Eigen::MatrixXd::Identity(3,3))), to_frame("")
 {
 }
 
