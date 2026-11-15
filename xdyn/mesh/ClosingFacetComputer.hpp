@@ -106,7 +106,7 @@ class ClosingFacetComputer
         struct ConnectedComponents
         {
             std::vector<int> component_idx_per_node;
-            int nb_of_components;
+            int nb_of_components{};
         };
         static std::vector<std::set<size_t> > get_edges_per_component(const ConnectedComponents& connected_components, const ListOfEdges& edges_);
         static ClosingFacetComputer::ConnectedComponents get_connected_components(const ListOfEdges& edges);

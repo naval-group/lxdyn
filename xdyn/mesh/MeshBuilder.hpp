@@ -29,13 +29,7 @@ using Vector3dMap = std::map<EPoint, size_t, Vector3dComparator>;
  */
 struct Edge
 {
-    Edge(size_t v1,size_t v2)
-    {
-        vertex_index[0]=v1;
-        vertex_index[1]=v2;
-    }
-
-    size_t vertex_index[2];  //!< The index of the two vertices in the mesh
+    size_t vertex_index[2]{};  //!< The index of the two vertices in the mesh
 };
 
 struct EdgeComparator

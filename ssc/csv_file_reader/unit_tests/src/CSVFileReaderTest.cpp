@@ -19,7 +19,7 @@ CSVFileReaderTest::CSVFileReaderTest() : a(ssc::random_data_generator::DataGener
 
 inline void remove_file_if_it_exists (const std::string& name)
 {
-  struct stat buffer;
+  struct stat buffer{};
   if (stat (name.c_str(), &buffer) == 0) remove (name.c_str());
 }
 
