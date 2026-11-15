@@ -361,7 +361,7 @@ namespace maneuvering
             void visit(const Constant& f) override;
 
         private:
-            double Tmax;
+            double Tmax{0};
     };
 }
 

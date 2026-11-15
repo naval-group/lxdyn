@@ -12,7 +12,7 @@
 
 WaveNumberFunctor::WaveNumberFunctor(const double h_,    //!< Water depth (in meters)
                   const double omega_ //!< Angular frequency (in rad/s)
-                  ) : h(h_), h2(h*h), omega2(omega_*omega_), g(9.81)
+                  ) : h(h_), h2(h*h), omega2(omega_*omega_)
 {
 }
 

@@ -17,7 +17,7 @@
 class ZGCalculator
 {
     public:
-        ZGCalculator() : tz(0), r31(0), r32(0), r33(0) {}
+        ZGCalculator()  {}
         void update_transform(const ssc::kinematics::Transform& T)
         {
             tz = T.get_point().z();
@@ -32,7 +32,7 @@ class ZGCalculator
         }
 
     private:
-        double tz, r31, r32, r33;
+        double tz{0}, r31{0}, r32{0}, r33{0};
 };
 
 

@@ -11,8 +11,8 @@ namespace xdyn
     {
         struct UV
         {
-            UV() : value(0), unit("") {}
-            double value;
+            UV() :  unit("") {}
+            double value{0};
             std::string unit;
         };
 

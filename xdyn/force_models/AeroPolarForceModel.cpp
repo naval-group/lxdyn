@@ -14,7 +14,6 @@ AeroPolarForceModel::Input::Input():
     apparent_wind_angle(),
     lift_coefficient(),
     drag_coefficient(),
-    reference_area(0.0),
     angle_command()
 {}
 

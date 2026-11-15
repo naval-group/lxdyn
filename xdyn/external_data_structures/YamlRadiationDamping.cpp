@@ -9,16 +9,6 @@
 
 YamlRadiationDamping::YamlRadiationDamping() : hdb_filename(),
                                                precal_r_filename(),
-                                               type_of_quadrature_for_cos_transform(),
-                                               type_of_quadrature_for_convolution(),
-                                               nb_of_points_for_retardation_function_discretization(0),
-                                               omega_min(0),
-                                               omega_max(0),
-                                               tau_min(0),
-                                               tau_max(0),
-                                               output_Br_and_K(),
-                                               calculation_point_in_body_frame(),
-                                               remove_constant_speed(false),
-                                               forward_speed_correction(false)
+                                               calculation_point_in_body_frame()
 {
 }

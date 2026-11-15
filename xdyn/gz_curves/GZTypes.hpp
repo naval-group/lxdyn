@@ -18,7 +18,7 @@ namespace GZ
     {
         Resultant();
         State state;
-        double gz;
+        double gz{0};
     };
 }
 

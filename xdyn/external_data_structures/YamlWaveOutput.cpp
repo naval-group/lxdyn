@@ -8,11 +8,5 @@
 
 #include "YamlWaveOutput.hpp"
 
-YamlWaveOutput::YamlWaveOutput() : frame_of_reference(""),
-         xmin(0),
-             xmax(0),
-             nx(0),
-             ymin(0),
-             ymax(0),
-             ny(0)
+YamlWaveOutput::YamlWaveOutput() : frame_of_reference("")
 {}

@@ -20,9 +20,9 @@ class HydroPolarForceModel : public ForceModel
             std::vector<double> lift_coefficient;
             std::vector<double> drag_coefficient;
             std::optional<std::vector<double>> moment_coefficient;
-            double reference_area;
+            double reference_area{0.0};
             std::optional<double> chord_length;
-            bool use_waves_velocity;
+            bool use_waves_velocity{false};
             std::optional<std::string> angle_command;
         };
 

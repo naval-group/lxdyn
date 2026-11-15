@@ -4,7 +4,6 @@
 CSVYaml::CSVYaml()
 : path()
 , time_column()
-, separator()
 , commands()
 {
 

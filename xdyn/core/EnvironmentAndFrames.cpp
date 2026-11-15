@@ -17,9 +17,6 @@ using namespace ssc::kinematics;
 EnvironmentAndFrames::EnvironmentAndFrames() : w(),
                                                wind(),
                                                k(std::make_shared<Kinematics>()),
-                                               rho(0),
-                                               nu(0),
-                                               g(0),
                                                rot(),
                                                rho_air()
 {

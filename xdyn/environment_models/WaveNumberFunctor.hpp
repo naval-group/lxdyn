@@ -35,7 +35,7 @@ class WaveNumberFunctor
         double h;
         double h2;
         double omega2;
-        double g;
+        double g{9.81};
 };
 
 #endif /* WAVENUMBERFUNCTOR_HPP_ */

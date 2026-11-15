@@ -25,8 +25,8 @@ public:
     struct Input
     {
         Input();
-        double velocity;
-        double direction;
+        double velocity{};
+        double direction{};
     };
 
     explicit WindMeanVelocityProfile(const Input& input);

@@ -38,8 +38,6 @@ Eigen::Vector3d ConstantUWCurrentModel::get_UWCurrent(const Eigen::Vector3d& pos
     return Eigen::Vector3d::Zero();
 }
 
-ConstantUWCurrentModel::Input::Input() :
-    velocity(),
-    orientation()
+ConstantUWCurrentModel::Input::Input()
 {
 }

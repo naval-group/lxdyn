@@ -10,7 +10,7 @@
 
 std::string BasicBuoyancyForceModel::model_name(){return "basic buoyancy";}
 
-BasicBuoyancyForceModel::Input::Input() : V()
+BasicBuoyancyForceModel::Input::Input()
 {}
 
 BasicBuoyancyForceModel::Input BasicBuoyancyForceModel::parse(const std::string& yaml)

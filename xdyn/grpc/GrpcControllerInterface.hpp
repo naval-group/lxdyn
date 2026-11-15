@@ -24,7 +24,7 @@ struct GrpcControllerResponse
 {
     GrpcControllerResponse();
     std::map<std::string,double> commands; // Commands computed by the controller
-    double next_call; // Date at which the solver should call the controller again
+    double next_call{0.0}; // Date at which the solver should call the controller again
 };
 
 

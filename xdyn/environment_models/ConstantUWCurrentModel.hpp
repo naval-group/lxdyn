@@ -15,8 +15,8 @@ public:
     struct Input
     {
         Input();
-        double velocity;
-        double orientation;
+        double velocity{};
+        double orientation{};
     };
     explicit ConstantUWCurrentModel(const Input& input);
     ~ConstantUWCurrentModel() override;

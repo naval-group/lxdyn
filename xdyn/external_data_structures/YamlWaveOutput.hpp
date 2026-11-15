@@ -14,12 +14,12 @@ struct YamlWaveOutput
 {
     YamlWaveOutput();
     std::string frame_of_reference;  //!< Name of the frame of reference the x & y coordinates are expressed in
-    double xmin;                     //!< Minimum x value (in meters) of the points in the output mesh
-    double xmax;                     //!< Maximum x value (in meters) of the points in the output mesh
-    size_t nx;                       //!< Discretization of the mesh along the x axis (number of different x values)
-    double ymin;                     //!< Minimum y value (in meters) of the points in the output mesh
-    double ymax;                     //!< Maximum y value (in meters) of the points in the output mesh
-    size_t ny;                       //!< Discretization of the mesh along the y axis (number of different x values)
+    double xmin{0};                     //!< Minimum x value (in meters) of the points in the output mesh
+    double xmax{0};                     //!< Maximum x value (in meters) of the points in the output mesh
+    size_t nx{0};                       //!< Discretization of the mesh along the x axis (number of different x values)
+    double ymin{0};                     //!< Minimum y value (in meters) of the points in the output mesh
+    double ymax{0};                     //!< Maximum y value (in meters) of the points in the output mesh
+    size_t ny{0};                       //!< Discretization of the mesh along the y axis (number of different x values)
 };
 
 

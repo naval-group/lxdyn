@@ -26,9 +26,9 @@ struct YamlRAO
     std::string           hdb_filename;
     std::string           precal_filename;
     YamlCoordinates       calculation_point;
-    bool                  mirror;
+    bool                  mirror{false};
     std::optional<bool> use_encounter_period;
-    TypeOfRao             type_of_rao;
+    TypeOfRao             type_of_rao{TypeOfRao::DIFFRACTION_RAO};
 };
 
 #endif /* YAMLRAO_HPP_ */

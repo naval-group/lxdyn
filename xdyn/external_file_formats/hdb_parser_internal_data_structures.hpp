@@ -44,10 +44,10 @@ namespace hdb
 
     struct SectionWithId
     {
-        SectionWithId() : header(), id(), values() {}
+        SectionWithId() : header(), values() {}
 
         Header header;
-        Value  id;
+        Value  id{};
         ListOfValues values;
     };
 

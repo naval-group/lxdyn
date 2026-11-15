@@ -21,8 +21,8 @@ class FlettnerRotorForceModel : public ForceModel
             Input();
             std::string name;
             YamlCoordinates calculation_point_in_body_frame;
-            double diameter;
-            double length;
+            double diameter{0.0};
+            double length{0.0};
             std::vector<double> spin_ratio;
             std::vector<double> lift_coefficient;
             std::vector<double> drag_coefficient;

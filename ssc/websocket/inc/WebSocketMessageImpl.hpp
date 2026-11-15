@@ -22,7 +22,7 @@ struct WebSocketMessageImpl
     WebSocketMessageImpl& operator=(const WebSocketMessageImpl& rhs);
 
 
-    WSServer* server;
+    WSServer* server{};
     websocketpp::connection_hdl handle;
     message_ptr message;
 };

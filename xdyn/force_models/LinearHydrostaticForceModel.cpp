@@ -11,9 +11,6 @@
 #include "xdyn/yaml_parser/yaml_compat.h"
 
 LinearHydrostaticForceModel::Input::Input():
-    z_eq(0.0),
-    theta_eq(0.0),
-    phi_eq(0.0),
     K1(),
     K2(),
     K3()

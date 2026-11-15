@@ -6,20 +6,18 @@
  */
 #include "YamlSpectraInput.hpp"
 
-YamlAiry::YamlAiry() :
-seed(0)
+YamlAiry::YamlAiry()
+
 {}
 
-YamlDiracDirectionalSpreading::YamlDiracDirectionalSpreading():
-psi0(0)
+YamlDiracDirectionalSpreading::YamlDiracDirectionalSpreading()
+
 {}
 
-YamlDiracSpectralDensity::YamlDiracSpectralDensity():
-omega0(0),
-Hs(0)
+YamlDiracSpectralDensity::YamlDiracSpectralDensity()
+
 {}
 
-YamlPiersonMoskowitzSpectralDensity::YamlPiersonMoskowitzSpectralDensity():
-Hs(0),
-Tp(0)
+YamlPiersonMoskowitzSpectralDensity::YamlPiersonMoskowitzSpectralDensity()
+
 {}

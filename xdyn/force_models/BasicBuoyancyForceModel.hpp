@@ -19,7 +19,7 @@ class BasicBuoyancyForceModel : public ForceModel
         struct Input
         {
             Input();
-            double V;
+            double V{};
         };
         BasicBuoyancyForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
         Wrench get_force(const BodyStates& states, const double t, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const override;

@@ -40,11 +40,7 @@ ClosingFacetComputer::ClosingFacetComputer(const Eigen::Matrix3Xd& mesh_, const 
         edges(),
         node_idx_in_mesh(),
         node_to_connected_edges(),
-        original_edge_index(),
-        xmin(),
-        xmax(),
-        ymin(),
-        ymax()
+        original_edge_index()
 {
     if (index_of_relevant_edges.empty()) for (size_t i = 0 ; i < edges_.size() ; ++i) index_of_relevant_edges.push_back(i);
     xmin = mesh->operator()(0,(long)edges_.at(0).first);

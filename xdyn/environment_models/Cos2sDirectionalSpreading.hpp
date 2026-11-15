@@ -33,7 +33,7 @@ class Cos2sDirectionalSpreading : public WaveDirectionalSpreading
 
     private:
         double s;
-        double Fs;
+        double Fs{0};
 };
 
 #endif /* COS2SDIRECTIONALSPREADING_HPP_ */

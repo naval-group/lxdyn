@@ -13,25 +13,25 @@ class HoltropMennenForceModel : public ForceModel
         struct Input
         {
             Input();
-            double Lwl;
-            double Lpp;
-            double B;
-            double Ta;
-            double Tf;
-            double Vol;
-            double lcb;
+            double Lwl{};
+            double Lpp{};
+            double B{};
+            double Ta{};
+            double Tf{};
+            double Vol{};
+            double lcb{};
             std::optional<double> S;
-            double Abt;
-            double hb;
-            double Cm;
-            double Cwp;
+            double Abt{};
+            double hb{};
+            double Cm{};
+            double Cwp{};
             std::optional<double> iE; // WARNING: iE must be in degrees
-            double At;
-            double Sapp;
-            double Cstern;
+            double At{};
+            double Sapp{};
+            double Cstern{};
             std::optional<double> hull_form_coeff;
-            double app_form_coeff;
-            bool apply_on_ship_speed_direction; // This parameter is used to apply the force on the ship's speed direction rather than the X-axis.
+            double app_form_coeff{};
+            bool apply_on_ship_speed_direction{false}; // This parameter is used to apply the force on the ship's speed direction rather than the X-axis.
         };
         struct DerivedData
         {
@@ -79,7 +79,7 @@ class HoltropMennenForceModel : public ForceModel
         double Ra(const BodyStates& states, const EnvironmentAndFrames& env) const;   // Correlation term between model and full scale
 
     private:
-        const double d;
+        const double d{-0.9};
         const Input input;
         const DerivedData derived;
         const double gravity_force;

@@ -20,10 +20,10 @@
 
 struct GZOptions
 {
-    GZOptions() : dphi(0), phi_max(0), stl_filename(), yaml_files(), output_csv_file()
+    GZOptions() :  stl_filename(), yaml_files(), output_csv_file()
     {}
-    double dphi;
-    double phi_max;
+    double dphi{0};
+    double phi_max{0};
     std::string stl_filename;
     std::vector<std::string> yaml_files;
     std::string output_csv_file;

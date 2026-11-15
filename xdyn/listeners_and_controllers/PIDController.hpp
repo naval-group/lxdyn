@@ -26,9 +26,9 @@ class PIDController : public Controller
         {
             explicit Yaml(const std::string& yaml);
             /* PID Controller gains */
-            double Kp; //!< Proportional gain
-            double Ki; //!< Integral gain
-            double Kd; //!< Derivative gain
+            double Kp{}; //!< Proportional gain
+            double Ki{}; //!< Integral gain
+            double Kd{}; //!< Derivative gain
             /* PID Controller input */
             std::map<std::string, double> state_weights;  //!< Weights associated to each state, used to compute the controller's measured input,
                                                           //   with the convention that any missing state has weight 0.
@@ -66,10 +66,10 @@ class PIDController : public Controller
         double compute_command(const double setpoint, const double measured_value, const double t);
 
         /* PID Controller "memory" */
-        bool initialized;       //!< False if the controller has never been called and `t_start` and `previous_error` uninitialized.
-        double previous_t;      //!< Previous time instant at which `compute_command` was called
-        double previous_error;  //!< Previous error (expected - measured)
-        double integral_term;   //!< Previous value of the integral term
+        bool initialized{false};       //!< False if the controller has never been called and `t_start` and `previous_error` uninitialized.
+        double previous_t{0};      //!< Previous time instant at which `compute_command` was called
+        double previous_error{0};  //!< Previous error (expected - measured)
+        double integral_term{0};   //!< Previous value of the integral term
 };
 
 #endif /* PIDCONTROLLER_HPP_ */

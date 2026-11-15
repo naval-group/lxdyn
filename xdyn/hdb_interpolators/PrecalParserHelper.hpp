@@ -25,13 +25,13 @@ struct RAOAttributes
     RAOAttributes();
     std::string name;
     Eigen::Vector3d position;
-    double h; // Depth
+    double h{}; // Depth
     std::string  h_unit;
-    double phi_a; // Roll amplitude
+    double phi_a{}; // Roll amplitude
     std::string phi_a_unit;
-    double U; // Speed
+    double U{}; // Speed
     std::string U_unit;
-    double mu; // Waves direction
+    double mu{}; // Waves direction
     std::string mu_unit;
     std::string amplitude_unit;
     std::string phase_unit;

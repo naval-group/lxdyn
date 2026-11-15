@@ -19,7 +19,7 @@ class AeroPolarForceModel : public ForceModel
             std::vector<double> apparent_wind_angle;
             std::vector<double> lift_coefficient;
             std::vector<double> drag_coefficient;
-            double reference_area;
+            double reference_area{0.0};
             std::optional<std::string> angle_command;
         };
 

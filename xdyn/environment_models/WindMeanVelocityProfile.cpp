@@ -33,6 +33,6 @@ WindMeanVelocityProfile::Input WindMeanVelocityProfile::parse(const std::string&
     return ret;
 }
 
-WindMeanVelocityProfile::Input::Input() : velocity(), direction()
+WindMeanVelocityProfile::Input::Input()
 {
 }

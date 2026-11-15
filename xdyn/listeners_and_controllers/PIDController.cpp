@@ -14,10 +14,7 @@ PIDController::PIDController (const double tstart,
                               const double dt,
                               const std::string& name_,
                               const std::string &yaml_)
-    : Controller (tstart, dt, name_), yaml (yaml_),
-      initialized (false),
-      previous_t (0), previous_error (0),
-      integral_term (0)
+    : Controller (tstart, dt, name_), yaml (yaml_)
 {
 }
 
@@ -26,7 +23,7 @@ std::vector<std::string> PIDController::get_command_names() const
     return {this->yaml.command_name};
 }
 
-PIDController::Yaml::Yaml (const std::string &yaml) : Kp (), Ki (), Kd (), state_weights (), setpoint_name (), command_name ()
+PIDController::Yaml::Yaml (const std::string &yaml) :  state_weights (), setpoint_name (), command_name ()
 {
     YAML::Node node = YAML::Load(yaml);
 
