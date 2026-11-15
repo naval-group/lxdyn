@@ -7,6 +7,4 @@
 
 #include "YamlOutput.hpp"
 
-YamlOutput::YamlOutput()
-{
-}
+YamlOutput::YamlOutput() = default;

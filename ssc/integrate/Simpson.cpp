@@ -11,10 +11,7 @@
 class ssc::integrate::Simpson::Impl
 {
     public:
-        Impl()
-        {
-
-        }
+        Impl() = default;
         double adaptive_simpson(const Function& f, const double a, const double b, const double epsilon,
                 const double S, const double fa, const double fb, const double fc, const int bottom) const
         {

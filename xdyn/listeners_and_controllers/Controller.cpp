@@ -14,9 +14,7 @@ Controller::Controller(const double date_of_first_call_, const double dt, const 
 {
 }
 
-Controller::~Controller()
-{
-}
+Controller::~Controller() = default;
 
 std::vector<std::string> Controller::get_outputs() const
 {

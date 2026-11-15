@@ -15,9 +15,7 @@ SurfaceForceModel::SurfaceForceModel(const std::string& name_, const std::string
 {
 }
 
-SurfaceForceModel::~SurfaceForceModel()
-{
-}
+SurfaceForceModel::~SurfaceForceModel() = default;
 
 Wrench SurfaceForceModel::get_force(
     const BodyStates& states,

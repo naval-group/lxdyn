@@ -22,9 +22,7 @@ VariableStepInterpolation::VariableStepInterpolation() : index(std::make_shared<
 
 }
 
-VariableStepInterpolation::~VariableStepInterpolation()
-{
-}
+VariableStepInterpolation::~VariableStepInterpolation() = default;
 
 VariableStepInterpolation::VariableStepInterpolation(const std::vector<double>& x, const bool allow_queries_outside_bounds) : index(std::make_shared<IndexFinder>(x,not(allow_queries_outside_bounds))), idx(0), x0(0)
 {

@@ -47,9 +47,7 @@ SurfaceElevationInterface::SurfaceElevationInterface(
 {
 }
 
-SurfaceElevationInterface::~SurfaceElevationInterface()
-{
-}
+SurfaceElevationInterface::~SurfaceElevationInterface() = default;
 
 ssc::kinematics::PointMatrix SurfaceElevationInterface::get_points_on_free_surface(
         const double t,

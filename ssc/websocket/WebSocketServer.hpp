@@ -20,7 +20,7 @@ namespace ssc
     {
         struct MessageHandler // What should we do when we receive a message?
         {
-            virtual ~MessageHandler() {}
+            virtual ~MessageHandler() = default;
             virtual void operator()(const Message&) = 0;
         };
 

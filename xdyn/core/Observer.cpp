@@ -211,9 +211,7 @@ void Observer::serialize_after_solver_step(const std::vector<std::string>& varia
     serialize_requested_variables(variables_to_serialize, serializers_called_after_solver_step);
 }
 
-Observer::~Observer()
-{
-}
+Observer::~Observer() = default;
 
 void Observer::flush()
 {

@@ -20,8 +20,7 @@
 
 struct GZOptions
 {
-    GZOptions()
-    {}
+    GZOptions() = default;
     double dphi{0};
     double phi_max{0};
     std::string stl_filename;

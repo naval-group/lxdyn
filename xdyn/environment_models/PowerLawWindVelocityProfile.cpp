@@ -20,9 +20,7 @@ PowerLawWindVelocityProfile::PowerLawWindVelocityProfile(const Input& input) : W
     }
 }
 
-PowerLawWindVelocityProfile::~PowerLawWindVelocityProfile()
-{
-}
+PowerLawWindVelocityProfile::~PowerLawWindVelocityProfile() = default;
 
 std::string PowerLawWindVelocityProfile::model_name() {return "power law wind profile";}
 

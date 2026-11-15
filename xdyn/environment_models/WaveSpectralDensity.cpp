@@ -15,18 +15,14 @@
 
 #include <limits>
 
-WaveSpectralDensity::WaveSpectralDensity()
-{
-}
+WaveSpectralDensity::WaveSpectralDensity() = default;
 
 SumOfWaveSpectralDensities WaveSpectralDensity::operator+(const WaveSpectralDensity& w) const
 {
     return SumOfWaveSpectralDensities(*this, w);
 }
 
-WaveSpectralDensity::~WaveSpectralDensity()
-{
-}
+WaveSpectralDensity::~WaveSpectralDensity() = default;
 
 std::vector<double> WaveSpectralDensity::get_angular_frequencies(const double omega_min, //!< Minimum angular frequency (in rad/s)
                                                                  const double omega_max, //!< Minimum angular frequency (in rad/s)

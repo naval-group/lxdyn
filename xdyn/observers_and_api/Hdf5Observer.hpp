@@ -9,7 +9,7 @@
 struct Hdf5Addressing
 {
     std::string address;
-    Hdf5Addressing(){}
+    Hdf5Addressing()= default;
     explicit Hdf5Addressing(
             const DataAddressing& addressing,
             const std::string& basename=""

@@ -23,7 +23,7 @@ namespace ssc
             public:
                 ParabolicRunoutSplines();
                 ParabolicRunoutSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
-                ~ParabolicRunoutSplines() override {}
+                ~ParabolicRunoutSplines() override = default;
             private:
                 double get_endpoint_value() const override;
         };

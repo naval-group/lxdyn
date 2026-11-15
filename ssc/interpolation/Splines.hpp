@@ -48,7 +48,7 @@ namespace ssc
         {
             public:
                 Splines();
-                ~Splines() override {}
+                ~Splines() override = default;
                 Splines(const double xmin_, const double xmax_, const std::vector<double>& y);
                 std::vector<ParabolicCoefficients> get_parabolic_coefficients();
                 std::pair<double,double> find_position_and_value_of_minimum();

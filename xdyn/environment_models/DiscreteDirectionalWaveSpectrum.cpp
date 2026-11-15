@@ -11,9 +11,7 @@
 #include <cmath>
 #define PI M_PI
 
-FlatDiscreteDirectionalWaveSpectrum::FlatDiscreteDirectionalWaveSpectrum()
-{
-}
+FlatDiscreteDirectionalWaveSpectrum::FlatDiscreteDirectionalWaveSpectrum() = default;
 std::vector<double> FlatDiscreteDirectionalWaveSpectrum::get_periods() const
 {
     std::vector<double> periods;
@@ -25,9 +23,7 @@ std::vector<double> FlatDiscreteDirectionalWaveSpectrum::get_periods() const
     return periods;
 }
 
-DiscreteDirectionalWaveSpectrum::DiscreteDirectionalWaveSpectrum()
-{
-}
+DiscreteDirectionalWaveSpectrum::DiscreteDirectionalWaveSpectrum() = default;
 
 void DiscreteDirectionalWaveSpectrum::check_sizes() const
 {

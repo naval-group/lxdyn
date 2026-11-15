@@ -11,9 +11,7 @@ EmergedSurfaceForceModel::EmergedSurfaceForceModel(const std::string& name_, con
 {
 }
 
-EmergedSurfaceForceModel::~EmergedSurfaceForceModel()
-{
-}
+EmergedSurfaceForceModel::~EmergedSurfaceForceModel() = default;
 
 FacetIterator EmergedSurfaceForceModel::begin(const MeshIntersectorPtr& intersector) const
 {

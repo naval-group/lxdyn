@@ -117,9 +117,7 @@ void WaveModel::check_sizes() const
     }
 }
 
-WaveModel::~WaveModel()
-{
-}
+WaveModel::~WaveModel() = default;
 
 std::vector<double> WaveModel::get_elevation(
     const std::vector<double> &x, //!< x-positions in the NED frame (in meters)

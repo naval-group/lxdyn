@@ -15,9 +15,7 @@ DataSourceModule::DataSourceModule(DataSource* const data_source, const std::str
 
 }
 
-DataSourceModule::~DataSourceModule()
-{
-}
+DataSourceModule::~DataSourceModule() = default;
 
 std::string DataSourceModule::get_name() const
 {

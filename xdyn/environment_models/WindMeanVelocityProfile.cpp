@@ -15,9 +15,7 @@ WindMeanVelocityProfile::WindMeanVelocityProfile(const Input& input) : velocity(
 {
 }
 
-WindMeanVelocityProfile::~WindMeanVelocityProfile()
-{
-}
+WindMeanVelocityProfile::~WindMeanVelocityProfile() = default;
 
 Eigen::Vector3d WindMeanVelocityProfile::get_wind(const Eigen::Vector3d& position, const double) const
 {
@@ -33,6 +31,4 @@ WindMeanVelocityProfile::Input WindMeanVelocityProfile::parse(const std::string&
     return ret;
 }
 
-WindMeanVelocityProfile::Input::Input()
-{
-}
+WindMeanVelocityProfile::Input::Input() = default;

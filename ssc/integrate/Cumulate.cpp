@@ -12,10 +12,7 @@
 class ssc::integrate::Cumulate::Impl
 {
     public:
-        Impl()
-        {
-
-        }
+        Impl() = default;
 
         void add(const double x, const double y)
         {
@@ -69,10 +66,7 @@ ssc::integrate::Cumulate::Cumulate() : pimpl{Impl{}}
 
 }
 
-ssc::integrate::Cumulate::~Cumulate()
-{
-
-}
+ssc::integrate::Cumulate::~Cumulate() = default;
 
 void ssc::integrate::Cumulate::add(const double x, const double y)
 {

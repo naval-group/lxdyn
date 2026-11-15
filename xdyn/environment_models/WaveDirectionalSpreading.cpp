@@ -20,9 +20,7 @@ WaveDirectionalSpreading::WaveDirectionalSpreading(const double psi0_) : psi0(ps
 {
 }
 
-WaveDirectionalSpreading::~WaveDirectionalSpreading()
-{
-}
+WaveDirectionalSpreading::~WaveDirectionalSpreading() = default;
 
 std::vector<std::pair<int,int> > WaveDirectionalSpreading::build_coprimes(const size_t n) const
 {

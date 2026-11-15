@@ -19,7 +19,7 @@ template <typename T> class H5_Interface
                 h5Type(h5Type_)
         {
         }
-        virtual ~H5_Interface(){}
+        virtual ~H5_Interface()= default;
     protected:
         H5::CompType get_type() const
         {

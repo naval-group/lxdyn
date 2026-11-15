@@ -24,7 +24,7 @@ class AbstractWageningen : public ForceModel
         struct Yaml
         {
             Yaml();
-            virtual ~Yaml(){}
+            virtual ~Yaml()= default;
             std::string name;
             YamlPosition position_of_propeller_frame;
             double wake_coefficient{0.0};

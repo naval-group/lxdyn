@@ -9,14 +9,9 @@
 
 using namespace ssc::interpolation;
 
-Interpolator::Interpolator()
-{
-}
+Interpolator::Interpolator() = default;
 
-Interpolator::~Interpolator()
-{
-
-}
+Interpolator::~Interpolator() = default;
 
 double Interpolator::f(const double x)
 {

@@ -24,7 +24,7 @@ namespace ssc
             public:
                 NaturalSplines();
                 NaturalSplines(const double& xmin_, const double& xmax_, const std::vector<double>& y);
-                ~NaturalSplines() override {}
+                ~NaturalSplines() override = default;
             private:
                 double get_endpoint_value() const override;
         };

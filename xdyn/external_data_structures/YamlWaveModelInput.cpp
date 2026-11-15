@@ -7,41 +7,28 @@
 
 #include "YamlWaveModelInput.hpp"
 
-YamlDiscretization::YamlDiscretization()
-{}
+YamlDiscretization::YamlDiscretization() = default;
 
-YamlSpectrum::YamlSpectrum()
-{}
+YamlSpectrum::YamlSpectrum() = default;
 
-YamlStretching::YamlStretching()
-{}
+YamlStretching::YamlStretching() = default;
 
-YamlWaveModel::YamlWaveModel()
-{}
+YamlWaveModel::YamlWaveModel() = default;
 
-YamlRays::YamlRays()
-{}
+YamlRays::YamlRays() = default;
 
-YamlSpectrumFromRays::YamlSpectrumFromRays()
-{}
+YamlSpectrumFromRays::YamlSpectrumFromRays() = default;
 
-YamlJonswap::YamlJonswap()
-{}
+YamlJonswap::YamlJonswap() = default;
 
-YamlBretschneider::YamlBretschneider()
-{}
+YamlBretschneider::YamlBretschneider() = default;
 
-YamlCos2s::YamlCos2s()
-{}
+YamlCos2s::YamlCos2s() = default;
 
-YamlDiracDirection::YamlDiracDirection()
-{}
+YamlDiracDirection::YamlDiracDirection() = default;
 
-YamlDiracSpectrum::YamlDiracSpectrum()
-{}
+YamlDiracSpectrum::YamlDiracSpectrum() = default;
 
-YamlPiersonMoskowitz::YamlPiersonMoskowitz()
-{}
+YamlPiersonMoskowitz::YamlPiersonMoskowitz() = default;
 
-YamlDefaultWaveModel::YamlDefaultWaveModel()
-{}
+YamlDefaultWaveModel::YamlDefaultWaveModel() = default;

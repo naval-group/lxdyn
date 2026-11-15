@@ -7,9 +7,7 @@
 
 #include "XdynCommandLineArguments.hpp"
 
-XdynCommandLineArguments::XdynCommandLineArguments()
-{
-}
+XdynCommandLineArguments::XdynCommandLineArguments() = default;
 
 bool XdynCommandLineArguments::empty() const
 {

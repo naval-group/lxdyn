@@ -34,9 +34,9 @@ using VertexMapIter = std::map<std::string,Vertex>::const_iterator;
 class KinematicTree::Impl
 {
     public:
-        Impl()  {}
+        Impl()  = default;
 
-        ~Impl(){}
+        ~Impl()= default;
         Impl& operator=(const Impl& rhs)
         {
             if (this!=&rhs)
@@ -46,9 +46,7 @@ class KinematicTree::Impl
             return *this;
         }
 
-        Impl(const Impl& rhs) : g(rhs.g), name_to_vertex(rhs.name_to_vertex)
-        {
-        }
+        Impl(const Impl& rhs) = default;
 
         void add(const std::string& frame_A, const std::string& frame_B)
         {

@@ -46,7 +46,7 @@ class RudderForceModel : public ForceModel
                         const double rho,
                         const double nu
                         );
-            virtual ~RudderModel(){}
+            virtual ~RudderModel()= default;
 
             /**  \brief Calculates the rudder area (in or outside wake)
               *  \returns Rudder area (in m^2)

@@ -11,9 +11,7 @@
 #include <set>
 
 
-SumOfWaveSpectralDensities::SumOfWaveSpectralDensities()
-{
-}
+SumOfWaveSpectralDensities::SumOfWaveSpectralDensities() = default;
 
 SumOfWaveSpectralDensities::SumOfWaveSpectralDensities(const WaveSpectralDensity& w) : terms(std::vector<WaveSpectralDensityPtr>(1, WaveSpectralDensityPtr(w.clone())))
 {

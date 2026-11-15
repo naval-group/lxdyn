@@ -29,7 +29,7 @@ template <typename T> struct YamlDOF
         value(),
         howApplied({0.,0.,0.,0.,0.,0.})
     {}
-    virtual ~YamlDOF() {}
+    virtual ~YamlDOF() = default;
     BlockableState state{BlockableState::U};
     T t;
     T value;

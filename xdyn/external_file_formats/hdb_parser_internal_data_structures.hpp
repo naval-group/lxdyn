@@ -28,7 +28,7 @@ namespace hdb
 
     struct VectorSection
     {
-            VectorSection()  {}
+            VectorSection()  = default;
 
         Header header;
         Values values;
@@ -36,7 +36,7 @@ namespace hdb
 
     struct MatrixSection
     {
-            MatrixSection()  {}
+            MatrixSection()  = default;
 
         Header header;
         ListOfValues values;
@@ -44,7 +44,7 @@ namespace hdb
 
     struct SectionWithId
     {
-        SectionWithId()  {}
+        SectionWithId()  = default;
 
         Header header;
         Value  id{};
@@ -53,7 +53,7 @@ namespace hdb
 
     struct ListOfMatrixSections
     {
-        ListOfMatrixSections()  {}
+        ListOfMatrixSections()  = default;
 
         Header               header;
         std::vector<MatrixSection> sections;
@@ -61,7 +61,7 @@ namespace hdb
 
     struct ListOfMatrixSectionsWithId
     {
-            ListOfMatrixSectionsWithId()  {}
+            ListOfMatrixSectionsWithId()  = default;
 
         Header                     header;
         std::vector<SectionWithId> sections_with_id;
@@ -69,7 +69,7 @@ namespace hdb
 
     struct AST
     {
-        AST()  {}
+        AST()  = default;
 
         std::vector<Key<std::string> >    string_keys;
         std::vector<Key<double> >         value_keys;

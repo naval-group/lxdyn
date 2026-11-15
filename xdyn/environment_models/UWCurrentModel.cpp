@@ -4,10 +4,6 @@
 
 #include "UWCurrentModel.hpp"
 
-UWCurrentModel::UWCurrentModel()
-{
-}
+UWCurrentModel::UWCurrentModel() = default;
 
-UWCurrentModel::~UWCurrentModel()
-{
-}
+UWCurrentModel::~UWCurrentModel() = default;

@@ -86,10 +86,7 @@ namespace ssc
                 */
                 virtual void initialize() const;
 
-                DataSourceModule(const DataSourceModule& rhs) : ds(rhs.ds), module_name_(rhs.module_name_)
-                {
-
-                }
+                DataSourceModule(const DataSourceModule& rhs) = default;
 
                 DataSourceModule(const DataSourceModule& rhs, DataSource* const data_source) : ds(data_source), module_name_(rhs.module_name_)
                 {

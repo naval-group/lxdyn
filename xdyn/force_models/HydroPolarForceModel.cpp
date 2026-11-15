@@ -8,8 +8,7 @@
 #include <algorithm>
 #include <cmath>
 
-HydroPolarForceModel::Input::Input()
-{}
+HydroPolarForceModel::Input::Input() = default;
 
 std::string HydroPolarForceModel::model_name()
 {

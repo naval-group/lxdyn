@@ -16,8 +16,7 @@
 
 std::string ConstantForceModel::model_name() {return "constant force";}
 
-ConstantForceModel::Input::Input()
-{}
+ConstantForceModel::Input::Input() = default;
 
 ConstantForceModel::Input ConstantForceModel::parse(const std::string& yaml)
 {

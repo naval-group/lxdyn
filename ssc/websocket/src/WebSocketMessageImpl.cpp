@@ -8,14 +8,11 @@
 
 #include "WebSocketMessageImpl.hpp"
 
-WebSocketMessageImpl::WebSocketMessageImpl()
-{}
+WebSocketMessageImpl::WebSocketMessageImpl() = default;
 
-WebSocketMessageImpl::~WebSocketMessageImpl(){}
+WebSocketMessageImpl::~WebSocketMessageImpl()= default;
 
-WebSocketMessageImpl::WebSocketMessageImpl(const WebSocketMessageImpl& rhs) : server(rhs.server), handle(rhs.handle), message(rhs.message)
-{
-}
+WebSocketMessageImpl::WebSocketMessageImpl(const WebSocketMessageImpl& rhs) = default;
 
 WebSocketMessageImpl& WebSocketMessageImpl::operator=(const WebSocketMessageImpl& rhs)
 {

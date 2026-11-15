@@ -7,10 +7,6 @@
 
 #include "WindModel.hpp"
 
-WindModel::WindModel()
-{
-}
+WindModel::WindModel() = default;
 
-WindModel::~WindModel()
-{
-}
+WindModel::~WindModel() = default;

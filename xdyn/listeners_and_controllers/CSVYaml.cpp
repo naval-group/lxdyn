@@ -1,7 +1,4 @@
 #include "CSVYaml.hpp"
 
 
-CSVYaml::CSVYaml()
-{
-
-}
+CSVYaml::CSVYaml() = default;

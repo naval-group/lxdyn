@@ -15,9 +15,7 @@ Point::Point(const std::string& frame_, const Eigen::Vector3d& v_) : v(v_), fram
 {
 }
 
-Point::Point(const Point& P) : v(P.v), frame(P.frame)
-{
-}
+Point::Point(const Point& P) = default;
 
 Point::Point(const std::string& frame_, const double x_, const double y_, const double z_) : v(x_,y_,z_), frame(frame_)
 {

@@ -28,13 +28,9 @@ ssc::integrate::QuadPack::QuadPack(const Function& f_) : Integrator(f_)
 {
 }
 
-ssc::integrate::QuadPack::QuadPack()
-{
-}
+ssc::integrate::QuadPack::QuadPack() = default;
 
-ssc::integrate::QuadPack::~QuadPack()
-{
-}
+ssc::integrate::QuadPack::~QuadPack() = default;
 
 double ssc::integrate::QuadPack::op(double *x)
 {

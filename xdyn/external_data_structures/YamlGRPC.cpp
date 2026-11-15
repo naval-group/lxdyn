@@ -6,6 +6,4 @@
  */
 #include "YamlGRPC.hpp"
 
-YamlGRPC::YamlGRPC()
-
-{}
+YamlGRPC::YamlGRPC() = default;

@@ -45,9 +45,7 @@ class JSONWebSocketServer
         JSONWebSocketServer(const ServiceT& service, const bool verbose) : handler(service, verbose)
         {
         }
-        virtual ~JSONWebSocketServer()
-        {
-        }
+        virtual ~JSONWebSocketServer() = default;
 
         void start(const std::string& address, const short unsigned int port, const bool debug)
         {
@@ -73,9 +71,7 @@ class JSONWebSocketServer
                 JSONHandler(const ServiceT& simserver, const bool verbose_) : sim_server(simserver), verbose(verbose_)
                 {
                 }
-                ~JSONHandler() override
-                {
-                }
+                ~JSONHandler() override = default;
 
                 void operator()(const ssc::websocket::Message& msg) override
                 {

@@ -17,7 +17,7 @@
 class ZGCalculator
 {
     public:
-        ZGCalculator()  {}
+        ZGCalculator()  = default;
         void update_transform(const ssc::kinematics::Transform& T)
         {
             tz = T.get_point().z();

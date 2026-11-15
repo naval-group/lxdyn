@@ -7,17 +7,11 @@
 
 #include "YamlBody.hpp"
 
-YamlBody::YamlBody()
-{
-}
+YamlBody::YamlBody() = default;
 
-YamlCSVDOF::YamlCSVDOF()
-{
-}
+YamlCSVDOF::YamlCSVDOF() = default;
 
-YamlBlockedDOF::YamlBlockedDOF()
-{
-}
+YamlBlockedDOF::YamlBlockedDOF() = default;
 
 
 YamlFilteredStates::YamlFilteredStates()

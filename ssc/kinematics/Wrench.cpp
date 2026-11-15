@@ -55,11 +55,7 @@ Wrench::Wrench(const Point& P_, const Eigen::Vector3d& force_, const Eigen::Vect
 }
 
 
-Wrench::Wrench(const Wrench& rhs) : force(rhs.force),
-                                  torque(rhs.torque),
-                                  P(rhs.P)
-{
-}
+Wrench::Wrench(const Wrench& rhs) = default;
 
 void Wrench::swap(Wrench& other) noexcept
 {

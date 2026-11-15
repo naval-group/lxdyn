@@ -13,10 +13,7 @@ class MockableDataSourceModule : public ssc::data_source::DataSourceModule
 class MockDataSourceModule : public MockableDataSourceModule
 {
     public:
-        MockDataSourceModule()
-        {
-
-        }
+        MockDataSourceModule() = default;
         MockDataSourceModule(ssc::data_source::DataSource* const d, const std::string& s)
         {
             (void)d;
