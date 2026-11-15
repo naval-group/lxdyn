@@ -18,18 +18,6 @@ LinearHydrostaticForceModelTest::LinearHydrostaticForceModelTest() : a(ssc::rand
 {
 }
 
-LinearHydrostaticForceModelTest::~LinearHydrostaticForceModelTest()
-{
-}
-
-void LinearHydrostaticForceModelTest::SetUp()
-{
-}
-
-void LinearHydrostaticForceModelTest::TearDown()
-{
-}
-
 TEST_F(LinearHydrostaticForceModelTest, parser_test)
 {
     const auto input = LinearHydrostaticForceModel::parse(test_data::linear_hydrostatics());

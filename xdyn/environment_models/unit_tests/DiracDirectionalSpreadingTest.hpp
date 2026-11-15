@@ -15,9 +15,6 @@ class DiracDirectionalSpreadingTest : public ::testing::Test
 {
     protected:
         DiracDirectionalSpreadingTest();
-        ~DiracDirectionalSpreadingTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #include "SimpleStationKeepingControllerTest.hpp"
 #include "SimpleStationKeepingController.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
@@ -16,18 +15,6 @@
 constexpr double EPS = 1E-14;
 
 SimpleStationKeepingControllerTest::SimpleStationKeepingControllerTest() : a(ssc::random_data_generator::DataGenerator(85552))
-{
-}
-
-SimpleStationKeepingControllerTest::~SimpleStationKeepingControllerTest()
-{
-}
-
-void SimpleStationKeepingControllerTest::SetUp()
-{
-}
-
-void SimpleStationKeepingControllerTest::TearDown()
 {
 }
 

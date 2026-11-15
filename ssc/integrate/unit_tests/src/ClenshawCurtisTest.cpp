@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #include "ClenshawCurtisTest.hpp"
 #include "ssc/integrate/ClenshawCurtisCosine.hpp"
 #include "ssc/integrate/ClenshawCurtisSine.hpp"
@@ -15,18 +14,6 @@
 constexpr double EPS = 1E-6;
 
 ClenshawCurtisTest::ClenshawCurtisTest() : a(ssc::random_data_generator::DataGenerator(54212))
-{
-}
-
-ClenshawCurtisTest::~ClenshawCurtisTest()
-{
-}
-
-void ClenshawCurtisTest::SetUp()
-{
-}
-
-void ClenshawCurtisTest::TearDown()
 {
 }
 
@@ -62,7 +49,6 @@ TEST_F(ClenshawCurtisTest, radiation_damping)
     const auto Kr2 = [](const double tau){return exp(-0.2*tau)*cos(0.6*tau);};
 
     ssc::integrate::ClenshawCurtisCosine I(Br2, 1);
-
 
     const std::vector<double> taus = {0, 0.5, 1, 1.5, 2, 1.5, 3};
     for (size_t i = 0 ; i < taus.size() ; ++i)

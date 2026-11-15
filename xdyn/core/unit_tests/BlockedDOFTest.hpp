@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef BLOCKEDDOFTEST_HPP_
 #define BLOCKEDDOFTEST_HPP_
 
@@ -16,9 +15,6 @@ class BlockedDOFTest : public ::testing::Test
 {
     protected:
         BlockedDOFTest();
-        ~BlockedDOFTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

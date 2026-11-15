@@ -21,18 +21,6 @@ GravityForceModelTest::GravityForceModelTest() : a(ssc::random_data_generator::D
 {
 }
 
-GravityForceModelTest::~GravityForceModelTest()
-{
-}
-
-void GravityForceModelTest::SetUp()
-{
-}
-
-void GravityForceModelTest::TearDown()
-{
-}
-
 TEST_F(GravityForceModelTest, example)
 {
 //! [GravityForceModelTest example]

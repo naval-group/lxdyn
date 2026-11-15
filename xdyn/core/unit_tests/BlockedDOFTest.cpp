@@ -26,22 +26,7 @@
 #include <fstream>
 #include <random>
 
-
-
-
 BlockedDOFTest::BlockedDOFTest() : a(ssc::random_data_generator::DataGenerator(854512))
-{
-}
-
-BlockedDOFTest::~BlockedDOFTest()
-{
-}
-
-void BlockedDOFTest::SetUp()
-{
-}
-
-void BlockedDOFTest::TearDown()
 {
 }
 
@@ -153,7 +138,6 @@ struct TmpFile
         TmpFile& operator=(const TmpFile& rhs);
         std::filesystem::path path;
 };
-
 
 TEST_F(BlockedDOFTest, should_not_throw_if_CSV_file_exists)
 {

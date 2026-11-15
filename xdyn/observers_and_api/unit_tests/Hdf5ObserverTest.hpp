@@ -8,9 +8,6 @@ class Hdf5ObserverTest : public ::testing::Test
 {
     protected:
         Hdf5ObserverTest();
-        ~Hdf5ObserverTest() override{}
-        void SetUp() override{}
-        void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
 };
 

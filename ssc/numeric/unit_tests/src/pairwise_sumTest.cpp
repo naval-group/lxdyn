@@ -15,18 +15,6 @@ pairwise_sumTest::pairwise_sumTest() : a(ssc::random_data_generator::DataGenerat
 {
 }
 
-pairwise_sumTest::~pairwise_sumTest()
-{
-}
-
-void pairwise_sumTest::SetUp()
-{
-}
-
-void pairwise_sumTest::TearDown()
-{
-}
-
 TEST_F(pairwise_sumTest, example0)
 {
     const std::vector<int> v;

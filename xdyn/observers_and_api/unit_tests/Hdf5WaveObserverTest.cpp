@@ -5,18 +5,6 @@ SimHdf5WaveObserverTest::SimHdf5WaveObserverTest() : a(ssc::random_data_generato
 {
 }
 
-SimHdf5WaveObserverTest::~SimHdf5WaveObserverTest()
-{
-}
-
-void SimHdf5WaveObserverTest::SetUp()
-{
-}
-
-void SimHdf5WaveObserverTest::TearDown()
-{
-}
-
 Eigen::MatrixXd foo(const Eigen::VectorXd& x, const Eigen::VectorXd& y);
 Eigen::MatrixXd foo(const Eigen::VectorXd& x, const Eigen::VectorXd& y)
 {

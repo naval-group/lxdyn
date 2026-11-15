@@ -6,7 +6,6 @@
 class HydroPolarForceModelTest : public ::testing::Test
 {
     public:
-        HydroPolarForceModelTest();
         ~HydroPolarForceModelTest() override = default;
 };
 

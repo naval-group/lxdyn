@@ -34,15 +34,6 @@ std::string write_seabed_image()
 EkmanUWCurrentTest::EkmanUWCurrentTest() : a(ssc::random_data_generator::DataGenerator(149555))
 {}
 
-EkmanUWCurrentTest::~EkmanUWCurrentTest()
-{}
-
-void EkmanUWCurrentTest::SetUp()
-{}
-
-void EkmanUWCurrentTest::TearDown()
-{}
-
 TEST_F(EkmanUWCurrentTest, test_velocity)
 {
     Seabed seabed(65.65);

@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef GZCURVETEST_HPP_
 #define GZCURVETEST_HPP_
 
@@ -18,9 +17,6 @@ class GZCurveTest : public ::testing::Test
 {
     protected:
         GZCurveTest();
-        ~GZCurveTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         Sim& sim;
 };

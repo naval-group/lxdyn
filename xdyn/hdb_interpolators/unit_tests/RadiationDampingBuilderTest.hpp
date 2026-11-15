@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef DAMPINGMATRIXINTERPOLATORTEST_HPP_
 #define DAMPINGMATRIXINTERPOLATORTEST_HPP_
 
@@ -16,9 +15,6 @@ class RadiationDampingBuilderTest : public ::testing::Test
 {
     protected:
         RadiationDampingBuilderTest();
-        ~RadiationDampingBuilderTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

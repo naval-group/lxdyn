@@ -13,12 +13,6 @@
 
 class GrpcControllerInterfaceTest : public ::testing::Test
 {
-    protected:
-        GrpcControllerInterfaceTest();
-        ~GrpcControllerInterfaceTest() override;
-        void SetUp() override;
-        void TearDown() override;
 };
-
 
 #endif /* GRPCCONTROLLERINTERFACETESTHPP */

@@ -25,18 +25,6 @@ ConstantForceModelTest::ConstantForceModelTest() : a(ssc::random_data_generator:
 {
 }
 
-ConstantForceModelTest::~ConstantForceModelTest()
-{
-}
-
-void ConstantForceModelTest::SetUp()
-{
-}
-
-void ConstantForceModelTest::TearDown()
-{
-}
-
 TEST_F(ConstantForceModelTest, can_parse_reference_frame)
 {
     const auto input = ConstantForceModel::parse(test_data::constant_force());
@@ -107,7 +95,6 @@ BodyPtr ConstantForceModelTest::get_body(const std::string& name) const
     rot.order_by = "angle";
     return BodyBuilder(rot).build(name, two_triangles(), 0, 0, rot, true);
 }
-
 
 BodyStates ConstantForceModelTest::get_states(const double phi, const double theta, const double psi, EnvironmentAndFrames& env) const
 {

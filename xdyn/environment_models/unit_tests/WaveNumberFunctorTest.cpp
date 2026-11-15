@@ -13,18 +13,6 @@ WaveNumberFunctorTest::WaveNumberFunctorTest() : a(ssc::random_data_generator::D
 {
 }
 
-WaveNumberFunctorTest::~WaveNumberFunctorTest()
-{
-}
-
-void WaveNumberFunctorTest::SetUp()
-{
-}
-
-void WaveNumberFunctorTest::TearDown()
-{
-}
-
 TEST_F(WaveNumberFunctorTest, example)
 {
     const double EPS = 1E-10;

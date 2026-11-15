@@ -10,9 +10,6 @@
 class AssetPathTest : public ::testing::Test
 {
     protected:
-        AssetPathTest();
-        ~AssetPathTest() override;
-        void SetUp() override;
         void TearDown() override;
 };
 

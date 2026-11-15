@@ -42,18 +42,6 @@ ObserverTests::ObserverTests() : a(ssc::random_data_generator::DataGenerator(542
 {
 }
 
-ObserverTests::~ObserverTests()
-{
-}
-
-void ObserverTests::SetUp()
-{
-}
-
-void ObserverTests::TearDown()
-{
-}
-
 TEST_F(ObserverTests, can_observe_using_a_websocket)
 {
 //! [ObserverTests example]

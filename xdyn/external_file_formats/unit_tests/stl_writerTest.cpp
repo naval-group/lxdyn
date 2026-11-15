@@ -16,18 +16,6 @@ stl_writerTest::stl_writerTest() : a(ssc::random_data_generator::DataGenerator(5
 {
 }
 
-stl_writerTest::~stl_writerTest()
-{
-}
-
-void stl_writerTest::SetUp()
-{
-}
-
-void stl_writerTest::TearDown()
-{
-}
-
 TEST_F(stl_writerTest, example)
 {
     const VectorOfVectorOfPoints expected = read_stl(test_data::three_facets());

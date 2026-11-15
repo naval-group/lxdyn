@@ -23,18 +23,6 @@ WrenchTest::WrenchTest() : a(ssc::random_data_generator::DataGenerator(1215))
 {
 }
 
-WrenchTest::~WrenchTest()
-{
-}
-
-void WrenchTest::SetUp()
-{
-}
-
-void WrenchTest::TearDown()
-{
-}
-
 TEST_F(WrenchTest, can_change_reference_point)
 {
     const std::string frame = a.random<std::string>();

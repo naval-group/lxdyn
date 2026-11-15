@@ -10,18 +10,6 @@ XdynForCSTest::XdynForCSTest() : a(ssc::random_data_generator::DataGenerator(123
 {
 }
 
-XdynForCSTest::~XdynForCSTest()
-{
-}
-
-void XdynForCSTest::SetUp()
-{
-}
-
-void XdynForCSTest::TearDown()
-{
-}
-
 TEST_F(XdynForCSTest, test_falling_ball_with_yaml)
 {
 //! [SimServerTest example]

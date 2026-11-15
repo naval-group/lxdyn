@@ -25,18 +25,6 @@ SurfaceElevationFromWavesTest::SurfaceElevationFromWavesTest() : a(ssc::random_d
 {
 }
 
-SurfaceElevationFromWavesTest::~SurfaceElevationFromWavesTest()
-{
-}
-
-void SurfaceElevationFromWavesTest::SetUp()
-{
-}
-
-void SurfaceElevationFromWavesTest::TearDown()
-{
-}
-
 WaveModelPtr SurfaceElevationFromWavesTest::get_model(const double psi0, const double Hs, const double Tp, const double phase, const double water_depth, const double omega_min, const double omega_max, const size_t nfreq, const size_t ndir) const
 {
     if (Tp==0)

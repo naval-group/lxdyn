@@ -51,18 +51,6 @@ SimTest::SimTest() : a(ssc::random_data_generator::DataGenerator(42222)), test_s
 {
 }
 
-SimTest::~SimTest()
-{
-}
-
-void SimTest::SetUp()
-{
-}
-
-void SimTest::TearDown()
-{
-}
-
 TEST_F(SimTest, can_simulate_falling_ball)
 {
     const size_t N = 10;
@@ -295,7 +283,6 @@ TEST_F(SimTest, LONG_waves_test_on_test_ship)
     ASSERT_NEAR(0, body0(res[0]).y(), EPS);
     ASSERT_NEAR(-5, body0(res[0]).z(), EPS);
 }
-
 
 TEST_F(SimTest, LONG_froude_krylov)
 {
@@ -783,7 +770,6 @@ TEST_F(SimTest, bug_3217_hdb_interpolation_in_direction_incorrect_LONG)
     ASSERT_LT(std::abs(Mz_0-Mz_001),std::abs(Mz_30-Mz_001));
 }
 
-
 TEST_F(SimTest, bug_3227_wave_angle_mirroing_problem_for_diffraction_LONG)
 {
     const double t0 = 0;
@@ -857,7 +843,6 @@ TEST_F(SimTest, bug_3230_advance_speed_not_taken_into_account_properly_for_diffr
     ListOfObservers observers(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
     auto input = SimulatorYamlParser(yaml).parse();
-
 
     auto sys = get_system(input,test_ship_stl,0,command_listener);
     ssc::solver::Scheduler scheduler(t0, T, dt);
@@ -948,7 +933,6 @@ TEST_F(SimTest, bug_3185_should_simulate_properly)
     ssc::solver::Scheduler scheduler(0, 11, 1);
     simulate<ssc::solver::EulerStepper>(test_data::bug_3185(), scheduler);
 }
-
 
 TEST_F(SimTest, bug_3185_all_data_should_be_there)
 {

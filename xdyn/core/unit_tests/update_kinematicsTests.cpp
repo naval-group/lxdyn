@@ -18,18 +18,6 @@ update_kinematicsTests::update_kinematicsTests() : a(ssc::random_data_generator:
 {
 }
 
-update_kinematicsTests::~update_kinematicsTests()
-{
-}
-
-void update_kinematicsTests::SetUp()
-{
-}
-
-void update_kinematicsTests::TearDown()
-{
-}
-
 TEST_F(update_kinematicsTests, can_get_initial_states)
 {
     const auto yaml = SimulatorYamlParser(test_data::full_example()).parse();

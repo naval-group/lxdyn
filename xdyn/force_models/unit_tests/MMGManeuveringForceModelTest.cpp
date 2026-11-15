@@ -4,14 +4,6 @@
 #define PI M_PI
 constexpr double EPS = 1E-6;
 
-MMGManeuveringForceModelTest::MMGManeuveringForceModelTest()
-{
-}
-
-MMGManeuveringForceModelTest::~MMGManeuveringForceModelTest()
-{
-}
-
 std::string get_input_3dof();
 std::string get_input_3dof()
 {
@@ -241,7 +233,6 @@ R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations 
     ASSERT_NEAR(added_mass_matrix_in_Ob(3,3), Jx, EPS);
     ASSERT_NEAR(added_mass_matrix_in_Ob(5,5), Jz, EPS);
 }
-
 
 TEST_F(MMGManeuveringForceModelTest, example_4dof)
 /*

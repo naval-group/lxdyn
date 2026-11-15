@@ -52,18 +52,6 @@ MMGPropellerForceModelTest::MMGPropellerForceModelTest() : a(ssc::random_data_ge
 {
 }
 
-MMGPropellerForceModelTest::~MMGPropellerForceModelTest()
-{
-}
-
-void MMGPropellerForceModelTest::SetUp()
-{
-}
-
-void MMGPropellerForceModelTest::TearDown()
-{
-}
-
 EnvironmentAndFrames MMGPropellerForceModelTest::get_env()
 {
     EnvironmentAndFrames env;

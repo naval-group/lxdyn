@@ -18,20 +18,6 @@ TextFileReaderTest::TextFileReaderTest() : a(ssc::random_data_generator::DataGen
 {
 }
 
-TextFileReaderTest::~TextFileReaderTest()
-{
-
-}
-
-void TextFileReaderTest::SetUp()
-{
-
-}
-
-void TextFileReaderTest::TearDown()
-{
-}
-
 inline void remove_file_if_it_exists (const std::string& name)
 {
   struct stat buffer;
@@ -46,7 +32,6 @@ void create_file(const std::string& filename, const std::string& contents)
     file << contents;
     file.close();
 }
-
 
 TEST_F(TextFileReaderTest, example)
 {

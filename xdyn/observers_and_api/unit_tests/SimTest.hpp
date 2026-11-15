@@ -16,9 +16,6 @@ class SimTest : public ::testing::Test
 {
     protected:
         SimTest();
-        ~SimTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
         const VectorOfVectorOfPoints& test_ship_stl;
 };

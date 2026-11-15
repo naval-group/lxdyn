@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef SIMPLETRACKKEEPINGCONTROLLERTEST_HPP_
 #define SIMPLETRACKKEEPINGCONTROLLERTEST_HPP_
 
@@ -16,9 +15,6 @@ class SimpleHeadingKeepingControllerTest : public ::testing::Test
 {
     protected:
         SimpleHeadingKeepingControllerTest();
-        ~SimpleHeadingKeepingControllerTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

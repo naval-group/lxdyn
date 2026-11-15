@@ -12,18 +12,6 @@ CumulateTest::CumulateTest() : a(ssc::random_data_generator::DataGenerator(22))
 {
 }
 
-CumulateTest::~CumulateTest()
-{
-}
-
-void CumulateTest::SetUp()
-{
-}
-
-void CumulateTest::TearDown()
-{
-}
-
 TEST_F(CumulateTest, example)
 {
 //! [CumulateTest example]

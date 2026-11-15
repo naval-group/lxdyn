@@ -11,22 +11,9 @@
 #include <fstream>
 #include <sys/stat.h>
 
-
 using namespace ssc::csv_file_reader;
 
 CSVFileReaderTest::CSVFileReaderTest() : a(ssc::random_data_generator::DataGenerator(9487))
-{
-}
-
-CSVFileReaderTest::~CSVFileReaderTest()
-{
-}
-
-void CSVFileReaderTest::SetUp()
-{
-}
-
-void CSVFileReaderTest::TearDown()
 {
 }
 

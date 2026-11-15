@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef RUDDERFORCEMODELTEST_HPP_
 #define RUDDERFORCEMODELTEST_HPP_
 
@@ -18,9 +17,6 @@ class RudderForceModelTest : public ::testing::Test
 {
     protected:
         RudderForceModelTest();
-        ~RudderForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         EnvironmentAndFrames get_env();
         ssc::random_data_generator::DataGenerator a;
 };

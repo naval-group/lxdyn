@@ -17,9 +17,6 @@ class SimulatorBuilderTest : public ::testing::Test
 {
     protected:
         SimulatorBuilderTest();
-        ~SimulatorBuilderTest() override;
-        void SetUp() override;
-        void TearDown() override;
         std::string customize(const std::string& body_name, const std::string& something) const;
         std::vector<BodyPtr> get_body_vector(const std::string& name) const;
 

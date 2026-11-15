@@ -15,18 +15,6 @@ HistoryTest::HistoryTest() : a(ssc::random_data_generator::DataGenerator(5422))
 {
 }
 
-HistoryTest::~HistoryTest()
-{
-}
-
-void HistoryTest::SetUp()
-{
-}
-
-void HistoryTest::TearDown()
-{
-}
-
 TEST_F(HistoryTest, should_not_throw_even_if_retrieving_value_too_far_in_the_past) // Cf. bug 3003
 {
     const double Tmax = a.random<double>().between(0,100);

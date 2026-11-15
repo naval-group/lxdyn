@@ -9,9 +9,6 @@ class SurfaceElevationFromWavesTest : public ::testing::Test
 {
     protected:
         SurfaceElevationFromWavesTest();
-        ~SurfaceElevationFromWavesTest() override;
-        void SetUp() override;
-        void TearDown() override;
         WaveModelPtr get_model() const;
         WaveModelPtr get_model(const size_t nfreq, const size_t ndir) const;
         WaveModelPtr get_model(const double Hs, const double Tp, const double phase, const double water_depth) const;

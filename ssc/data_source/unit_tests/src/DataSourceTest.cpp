@@ -51,14 +51,6 @@ DataSourceTest::~DataSourceTest()
     delete ds_;
 }
 
-void DataSourceTest::SetUp()
-{
-}
-
-void DataSourceTest::TearDown()
-{
-}
-
 MODULE(M1,ds->set<double>("s1",123))
 MODULE(M2,const double s1 = ds->get<double>("s1");\
           ds->set<double>("s2", s1))
@@ -79,7 +71,6 @@ TEST_F(DataSourceTest, example)
 //! [DataSourceTest expected output]
 //! [DataSourceTest expected output]
 }
-
 
 TEST_F(DataSourceTest, all_mock_modules_generated_for_tests_should_have_different_names)
 {
@@ -246,8 +237,6 @@ TEST_F(DataSourceTest, two_signals_with_same_name_but_different_types_do_not_cre
     ASSERT_NO_THROW(ds.add<ModuleD>("Module D"));
 }
 
-
-
 TEST_F(DataSourceTest, can_add_a_module_without_specifying_its_name_but_only_once_per_type)
 {
     DataSource ds;
@@ -372,7 +361,6 @@ TEST_F(DataSourceTest, bug_detected_when_fixing_uptodate_module_map_error)
     ASSERT_DOUBLE_EQ(x*x, dx[1]);
     ASSERT_DOUBLE_EQ(sin(x), dx[2]);
 }
-
 
 TEST_F(DataSourceTest, can_retrieve_derivatives_out_of_order)
 {
@@ -763,7 +751,6 @@ MODULE(VarUp, const double x = ds->get<double>("x");\
               if (rng) y = rng->random<double>();\
               ds->set("y",y);\
 )
-
 
 TEST_F(DataSourceTest, should_not_update_dependencies_if_setting_signal_to_its_current_value)
 {

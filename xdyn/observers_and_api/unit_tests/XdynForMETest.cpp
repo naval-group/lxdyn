@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #include "XdynForMETest.hpp"
 #include "XdynForME.hpp"
 #include "JSONSerializer.hpp"
@@ -17,18 +16,6 @@ XdynForMETest::XdynForMETest() : a(ssc::random_data_generator::DataGenerator(123
 {
 }
 
-XdynForMETest::~XdynForMETest()
-{
-}
-
-void XdynForMETest::SetUp()
-{
-}
-
-void XdynForMETest::TearDown()
-{
-}
-
 TEST_F(XdynForMETest, test_falling_ball_with_yaml)
 {
 //! [XdynForMETest example]
@@ -36,11 +23,9 @@ TEST_F(XdynForMETest, test_falling_ball_with_yaml)
     const double g = 9.81;
     const std::string yaml = test_data::falling_ball_example();
 
-
     XdynForME xdyn_for_me(yaml);
     const std::string input_yaml = test_data::complete_yaml_message_for_falling_ball();
     const YamlState d_dt = xdyn_for_me.handle(deserialize(input_yaml));
-
 
 //! [XdynForMETest example]
 //! [XdynForMETest expected output]
@@ -59,7 +44,6 @@ TEST_F(XdynForMETest, test_falling_ball_with_yaml)
     ASSERT_NEAR(0, d_dt.qk, EPS);
 //! [XdynForMETest expected output]
 }
-
 
 TEST_F(XdynForMETest, complete_test_with_commands_and_delay)
 {

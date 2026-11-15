@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef LINEARHYDROSTATICFORCEMODELTEST_HPP_
 #define LINEARHYDROSTATICFORCEMODELTEST_HPP_
 
@@ -16,9 +15,6 @@ class LinearHydrostaticForceModelTest : public ::testing::Test
 {
     protected:
         LinearHydrostaticForceModelTest();
-        ~LinearHydrostaticForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

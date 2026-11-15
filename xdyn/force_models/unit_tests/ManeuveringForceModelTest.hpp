@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef MANEUVERINGFORCEMODELTEST_HPP_
 #define MANEUVERINGFORCEMODELTEST_HPP_
 
@@ -16,9 +15,6 @@ class ManeuveringForceModelTest : public ::testing::Test
 {
     protected:
         ManeuveringForceModelTest();
-        ~ManeuveringForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

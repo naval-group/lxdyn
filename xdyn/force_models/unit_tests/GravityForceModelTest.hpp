@@ -15,9 +15,6 @@ class GravityForceModelTest : public ::testing::Test
 {
     protected:
         GravityForceModelTest();
-        ~GravityForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

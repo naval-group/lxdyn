@@ -22,18 +22,6 @@ LinearInterpolationVariableStepTest::LinearInterpolationVariableStepTest() : a(s
 {
 }
 
-LinearInterpolationVariableStepTest::~LinearInterpolationVariableStepTest()
-{
-}
-
-void LinearInterpolationVariableStepTest::SetUp()
-{
-}
-
-void LinearInterpolationVariableStepTest::TearDown()
-{
-}
-
 TEST_F(LinearInterpolationVariableStepTest, example)
 {
 //! [LinearInterpolationVariableStepTest example]

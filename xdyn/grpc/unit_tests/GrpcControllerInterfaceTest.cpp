@@ -10,24 +10,6 @@
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/test_data_generator/yaml_data.hpp"
 
-
-GrpcControllerInterfaceTest::GrpcControllerInterfaceTest()
-{
-}
-
-GrpcControllerInterfaceTest::~GrpcControllerInterfaceTest()
-{
-}
-
-void GrpcControllerInterfaceTest::SetUp()
-{
-}
-
-void GrpcControllerInterfaceTest::TearDown()
-{
-}
-
-
 TEST_F (GrpcControllerInterfaceTest, can_parse_url)
 {
     const auto input = GrpcControllerInterface::parse (test_data::gRPC_controller ());
@@ -57,7 +39,6 @@ TEST_F (GrpcControllerInterfaceTest, can_parse_name)
     const auto input = GrpcControllerInterface::parse (test_data::gRPC_controller ());
     ASSERT_EQ ("PID", input.name);
 }
-
 
 TEST_F (GrpcControllerInterfaceTest, rest_of_yaml_should_be_available_for_use_by_grpc_method_set_parameters)
 {

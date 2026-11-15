@@ -7,15 +7,6 @@
 
 #include <filesystem>
 
-AssetPathTest::AssetPathTest()
-{}
-
-AssetPathTest::~AssetPathTest()
-{}
-
-void AssetPathTest::SetUp()
-{}
-
 // The root is process-wide, so a test that sets it has to hand it back.
 void AssetPathTest::TearDown()
 {

@@ -16,18 +16,6 @@ TwoDimensionalSplinesTest::TwoDimensionalSplinesTest() : a(ssc::random_data_gene
 {
 }
 
-TwoDimensionalSplinesTest::~TwoDimensionalSplinesTest()
-{
-}
-
-void TwoDimensionalSplinesTest::SetUp()
-{
-}
-
-void TwoDimensionalSplinesTest::TearDown()
-{
-}
-
 TEST_F(TwoDimensionalSplinesTest, example)
 {
 //! [TwoDimensionalSplinesTest example]
@@ -108,7 +96,6 @@ TEST_F(TwoDimensionalSplinesTest, should_throw_if_any_element_in_M_is_empty)
     }
     ASSERT_THROW(TwoDimensionalInterpolation<LinearInterpolation>(a.random<double>(),a.random<double>(),a.random<double>(),a.random<double>(),M), TwoDimensionalInterpolationException);
 }
-
 
 TEST_F(TwoDimensionalSplinesTest, should_work_like_matlabs_griddedInterpolant)
 {

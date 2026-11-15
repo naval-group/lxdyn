@@ -14,12 +14,6 @@ SchedulerTests::SchedulerTests()
 {
 }
 
-SchedulerTests::~SchedulerTests() {}
-
-void SchedulerTests::SetUp() {}
-
-void SchedulerTests::TearDown() {}
-
 TEST_F(SchedulerTests, can_initialize_scheduler_with_quarter_second_steps)
 {
     const double t0 = 12.125;

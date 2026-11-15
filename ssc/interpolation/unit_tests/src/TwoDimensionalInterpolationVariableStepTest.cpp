@@ -12,18 +12,6 @@ TwoDimensionalInterpolationVariableStepTest::TwoDimensionalInterpolationVariable
 {
 }
 
-TwoDimensionalInterpolationVariableStepTest::~TwoDimensionalInterpolationVariableStepTest()
-{
-}
-
-void TwoDimensionalInterpolationVariableStepTest::SetUp()
-{
-}
-
-void TwoDimensionalInterpolationVariableStepTest::TearDown()
-{
-}
-
 TEST_F(TwoDimensionalInterpolationVariableStepTest, example)
 {
 //! [TwoDimensionalSplinesTest example]

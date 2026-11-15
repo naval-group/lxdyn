@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef GZ_NEWTON_RAPHSONTEST_HPP_
 #define GZ_NEWTON_RAPHSONTEST_HPP_
 
@@ -16,9 +15,6 @@ class gz_newton_raphsonTest : public ::testing::Test
 {
     protected:
         gz_newton_raphsonTest();
-        ~gz_newton_raphsonTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

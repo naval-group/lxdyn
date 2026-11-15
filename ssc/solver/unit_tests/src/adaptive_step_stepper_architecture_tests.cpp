@@ -23,12 +23,6 @@ adaptive_step_stepper_architecture_tests::adaptive_step_stepper_architecture_tes
 {
 }
 
-adaptive_step_stepper_architecture_tests::~adaptive_step_stepper_architecture_tests() {}
-
-void adaptive_step_stepper_architecture_tests::SetUp() {}
-
-void adaptive_step_stepper_architecture_tests::TearDown() {}
-
 TEST_F(
     adaptive_step_stepper_architecture_tests,
     collaborators_should_be_called_in_the_right_sequence_for_adaptive_step_steppers_step_refused_and_no_event_detected)

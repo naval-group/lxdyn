@@ -17,18 +17,6 @@ eps(1E-10)
 {
 }
 
-VectorOfEquallySpacedNumbersTest::~VectorOfEquallySpacedNumbersTest()
-{
-}
-
-void VectorOfEquallySpacedNumbersTest::SetUp()
-{
-}
-
-void VectorOfEquallySpacedNumbersTest::TearDown()
-{
-}
-
 namespace ssc
 {
     namespace random_data_generator

@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #ifndef FILONTEST_HPP_
 #define FILONTEST_HPP_
 
@@ -16,9 +15,6 @@ class FilonTest : public ::testing::Test
 {
     protected:
         FilonTest();
-        ~FilonTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

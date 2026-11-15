@@ -22,18 +22,6 @@ ManeuveringForceModelTest::ManeuveringForceModelTest() : a(ssc::random_data_gene
 {
 }
 
-ManeuveringForceModelTest::~ManeuveringForceModelTest()
-{
-}
-
-void ManeuveringForceModelTest::SetUp()
-{
-}
-
-void ManeuveringForceModelTest::TearDown()
-{
-}
-
 TEST_F(ManeuveringForceModelTest, can_parse_frame_of_reference)
 {
 //! [ManeuveringForceModelTest example]
@@ -319,7 +307,6 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_simple_maneuvering_model)
     ASSERT_NEAR(0, F.M(), 1e-15);
     ASSERT_NEAR(0, F.N(), 1e-15);
 }
-
 
 /*  The following test data was generated using this Python code:
 

@@ -24,12 +24,6 @@ DiscreteSystemsTests::DiscreteSystemsTests()
 {
 }
 
-DiscreteSystemsTests::~DiscreteSystemsTests() {}
-
-void DiscreteSystemsTests::SetUp() {}
-
-void DiscreteSystemsTests::TearDown() {}
-
 using EulerStepper = boost::numeric::odeint::euler<StateType>;
 using RungeKuttaStepper = boost::numeric::odeint::runge_kutta4<StateType>;
 

@@ -15,9 +15,6 @@ class SimpsonTest : public ::testing::Test
 {
     protected:
         SimpsonTest();
-        ~SimpsonTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #include "GZCurveTest.hpp"
 #include "GZCurve.hpp"
 #include "xdyn/binary_stl_data/generate_test_ship.hpp"
@@ -27,18 +26,6 @@ static Sim& shared_sim()
 constexpr double EPS = 1E-10;
 
 GZCurveTest::GZCurveTest() : a(ssc::random_data_generator::DataGenerator(54522)), sim(shared_sim())
-{
-}
-
-GZCurveTest::~GZCurveTest()
-{
-}
-
-void GZCurveTest::SetUp()
-{
-}
-
-void GZCurveTest::TearDown()
 {
 }
 

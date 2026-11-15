@@ -15,9 +15,6 @@ class update_kinematicsTests : public ::testing::Test
 {
     protected:
         update_kinematicsTests();
-        ~update_kinematicsTests() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

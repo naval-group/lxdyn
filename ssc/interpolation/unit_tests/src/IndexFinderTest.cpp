@@ -14,18 +14,6 @@ IndexFinderTest::IndexFinderTest() : a(ssc::random_data_generator::DataGenerator
 {
 }
 
-IndexFinderTest::~IndexFinderTest()
-{
-}
-
-void IndexFinderTest::SetUp()
-{
-}
-
-void IndexFinderTest::TearDown()
-{
-}
-
 TEST_F(IndexFinderTest, example)
 {
 //! [IndexFinderTest example]

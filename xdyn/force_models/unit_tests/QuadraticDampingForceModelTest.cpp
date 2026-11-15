@@ -19,18 +19,6 @@ QuadraticDampingForceModelTest::QuadraticDampingForceModelTest() : a(ssc::random
 {
 }
 
-QuadraticDampingForceModelTest::~QuadraticDampingForceModelTest()
-{
-}
-
-void QuadraticDampingForceModelTest::SetUp()
-{
-}
-
-void QuadraticDampingForceModelTest::TearDown()
-{
-}
-
 namespace ssc
 {
     namespace random_data_generator

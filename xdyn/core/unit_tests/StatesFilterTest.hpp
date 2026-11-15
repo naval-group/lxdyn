@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef STATESFILTERTEST_HPP_
 #define STATESFILTERTEST_HPP_
 
@@ -16,9 +15,6 @@ class StatesFilterTest : public ::testing::Test
 {
     protected:
         StatesFilterTest();
-        ~StatesFilterTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

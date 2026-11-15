@@ -16,18 +16,6 @@ HoltropMennenForceModelTest::HoltropMennenForceModelTest() : a(ssc::random_data_
     env.g = 9.81;
 }
 
-HoltropMennenForceModelTest::~HoltropMennenForceModelTest()
-{
-}
-
-void HoltropMennenForceModelTest::SetUp()
-{
-}
-
-void HoltropMennenForceModelTest::TearDown()
-{
-}
-
 std::string get_yaml_input_with_optional();
 std::string get_yaml_input_with_optional()
 {

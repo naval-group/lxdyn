@@ -31,21 +31,7 @@ namespace ssc
     }
 }
 
-
-
 SplinesTest::SplinesTest() : a(ssc::random_data_generator::DataGenerator(316497))
-{
-}
-
-SplinesTest::~SplinesTest()
-{
-}
-
-void SplinesTest::SetUp()
-{
-}
-
-void SplinesTest::TearDown()
 {
 }
 

@@ -27,18 +27,6 @@ DiffractionForceModelTest::DiffractionForceModelTest() : a(ssc::random_data_gene
 {
 }
 
-DiffractionForceModelTest::~DiffractionForceModelTest()
-{
-}
-
-void DiffractionForceModelTest::SetUp()
-{
-}
-
-void DiffractionForceModelTest::TearDown()
-{
-}
-
 TEST_F(DiffractionForceModelTest, parser_hdb)
 {
     const YamlRAO r = DiffractionForceModel::parse(test_data::diffraction());

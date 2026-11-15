@@ -19,18 +19,6 @@ LinearFroudeKrylovForceModelTest::LinearFroudeKrylovForceModelTest() : a(ssc::ra
 {
 }
 
-LinearFroudeKrylovForceModelTest::~LinearFroudeKrylovForceModelTest()
-{
-}
-
-void LinearFroudeKrylovForceModelTest::SetUp()
-{
-}
-
-void LinearFroudeKrylovForceModelTest::TearDown()
-{
-}
-
 TEST_F(LinearFroudeKrylovForceModelTest, encounter_frequency_example)
 {
     EnvironmentAndFrames env = DiffractionForceModelTest::get_waves_env(64., 0.);

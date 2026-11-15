@@ -8,9 +8,6 @@ class parse_addressTest : public ::testing::Test
 {
     protected:
         parse_addressTest();
-        ~parse_addressTest() override{}
-        void SetUp() override{}
-        void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -5,10 +5,6 @@
 #include <cmath>
 #include <memory>
 
-AeroPolarForceModelTest::AeroPolarForceModelTest()
-{
-}
-
 TEST_F(AeroPolarForceModelTest, can_parse)
 {
     std::stringstream ss;
@@ -121,7 +117,6 @@ TEST_F(AeroPolarForceModelTest, several_values)
     ASSERT_NEAR(80930.439263099062, force_model.get_force(states, 0, env, {}).X(), eps);
     ASSERT_NEAR(-9736.6379043679153, force_model.get_force(states, 0, env, {}).Y(), eps);
 }
-
 
 TEST_F(AeroPolarForceModelTest, orientation_test_no_forward_speed)
 {

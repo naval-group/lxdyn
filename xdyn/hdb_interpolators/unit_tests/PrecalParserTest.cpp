@@ -15,14 +15,6 @@
 #include <cmath>
 #define PI M_PI
 
-PrecalParserTest::PrecalParserTest() {}
-
-PrecalParserTest::~PrecalParserTest() {}
-
-void PrecalParserTest::SetUp() {}
-
-void PrecalParserTest::TearDown() {}
-
 TEST_F(PrecalParserTest, can_parse_empty_section)
 {
     const auto precal = parse_precal_from_string("[some section]");
@@ -192,7 +184,6 @@ TEST_F(PrecalParserTest, can_parse_added_mass_matrix)
              0.270E+08   0.106E+01   0.845E+08  -0.431E+02  0.119E+11   0.174E+02
              0.164E+01   0.497E+08   0.101E+02   0.345E+09  0.214E+03   0.522E+10
 
-
     Ma(0,1) = -Ma(0,1);
     Ma(0,2) = -Ma(0,2);
     Ma(0,4) = -Ma(0,4);
@@ -254,9 +245,6 @@ TEST_F(PrecalParserTest, can_parse_added_mass_matrix)
     ASSERT_DOUBLE_EQ(0.214E+03   ,  Ma(5, 4));
     ASSERT_DOUBLE_EQ(0.522E+10,  Ma(5, 5));
 }
-
-
-
 
 TEST_F(PrecalParserTest, can_parse_angular_frequencies)
 {
@@ -492,7 +480,6 @@ TEST_F(PrecalParserTest, can_parse_froude_krylov_module_raos)
     ASSERT_DOUBLE_EQ(0.208950E-01 * 1E3, table.at(5).at(1).at(1)); // N (F_inc_m6), sixth line, 180°
 
 }
-
 
 TEST_F(PrecalParserTest, can_parse_froude_krylov_module_raos_with_si_unit)
 {

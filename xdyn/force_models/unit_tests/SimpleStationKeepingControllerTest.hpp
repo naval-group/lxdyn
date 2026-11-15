@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef SIMPLESTATIONKEEPINGCONTROLLERTEST_HPP_
 #define SIMPLESTATIONKEEPINGCONTROLLERTEST_HPP_
 
@@ -16,9 +15,6 @@ class SimpleStationKeepingControllerTest : public ::testing::Test
 {
     protected:
         SimpleStationKeepingControllerTest();
-        ~SimpleStationKeepingControllerTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

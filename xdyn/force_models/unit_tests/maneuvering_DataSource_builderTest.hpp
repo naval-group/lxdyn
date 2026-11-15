@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef MANEUVERINGDATASOURCEBUILDERTEST_HPP_
 #define MANEUVERINGDATASOURCEBUILDERTEST_HPP_
 
@@ -16,9 +15,6 @@ class maneuvering_DataSource_builderTest : public ::testing::Test
 {
     protected:
         maneuvering_DataSource_builderTest();
-        ~maneuvering_DataSource_builderTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

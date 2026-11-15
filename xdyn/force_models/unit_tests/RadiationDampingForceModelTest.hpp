@@ -5,7 +5,6 @@
  *      Author: cady
  */
 
-
 #ifndef RADIATIONDAMPINGFORCEMODELTEST_HPP_
 #define RADIATIONDAMPINGFORCEMODELTEST_HPP_
 
@@ -23,9 +22,6 @@ class RadiationDampingForceModelTest : public ::testing::Test
 {
     protected:
         RadiationDampingForceModelTest();
-        ~RadiationDampingForceModelTest() override;
-        void SetUp() override;
-        void TearDown() override;
         std::shared_ptr<HDBParser> get_hdb_data(const YamlRadiationDamping& yaml, const bool only_diagonal_terms=true) const;
         YamlRadiationDamping get_yaml_data(const bool show_debug) const;
 

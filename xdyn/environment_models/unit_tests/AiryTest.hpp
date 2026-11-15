@@ -15,9 +15,6 @@ class AiryTest : public ::testing::Test
 {
     protected:
         AiryTest();
-        ~AiryTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

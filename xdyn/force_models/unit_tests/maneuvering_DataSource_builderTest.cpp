@@ -5,24 +5,11 @@
  *      Author: cady
  */
 
-
 #include "maneuvering_DataSource_builderTest.hpp"
 #include "maneuvering_DataSource_builder.hpp"
 #include "maneuvering_compiler.hpp"
 
 maneuvering_DataSource_builderTest::maneuvering_DataSource_builderTest() : a(ssc::random_data_generator::DataGenerator(123545))
-{
-}
-
-maneuvering_DataSource_builderTest::~maneuvering_DataSource_builderTest()
-{
-}
-
-void maneuvering_DataSource_builderTest::SetUp()
-{
-}
-
-void maneuvering_DataSource_builderTest::TearDown()
 {
 }
 
@@ -47,6 +34,4 @@ TEST_F(maneuvering_DataSource_builderTest, example)
     ASSERT_DOUBLE_EQ(320032, ds.get<double>("X"));
     ds.check_out();
 }
-
-
 

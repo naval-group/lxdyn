@@ -5,7 +5,6 @@
  * \author cec
  */
 
-
 #ifndef BURCHERTEST_HPP_
 #define BURCHERTEST_HPP_
 
@@ -16,9 +15,6 @@ class BurcherTest : public ::testing::Test
 {
     protected:
         BurcherTest();
-        ~BurcherTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

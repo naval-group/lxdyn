@@ -15,18 +15,6 @@ BretschneiderSpectrumTest::BretschneiderSpectrumTest() : a(ssc::random_data_gene
 {
 }
 
-BretschneiderSpectrumTest::~BretschneiderSpectrumTest()
-{
-}
-
-void BretschneiderSpectrumTest::SetUp()
-{
-}
-
-void BretschneiderSpectrumTest::TearDown()
-{
-}
-
 TEST_F(BretschneiderSpectrumTest, example)
 {
 //! [BretschneiderSpectrumTest example]

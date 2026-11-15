@@ -8,9 +8,6 @@ class ConfBuilderTest : public ::testing::Test
 {
     protected:
         ConfBuilderTest();
-        ~ConfBuilderTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 };
 

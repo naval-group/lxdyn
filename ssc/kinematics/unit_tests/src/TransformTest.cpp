@@ -21,18 +21,6 @@ TransformTest::TransformTest() : a(ssc::random_data_generator::DataGenerator(121
 {
 }
 
-TransformTest::~TransformTest()
-{
-}
-
-void TransformTest::SetUp()
-{
-}
-
-void TransformTest::TearDown()
-{
-}
-
 TEST_F(TransformTest, can_translate_a_point)
 {
 //! [TransformTest example]

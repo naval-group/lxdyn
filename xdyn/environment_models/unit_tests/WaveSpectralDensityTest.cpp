@@ -5,23 +5,10 @@
  *      Author: cady
  */
 
-
 #include "WaveSpectralDensityTest.hpp"
 #include "WaveSpectralDensity.hpp"
 
 WaveSpectralDensityTest::WaveSpectralDensityTest() : a(ssc::random_data_generator::DataGenerator(3215))
-{
-}
-
-WaveSpectralDensityTest::~WaveSpectralDensityTest()
-{
-}
-
-void WaveSpectralDensityTest::SetUp()
-{
-}
-
-void WaveSpectralDensityTest::TearDown()
 {
 }
 

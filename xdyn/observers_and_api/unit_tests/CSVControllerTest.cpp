@@ -26,12 +26,6 @@ CSVControllerTest::CSVControllerTest()
     csv.close();
 }
 
-CSVControllerTest::~CSVControllerTest() {}
-
-void CSVControllerTest::SetUp() {}
-
-void CSVControllerTest::TearDown() {}
-
 std::string CSVControllerTest::test_yaml() const
 {
     std::stringstream yaml_string;

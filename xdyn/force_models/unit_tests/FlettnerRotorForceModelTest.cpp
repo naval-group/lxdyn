@@ -4,10 +4,6 @@
 #include <cmath>
 #include <memory>
 
-FlettnerRotorForceModelTest::FlettnerRotorForceModelTest()
-{
-}
-
 namespace {
 BodyStates get_states(const double forward_speed)
 {

@@ -54,18 +54,6 @@ ForceModelTest::ForceModelTest() : a(ssc::random_data_generator::DataGenerator(5
 {
 }
 
-ForceModelTest::~ForceModelTest()
-{
-}
-
-void ForceModelTest::SetUp()
-{
-}
-
-void ForceModelTest::TearDown()
-{
-}
-
 TEST_F(ForceModelTest, bug_2838)
 {
 //! [ForceModelTest example]
@@ -75,7 +63,6 @@ TEST_F(ForceModelTest, bug_2838)
     BodyStates states;
     states.G = ssc::kinematics::Point("body", 1, 2, 3);
     const double t = a.random<double>();
-
 
     auto w = F(states, t, env, command_listener);
 //! [ForceModelTest example]

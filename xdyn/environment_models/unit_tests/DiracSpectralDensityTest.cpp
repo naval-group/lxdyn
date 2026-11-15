@@ -15,18 +15,6 @@ DiracSpectralDensityTest::DiracSpectralDensityTest() : a(ssc::random_data_genera
 {
 }
 
-DiracSpectralDensityTest::~DiracSpectralDensityTest()
-{
-}
-
-void DiracSpectralDensityTest::SetUp()
-{
-}
-
-void DiracSpectralDensityTest::TearDown()
-{
-}
-
 TEST_F(DiracSpectralDensityTest, example)
 {
 //! [DiracSpectralDensityTest example]

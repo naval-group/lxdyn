@@ -15,9 +15,6 @@ class DiracSpectralDensityTest : public ::testing::Test
 {
     protected:
         DiracSpectralDensityTest();
-        ~DiracSpectralDensityTest() override;
-        void SetUp() override;
-        void TearDown() override;
         ssc::random_data_generator::DataGenerator a;
 
 };

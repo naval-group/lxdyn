@@ -17,18 +17,6 @@ ResistanceCurveForceModelTest::ResistanceCurveForceModelTest() : a(ssc::random_d
 {
 }
 
-ResistanceCurveForceModelTest::~ResistanceCurveForceModelTest()
-{
-}
-
-void ResistanceCurveForceModelTest::SetUp()
-{
-}
-
-void ResistanceCurveForceModelTest::TearDown()
-{
-}
-
 TEST_F(ResistanceCurveForceModelTest, parser)
 {
     const auto r = ResistanceCurveForceModel::parse(test_data::resistance_curve());
@@ -132,7 +120,6 @@ TEST_F(ResistanceCurveForceModelTest, should_issue_a_warning_when_speed_is_great
     // Restore cerr's buffer
     std::cerr.rdbuf(orig);
 }
-
 
 TEST_F(ResistanceCurveForceModelTest, with_filtered_states)
 {

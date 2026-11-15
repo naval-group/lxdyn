@@ -23,20 +23,7 @@ constexpr double EPS = 1E-6;
 
 #define BODY "body 1"
 
-
 KtKqForceModelTest::KtKqForceModelTest() : a(ssc::random_data_generator::DataGenerator(9876))
-{
-}
-
-KtKqForceModelTest::~KtKqForceModelTest()
-{
-}
-
-void KtKqForceModelTest::SetUp()
-{
-}
-
-void KtKqForceModelTest::TearDown()
 {
 }
 

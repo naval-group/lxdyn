@@ -15,18 +15,6 @@ LinearDampingForceModelTest::LinearDampingForceModelTest() : a(ssc::random_data_
 {
 }
 
-LinearDampingForceModelTest::~LinearDampingForceModelTest()
-{
-}
-
-void LinearDampingForceModelTest::SetUp()
-{
-}
-
-void LinearDampingForceModelTest::TearDown()
-{
-}
-
 TEST_F(LinearDampingForceModelTest, parser)
 {
     const std::string yaml = "        damping matrix at the center of gravity projected in the body frame:\n"

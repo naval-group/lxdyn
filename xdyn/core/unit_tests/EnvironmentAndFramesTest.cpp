@@ -10,12 +10,6 @@
 #include "xdyn/environment_models/ConstantUWCurrentModel.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
-EnvironmentAndFramesTest::EnvironmentAndFramesTest ()
-{}
-
-EnvironmentAndFramesTest::~EnvironmentAndFramesTest ()
-{}
-
 TEST_F(EnvironmentAndFramesTest, can_get_rho_air_when_initialized)
 {
     EnvironmentAndFrames env;

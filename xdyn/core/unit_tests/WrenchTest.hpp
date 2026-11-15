@@ -10,7 +10,6 @@ class WrenchTest : public ::testing::Test
 {
 public:
     WrenchTest();
-    ~WrenchTest() override;
     ssc::random_data_generator::DataGenerator a;
 };
 

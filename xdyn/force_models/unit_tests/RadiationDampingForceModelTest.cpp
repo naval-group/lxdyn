@@ -26,18 +26,6 @@ RadiationDampingForceModelTest::RadiationDampingForceModelTest() : a(ssc::random
 {
 }
 
-RadiationDampingForceModelTest::~RadiationDampingForceModelTest()
-{
-}
-
-void RadiationDampingForceModelTest::SetUp()
-{
-}
-
-void RadiationDampingForceModelTest::TearDown()
-{
-}
-
 double compute_Ma_from_K(const double omega, const double A, const std::function<double(double)>& K, const double tau_min, const double tau_max);
 double compute_Ma_from_K(const double omega, const double A, const std::function<double(double)>& K, const double tau_min, const double tau_max)
 {
@@ -127,7 +115,6 @@ double record_sine(BodyStates& states, const double tstart, const double T, cons
     }
     return tend;
 }
-
 
 TEST_F(RadiationDampingForceModelTest, example)
 {
@@ -277,7 +264,6 @@ TEST_F(RadiationDampingForceModelTest, force_model_knows_history_length)
     const RadiationDampingForceModel F(input, "", EnvironmentAndFrames());
     ASSERT_DOUBLE_EQ(input.yaml.tau_max, F.get_Tmax());
 }
-
 
 TEST_F(RadiationDampingForceModelTest, matrix_product_should_be_done_properly)
 {

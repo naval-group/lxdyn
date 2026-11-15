@@ -16,18 +16,6 @@ PiecewiseConstantTest::PiecewiseConstantTest() : a(ssc::random_data_generator::D
 {
 }
 
-PiecewiseConstantTest::~PiecewiseConstantTest()
-{
-}
-
-void PiecewiseConstantTest::SetUp()
-{
-}
-
-void PiecewiseConstantTest::TearDown()
-{
-}
-
 TEST_F(PiecewiseConstantTest, example)
 {
     for (size_t i = 0 ; i < 1000 ; ++i)
@@ -75,7 +63,6 @@ TEST_F(PiecewiseConstantTest, should_not_throw_if_xmin_equals_xmax)
         ASSERT_NO_THROW(PiecewiseConstant(xmin, xmax, a.random_vector_of<double>().of_size(n)));
     }
 }
-
 
 TEST_F(PiecewiseConstantTest, second_derivative_should_be_zero)
 {

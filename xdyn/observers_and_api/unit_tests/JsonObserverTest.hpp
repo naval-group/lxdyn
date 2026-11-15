@@ -8,9 +8,6 @@ class JsonObserverTest : public ::testing::Test
 {
     protected:
         JsonObserverTest();
-        ~JsonObserverTest() override{}
-        void SetUp() override{}
-        void TearDown() override{}
         ssc::random_data_generator::DataGenerator a;
 };
 

@@ -15,18 +15,6 @@ almost_equalTest::almost_equalTest() : a(ssc::random_data_generator::DataGenerat
 {
 }
 
-almost_equalTest::~almost_equalTest()
-{
-}
-
-void almost_equalTest::SetUp()
-{
-}
-
-void almost_equalTest::TearDown()
-{
-}
-
 TEST_F(almost_equalTest, can_get_a_number_close_to_another)
 {
     std::cout << std::setprecision(20);

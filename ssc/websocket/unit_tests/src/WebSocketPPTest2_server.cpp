@@ -8,11 +8,6 @@
 #include "gtest/gtest.h"
 class WebSocketPPTest2_server : public ::testing::Test
 {
-    protected:
-        WebSocketPPTest2_server(){}
-        ~WebSocketPPTest2_server() override{}
-        void SetUp() override{}
-        void TearDown() override{}
 };
 
 using server = websocketpp::server<websocketpp::config::core>;

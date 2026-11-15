@@ -11,10 +11,6 @@ WrenchTest::WrenchTest(): a(ssc::random_data_generator::DataGenerator(267953))
 {
 }
 
-WrenchTest::~WrenchTest()
-{
-}
-
 TEST_F(WrenchTest, can_get_members)
 {
     const std::string frame("expression_frame");

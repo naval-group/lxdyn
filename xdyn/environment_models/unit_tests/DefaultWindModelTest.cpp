@@ -12,12 +12,6 @@
 DefaultWindModelTest::DefaultWindModelTest () : a(ssc::random_data_generator::DataGenerator(54200))
 {}
 
-DefaultWindModelTest::~DefaultWindModelTest (){}
-
-void DefaultWindModelTest::SetUp(){}
-
-void DefaultWindModelTest::TearDown(){}
-
 TEST_F(DefaultWindModelTest, returns_no_wind)
 {
     const DefaultWindModel wind_model(0);

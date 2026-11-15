@@ -14,20 +14,7 @@
 #include <cmath>
 #define PI M_PI
 
-
 DiffractionInterpolatorTest::DiffractionInterpolatorTest() : a(ssc::random_data_generator::DataGenerator(989899))
-{
-}
-
-DiffractionInterpolatorTest::~DiffractionInterpolatorTest()
-{
-}
-
-void DiffractionInterpolatorTest::SetUp()
-{
-}
-
-void DiffractionInterpolatorTest::TearDown()
 {
 }
 

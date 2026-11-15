@@ -18,18 +18,6 @@ mesh_manipulationsTest::mesh_manipulationsTest() : a(ssc::random_data_generator:
 {
 }
 
-mesh_manipulationsTest::~mesh_manipulationsTest()
-{
-}
-
-void mesh_manipulationsTest::SetUp()
-{
-}
-
-void mesh_manipulationsTest::TearDown()
-{
-}
-
 TEST_F(mesh_manipulationsTest, unit_normal)
 {
 //! [mesh_manipulationsTest unit_normal_example]
