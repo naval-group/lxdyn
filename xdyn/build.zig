@@ -94,6 +94,7 @@ pub fn addExecutables(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) vo
         proto.addSources(ctx, m, spec.protos);
         m.linkLibrary(libxdyn);
         ctx.linkDeps(m);
+        ctx.addMimalloc(m);
         const exe = b.addExecutable(.{ .name = spec.name, .root_module = m });
         exe.step.dependOn(ctx.codegen.step);
         if (!ctx.isWindows()) exe.pie = false; // the closure may be non-PIC; PIE is N/A on COFF

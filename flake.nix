@@ -11,6 +11,9 @@
     src-hdf5       = { url = "github:HDFGroup/hdf5/2.2.0";            flake = false; };
     src-grpc       = { url = "git+https://github.com/grpc/grpc?ref=refs/tags/v1.85.1&submodules=1"; flake = false; };
     src-boost      = { url = "tarball+https://archives.boost.io/release/1.92.0/source/boost_1_92_0.tar.bz2"; flake = false; };
+
+    # The executables' malloc: see addMimalloc in build.zig.
+    src-mimalloc   = { url = "github:microsoft/mimalloc/v2.2.4";      flake = false; };
   };
 
   outputs = { self, nixpkgs, ... }@inputs:
@@ -184,7 +187,7 @@
         buildPhase = ''
           runHook preBuild
           ${prepareXdyn}
-          zig build -Dtarget=x86_64-linux-musl ${zigFlags "x86_64-linux-musl"} --prefix $out
+          zig build -Dtarget=x86_64-linux-musl ${zigFlags "x86_64-linux-musl"} -Dmimalloc=${inputs.src-mimalloc} --prefix $out
           runHook postBuild
         '';
         installPhase = "runHook preInstall; runHook postInstall";
