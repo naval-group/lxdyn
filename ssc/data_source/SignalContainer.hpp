@@ -64,8 +64,13 @@ namespace ssc
                 template <typename T> void set(const std::string& signal_name, const T& value)
                 {
                     const TypedSignalName map_name(signal_name,typeid(T).name());
+                    const bool is_new_signal = signals_.find(map_name) == signals_.end();
                     signals_[map_name] = value;
-                    get_iterator_list(value).push_back(signals_.find(map_name));
+                    // One entry per signal, not per call: set() runs at every evaluation of
+                    // every model, and appending each time grew the list without bound
+                    // (xdyn-for-cs gained ~17 kB per co-simulation step on a BlueROV).
+                    // Updating a std::map entry keeps the stored iterator valid.
+                    if (is_new_signal) get_iterator_list(value).push_back(signals_.find(map_name));
                 }
 
                 template <typename T> T get(const std::string& signal_name) const

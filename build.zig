@@ -29,6 +29,7 @@ pub fn build(b: *std.Build) void {
         .deps_root = deps.resolveRoot(b, target, codegen.step),
         .eigen_include = resolveEigen(b),
         .debug = b.option(bool, "debug", "Build xdyn -O0 -g for gdb (deps stay optimized)") orelse false,
+        .mimalloc_root = b.option([]const u8, "mimalloc", "mimalloc source tree linked into the executables as their malloc (default: the libc's)"),
         .codegen = codegen,
     };
     ctx.cpp_flags = xdyn.cppFlags(&ctx);
@@ -57,6 +58,7 @@ pub const Ctx = struct {
     deps_root: []const u8,
     eigen_include: ?[]const u8,
     debug: bool,
+    mimalloc_root: ?[]const u8,
     codegen: Codegen,
     cpp_flags: []const []const u8 = &.{},
 
@@ -68,6 +70,26 @@ pub const Ctx = struct {
     pub fn withDebug(ctx: *const Ctx, base: []const []const u8) []const []const u8 {
         if (!ctx.debug) return base;
         return concat(ctx.b, base, &.{ "-O0", "-g", "-fno-omit-frame-pointer" });
+    }
+
+    // zig's own libc malloc (std.heap.SmpAllocator behind c.malloc) does not hand freed blocks
+    // back to later requests of the same size well enough for a long-running server:
+    // xdyn-for-cs on a meshed hull grew ~0.2 MB per co-simulation step, 1.1 GB after 6000
+    // steps, where glibc's malloc held 49 MB on the same requests. mimalloc's static.c, built
+    // with MI_MALLOC_OVERRIDE, defines malloc/free/realloc/... strongly; zig's libc exports
+    // them weakly, so the executable's malloc and libc++'s operator new both resolve to it.
+    pub fn addMimalloc(ctx: *const Ctx, m: *std.Build.Module) void {
+        const root = ctx.mimalloc_root orelse return;
+        const b = ctx.b;
+        m.addIncludePath(.{ .cwd_relative = b.fmt("{s}/include", .{root}) });
+        m.addCSourceFile(.{
+            .file = .{ .cwd_relative = b.fmt("{s}/src/static.c", .{root}) },
+            // Not our code: its warnings are not ours to keep clean, hence no -Werror.
+            .flags = ctx.withDebug(if (ctx.target.result.abi.isMusl())
+                &.{ "-std=gnu11", "-DMI_MALLOC_OVERRIDE", "-DMI_LIBC_MUSL", "-DNDEBUG", "-fno-builtin-malloc", "-w" }
+            else
+                &.{ "-std=gnu11", "-DMI_MALLOC_OVERRIDE", "-DNDEBUG", "-fno-builtin-malloc", "-w" }),
+        });
     }
 
     pub const ModuleOptions = struct { pic: ?bool = null, strip: ?bool = null };

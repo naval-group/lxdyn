@@ -120,8 +120,11 @@ class Kinematics::Impl
 
         kinematics::Transform get(const std::string& from_frame, const std::string& to_frame)
         {
-            ds.check_in(__PRETTY_FUNCTION__);
+            // Before check_in: this early return never checked out, so every identity
+            // lookup (a model expressed in its own body frame, several times per step)
+            // left one more entry on the DataSource's call stack.
             if (from_frame == to_frame) return kinematics::identity(from_frame);
+            ds.check_in(__PRETTY_FUNCTION__);
             try
             {
                 ds.check_out();

@@ -23,6 +23,7 @@
         "src-googletest": "src-googletest",
         "src-grpc": "src-grpc",
         "src-hdf5": "src-hdf5",
+        "src-mimalloc": "src-mimalloc",
         "src-yaml-cpp": "src-yaml-cpp"
       }
     },
@@ -89,6 +90,23 @@
         "owner": "HDFGroup",
         "ref": "2.2.0",
         "repo": "hdf5",
+        "type": "github"
+      }
+    },
+    "src-mimalloc": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749522185,
+        "narHash": "sha256-+8xZT+mVEqlqabQc+1buVH/X6FZxvCd0rWMyjPu9i4o=",
+        "owner": "microsoft",
+        "repo": "mimalloc",
+        "rev": "fbd8b99c2b828428947d70fdc046bb55609be93e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "microsoft",
+        "ref": "v2.2.4",
+        "repo": "mimalloc",
         "type": "github"
       }
     },
