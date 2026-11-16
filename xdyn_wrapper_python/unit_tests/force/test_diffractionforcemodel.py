@@ -10,9 +10,6 @@ from textwrap import dedent
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlCoordinates, YamlRAO, YamlRotation
-from xdyn.data.test import bug_3210
-from xdyn.data.test.precal import precal
-from xdyn.data.yaml import diffraction, diffraction_precalr
 from xdyn.env.wave import (
     Airy,
     DiracDirectionalSpreading,
@@ -25,6 +22,8 @@ from xdyn.env.wave import (
 from xdyn.force import DiffractionForceModel
 from xdyn.ssc.kinematics import Point as SscPoint
 from xdyn.ssc.kinematics import Transform as SscTransform
+
+from ..fixtures import read
 
 BODY_NAME: str = "body 1"
 
@@ -90,7 +89,7 @@ class DiffractionForceModelTest(unittest.TestCase):
     """Test class for DiffractionForceModel"""
 
     def test_parser_hdb(self):
-        data = DiffractionForceModel.parse(diffraction())
+        data = DiffractionForceModel.parse(read("yaml/diffraction.yml"))
         self.assertEqual(type(data), YamlRAO)
         self.assertEqual("test_ship.hdb", data.hdb_filename)
         self.assertEqual(0, len(data.precal_filename))
@@ -101,7 +100,7 @@ class DiffractionForceModelTest(unittest.TestCase):
         self.assertTrue(data.use_encounter_period)
 
     def test_parser_precalr(self):
-        data = DiffractionForceModel.parse(diffraction_precalr())
+        data = DiffractionForceModel.parse(read("yaml/diffraction_precalr.yml"))
         self.assertEqual(type(data), YamlRAO)
         self.assertEqual("test_ship.raodb.ini", data.precal_filename)
         self.assertEqual(0, len(data.hdb_filename))
@@ -112,7 +111,7 @@ class DiffractionForceModelTest(unittest.TestCase):
         self.assertTrue(data.use_encounter_period)
 
     def test_parser_precalr_ignores_calculation_point(self):
-        test_data = diffraction_precalr()
+        test_data = read("yaml/diffraction_precalr.yml")
         additional_test_data = """
         calculation point in body frame:
             x: {value: 0.696, unit: m}
@@ -129,7 +128,7 @@ class DiffractionForceModelTest(unittest.TestCase):
         env = get_waves_env(64.0, 0.0)
         hdb_filename = "data.hdb"
         with open(hdb_filename, "w", encoding="utf-8") as fid:
-            fid.write(bug_3210())
+            fid.write(read("tutorials/test_ship.hdb"))
         data = YamlRAO()
         data.calculation_point = YamlCoordinates(0.696, 0, 1.418)
         data.hdb_filename = hdb_filename
@@ -217,7 +216,7 @@ class DiffractionForceModelTest(unittest.TestCase):
         env = get_waves_env(10.47198, 0.0)
         precal_filename = "data.raodb.ini"
         with open(precal_filename, "w", encoding="utf-8") as fid:
-            fid.write(precal())
+            fid.write(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         data = YamlRAO()
         data.calculation_point = YamlCoordinates(0, 0, 0)
         data.precal_filename = precal_filename

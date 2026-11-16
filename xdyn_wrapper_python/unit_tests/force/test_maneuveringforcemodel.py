@@ -4,23 +4,13 @@ Unit test for ManeuveringForceModel
 import unittest
 from math import pi
 
-from xdyn.core import BodyBuilder, BodyPtr, EnvironmentAndFrames
+from xdyn.core import EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.mesh import two_triangles
-from xdyn.data.yaml import (
-    man_with_delay,
-    maneuvering,
-    maneuvering_with_same_frame_of_reference,
-)
 from xdyn.force import ManeuveringForceModel
 from xdyn.ssc.datasource import DataSource
 from xdyn.ssc.random import DataGenerator
 
-
-def get_body(name: str) -> BodyPtr:
-    rot = YamlRotation("angle", ["z", "y'", "x''"])
-    builder = BodyBuilder(rot)
-    return builder.build_for_test(name, two_triangles(), 0, 0.0, rot, 0.0, False)
+from ..fixtures import get_body, read
 
 
 def get_env_with_default_rotation_convention() -> EnvironmentAndFrames:
@@ -41,7 +31,7 @@ class ManeuveringForceModelTest(unittest.TestCase):
         return self.rng.random_double_between(low, high)()
 
     def test_can_parse_frame_of_reference(self):
-        data = ManeuveringForceModel.parse(maneuvering())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering.yml"))
         assert_equal = lambda x, y: self.assertAlmostEqual(x, y, delta=1e-12)
         assert_equal(0.696, data.frame_of_reference.coordinates.x)
         assert_equal(0, data.frame_of_reference.coordinates.y)
@@ -51,7 +41,7 @@ class ManeuveringForceModelTest(unittest.TestCase):
         assert_equal(125.0 * pi / 180.0, data.frame_of_reference.angle.psi)
 
     def test_can_parse_X_Y_Z_K_M_N(self):
-        data = ManeuveringForceModel.parse(maneuvering())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering.yml"))
         self.assertEqual("0.5*rho*Vs^2*L^2*X_", data.var2expr["X"])
         self.assertEqual("0.5*rho*Vs^2*L^2*Y_", data.var2expr["Y"])
         self.assertEqual("0", data.var2expr["Z"])
@@ -60,11 +50,11 @@ class ManeuveringForceModelTest(unittest.TestCase):
         self.assertEqual("0.5*rho*Vs^2*L^3*N_", data.var2expr["N"])
 
     def test_can_parse_model_name(self):
-        data = ManeuveringForceModel.parse(maneuvering())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering.yml"))
         self.assertEqual("test", data.name)
 
     def test_can_parse_commands(self):
-        data = ManeuveringForceModel.parse(maneuvering())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering.yml"))
         self.assertEqual(data.commands, ["a", "b", "c"])
 
     def test_can_evaluate_simple_maneuvering_model(self):
@@ -104,7 +94,7 @@ class ManeuveringForceModelTest(unittest.TestCase):
         self.assertAlmostEqual(0, F.N(), delta=1e-15)
 
     def test_can_evaluate_full_maneuvering_model_with_same_frame_of_reference(self):
-        data = ManeuveringForceModel.parse(maneuvering_with_same_frame_of_reference())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering_with_same_frame_of_reference.yml"))
         env = get_env_with_default_rotation_convention()
         t = 0
         states = get_body("TestShip").get_states()
@@ -135,7 +125,7 @@ class ManeuveringForceModelTest(unittest.TestCase):
         self.assertEqual(253134236.3875341, F.N())
 
     def test_can_evaluate_full_maneuvering_model_with_same_frame_of_reference2(self):
-        data = ManeuveringForceModel.parse(maneuvering_with_same_frame_of_reference())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering_with_same_frame_of_reference.yml"))
         env = get_env_with_default_rotation_convention()
         t = 0
         states = get_body("TestShip").get_states()
@@ -166,7 +156,7 @@ class ManeuveringForceModelTest(unittest.TestCase):
         self.assertEqual(-178317.02217866198, F.N())
 
     def test_can_evaluate_full_maneuvering_model(self):
-        data = ManeuveringForceModel.parse(maneuvering())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering.yml"))
         env = get_env_with_default_rotation_convention()
         t = 0
         states = get_body("TestShip").get_states()
@@ -197,7 +187,7 @@ class ManeuveringForceModelTest(unittest.TestCase):
         self.assertAlmostEqual(-211388078.67544204, F.N(), delta=1e-7)
 
     def test_can_evaluate_full_maneuvering_model2(self):
-        data = ManeuveringForceModel.parse(maneuvering())
+        data = ManeuveringForceModel.parse(read("yaml/maneuvering.yml"))
         env = get_env_with_default_rotation_convention()
         t = 0
         states = get_body("TestShip").get_states()
@@ -322,7 +312,7 @@ class ManeuveringForceModelTest(unittest.TestCase):
         assert_equal(-1.5654434261669063, F.N())
 
     def test_can_get_Tmax(self):
-        data = ManeuveringForceModel.parse(man_with_delay())
+        data = ManeuveringForceModel.parse(read("yaml/man_with_delay.yml"))
         env = get_env_with_default_rotation_convention()
         force = ManeuveringForceModel(data, "ball", env)
         self.assertEqual(10, force.get_Tmax())

@@ -9,7 +9,6 @@ from xdyn.core import (
     EnvironmentAndFrames,
 )
 from xdyn.core.io import YamlRotation
-from xdyn.data.yaml import rudder
 from xdyn.env.wave import (
     Airy,
     DiracDirectionalSpreading,
@@ -26,6 +25,8 @@ from xdyn.force import (
 from xdyn.ssc.kinematics import Point as SscPoint
 from xdyn.ssc.kinematics import Transform as SscTransform
 from xdyn.ssc.random import DataGenerator
+
+from ..fixtures import read
 
 EPS: float = 1e-2
 NB_TRIALS: int = 100
@@ -235,7 +236,7 @@ class RudderForceModelTest(unittest.TestCase):
         self.assertEqual(-3 * np.pi / 4, riw.get_fluid_angle(V.outside_wake))
 
     def test_parser(self):
-        w = RudderForceModel.parse(rudder())
+        w = RudderForceModel.parse(read("yaml/rudder.yml"))
         self.assertEqual(0.5, w.blade_area_ratio)
         self.assertEqual("port side propeller", w.name)
         self.assertEqual(3, w.number_of_blades)
@@ -263,7 +264,7 @@ class RudderForceModelTest(unittest.TestCase):
     def test_force_and_torque(self):
         A, phi, _ = self.get_wave_model()
         env = get_environment_and_frames(A, phi)
-        model = RudderForceModel(RudderForceModel.parse(rudder()), BODY, env)
+        model = RudderForceModel(RudderForceModel.parse(read("yaml/rudder.yml")), BODY, env)
         self.assertEqual(type(model), RudderForceModel)
         self.assertEqual("propeller+rudder", model.model_name())
         states = BodyStates()

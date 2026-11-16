@@ -6,9 +6,10 @@ import unittest
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.yaml import simple_station_keeping
 from xdyn.force import SimpleStationKeepingController
 from xdyn.ssc.random import DataGenerator
+
+from ..fixtures import read
 
 EPS: float = 1e-14
 
@@ -29,7 +30,7 @@ class SimpleStationKeepingControllerTest(unittest.TestCase):
     def test_can_parse(self):
         """Check that parse function produces a valid SimpleStationKeepingControllerInput data object"""
 
-        data = SimpleStationKeepingController.parse(simple_station_keeping())
+        data = SimpleStationKeepingController.parse(read("yaml/simple_station_keeping.yml"))
         self.assertEqual(2, data.T_x)
         self.assertEqual(3, data.T_y)
         self.assertEqual(4, data.T_psi)
@@ -39,7 +40,7 @@ class SimpleStationKeepingControllerTest(unittest.TestCase):
         self.assertEqual("controller", data.name)
 
     def test_force_and_torque(self):
-        data = SimpleStationKeepingController.parse(simple_station_keeping())
+        data = SimpleStationKeepingController.parse(read("yaml/simple_station_keeping.yml"))
         data.T_x = 2 * np.pi
         data.T_y = 2 * np.pi / 3
         data.T_psi = 2 * np.pi / 4
