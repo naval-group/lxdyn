@@ -1,5 +1,5 @@
 issue_199: demos
 	@echo "Attempting to simulate with a binary STL..."
-	@cd $(WORK) && sed 's/mesh: cube.stl/mesh: cube_b.stl/g' stable_cube_test.yml > stable_cube_test_b.yml
+	@cd $(WORK) && sed 's#mesh: cube.stl#mesh: $(TEST_DATA)/stl/cube_binary.stl#g' stable_cube_test.yml > stable_cube_test_b.yml
 	@cd $(WORK) && $(XDYN) --dt 1 --tend 1 stable_cube_test_b.yml
 	@echo "Done!"

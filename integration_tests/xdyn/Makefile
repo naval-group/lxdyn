@@ -35,7 +35,7 @@ XDYN           ?= $(BIN)/xdyn
 XDYN_FOR_CS    ?= $(BIN)/xdyn-for-cs
 XDYN_FOR_ME    ?= $(BIN)/xdyn-for-me
 GZ             ?= $(BIN)/gz
-TUTORIALS      ?= $(abspath $(CURDIR)/../../test_data/tutorials)
+TEST_DATA      ?= $(abspath $(CURDIR)/../../test_data)
 H5DUMP         ?= h5dump
 # check_output_size.py needs h5py + numpy, so the default is the venv uv builds from
 # pyproject.toml's test-cli group -- not a bare `python3`, which under `nix develop` is now
@@ -51,13 +51,13 @@ EXPECTED_ERROR_CODE=echo "Got the error code we expected for an invalid YAML: su
 FIXTURES = issue_196_test.yml issue_196_test.raodb.ini \
            issue_202.yml issue_202.py \
            issue_39.yml issue_39.csv issue_39.py \
-           issue_235.yml cube_b.stl check_output_size.py
+           issue_235.yml check_output_size.py
 
 # Phony on purpose: invalid_yaml_returns_non_zero_error_code corrupts tutorial_01 with sed,
 # so every run wants a fresh copy.
 demos:
 	@mkdir -p $(WORK)
-	@cp $(addprefix $(CURDIR)/,$(FIXTURES)) $(TUTORIALS)/* $(WORK)/
+	@cp $(addprefix $(CURDIR)/,$(FIXTURES)) $(TEST_DATA)/tutorials/* $(WORK)/
 
 issue_196: demos
 	@echo "Attempting to use a Windows-generated PRECAL-R file with a Linux xdyn..."
