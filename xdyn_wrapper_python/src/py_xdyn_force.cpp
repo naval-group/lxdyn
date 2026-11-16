@@ -37,7 +37,6 @@
 #include "xdyn/force_models/SimpleHeadingKeepingController.hpp"
 #include "xdyn/force_models/SimpleStationKeepingController.hpp"
 #include "xdyn/force_models/WageningenControlledForceModel.hpp"
-#include "xdyn/force_models/unit_tests/HDBParserForTests.hpp"
 #include "xdyn/hdb_interpolators/HDBParser.hpp"
 
 namespace py = pybind11;
@@ -958,20 +957,7 @@ void py_add_module_xdyn_force(py::module& m0)
         "RadiationDampingForceModelInput",
         "Input for RadiationDampingForceModel")
         .def(py::init<>())
-        .def_readwrite("yaml", &RadiationDampingForceModel::Input::yaml)
-        .def(
-            "set_hdb_parser_for_tests",
-            [](RadiationDampingForceModel::Input& a,
-               const std::vector<double>& omega,
-               const std::vector<double>& Ma,
-               const std::vector<double>& Br,
-               const bool only_diagonal_terms) {
-                a.parser = std::make_shared<HDBParserForTests>(omega, Ma, Br, only_diagonal_terms);
-            },
-            py::arg("omega"),
-            py::arg("Ma"),
-            py::arg("Br"),
-            py::arg("only_diagonal_terms"));
+        .def_readwrite("yaml", &RadiationDampingForceModel::Input::yaml);
 
     py::class_<RadiationDampingForceModel, ForceModel>(
         m,
