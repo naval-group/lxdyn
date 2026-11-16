@@ -23,7 +23,7 @@ public:
         double bottom_ekman_depth{};  ///< Bottom layer thickness (m)
         double middle_velocity{};     ///< Background current velocity (m/s)
         double middle_orientation{};  ///< Background current direction (rad)
-        double f_and_sqrt_rho{};      ///< Coriolis parameter times sqrt(water density)
+        double f_times_rho{};         ///< Coriolis parameter times water density
         double wind_angle{};          ///< Wind direction (rad)
         double wind_stress{};         ///< Wind stress (N/m2)
     };
@@ -40,7 +40,7 @@ private:
     double bottom_ekman_depth;
     double middle_velocity;
     double middle_orientation;
-    double f_and_sqrt_rho;
+    double f_times_rho;
     double wind_angle;
     double wind_stress;
 

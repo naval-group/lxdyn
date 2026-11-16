@@ -15,7 +15,7 @@ EkmanUWCurrentModel::EkmanUWCurrentModel(const Input& input) :
     bottom_ekman_depth(input.bottom_ekman_depth),
     middle_velocity(input.middle_velocity),
     middle_orientation(input.middle_orientation),
-    f_and_sqrt_rho(input.f_and_sqrt_rho),
+    f_times_rho(input.f_times_rho),
     wind_angle(input.wind_angle),
     wind_stress(input.wind_stress)
 {
@@ -60,7 +60,13 @@ EkmanUWCurrentModel::Input EkmanUWCurrentModel::parse(const std::string& yaml_in
     xdyn::yaml_parser::parse_uv(node["latitude"], latitude);
     xdyn::yaml_parser::parse_uv(node["top layer thickness"], input.top_ekman_depth);
     xdyn::yaml_parser::parse_uv(node["bottom layer thickness"], input.bottom_ekman_depth);
-    input.f_and_sqrt_rho = 2*omega*std::sin(latitude)*std::sqrt(rho);
+    // Coriolis parameter times water density. Classical Ekman theory gives the
+    // surface velocity as V0 = tau/(rho*sqrt(Az*f)) with D_s = pi*sqrt(2*Az/f),
+    // hence V0 = sqrt(2)*pi*tau/(rho*f*D_s): rho, not its square root. The
+    // sqrt(rho) form is also dimensionally inconsistent -- it resolves to
+    // kg^0.5 m^0.5 / s rather than a velocity -- and overestimates V0 by
+    // sqrt(rho) = 32x at rho = 1026 kg/m3.
+    input.f_times_rho = 2*omega*std::sin(latitude)*rho;
     return input;
 }
 
@@ -90,11 +96,19 @@ Eigen::Vector3d EkmanUWCurrentModel::get_top_layer_current(const Eigen::Vector3d
                                                            const double) const
 {
     const double z = position(2);
-    const double sgn_f = (f_and_sqrt_rho >= 0) ? 1.0 : -1.0;
-    const double V0 = std::sqrt(2)*M_PI*wind_stress/(top_ekman_depth*f_and_sqrt_rho);
+    const double sgn_f = (f_times_rho >= 0) ? 1.0 : -1.0;
+    const double V0 = std::sqrt(2)*M_PI*wind_stress/(top_ekman_depth*f_times_rho);
     const double decay_factor = top_ekman_depth/M_PI;
-    const double u = middle_current(0) + sgn_f*V0*std::exp(-z/decay_factor)*std::cos(M_PI/4 - z/decay_factor - sgn_f*wind_angle);
-    const double v = middle_current(1) + V0*std::exp(-z/decay_factor)*std::sin(M_PI/4 - z/decay_factor + sgn_f*wind_angle);
+    // The wind orientation must enter both components with the SAME sign. The
+    // horizontal plane is isotropic (f and Az are scalars), so rotating the wind
+    // rotates the whole solution rigidly and leaves its magnitude unchanged.
+    // The previous form used cos(... - wind_angle) against sin(... + wind_angle),
+    // which is not a rotation: the perturbation's magnitude then varied with wind
+    // direction AND with depth (+28% at the surface to -40% at z/D ~ 1.5 for a
+    // 20 deg wind), distorting the vertical shear this model exists to provide.
+    const double phase = M_PI/4 - z/decay_factor + sgn_f*wind_angle;
+    const double u = middle_current(0) + sgn_f*V0*std::exp(-z/decay_factor)*std::cos(phase);
+    const double v = middle_current(1) +       V0*std::exp(-z/decay_factor)*std::sin(phase);
     // Vertical velocity would have to be composed with the orbital velocities, which is not done yet
     return Eigen::Vector3d(u, v, 0.);
 }
