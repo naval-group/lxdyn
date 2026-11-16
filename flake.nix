@@ -231,7 +231,7 @@
       # The deploy image's: FROM scratch has no Gazebo to shadow.
       xdyn-deploy = pickXdyn {
         pname = "xdyn-deploy";
-        binaries = [ "xdyn" "xdyn-for-cs" "xdyn-for-me" "gz" "generate_yaml_example" "generate_stl_examples" ];
+        binaries = [ "xdyn" "xdyn-for-cs" "xdyn-for-me" "gz" ];
         description = "the binaries the deploy image ships, static x86_64-linux-musl";
       };
 

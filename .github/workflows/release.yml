@@ -47,10 +47,9 @@ jobs:
       - name: Smoke test
         run: |
           mkdir -p build/scratch/release-smoke
+          cp test_data/tutorials/tutorial_01_falling_ball.yml build/scratch/release-smoke/
           cd build/scratch/release-smoke
           docker run --rm localhost/lxdyn --help | grep -q USAGE
-          docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/data" \
-              --entrypoint /usr/bin/generate_yaml_example localhost/lxdyn .
           docker run --rm -u "$(id -u):$(id -g)" -v "$PWD:/data" localhost/lxdyn \
               tutorial_01_falling_ball.yml --dt 0.1 --tend 1 -o out.csv
           [ -s out.csv ] || { echo "the image produced no output on a bind mount"; exit 1; }

@@ -75,14 +75,10 @@ echo "--- 1/3  image starts and reports its version"
 grep -q "USAGE" help.txt || { echo "unexpected --help output:"; cat help.txt; exit 1; }
 
 # --- 2. the image simulates, writing to a bind mount ------------------------------------
-# The generators are in the image too, so the inputs come from the same artifact under test
-# rather than from the host build. This is also what exercises the uid mapping: if --userns
-# is wrong, out.csv appears owned by a subuid and the read below fails.
+# This is what exercises the uid mapping: if --userns is wrong, out.csv appears owned by a
+# subuid and the read below fails.
 echo "--- 2/3  image runs a tutorial against a bind-mounted workdir"
-for gen in generate_yaml_example generate_stl_examples; do
-    "$CONTAINER" run --rm $USERNS -v "$WORK:/data" --entrypoint "/usr/bin/$gen" \
-        "$IMAGE" . > /dev/null
-done
+cp "$REPO"/test_data/tutorials/* .
 "$CONTAINER" run --rm $USERNS -v "$WORK:/data" "$IMAGE" \
     tutorial_01_falling_ball.yml --dt 0.1 --tend 1 -o out.csv > /dev/null
 [ -s out.csv ] || { echo "no out.csv produced"; ls -la; exit 1; }
