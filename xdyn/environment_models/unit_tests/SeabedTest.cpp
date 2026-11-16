@@ -15,7 +15,8 @@
 
 SeabedTest::SeabedTest() : a(ssc::random_data_generator::DataGenerator(149555)) {}
 
-TEST_F(SeabedTest, seabed_write)
+namespace {
+void write_seabed_png(const char* filename)
 {
     const unsigned width = 4;
     const unsigned height = 4;
@@ -27,7 +28,13 @@ TEST_F(SeabedTest, seabed_write)
         77, 77, 77, 255, 69, 69, 69, 255, 63, 63, 63, 255, 62, 62, 62, 255,
         84, 84, 84, 255, 73, 73, 73, 255, 65, 65, 65, 255, 64, 64, 64, 255,
     };
-    stbi_write_png("seabedtest.png", width, height, channels, rgba_image.data(), width * channels);
+    stbi_write_png(filename, width, height, channels, rgba_image.data(), width * channels);
+}
+}  // namespace
+
+TEST_F(SeabedTest, seabed_write)
+{
+    write_seabed_png("seabedtest.png");
     std::ifstream file("seabedtest.png");
     ASSERT_TRUE(file.good()) << "Failed to create seabedtest.png file";
 }
@@ -45,6 +52,7 @@ TEST_F(SeabedTest, parse_seabed_from_double)
 
 TEST_F(SeabedTest, parse_seabed_from_file)
 {
+    write_seabed_png("seabedtest.png");
     Seabed seabed("seabedtest.png");
     seabed.get_height(135, -3);
     seabed.get_gradient(-120, 4.4);
