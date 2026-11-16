@@ -139,14 +139,23 @@
         // { host-tools = fetchAsset "host-tools" "lxdyn-deps-host-tools-x86_64-linux.tar.zst"; };
 
       # Deny-list, so a docs or CI edit doesn't rebuild xdyn.
-      xdynSource = pkgs.lib.cleanSourceWith {
-        name = "xdyn-source";
+      xdynTestSource = pkgs.lib.cleanSourceWith {
+        name = "xdyn-test-source";
         src = self;
         filter = path: _type:
           let rel = pkgs.lib.removePrefix "${self}/" path; in
           !(pkgs.lib.hasPrefix ".github" rel)
           && !(pkgs.lib.hasPrefix "tools/doxygen" rel)
           && !(pkgs.lib.hasSuffix ".md" rel);
+      };
+      # What ships is built from a tree without the tests, so it cannot come to depend on them.
+      xdynSource = pkgs.lib.cleanSourceWith {
+        name = "xdyn-source";
+        src = xdynTestSource;
+        filter = path: _type:
+          let rel = pkgs.lib.removePrefix "${self}/" path; in
+          !(builtins.elem rel [ "test_data" "integration_tests" "validation" ])
+          && baseNameOf path != "unit_tests";
       };
 
       prepareXdyn = ''
@@ -184,7 +193,7 @@
         buildPhase = ''
           runHook preBuild
           ${prepareXdyn}
-          zig build -Dtarget=x86_64-linux-musl ${zigFlags "x86_64-linux-musl"} --prefix $out
+          zig build -Dtarget=x86_64-linux-musl -Dtests=false ${zigFlags "x86_64-linux-musl"} --prefix $out
           runHook postBuild
         '';
         installPhase = "runHook preInstall; runHook postInstall";
@@ -275,7 +284,7 @@
         buildPhase = ''
           runHook preBuild
           ${prepareXdyn}
-          zig build fmu -Dtarget=${target} ${zigFlags triple} --prefix $TMPDIR/prefix
+          zig build fmu -Dtarget=${target} -Dtests=false ${zigFlags triple} --prefix $TMPDIR/prefix
           runHook postBuild
         '';
         installPhase = ''
@@ -299,15 +308,6 @@
             install -Dm644 -t $out/share/xdyn-fmu xdyn_wrapper_fmi/make_fmu.py
             makeWrapper ${pkgs.python3}/bin/python3 $out/bin/xdyn-make-fmu \
               --add-flags "$out/share/xdyn-fmu/make_fmu.py --library $out/lib/xdyn_fmu.so"
-          '';
-          doInstallCheck = true;
-          installCheckPhase = ''
-            runHook preInstallCheck
-            $out/bin/xdyn-make-fmu xdyn_wrapper_fmi/unit_tests/propelled_ship.yml -o $TMPDIR/ship.fmu
-            ${pkgs.python3}/bin/python3 -m zipfile -l $TMPDIR/ship.fmu > $TMPDIR/ship.list
-            grep -q modelDescription.xml $TMPDIR/ship.list
-            grep -q binaries/linux64/xdyn_fmu.so $TMPDIR/ship.list
-            runHook postInstallCheck
           '';
         });
 
@@ -343,7 +343,7 @@
           runHook preBuild
           ${prepareXdyn}
           ${pkgs.lib.concatMapStrings (py: ''
-            zig build python -Dtarget=x86_64-linux-gnu.2.28 ${zigFlags "x86_64-linux-gnu"} \
+            zig build python -Dtarget=x86_64-linux-gnu.2.28 -Dtests=false ${zigFlags "x86_64-linux-gnu"} \
               -Dpython=${py.interpreter} -Dpybind11=${pkgs.python3Packages.pybind11}/include \
               --prefix $TMPDIR/prefix
           '') wheelPythons}
@@ -375,7 +375,7 @@
       mkUnitCheck = { name ? "xdyn-unit-${triple}", triple, tools ? [ ], test }:
         pkgs.stdenvNoCC.mkDerivation {
           inherit name;
-          src = xdynSource;
+          src = xdynTestSource;
           nativeBuildInputs = [ pkgs.zig ] ++ tools;
           dontFixup = true;
           buildPhase = ''
@@ -423,9 +423,16 @@
             sh tools/tidy/run.sh
           '';
         };
-        fmu-x86_64-linux-gnu = xdyn-fmu;
+        # Packs a model with the installed xdyn-make-fmu, as a user would.
+        fmu-x86_64-linux-gnu = pkgs.runCommandLocal "xdyn-fmu-smoke" { } ''
+          ${xdyn-fmu}/bin/xdyn-make-fmu ${xdynTestSource}/xdyn_wrapper_fmi/unit_tests/propelled_ship.yml -o ship.fmu
+          ${pkgs.python3}/bin/python3 -m zipfile -l ship.fmu > ship.list
+          grep -q modelDescription.xml ship.list
+          grep -q binaries/linux64/xdyn_fmu.so ship.list
+          touch $out
+        '';
         inherit lxdyn-wheels;
-        lint = pkgs.runCommandLocal "xdyn-lint" { src = xdynSource; nativeBuildInputs = [ pkgs.zig clangPinned ]; } ''
+        lint = pkgs.runCommandLocal "xdyn-lint" { src = xdynTestSource; nativeBuildInputs = [ pkgs.zig clangPinned ]; } ''
           cp -r $src/. . && sh tools/lint.sh && touch $out
         '';
       };

@@ -43,7 +43,8 @@ pub fn build(b: *std.Build) void {
     b.installArtifact(libxdyn);
 
     xdyn.addExecutables(&ctx, libxdyn);
-    ssc.addTests(&ctx, libxdyn, xdyn.addTests(&ctx, libxdyn));
+    if (b.option(bool, "tests", "Build the unit suites (default: true; the release lanes leave them out)") orelse true)
+        ssc.addTests(&ctx, libxdyn, xdyn.addTests(&ctx, libxdyn));
     python.add(&ctx, libxdyn); // opt-in: zig build python
     fmu.add(&ctx, libxdyn); // opt-in: zig build fmu
     tidy.add(&ctx); // last: it lists what every other step compiles
