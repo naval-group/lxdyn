@@ -2,6 +2,7 @@
 Unit test for RadiationDampingForceModel
 """
 import io
+import math
 import os
 import unittest
 from collections.abc import Callable
@@ -10,14 +11,23 @@ from contextlib import redirect_stderr
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import TypeOfQuadrature, YamlRadiationDamping
-from xdyn.data.test import analytical_Br, analytical_K, bug_3210
-from xdyn.data.test.precal import precal
-from xdyn.data.yaml import radiation_damping
 from xdyn.exceptions import InvalidInputException
 from xdyn.force import RadiationDampingForceModel, RadiationDampingForceModelInput
 from xdyn.hdb import RadiationDampingBuilder
 from xdyn.ssc.integrate import ClenshawCurtisCosine, Simpson
 from xdyn.ssc.random import DataGenerator
+
+from ..fixtures import read
+
+
+def analytical_Br(omega: float) -> float:
+    return 0.5 * (
+        0.1 / (0.01 + (0.5 - omega) * (0.5 - omega)) + 0.1 / (0.01 + (0.5 + omega) * (0.5 + omega))
+    )
+
+
+def analytical_K(tau: float) -> float:
+    return math.exp(-0.1 * tau) * math.cos(0.5 * tau)
 
 
 def get_yaml_data(show_debug: bool = False) -> YamlRadiationDamping:
@@ -114,7 +124,7 @@ class RadiationDampingForceModelTest(unittest.TestCase):
         self.rng = DataGenerator(666)
         hdb_filename = "test_ship.hdb"
         with open(hdb_filename, "w", encoding="utf-8") as fid:
-            fid.write(bug_3210())
+            fid.write(read("tutorials/test_ship.hdb"))
 
     def tearDown(self) -> None:
         hdb_filename = "test_ship.hdb"
@@ -122,7 +132,7 @@ class RadiationDampingForceModelTest(unittest.TestCase):
 
     def test_can_parse(self):
         """Check that parse function produces a valid RadiationDampingForceModelTest object"""
-        data = RadiationDampingForceModel.parse(radiation_damping()).yaml
+        data = RadiationDampingForceModel.parse(read("yaml/radiation_damping.yml")).yaml
         self.assertEqual("test_ship.hdb", data.hdb_filename)
         self.assertEqual(50, data.nb_of_points_for_retardation_function_discretization)
         self.assertEqual(30, data.omega_max)
@@ -436,7 +446,7 @@ class RadiationDampingForceModelTest(unittest.TestCase):
         """
         precalr_file = "data.raodb.ini"
         with open(precalr_file, "w", encoding="utf-8") as fid:
-            fid.write(precal())
+            fid.write(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         data = RadiationDampingForceModel.parse(yaml)
         env = EnvironmentAndFrames()
         body_name = self.rng.random_string()()

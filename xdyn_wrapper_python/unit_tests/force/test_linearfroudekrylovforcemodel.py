@@ -1,14 +1,11 @@
 """
 Unit test for LinearFroudeKrylovForceModel
 """
-import os
 import unittest
 
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import TypeOfRao, YamlCoordinates, YamlRAO, YamlRotation
-from xdyn.data.test import big_hdb
-from xdyn.data.test.precal import precal
 from xdyn.env.wave import (
     Airy,
     DiracDirectionalSpreading,
@@ -21,6 +18,8 @@ from xdyn.env.wave import (
 from xdyn.force import LinearFroudeKrylovForceModel
 from xdyn.ssc.kinematics import Point as SscPoint
 from xdyn.ssc.kinematics import Transform as SscTransform
+
+from ..fixtures import path
 
 BODY_NAME: str = "body 1"
 
@@ -88,12 +87,9 @@ class LinearFroudeKrylovForceModelTest(unittest.TestCase):
     def test_encounter_frequency_example(self):
         env = get_waves_env(64.0, 0.0)
         states = BodyStates()
-        hdb_file = "data.hdb"
-        with open(hdb_file, "w", encoding="utf-8") as fid:
-            fid.write(big_hdb())
         data = YamlRAO()
         data.calculation_point = YamlCoordinates(0.696, 0, 1.418)
-        data.hdb_filename = hdb_file
+        data.hdb_filename = path("tutorials/big.hdb")
         data.mirror = True
         data.use_encounter_period = True
         data.type_of_rao = TypeOfRao.FROUDE_KRYLOV_RAO
@@ -117,17 +113,13 @@ class LinearFroudeKrylovForceModelTest(unittest.TestCase):
         assert_equal(+F.K(), 0.000000e00 * np.sin(-(-3.141593e00 - kx)), delta=10)
         assert_equal(-F.M(), 1.291984e08 * np.sin(-(5.123568e-02 - kx)), delta=110)
         assert_equal(-F.N(), 0.000000e00 * np.sin(-(-3.141593e00 - kx)), delta=10)
-        os.remove(hdb_file)
 
     def test_precal_r_example(self):
         env = get_waves_env(10.47198, 0.0)
         states = BodyStates()
-        precal_filename = "data.raodb.ini"
-        with open(precal_filename, "w", encoding="utf-8") as fid:
-            fid.write(precal())
         data = YamlRAO()
         data.calculation_point = YamlCoordinates(0, 0, 0)
-        data.precal_filename = "data.raodb.ini"
+        data.precal_filename = path("tutorials/ONRT_SIMMAN.raodb.ini")
         data.mirror = True
         data.use_encounter_period = True
         data.type_of_rao = TypeOfRao.FROUDE_KRYLOV_RAO
@@ -157,7 +149,6 @@ class LinearFroudeKrylovForceModelTest(unittest.TestCase):
         assert_equal(+F.K(), 0.122369e-01 * 1e3 * sin_deg(-(129.387329)), tol_mx)
         assert_equal(-F.M(), 0.459008e06 * 1e3 * sin_deg(-(-97.283081)), tol_my)
         assert_equal(-F.N(), 0.120006e00 * 1e3 * sin_deg(-(-96.079956)), tol_mz)
-        os.remove(precal_filename)
 
 
 if __name__ == "__main__":

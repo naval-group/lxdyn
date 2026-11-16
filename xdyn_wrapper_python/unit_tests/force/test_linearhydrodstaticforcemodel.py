@@ -4,15 +4,16 @@ Unit test for LinearHydrostaticForceModel
 import unittest
 
 import numpy as np
-from xdyn.data.yaml import linear_hydrostatics
 from xdyn.force import LinearHydrostaticForceModel
+
+from ..fixtures import read
 
 
 class LinearHydrostaticForceModelTest(unittest.TestCase):
     """Test class for LinearHydrostaticForceModel"""
 
     def test_parser(self):
-        data = LinearHydrostaticForceModel.parse(linear_hydrostatics())
+        data = LinearHydrostaticForceModel.parse(read("yaml/linear_hydrostatics.yml"))
         self.assertEqual(-2, data.z_eq)
         self.assertAlmostEqual(1 * np.pi / 180.0, data.theta_eq, delta=1e-12)
         self.assertAlmostEqual(-3 * np.pi / 180.0, data.phi_eq, delta=1e-12)

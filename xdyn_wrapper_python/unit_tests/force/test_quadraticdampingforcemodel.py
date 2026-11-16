@@ -6,10 +6,11 @@ import unittest
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.body import get_body
 from xdyn.force import QuadraticDampingForceModel
 from xdyn.ssc.kinematics import Wrench as SscWrench
 from xdyn.ssc.random import DataGenerator
+
+from ..fixtures import get_body
 
 EPS: float = 1e-2
 BODY: str = "body 1"

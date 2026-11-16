@@ -6,11 +6,12 @@ import unittest
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.yaml import kt_kq
 from xdyn.exceptions import NumericalErrorException
 from xdyn.force import KtKqForceModel
 from xdyn.ssc.kinematics import Point as SscPoint
 from xdyn.ssc.kinematics import Transform as SscTransform
+
+from ..fixtures import read
 
 BODY: str = "body 1"
 
@@ -20,7 +21,7 @@ class KtKqForceModelTest(unittest.TestCase):
 
     def test_can_parse(self):
         """Check that parse function produces a valid KtKqForceModeldata object"""
-        data = KtKqForceModel.parse(kt_kq())
+        data = KtKqForceModel.parse(read("yaml/kt_kq.yml"))
         self.assertEqual("port side propeller", data.name)
         self.assertEqual(0, data.position_of_propeller_frame.angle.phi)
         self.assertEqual(-10 * np.pi / 180.0, data.position_of_propeller_frame.angle.theta)
@@ -100,7 +101,7 @@ class KtKqForceModelTest(unittest.TestCase):
 
     def test_force(self):
         EPS: float = 1e-6
-        data = KtKqForceModel.parse(kt_kq())
+        data = KtKqForceModel.parse(read("yaml/kt_kq.yml"))
         env = EnvironmentAndFrames()
         env.rho = 1024
         env.rot = YamlRotation("angle", ["z", "y'", "x''"])
@@ -121,7 +122,7 @@ class KtKqForceModelTest(unittest.TestCase):
         self.assertEqual(0.0, wrench.N())
 
     def test_clarify_exception_message_for_Kt_Kq_interpolation_errors(self):
-        data = KtKqForceModel.parse(kt_kq())
+        data = KtKqForceModel.parse(read("yaml/kt_kq.yml"))
         env = EnvironmentAndFrames()
         env.rho = 1024
         env.rot = YamlRotation("angle", ["z", "y'", "x''"])

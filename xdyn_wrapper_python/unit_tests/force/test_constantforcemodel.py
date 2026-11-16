@@ -5,12 +5,13 @@ import unittest
 from math import cos, sin
 
 import numpy as np
-from xdyn.core import BodyBuilder, BodyPtr, BodyStates, EnvironmentAndFrames
+from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.mesh import two_triangles
 from xdyn.force import ConstantForceModel
 from xdyn.ssc.kinematics import EulerAngles as SscEulerAngles
 from xdyn.ssc.random import DataGenerator
+
+from ..fixtures import get_body
 
 
 def get_input() -> str:
@@ -36,11 +37,6 @@ def get_env() -> EnvironmentAndFrames:
     env.rho = 1024
     return env
 
-
-def get_body(name: str) -> BodyPtr:
-    rot = YamlRotation("angle", ["z", "y'", "x''"])
-    builder = BodyBuilder(rot)
-    return builder.build_for_test(name, two_triangles(), 0, 0.0, rot, 0.0, False)
 
 
 def get_states(

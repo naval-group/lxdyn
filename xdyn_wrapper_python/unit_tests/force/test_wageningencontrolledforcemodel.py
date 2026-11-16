@@ -9,7 +9,6 @@ from contextlib import redirect_stderr
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.yaml import wageningen
 from xdyn.exceptions import InvalidInputException
 from xdyn.force import (
     WageningenControlledForceModel,
@@ -18,6 +17,8 @@ from xdyn.force import (
 from xdyn.ssc.kinematics import Point as SscPoint
 from xdyn.ssc.kinematics import Transform as SscTransform
 from xdyn.ssc.random import DataGenerator
+
+from ..fixtures import read
 
 EPS: float = 1e-2
 NB_TRIALS: int = 100
@@ -47,7 +48,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
 
     def test_can_parse(self):
         """Check that parse function produces a valid WageningenControlledForceModelInput data object"""
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         self.assertEqual(0.5, data.blade_area_ratio)
         self.assertEqual("port side propeller", data.name)
         self.assertEqual(3, data.number_of_blades)
@@ -65,7 +66,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
         self.assertEqual(2, data.diameter)
 
     def test_should_throw_if_blade_area_ratio_is_outside_bounds(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         env = get_env()
         expected_msg = "Invalid number of blade area ratio AE_A0 received: expected 0.3 <= AE_A0 <= 1.05 but got AE_A0="
 
@@ -86,7 +87,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
 
     def test_should_throw_if_number_of_blades_is_outside_bounds(self):
         expected_msg = "Invalid number of blades Z received: expected 2 <= Z <= 7"
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         env = get_env()
 
         def check_raises(data: WageningenControlledForceModelInput):
@@ -120,7 +121,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
             check_raises(data)
 
     def test_Kt_should_issue_a_warning_if_P_D_is_outside_bounds(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         w = WageningenControlledForceModel(data, BODY, get_env())
         for _ in range(NB_TRIALS):
             buf = io.StringIO()
@@ -167,7 +168,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
             self.assertEqual("", buf.getvalue(), buf.getvalue())
 
     def test_Kt_should_throw_if_J_is_outside_bounds(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         w = WageningenControlledForceModel(data, BODY, get_env())
         for _ in range(NB_TRIALS):
             buf = io.StringIO()
@@ -225,7 +226,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
             self.assertEqual("", buf.getvalue(), buf.getvalue())
 
     def test_Kq_should_throw_if_P_D_is_outside_bounds(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         w = WageningenControlledForceModel(data, BODY, get_env())
         for _ in range(NB_TRIALS):
 
@@ -273,7 +274,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
             self.assertEqual("", buf.getvalue(), buf.getvalue())
 
     def test_Kq_should_throw_if_J_is_outside_bounds(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         w = WageningenControlledForceModel(data, BODY, get_env())
         for _ in range(NB_TRIALS):
             buf = io.StringIO()
@@ -331,7 +332,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
             self.assertEqual("", buf.getvalue(), buf.getvalue())
 
     def test_KT(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         env = get_env()
         model = WageningenControlledForceModel(data, BODY, env)
         self.assertEqual("wageningen B-series", model.model_name())
@@ -359,7 +360,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
         almost_equal(0.104372086, model.Kt(Z=3, AE_A0=0.4, P_D=0.5, J=0.3))
 
     def test_KQ(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         env = get_env()
         model = WageningenControlledForceModel(data, BODY, env)
         self.assertEqual("wageningen B-series", model.model_name())
@@ -396,14 +397,14 @@ class WageningenControlledForceModelTest(unittest.TestCase):
         almost_equal(0.105448718, 10 * model.Kq(Z=3, AE_A0=0.4, P_D=0.5, J=0.3))
 
     def test_can_calculate_advance_ratio(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         env = get_env()
         model = WageningenControlledForceModel(data, BODY, env)
         commands = {"rpm": 20 * 2 * np.pi}
         self.assertAlmostEqual(3.0 / 400.0, model.get_advance_ratio(commands, 0.3), delta=1e-5)
 
     def test_force(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         data.blade_area_ratio = 0.4
         env = get_env()
         model = WageningenControlledForceModel(data, BODY, env)
@@ -424,7 +425,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
         self.assertEqual(0, wrench.N())
 
     def test_torque(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         data.blade_area_ratio = 0.4
         env = get_env()
         model = WageningenControlledForceModel(data, BODY, env)
@@ -435,7 +436,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
         self.assertAlmostEqual(-1024 * 25 * 32 * 0.0158928234, wrench.K(), delta=EPS)
 
     def test_torque_should_have_sign_corresponding_to_rotation(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         states = BodyStates()
         states.u.record(0, self.random_double_between(low=1.0, high=1e6))
         env = get_env()
@@ -458,7 +459,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
         )
 
     def test_bug_2825_can_use_propeller_with_rpm_zero(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         data.blade_area_ratio = 0.4
         env = get_env()
         model = WageningenControlledForceModel(data, BODY, env)
@@ -478,7 +479,7 @@ class WageningenControlledForceModelTest(unittest.TestCase):
         self.assertAlmostEqual(0, wrench.N(), delta=EPS)
 
     def test_bug_2825_can_use_propeller_with_rpm_near_zero(self):
-        data = WageningenControlledForceModel.parse(wageningen())
+        data = WageningenControlledForceModel.parse(read("yaml/wageningen.yml"))
         data.blade_area_ratio = 0.4
         env = get_env()
         model = WageningenControlledForceModel(data, BODY, env)

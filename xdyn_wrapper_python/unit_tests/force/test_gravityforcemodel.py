@@ -6,10 +6,11 @@ import unittest
 import numpy as np
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.body import get_body
 from xdyn.force import GravityForceModel
 from xdyn.ssc.kinematics import Point as SscPoint
 from xdyn.ssc.kinematics import Transform as SscTransform
+
+from ..fixtures import get_body
 
 
 def get_states(body_name: str) -> BodyStates:

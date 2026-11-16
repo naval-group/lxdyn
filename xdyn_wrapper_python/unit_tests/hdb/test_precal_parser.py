@@ -1,18 +1,9 @@
 """
 Unit test for PrecalParser
 """
-import os
 import unittest
 
 import numpy as np
-from xdyn.data.test.precal import (
-    added_mass_damping_matrix_inf_freq,
-    general,
-    precal,
-    precal_with_si_unit,
-    raos,
-    ship_particulars,
-)
 from xdyn.hdb import (
     PrecalFile,
     PrecalParser,
@@ -20,6 +11,8 @@ from xdyn.hdb import (
     parse_precal_from_string,
     parse_rao_attributes,
 )
+
+from ..fixtures import path, read
 
 
 class PrecalParserTest(unittest.TestCase):
@@ -32,7 +25,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual("some section", section.title)
 
     def test_can_parse_general_section(self):
-        data = parse_precal_from_string(general())
+        data = parse_precal_from_string(read("precal/general.ini"))
         section = data.sections[0]
         self.assertEqual(1, len(data.sections))
         self.assertEqual("General", section.title)
@@ -68,7 +61,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(0.066, section.vector_values["COB"][2])
 
     def test_can_parse_ship_particulars(self):
-        data = parse_precal_from_string(ship_particulars())
+        data = parse_precal_from_string(read("precal/ship_particulars.ini"))
         section = data.sections[0]
         self.assertEqual(3, len(section.vector_values["COB"]))
         self.assertEqual(70.217, section.vector_values["COB"][0])
@@ -78,7 +71,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(7.510, section.vector_values["COG"][2])
 
     def test_can_parse_rao_titles(self):
-        data_raos = parse_precal_from_string(raos()).raos
+        data_raos = parse_precal_from_string(read("precal/raos.ini")).raos
         self.assertEqual(
             "Signal 1: surge motion at (70.015,0.000,7.510), h=-1.000m, phi_a=0.500deg, U=0.000kn, mu=180.000deg (amplitude unit = m/m, phase unit = deg)",
             data_raos[0].title_line,
@@ -107,7 +100,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual("deg", rao_attributes.phase_unit)
 
     def test_full_rao_parse_test(self):
-        data_raos = parse_precal_from_string(raos()).raos
+        data_raos = parse_precal_from_string(read("precal/raos.ini")).raos
         # Amplitudes and phases - Signal 4: roll motion, U=20.000kn, mu=90.000deg
         self.assertEqual("heave motion", data_raos[15].attributes.name)
         self.assertTrue(np.allclose([70.015, 0.000, 7.510], data_raos[15].attributes.position))
@@ -135,16 +128,12 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(0, data_raos[38].right_column[4])
 
     def test_can_parse_from_file(self):
-        filename = "data.ini"
-        with open(filename, "w", encoding="utf-8") as fid:
-            fid.write(precal())
-        data = parse_precal_from_file(filename)
+        data = parse_precal_from_file(path("tutorials/ONRT_SIMMAN.raodb.ini"))
         raos_15 = data.raos[15]
         self.assertEqual("heave motion", raos_15.attributes.name)
-        os.remove(filename)
 
     def test_can_parse_added_mass_multi_line_vector(self):
-        data = parse_precal_from_string(added_mass_damping_matrix_inf_freq())
+        data = parse_precal_from_string(read("precal/added_mass_damping_matrix_inf_freq.ini"))
         section = data.sections[0]
         self.assertEqual(1, len(data.sections))
         self.assertTrue("total_added_mass_matrix_inf_freq_U1_mu1" in section.vector_values)
@@ -211,7 +200,7 @@ class PrecalParserTest(unittest.TestCase):
         Ma(5,0) = -Ma(5,0)
         Ma(5,3) = -Ma(5,3)
         """
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         Ma = data.get_added_mass()
         self.assertEqual(+0.110e06, +Ma[0, 0])
         self.assertEqual(-0.888e-01, -Ma[0, 1])
@@ -256,7 +245,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(0.522e10, +Ma[5, 5])
 
     def test_can_parse_angular_frequencies(self):
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         omegas = data.get_angular_frequencies()
         self.assertEqual(7, len(omegas))
         self.assertEqual(0.400, omegas[0])
@@ -268,11 +257,11 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(1.000, omegas[6])
 
     def test_can_get_forward_speed(self):
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         self.assertEqual(0, data.get_forward_speed())
 
     def test_can_get_added_mass_coefficients_for_each_frequency(self):
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         A_11 = data.get_added_mass_coeff(0, 0)
         self.assertEqual(7, len(A_11))
         self.assertEqual(0.275560e03 * 1e3, A_11[0])
@@ -284,7 +273,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(0.114148e03 * 1e3, A_11[6])
 
     def test_can_get_added_mass_coefficients_for_each_frequency_with_si_unit(self):
-        data = PrecalParser.from_string(precal_with_si_unit())
+        data = PrecalParser.from_string(read("precal/precal_with_si_unit.raodb.ini"))
         A_11 = data.get_added_mass_coeff(0, 0)
         self.assertEqual(7, len(A_11))
         self.assertEqual(0.275560e03, A_11[0])
@@ -296,7 +285,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(0.114148e03, A_11[6])
 
     def test_can_get_radiation_damping_matrix_coefficients_for_each_frequency(self):
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         Br_34 = data.get_radiation_damping_coeff(2, 3)
         self.assertEqual(7, len(Br_34))
         self.assertEqual(-0.223749e-03 * 1e3, Br_34[0])
@@ -308,7 +297,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(-0.102490e-02 * 1e3, Br_34[6])
 
     def test_can_get_radiation_damping_matrix_coefficients_for_each_frequency_with_si_unit(self):
-        data = PrecalParser.from_string(precal_with_si_unit())
+        data = PrecalParser.from_string(read("precal/precal_with_si_unit.raodb.ini"))
         Br_34 = data.get_radiation_damping_coeff(2, 3)
         self.assertEqual(7, len(Br_34))
         self.assertEqual(-0.223749e-03, Br_34[0])
@@ -320,7 +309,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(-0.102490e-02, Br_34[6])
 
     def test_can_parse_diffraction_module_raos(self):
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
 
         periods = data.get_diffraction_module_periods()
         self.assertEqual(7, len(periods))
@@ -353,7 +342,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(0.291656e-01 * 1e3, table[5][0][1])  # N (F_dif_m6), seventh line, 180°
 
     def test_can_parse_diffraction_phase_raos(self):
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
 
         periods = data.get_diffraction_phase_periods()
         self.assertEqual(7, len(periods))
@@ -387,7 +376,7 @@ class PrecalParserTest(unittest.TestCase):
 
     def test_can_parse_froude_krylov_module_raos(self):
         # sim > parRES > exnp.pincWaveFrc
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         periods = data.get_froude_krylov_module_periods()
         self.assertEqual(7, len(periods))
         self.assertEqual(2 * np.pi / 0.4, periods[6])
@@ -419,7 +408,7 @@ class PrecalParserTest(unittest.TestCase):
         self.assertEqual(0.208950e-01 * 1e3, table[5][1][1])  # N (F_inc_m6), sixth line, 180°
 
     def test_can_parse_froude_krylov_phase_raos(self):
-        data = PrecalParser.from_string(precal())
+        data = PrecalParser.from_string(read("tutorials/ONRT_SIMMAN.raodb.ini"))
         periods = data.get_froude_krylov_phase_periods()
         self.assertEqual(7, len(periods))
         self.assertEqual(2 * np.pi / 0.4, periods[6])

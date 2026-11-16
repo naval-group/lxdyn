@@ -8,9 +8,10 @@ from contextlib import redirect_stderr
 
 from xdyn.core import BodyStates, EnvironmentAndFrames
 from xdyn.core.io import YamlFilteredStates, YamlRotation
-from xdyn.data.yaml import resistance_curve
 from xdyn.force import ResistanceCurveForceModel
 from xdyn.ssc.random import DataGenerator
+
+from ..fixtures import read
 
 EPS: float = 1e-6
 
@@ -42,7 +43,7 @@ class ResistanceCurveForceModelTest(unittest.TestCase):
         self.rng = DataGenerator(666)
 
     def test_parser(self):
-        r = ResistanceCurveForceModel.parse(resistance_curve())
+        r = ResistanceCurveForceModel.parse(read("yaml/resistance_curve.yml"))
         self.assertEqual(8, len(r.R))
         self.assertEqual(8, len(r.Va))
 
@@ -68,7 +69,7 @@ class ResistanceCurveForceModelTest(unittest.TestCase):
     def test_example(self):
         env = EnvironmentAndFrames()
         model = ResistanceCurveForceModel(
-            ResistanceCurveForceModel.parse(resistance_curve()), "", env
+            ResistanceCurveForceModel.parse(read("yaml/resistance_curve.yml")), "", env
         )
         self.assertEqual("resistance curve", model.model_name())
         states = get_states()
@@ -104,7 +105,7 @@ class ResistanceCurveForceModelTest(unittest.TestCase):
     ):
         env = EnvironmentAndFrames()
         model = ResistanceCurveForceModel(
-            ResistanceCurveForceModel.parse(resistance_curve()), "", env
+            ResistanceCurveForceModel.parse(read("yaml/resistance_curve.yml")), "", env
         )
         states = get_states()
         states.u.record(0, -1)
@@ -121,7 +122,7 @@ class ResistanceCurveForceModelTest(unittest.TestCase):
     ):
         env = EnvironmentAndFrames()
         model = ResistanceCurveForceModel(
-            ResistanceCurveForceModel.parse(resistance_curve()), "", env
+            ResistanceCurveForceModel.parse(read("yaml/resistance_curve.yml")), "", env
         )
         states = get_states()
         states.u.record(0, 20 * 1852 / 3600 + 1e-10)
@@ -136,7 +137,7 @@ class ResistanceCurveForceModelTest(unittest.TestCase):
     def test_with_filtered_states(self):
         env = EnvironmentAndFrames()
         model = ResistanceCurveForceModel(
-            ResistanceCurveForceModel.parse(resistance_curve()), "", env
+            ResistanceCurveForceModel.parse(read("yaml/resistance_curve.yml")), "", env
         )
         filters = YamlFilteredStates()
         filters.u = "type of filter: moving average\n" "duration in seconds : 9"

@@ -4,16 +4,17 @@ Unit test for HDBParser
 import unittest
 
 import numpy as np
-from xdyn.data.test import big_hdb, bug_3238_hdb, hdb_issue_184, test_ship_hdb
 from xdyn.exceptions import InvalidInputException
 from xdyn.hdb import HDBParser
+
+from ..fixtures import read
 
 
 class HDBParserTest(unittest.TestCase):
     """Test class for HDBParser"""
 
     def test_can_get_added_mass(self):
-        builder = HDBParser.from_string(test_ship_hdb())
+        builder = HDBParser.from_string(read("hdb/test_ship.hdb"))
         self.assertEqual(type(builder), HDBParser)
         Ma = builder.get_added_mass_array()
         self.assertEqual(6, len(Ma))
@@ -42,7 +43,7 @@ class HDBParserTest(unittest.TestCase):
         self.assertEqual(6, len(Ma[5][1]))
 
     def test_can_retrieve_radiation_damping(self):
-        builder = HDBParser.from_string(test_ship_hdb())
+        builder = HDBParser.from_string(read("hdb/test_ship.hdb"))
         self.assertEqual(type(builder), HDBParser)
         Br = builder.get_radiation_damping_array()
         self.assertEqual(6, len(Br))
@@ -61,7 +62,7 @@ class HDBParserTest(unittest.TestCase):
         self.assertEqual(4.374308e06, Br[5][1][5][5])
 
     def test_can_retrieve_initial_values(self):
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         M1 = data.get_added_mass(1)
         self.assertEqual(6, M1.shape[0])
         self.assertEqual(6, M1.shape[1])
@@ -85,7 +86,7 @@ class HDBParserTest(unittest.TestCase):
 
     def test_can_retrieve_added_mass_at_Tp_0(self):
         EPS = 1e-12
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         M = data.get_added_mass()
         self.assertEqual(6, M.shape[0])
         self.assertEqual(6, M.shape[1])
@@ -97,7 +98,7 @@ class HDBParserTest(unittest.TestCase):
         self.assertAlmostEqual(+6.774041e02, M[2, 5], delta=EPS)
 
     def test_can_retrieve_angular_frequencies_for_radiation_damping(self):
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         angular_frequencies = data.get_angular_frequencies()
         self.assertEqual(6, len(angular_frequencies))
         self.assertEqual(2 * np.pi / 1.0, angular_frequencies[5])
@@ -108,7 +109,7 @@ class HDBParserTest(unittest.TestCase):
         self.assertEqual(2 * np.pi / 4.0, angular_frequencies[0])
 
     def test_can_retrieve_vectors_for_each_element_in_radiation_damping_matrix(self):
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         for i in range(6):
             for j in range(6):
                 self.assertEqual(6, len(data.get_radiation_damping_coeff(i, j)))
@@ -121,7 +122,7 @@ class HDBParserTest(unittest.TestCase):
         self.assertEqual(-1.083372e02, v[0])
 
     def test_can_retrieve_vector_of_vectors_for_RAOs(self):
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         module = data.get_froude_krylov_module_tables()
         phase = data.get_froude_krylov_phase_tables()
         self.assertEqual(6, len(module[0]))
@@ -148,7 +149,7 @@ class HDBParserTest(unittest.TestCase):
         self.assertEqual(8.036613e-3, phase[5][2][6])
 
     def test_can_retrieve_omegas_for_RAOs(self):
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         Tps1 = data.get_froude_krylov_module_periods()
         Tps2 = data.get_froude_krylov_phase_periods()
         self.assertEqual(6, len(Tps1))
@@ -168,7 +169,7 @@ class HDBParserTest(unittest.TestCase):
         self.assertEqual(4.0, Tps2[5])
 
     def test_can_retrieve_psis_for_RAOs(self):
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         psi1 = data.get_froude_krylov_module_psis()
         psi2 = data.get_froude_krylov_phase_psis()
         self.assertEqual(13, len(psi1))
@@ -178,7 +179,7 @@ class HDBParserTest(unittest.TestCase):
             self.assertAlmostEqual(np.pi / 180.0 * 15.0 * i, psi2[i], delta=1e-12)
 
     def test_bug_3238(self):
-        data = HDBParser.from_string(bug_3238_hdb())
+        data = HDBParser.from_string(read("hdb/bug_3238.hdb"))
         expected_msg = "Unable to find section 'DIFFRACTION_FORCES_AND_MOMENTS' in the RAO file."
         with self.assertRaises(InvalidInputException) as pcm:
             data.get_diffraction_module()
@@ -188,17 +189,17 @@ class HDBParserTest(unittest.TestCase):
         self.assertTrue(expected_msg in str(pcm.exception), str(pcm.exception))
 
     def test_can_get_forward_speed(self):
-        data = HDBParser.from_string(test_ship_hdb())
+        data = HDBParser.from_string(read("hdb/test_ship.hdb"))
         self.assertEqual(data.get_forward_speed(), 0.0)
 
     def test_should_be_able_to_have_different_periods_for_added_mass_and_List_calculated_periods(
         self,
     ):
-        HDBParser.from_string(hdb_issue_184())
-        HDBParser.from_string(hdb_issue_184())
+        HDBParser.from_string(read("hdb/issue_184.hdb"))
+        HDBParser.from_string(read("hdb/issue_184.hdb"))
 
     def test_can_retrieve_froude_krylov_modules_and_phases(self):
-        data = HDBParser.from_string(big_hdb())
+        data = HDBParser.from_string(read("tutorials/big.hdb"))
         module = data.get_froude_krylov_module_tables()
         phase = data.get_froude_krylov_phase_tables()
         self.assertEqual(47, len(module[0]))

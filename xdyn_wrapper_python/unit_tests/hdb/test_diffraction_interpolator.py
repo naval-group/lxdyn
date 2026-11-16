@@ -5,15 +5,16 @@ import unittest
 
 import numpy as np
 from xdyn.core.io import YamlRAO
-from xdyn.data.test import bug_3210
 from xdyn.hdb import HDBParser, RaoInterpolator
+
+from ..fixtures import read
 
 
 class RaoInterpolatorTest(unittest.TestCase):
     """Test class for RaoInterpolator"""
 
     def test_example(self):
-        parser = HDBParser.from_string(bug_3210())
+        parser = HDBParser.from_string(read("tutorials/test_ship.hdb"))
         yaml = YamlRAO()
         yaml.mirror = True
         radiation = RaoInterpolator(parser, yaml)

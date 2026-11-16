@@ -1,11 +1,12 @@
 """
 Unit test for XDyn
 """
-import os
 import unittest
+from pathlib import Path
 
 from xdyn import ErrorReporter, XdynCommandLineArguments, run
-from xdyn.data.yaml import falling_ball_example
+
+from ..fixtures import path
 
 
 class XDynTest(unittest.TestCase):
@@ -18,12 +19,9 @@ class XDynTest(unittest.TestCase):
         self.assertTrue(res)
 
     def test_xdyn_falling_ball_example(self):
-        yaml_filename = "falling_ball_example.yaml"
-        with open(yaml_filename, "w", encoding="utf-8") as fid:
-            fid.write(falling_ball_example())
         input_data = XdynCommandLineArguments()
         input_data.solver = "rk4"
-        input_data.yaml_filenames = [yaml_filename]
+        input_data.yaml_filenames = [path("tutorials/tutorial_01_falling_ball.yml")]
         input_data.initial_timestep = 0.1
         input_data.tstart = 0.0
         input_data.tend = 1.0
@@ -35,9 +33,7 @@ class XDynTest(unittest.TestCase):
         self.assertEqual(len(lines), 1 + 11)
         for extension in (".csv", ".json", ".h5"):
             res_filename = f"falling_ball{extension}"
-            self.assertTrue(os.path.exists(res_filename))
-            os.remove(res_filename)
-        os.remove(yaml_filename)
+            self.assertTrue(Path(res_filename).exists())
 
 
 if __name__ == "__main__":

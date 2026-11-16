@@ -4,20 +4,16 @@ Unit test for FastHydrostaticForceModel and ExactHydrostaticForceModel
 import unittest
 
 import numpy as np
-from xdyn.core import BodyBuilder, BodyPtr, BodyWithSurfaceForces, EnvironmentAndFrames
+from xdyn.core import BodyWithSurfaceForces, EnvironmentAndFrames
 from xdyn.core.io import YamlRotation
-from xdyn.data.mesh import unit_cube
 from xdyn.force import ExactHydrostaticForceModel, FastHydrostaticForceModel
 from xdyn.ssc.kinematics import Point as SscPoint
 from xdyn.ssc.kinematics import Transform as SscTransform
 
+from ..fixtures import get_body, unit_cube
+
 BODY: str = "body 1"
 
-
-def get_body(name: str, points) -> BodyPtr:
-    rot = YamlRotation("angle", ["z", "y'", "x''"])
-    builder = BodyBuilder(rot)
-    return builder.build_for_test(name, points, 0, 0.0, rot, 0.0, False)
 
 
 def get_environment_and_frames() -> EnvironmentAndFrames:
