@@ -12,7 +12,7 @@
 #     set -eu
 #     . "$(dirname "$0")/../../tools/scenario.sh"
 #     scenario waves               # sets $WORK, cds into it, arms the cleanup trap
-#     demos                        # generate the tutorial inputs into $WORK
+#     demos                        # copy the tutorial inputs into $WORK
 #     serve waves-server "$PYTHON" -m xdyngrpc.waves.server.airy
 #     wait_port 50051
 #     serve xdyn "$BIN/xdyn-for-cs" tutorial_09_gRPC_wave_model.yml -g --dt 1 -p 9002
@@ -154,13 +154,9 @@ _localize() {
     done
 }
 
-# demos -- generate every tutorial/mesh/hdb input into $WORK.
-#
-# These used to be copied out of /usr/demos inside the xdyn image; the same binaries that
-# ship in that image generate them, so the image was never the source of truth.
+# demos -- copy every tutorial input into $WORK.
 demos() {
-    "$BIN/generate_yaml_example" . > /dev/null
-    "$BIN/generate_stl_examples" . > /dev/null
+    cp "$REPO"/test_data/tutorials/* .
     _localize ./*.yml
 }
 

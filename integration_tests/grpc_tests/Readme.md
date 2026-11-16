@@ -31,10 +31,9 @@ Two consequences worth knowing:
 - **Ports are hardcoded in `xdyngrpc`** (50051 for waves, 9002 for forces and
   controllers). Where a Python model and xdyn's own server both wanted 9002, it is xdyn
   that moves to 9003 — see `wave+force/run.sh` and `force/run.sh`.
-- **The demo inputs are generated, not copied out of an image.** `generate_yaml_example`
-  and `generate_stl_examples` produce every tutorial YAML, mesh, HDB and PRECAL-R file the
-  scenarios need. The YAMLs name their peers by compose service name, so the harness
-  rewrites those to localhost.
+- **The demo inputs come from `test_data/tutorials/`**: every tutorial YAML, mesh, HDB
+  and PRECAL-R file the scenarios need. The YAMLs name their peers by compose service
+  name, so the harness rewrites those to localhost.
 
 Testing the *deployment* — the wave/force server as a real container, reached over a real
 network hop — is a separate concern, and is not covered here.

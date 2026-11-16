@@ -91,15 +91,8 @@ depends = ["zig:build"]
 run = "zig build test"
 
 [tasks.demos]
-description = "Generate the tutorial inputs, meshes and HDB files into demos/ (overwrites)"
-# Tutorials from 02 on need the test_ship files only generate_stl_examples writes.
-depends = ["zig:build"]
-run = """
-BIN=$(sh tools/build-dir.sh)/bin
-mkdir -p demos
-"$BIN/generate_yaml_example" demos
-"$BIN/generate_stl_examples" demos
-"""
+description = "Copy the tutorial inputs, meshes and HDB files into demos/ (overwrites)"
+run = "mkdir -p demos && cp test_data/tutorials/* demos/"
 
 [tasks.xdyn]
 description = "Run xdyn from the build tree: mise run xdyn -- tutorial_01_falling_ball.yml --dt 0.1 --tend 10"

@@ -28,12 +28,11 @@ With docker, replace `--userns=keep-id` with `-u $(id -u):$(id -g)`.
 
 ### Tutorials
 
-The image ships the generator for the tutorial inputs:
+The tutorial inputs, with the meshes and HDB files they reference, are in [`test_data/tutorials/`](test_data/tutorials/):
 
 ```bash
-mkdir -p demos && cd demos
-podman run --rm --userns=keep-id -v "$PWD:/data" \
-    --entrypoint /usr/bin/generate_yaml_example ghcr.io/naval-group/lxdyn .
+git clone --depth 1 https://github.com/naval-group/lxdyn.git
+cd lxdyn/test_data/tutorials
 lxdyn tutorial_01_falling_ball.yml --dt 0.1 --tend 1 -o tsv
 ```
 

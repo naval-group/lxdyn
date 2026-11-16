@@ -15,10 +15,51 @@
 #include "parse_XdynCommandLineArguments.hpp"
 #include "xdyn/grpc/AiryGRPC.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"  // xdyn/code/observers_and_api/simulator_api.hpp
-#include "xdyn/test_data_generator/yaml_data.hpp"  // To be removed late // xdyn/code/test_data_generator/yaml_data.hpp
 
 constexpr const char* xdyn_grpc_airy_description =
     "This is the Airy wave gRPC server, based on xdyn";
+
+constexpr const char* default_yaml = R"(rotations convention: [psi, theta', phi'']
+
+environmental constants:
+    g: {value: 9.81, unit: m/s^2}
+    rho: {value: 1026, unit: kg/m^3}
+    nu: {value: 1.18e-6, unit: m^2/s}
+environment models:
+  - model: waves
+    discretization:
+       n: 128
+       omega min: {value: 0.1, unit: rad/s}
+       omega max: {value: 6, unit: rad/s}
+       energy fraction: 0.999
+    spectra:
+      - model: airy
+        depth: {value: 100, unit: m}
+        seed of the random data generator: 0
+        stretching:
+          delta: 1
+          h: {unit: m, value: 0}
+        directional spreading:
+           type: dirac
+           waves propagating to: {value: 90, unit: deg}
+        spectral density:
+           type: dirac
+           omega0: {value: 0.05, unit: rad/s}
+           Hs: {value: 15, unit: m}
+    output:
+        frame of reference: NED
+        mesh:
+            xmin: {value: -10, unit: m}
+            xmax: {value: 10, unit: m}
+            nx: 21
+            ymin: {value: -20, unit: m}
+            ymax: {value: +20, unit: m}
+            ny: 41
+output:
+   - format: hdf5
+     filename: simple_waves.h5
+     data: ['waves']
+)";
 
 struct XdynGrpcAiryCommandLineArguments {
     short unsigned int port{50051};
@@ -92,7 +133,7 @@ int run(const XdynGrpcAiryCommandLineArguments& input_data, ErrorReporter& error
 {
     std::string yaml_input;
     if (input_data.yaml_filenames.empty()) {
-        yaml_input = test_data::simple_waves();
+        yaml_input = default_yaml;
         std::cout << "Using default input YAML:" << std::endl;
         std::cout << yaml_input << std::endl;
     } else {

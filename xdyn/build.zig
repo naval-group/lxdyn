@@ -18,11 +18,8 @@ const executables = [_]Executable{
     .{ .name = "xdyn-grpc-airy", .source = "xdyn/executables/xdyn_grpc_airy.cpp" },
     .{ .name = "test_orbital_velocities", .source = "xdyn/executables/test_orbital_velocities_and_dynamic_pressures.cpp" },
     .{ .name = "test_hs", .source = "xdyn/executables/test_hs.cpp" },
-    .{ .name = "yml2test", .source = "xdyn/executables/yml2test.cpp" },
     .{ .name = "convert_stl_files_to_code", .source = "xdyn/executables/convert_stl_files_to_code.cpp" },
     .{ .name = "convert_quaternion_to_euler", .source = "xdyn/executables/convert_quaternion_to_euler.cpp" },
-    .{ .name = "generate_yaml_example", .source = "xdyn/executables/generate_yaml_examples.cpp" },
-    .{ .name = "generate_stl_examples", .source = "xdyn/executables/generate_stl_examples.cpp" },
 };
 
 // Warnings the tree already satisfies, kept satisfied by -Werror: a warning nobody promotes is one nobody sees.

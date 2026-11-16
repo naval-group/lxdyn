@@ -18,11 +18,8 @@ all: invalid_yaml_returns_non_zero_error_code \
 	 issue_235\
 	 test_output_size
 
-# These used to run every step through `docker run … xdyn`, with the demo/tutorial inputs
-# copied out of /usr/demos inside the image, and h5dump/python supplied by two more images.
-# The zig lane builds static binaries with no runtime dependencies, so they run directly —
-# and the same binaries that ship in the image also *generate* the demo inputs, so no image
-# is needed at any step.
+# The zig lane builds static binaries with no runtime dependencies, so they run directly,
+# on the tutorial inputs from test_data/tutorials/.
 #
 # Everything runs in $(WORK), outside the source tree: these tests write ~40 files and
 # corrupt one of them on purpose. `clean` is then a single rm -rf, and there is no way to
@@ -38,8 +35,7 @@ XDYN           ?= $(BIN)/xdyn
 XDYN_FOR_CS    ?= $(BIN)/xdyn-for-cs
 XDYN_FOR_ME    ?= $(BIN)/xdyn-for-me
 GZ             ?= $(BIN)/gz
-GENERATE_YAML  ?= $(BIN)/generate_yaml_example
-GENERATE_STL   ?= $(BIN)/generate_stl_examples
+TUTORIALS      ?= $(abspath $(CURDIR)/../../test_data/tutorials)
 H5DUMP         ?= h5dump
 # check_output_size.py needs h5py + numpy, so the default is the venv uv builds from
 # pyproject.toml's test-cli group -- not a bare `python3`, which under `nix develop` is now
@@ -51,19 +47,17 @@ PYTHON         ?= $(abspath $(CURDIR)/../../build/venv)/bin/python
 WRONG_ERROR_CODE=echo "Oops, didn't get the error code we were expecting: test failed!" && exit 1
 EXPECTED_ERROR_CODE=echo "Got the error code we expected for an invalid YAML: success!"
 
-# Tracked inputs the tests need; everything else in $(WORK) is generated.
+# Inputs of these tests alone; the tutorials are shared with the gRPC scenarios.
 FIXTURES = issue_196_test.yml issue_196_test.raodb.ini \
            issue_202.yml issue_202.py \
            issue_39.yml issue_39.csv issue_39.py \
            issue_235.yml cube_b.stl check_output_size.py
 
 # Phony on purpose: invalid_yaml_returns_non_zero_error_code corrupts tutorial_01 with sed,
-# so every run wants a fresh copy. Both generators together take well under a second.
+# so every run wants a fresh copy.
 demos:
 	@mkdir -p $(WORK)
-	@cp $(addprefix $(CURDIR)/,$(FIXTURES)) $(WORK)/
-	@echo "Generating demo inputs into $(WORK)..."
-	@cd $(WORK) && $(GENERATE_YAML) . && $(GENERATE_STL) .
+	@cp $(addprefix $(CURDIR)/,$(FIXTURES)) $(TUTORIALS)/* $(WORK)/
 
 issue_196: demos
 	@echo "Attempting to use a Windows-generated PRECAL-R file with a Linux xdyn..."
