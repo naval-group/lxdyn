@@ -7,10 +7,10 @@
 
 #include "DiffractionForceModelTest.hpp"
 
-#include <fstream>
 #include <memory>
 
 #include "xdyn/core/SurfaceElevationFromWaves.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/environment_models/Airy.hpp"
 #include "xdyn/environment_models/DiracDirectionalSpreading.hpp"
 #include "xdyn/environment_models/DiracSpectralDensity.hpp"
@@ -18,9 +18,6 @@
 #include "xdyn/environment_models/discretize.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include "xdyn/force_models/DiffractionForceModel.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/precal_test_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 #define BODY_NAME "TestShip"
 
@@ -31,7 +28,7 @@ DiffractionForceModelTest::DiffractionForceModelTest()
 
 TEST_F(DiffractionForceModelTest, parser_hdb)
 {
-    const YamlRAO r = DiffractionForceModel::parse(test_data::diffraction());
+    const YamlRAO r = DiffractionForceModel::parse(test_data::read("yaml/diffraction.yml"));
     ASSERT_EQ("test_ship.hdb", r.hdb_filename);
     ASSERT_TRUE(r.precal_filename.empty());
     ASSERT_EQ(0.696, r.calculation_point.x);
@@ -43,7 +40,7 @@ TEST_F(DiffractionForceModelTest, parser_hdb)
 
 TEST_F(DiffractionForceModelTest, parser_precalr)
 {
-    const YamlRAO r = DiffractionForceModel::parse(test_data::diffraction_precalr());
+    const YamlRAO r = DiffractionForceModel::parse(test_data::read("yaml/diffraction_precalr.yml"));
     ASSERT_EQ("test_ship.raodb.ini", r.precal_filename);
     ASSERT_TRUE(r.hdb_filename.empty());
     ASSERT_EQ(0, r.calculation_point.x);
@@ -56,10 +53,10 @@ TEST_F(DiffractionForceModelTest, parser_precalr)
 TEST_F(DiffractionForceModelTest, parser_precalr_ignores_calculation_point)
 {
     const YamlRAO r = DiffractionForceModel::parse(
-        test_data::diffraction_precalr() + "calculation point in body frame:\n"
-                                           "    x: {value: 0.696, unit: m}\n"
-                                           "    y: {value: 0, unit: m}\n"
-                                           "    z: {value: 1.418, unit: m}\n");
+        test_data::read("yaml/diffraction_precalr.yml") + "calculation point in body frame:\n"
+                                                          "    x: {value: 0.696, unit: m}\n"
+                                                          "    y: {value: 0, unit: m}\n"
+                                                          "    z: {value: 1.418, unit: m}\n");
     ASSERT_EQ(0, r.calculation_point.x);
     ASSERT_EQ(0, r.calculation_point.y);
     ASSERT_EQ(0, r.calculation_point.z);
@@ -128,12 +125,9 @@ TEST_F(DiffractionForceModelTest, encounter_frequency_example)
 {
     EnvironmentAndFrames env = get_waves_env(64., 0.);
     BodyStates states;
-    std::ofstream hdb_file("data.hdb");
-    hdb_file << test_data::bug_3210();
-    hdb_file.close();  // Read back below: must be flushed to disk first
     YamlRAO input;
     input.calculation_point = YamlCoordinates(0.696, 0, 1.418);
-    input.hdb_filename = "data.hdb";
+    input.hdb_filename = test_data::path("tutorials/test_ship.hdb");
     input.mirror = true;
     input.use_encounter_period = true;
     const DiffractionForceModel force_model(input, BODY_NAME, env);
@@ -220,12 +214,9 @@ TEST_F(DiffractionForceModelTest, precal_r_example)
 {
     EnvironmentAndFrames env = get_waves_env(10.47198, 0.);
     BodyStates states;
-    std::ofstream precalr_file("data.raodb.ini");
-    precalr_file << test_data::precal();
-    precalr_file.close();  // Read back below: must be flushed to disk first
     YamlRAO input;
     input.calculation_point = YamlCoordinates(0, 0, 0);
-    input.precal_filename = "data.raodb.ini";
+    input.precal_filename = test_data::path("tutorials/ONRT_SIMMAN.raodb.ini");
     input.mirror = true;
     input.use_encounter_period = true;
     const DiffractionForceModel force_model(input, BODY_NAME, env);

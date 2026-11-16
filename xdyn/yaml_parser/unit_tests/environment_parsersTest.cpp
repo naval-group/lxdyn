@@ -11,8 +11,8 @@
 #include <boost/regex.hpp>
 #include <cmath>
 
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/environment_parsers.hpp"
 #define PI M_PI
 constexpr double DEG = 180. / PI;
@@ -22,7 +22,8 @@ constexpr double DEG = 180. / PI;
 
 static const YamlWaveModel& shared_yaml()
 {
-    static const YamlWaveModel ret = parse_waves(test_data::waves_for_parser_validation_only());
+    static const YamlWaveModel ret =
+        parse_waves(test_data::read("yaml/waves_for_parser_validation_only.yml"));
     return ret;
 }
 
@@ -218,7 +219,7 @@ TEST_F(environment_parsersTest, can_parse_stretching_data)
 
 TEST_F(environment_parsersTest, clearer_error_message_if_missing_unit_value)
 {
-    std::string wave_yaml = test_data::waves_for_parser_validation_only();
+    std::string wave_yaml = test_data::read("yaml/waves_for_parser_validation_only.yml");
     boost::replace_all(wave_yaml, "h: {unit: m, value: 101}", "h: 101");
     try {
         parse_waves(wave_yaml);
@@ -252,7 +253,7 @@ TEST_F(environment_parsersTest, can_parse_grpc_data)
 TEST_F(environment_parsersTest, can_parse_equal_energy_bins_parameter)
 {
     ASSERT_TRUE(yaml.discretization.equal_energy_bins);
-    std::string wave_yaml = test_data::waves_for_parser_validation_only();
+    std::string wave_yaml = test_data::read("yaml/waves_for_parser_validation_only.yml");
     boost::replace_all(wave_yaml, "equal energy bins: true", "equal energy bins: false");
     const auto res = parse_waves(wave_yaml);
     ASSERT_FALSE(res.discretization.equal_energy_bins);
@@ -260,8 +261,8 @@ TEST_F(environment_parsersTest, can_parse_equal_energy_bins_parameter)
 
 static const YamlWaveModel& shared_rays_yaml()
 {
-    static const YamlWaveModel ret =
-        parse_waves(test_data::waves_from_a_list_of_rays_for_parser_validation_only());
+    static const YamlWaveModel ret = parse_waves(
+        test_data::read("yaml/waves_from_a_list_of_rays_for_parser_validation_only.yml"));
     return ret;
 }
 
@@ -318,10 +319,10 @@ TEST_F(environment_parsers_from_external_list_of_rays_Test, can_parse_all_data)
 {
     const std::string filename("rays.csv");
     std::ofstream file(filename);
-    file << test_data::waves_from_an_external_list_of_rays_for_parser_validation_only_csv();
+    file << test_data::read("yaml/rays.csv");
     file.close();
-    const YamlWaveModel yaml =
-        parse_waves(test_data::waves_from_an_external_list_of_rays_for_parser_validation_only());
+    const YamlWaveModel yaml = parse_waves(
+        test_data::read("yaml/waves_from_an_external_list_of_rays_for_parser_validation_only.yml"));
     ASSERT_EQ(0, yaml.spectra.size());
     ASSERT_EQ(2, yaml.spectra_from_rays.size());
     ASSERT_DOUBLE_EQ(1700, yaml.spectra_from_rays[0].depth);

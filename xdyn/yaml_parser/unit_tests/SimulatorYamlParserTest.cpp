@@ -13,11 +13,10 @@
 #include "gmock/gmock.h"
 #include "parse_controllers.hpp"
 #include "parse_time_series.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
-#include "xdyn/test_data_generator/precal_test_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 
@@ -26,14 +25,16 @@ using namespace testing;  // So we can use 'ElementsAre' unqualified
 static const YamlSimulatorInput& shared_yaml()
 {
     static const YamlSimulatorInput ret =
-        SimulatorYamlParser(test_data::full_example_with_propulsion()).parse();
+        SimulatorYamlParser(test_data::read("yaml/full_example_with_propulsion.yml")).parse();
     return ret;
 }
 
 static const YamlSimulatorInput& shared_old_yaml()
 {
     static const YamlSimulatorInput ret =
-        SimulatorYamlParser(test_data::full_example_with_propulsion_and_old_key_name()).parse();
+        SimulatorYamlParser(
+            test_data::read("yaml/full_example_with_propulsion_and_old_key_name.yml"))
+            .parse();
     return ret;
 }
 
@@ -270,7 +271,7 @@ TEST_F(SimulatorYamlParserTest, can_parse_added_mass_matrix_from_hdb_file)
 {
     const YamlDynamics6x6Matrix M = yaml.bodies.front().dynamics.added_mass;
     const YamlSimulatorInput input =
-        SimulatorYamlParser(test_data::added_mass_from_hdb_file()).parse();
+        SimulatorYamlParser(test_data::read("yaml/added_mass_from_hdb_file.yml")).parse();
     ASSERT_TRUE(input.bodies.front().dynamics.added_mass.read_from_file);
     ASSERT_EQ("test_ship.hdb", input.bodies.front().dynamics.added_mass.hdb_filename);
 }
@@ -279,7 +280,7 @@ TEST_F(SimulatorYamlParserTest, should_get_an_error_message_when_using_the_old_k
 {
     bool exception_thrown = false;
     try {
-        std::string yaml_data = test_data::added_mass_from_precal_file();
+        std::string yaml_data = test_data::read("tutorials/tutorial_12_precal_r.yml");
         boost::replace_all(yaml_data, "from raodb:", "from precal:");
         const YamlSimulatorInput input = SimulatorYamlParser(yaml_data).parse();
         ASSERT_TRUE(input.bodies.front().dynamics.added_mass.read_from_file);
@@ -301,19 +302,21 @@ TEST_F(SimulatorYamlParserTest, can_parse_added_mass_matrix_from_precal_file)
 {
     const std::string filename = "ONRT_SIMMAN.raodb.ini";
     const YamlSimulatorInput input =
-        SimulatorYamlParser(test_data::added_mass_from_precal_file()).parse();
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_12_precal_r.yml")).parse();
     ASSERT_TRUE(input.bodies.front().dynamics.added_mass.read_from_file);
     ASSERT_EQ(filename, input.bodies.front().dynamics.added_mass.precal_filename);
 }
 
 TEST_F(SimulatorYamlParserTest, should_not_throw_even_if_no_mesh_is_defined)
 {
-    ASSERT_NO_THROW(SimulatorYamlParser(test_data::falling_ball_example()).parse());
+    ASSERT_NO_THROW(
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_01_falling_ball.yml")).parse());
 }
 
 TEST_F(SimulatorYamlParserTest, can_have_test_data_with_just_waves)
 {
-    const YamlSimulatorInput input = SimulatorYamlParser(test_data::waves()).parse();
+    const YamlSimulatorInput input =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_03_waves.yml")).parse();
     ASSERT_EQ(1, input.environment.size());
     ASSERT_EQ("waves", input.environment[0].model);
 }
@@ -392,7 +395,7 @@ TEST_F(SimulatorYamlParserTest, interpolation_type_should_be_valid)
 
 TEST_F(SimulatorYamlParserTest, bug_3235)
 {
-    ASSERT_NO_THROW(SimulatorYamlParser(test_data::bug_3235()).parse());
+    ASSERT_NO_THROW(SimulatorYamlParser(test_data::read("yaml/bug_3235.yml")).parse());
 }
 
 TEST_F(SimulatorYamlParserTest, can_parse_rigid_body_inertia_matrix)
@@ -573,8 +576,10 @@ TEST_F(SimulatorYamlParserTest, can_parse_controllers_and_commands_for_controlle
 {
     const YamlSimulatorInput yaml =
         SimulatorYamlParser(
-            test_data::falling_ball_example() + test_data::setpoints() + test_data::controllers() +
-            test_data::grpc_controller() + test_data::controlled_forces())
+            test_data::read("tutorials/tutorial_01_falling_ball.yml") +
+            test_data::read("yaml/setpoints.yml") + test_data::read("yaml/controllers.yml") +
+            test_data::read("yaml/grpc_controller.yml") +
+            test_data::read("yaml/controlled_forces.yml"))
             .parse();
 
     ASSERT_EQ(2, yaml.setpoints.size());
@@ -596,7 +601,7 @@ TEST_F(SimulatorYamlParserTest, can_parse_controllers_and_commands_for_controlle
 TEST_F(SimulatorYamlParserTest, can_parse_filtered_states)
 {
     const YamlSimulatorInput yaml =
-        SimulatorYamlParser(test_data::tutorial_10_gRPC_force_model()).parse();
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_10_gRPC_force_model.yml")).parse();
     ASSERT_TRUE(yaml.bodies.front().filtered_states.x.empty());
     ASSERT_TRUE(yaml.bodies.front().filtered_states.y.empty());
     ASSERT_TRUE(yaml.bodies.front().filtered_states.z.empty());
@@ -630,14 +635,14 @@ TEST_F(
     SimulatorYamlParserTest,
     missing_mesh_node_should_throw_an_error_for_force_model_requiring_a_mesh)
 {
-    const std::string valid_yaml = test_data::test_ship_fast_hydrostatic_test();
+    const std::string valid_yaml = test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml");
     const YamlSimulatorInput valid_input = SimulatorYamlParser(valid_yaml).parse();
     ASSERT_NO_THROW(check_input_yaml(valid_input));
-    std::string invalid_yaml = test_data::test_ship_fast_hydrostatic_test();
+    std::string invalid_yaml = test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml");
     boost::replace_all(invalid_yaml, "mesh: test_ship.stl", "");
     YamlSimulatorInput invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
-    invalid_yaml = test_data::test_ship_exact_hydrostatic_test();
+    invalid_yaml = test_data::read("tutorials/tutorial_02_exact_hydrostatic.yml");
     boost::replace_all(invalid_yaml, "mesh: test_ship.stl", "");
     invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
@@ -645,11 +650,11 @@ TEST_F(
 
 TEST_F(SimulatorYamlParserTest, duplicate_hydrostatic_models_should_throw_an_error)
 {
-    const std::string valid_yaml = test_data::test_ship_fast_hydrostatic_test();
+    const std::string valid_yaml = test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml");
     const YamlSimulatorInput valid_input = SimulatorYamlParser(valid_yaml).parse();
     ASSERT_NO_THROW(check_input_yaml(valid_input));
 
-    std::string invalid_yaml = test_data::test_ship_fast_hydrostatic_test();
+    std::string invalid_yaml = test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml");
     boost::replace_all(
         invalid_yaml,
         "      - model: non-linear hydrostatic (fast)",
@@ -658,7 +663,7 @@ TEST_F(SimulatorYamlParserTest, duplicate_hydrostatic_models_should_throw_an_err
     YamlSimulatorInput invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
 
-    invalid_yaml = test_data::test_ship_fast_hydrostatic_test();
+    invalid_yaml = test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml");
     boost::replace_all(
         invalid_yaml,
         "      - model: non-linear hydrostatic (fast)",
@@ -666,7 +671,7 @@ TEST_F(SimulatorYamlParserTest, duplicate_hydrostatic_models_should_throw_an_err
     invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
 
-    invalid_yaml = test_data::test_ship_exact_hydrostatic_test();
+    invalid_yaml = test_data::read("tutorials/tutorial_02_exact_hydrostatic.yml");
     boost::replace_all(
         invalid_yaml,
         "      - model: non-linear hydrostatic (exact)",
@@ -674,7 +679,7 @@ TEST_F(SimulatorYamlParserTest, duplicate_hydrostatic_models_should_throw_an_err
     invalid_input = SimulatorYamlParser(invalid_yaml).parse();
     ASSERT_THROW(check_input_yaml(invalid_input), InvalidInputException);
 
-    invalid_yaml = test_data::test_ship_exact_hydrostatic_test();
+    invalid_yaml = test_data::read("tutorials/tutorial_02_exact_hydrostatic.yml");
     boost::replace_all(
         invalid_yaml,
         "      - model: non-linear hydrostatic (exact)",
@@ -685,12 +690,12 @@ TEST_F(SimulatorYamlParserTest, duplicate_hydrostatic_models_should_throw_an_err
 
 TEST_F(SimulatorYamlParserTest, check_for_gravity_model_declaration_if_needed_by_force_models)
 {
-    std::string valid_yaml = test_data::test_ship_fast_hydrostatic_test();
+    std::string valid_yaml = test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml");
     YamlSimulatorInput valid_input = SimulatorYamlParser(valid_yaml).parse();
     ASSERT_NO_THROW(check_input_yaml(valid_input));
     ASSERT_TRUE(check_for_gravity_model_declaration_if_needed_by_force_models(valid_input.bodies));
 
-    valid_yaml = test_data::test_ship_fast_hydrostatic_test();
+    valid_yaml = test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml");
     boost::replace_all(valid_yaml, "- model: gravity", "");
     valid_input = SimulatorYamlParser(valid_yaml).parse();
     ASSERT_NO_THROW(check_input_yaml(valid_input));

@@ -11,8 +11,8 @@
 #include <memory>
 
 #include "xdyn/core/BodyBuilder.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/force_models/MMGRudderForceModel.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #define PI M_PI
 
 constexpr double DEG2RAD = PI / 180.;
@@ -86,7 +86,8 @@ TEST_F(MMGRudderForceModelTest, parser)
     The purpose of this test is to check that the input data are well parsed
     */
 
-    const auto rudderModel_parser = MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+    const auto rudderModel_parser =
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml"));
     ASSERT_EQ("MMG port side propeller", rudderModel_parser.name);
     ASSERT_DOUBLE_EQ(-152.73, rudderModel_parser.position_of_propeller_frame.coordinates.x);
     ASSERT_DOUBLE_EQ(0, rudderModel_parser.position_of_propeller_frame.coordinates.y);
@@ -177,7 +178,7 @@ TEST_F(MMGRudderForceModelTest, get_Ar)
     */
 
     const MMGRudderForceModel::RudderModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml")),
         a.random<double>());
     ASSERT_DOUBLE_EQ(112.5, rudderModel.get_Ar());
 }
@@ -209,7 +210,7 @@ TEST_F(MMGRudderForceModelTest, get_force)
     */
 
     const MMGRudderForceModel::RudderModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml")),
         a.random<double>());
 
     ssc::kinematics::Vector6d force = rudderModel.get_force(1000, 30 * DEG2RAD);
@@ -233,7 +234,7 @@ TEST_F(MMGRudderForceModelTest, get_vr)
 
     // Build MMG Rudder Force Model
     const MMGRudderForceModel::RudderModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml")),
         a.random<double>());
     // Define a 10m/s ship speed with a +30° drift angle in MMG ref (i.e. v<0)
     BodyStates states;
@@ -301,7 +302,7 @@ TEST_F(MMGRudderForceModelTest, get_wrench)
     */
 
     const MMGRudderForceModel::RudderModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml")),
         1025);
     // Define a 10 m/s fluid velocity with a -5° angle at rudder location
     Eigen::Vector3d Vrud_vec(10 * cos(5 * DEG2RAD), -10 * sin(5 * DEG2RAD), 0);
@@ -334,7 +335,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_3dof)
     auto states = b->get_states();
     // Create rudder force model
     const MMGRudderForceModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml")),
         b->get_name(),
         env);
 
@@ -368,7 +369,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_3dof)
     */
 
     MMGRudderForceModel::Yaml input =
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml"));
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
@@ -376,7 +377,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_3dof)
     auto states = b->get_states();
     // Create rudder force model
     const MMGRudderForceModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml")),
         b->get_name(),
         env);
 
@@ -410,7 +411,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_4dof)
     */
 
     MMGRudderForceModel::Yaml input =
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml"));
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
@@ -506,7 +507,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG_3dof)
     ///////////////////////
 
     MMGRudderForceModel::Yaml input =
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml"));
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
@@ -514,7 +515,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_rudder_alone_with_xG_3dof)
     auto states = b->get_states();
     // Create rudder force model
     const MMGRudderForceModel rudderModel(
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller()),
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml")),
         b->get_name(),
         env);
     // Define body velocities
@@ -582,7 +583,7 @@ TEST_F(MMGRudderForceModelTest, force_and_torque_with_propeller_pitch_3dof)
     */
 
     MMGRudderForceModel::Yaml input =
-        MMGRudderForceModel::parse(test_data::MMGRudderAndPropeller());
+        MMGRudderForceModel::parse(test_data::read("yaml/MMGRudderAndPropeller.yml"));
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body

@@ -9,11 +9,10 @@
 
 #include <cmath>
 #include <cstdio>
-#include <fstream>
 
 #include "PrecalParserHelper.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/hdb_interpolators/PrecalParser.hpp"
-#include "xdyn/test_data_generator/precal_test_data.hpp"
 #define PI M_PI
 
 TEST_F(PrecalParserTest, can_parse_empty_section)
@@ -25,7 +24,7 @@ TEST_F(PrecalParserTest, can_parse_empty_section)
 
 TEST_F(PrecalParserTest, can_parse_general_section)
 {
-    auto precal = parse_precal_from_string(general());
+    auto precal = parse_precal_from_string(test_data::read("precal/general.ini"));
     ASSERT_EQ(1, precal.sections.size());
     ASSERT_EQ("General", precal.sections.at(0).title);
     ASSERT_EQ("NOT SPECIFIED", precal.sections.at(0).string_values["userName"]);
@@ -57,7 +56,7 @@ TEST_F(PrecalParserTest, can_parse_vectors)
 
 TEST_F(PrecalParserTest, can_parse_ship_particulars)
 {
-    auto precal = parse_precal_from_string(ship_particulars());
+    auto precal = parse_precal_from_string(test_data::read("precal/ship_particulars.ini"));
     ASSERT_EQ(3, precal.sections.at(0).vector_values["COB"].size());
     ASSERT_DOUBLE_EQ(70.217, precal.sections.at(0).vector_values["COB"].at(0));
     ASSERT_DOUBLE_EQ(0.000, precal.sections.at(0).vector_values["COB"].at(1));
@@ -68,7 +67,7 @@ TEST_F(PrecalParserTest, can_parse_ship_particulars)
 
 TEST_F(PrecalParserTest, can_parse_rao_titles)
 {
-    auto precal = parse_precal_from_string(raos());
+    auto precal = parse_precal_from_string(test_data::read("precal/raos.ini"));
     ASSERT_EQ(
         "Signal 1: surge motion at (70.015,0.000,7.510), h=-1.000m, phi_a=0.500deg, "
         "U=0.000kn, mu=180.000deg (amplitude unit = m/m, phase unit = deg)",
@@ -99,7 +98,7 @@ TEST_F(PrecalParserTest, can_parse_rao_attributes)
 
 TEST_F(PrecalParserTest, full_rao_parse_test)
 {
-    auto precal = parse_precal_from_string(raos());
+    auto precal = parse_precal_from_string(test_data::read("precal/raos.ini"));
 
     // Amplitudes and phases - Signal 4: roll motion, U=20.000kn, mu=90.000deg
     ASSERT_EQ("heave motion", precal.raos.at(15).attributes.name);
@@ -130,18 +129,14 @@ TEST_F(PrecalParserTest, full_rao_parse_test)
 
 TEST_F(PrecalParserTest, can_parse_from_file)
 {
-    const std::string filename = "precal.ini";
-    std::ofstream of(filename);
-    of << test_data::precal();
-    of.close();
-    auto precal = parse_precal_from_file(filename);
+    auto precal = parse_precal_from_file(test_data::path("tutorials/ONRT_SIMMAN.raodb.ini"));
     ASSERT_EQ("heave motion", precal.raos.at(15).attributes.name);
-    remove(filename.c_str());
 }
 
 TEST_F(PrecalParserTest, can_parse_added_mass_multi_line_vector)
 {
-    auto precal = parse_precal_from_string(added_mass_damping_matrix_inf_freq());
+    auto precal =
+        parse_precal_from_string(test_data::read("precal/added_mass_damping_matrix_inf_freq.ini"));
     ASSERT_EQ(1, precal.sections.size());
     ASSERT_NE(
         precal.sections.at(0).vector_values.end(),
@@ -217,7 +212,8 @@ TEST_F(PrecalParserTest, can_parse_added_mass_matrix)
     Ma(5,0) = -Ma(5,0);
     Ma(5,3) = -Ma(5,3);
     */
-    const auto precal = PrecalParser::from_string(test_data::precal());
+    const auto precal =
+        PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
     const auto Ma = precal.get_added_mass();
     ASSERT_DOUBLE_EQ(0.110E+06, Ma(0, 0));
     ASSERT_DOUBLE_EQ(-0.888E-01, -Ma(0, 1));
@@ -264,7 +260,8 @@ TEST_F(PrecalParserTest, can_parse_added_mass_matrix)
 
 TEST_F(PrecalParserTest, can_parse_angular_frequencies)
 {
-    const auto precal = PrecalParser::from_string(test_data::precal());
+    const auto precal =
+        PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
     const std::vector<double> omegas = precal.get_angular_frequencies();
     ASSERT_EQ(7, omegas.size());
     ASSERT_DOUBLE_EQ(0.400, omegas.at(0));
@@ -278,13 +275,15 @@ TEST_F(PrecalParserTest, can_parse_angular_frequencies)
 
 TEST_F(PrecalParserTest, can_get_forward_speed)
 {
-    const auto precal = PrecalParser::from_string(test_data::precal());
+    const auto precal =
+        PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
     ASSERT_DOUBLE_EQ(0, precal.get_forward_speed());
 }
 
 TEST_F(PrecalParserTest, can_get_added_mass_coefficients_for_each_frequency)
 {
-    const auto precal = PrecalParser::from_string(test_data::precal());
+    const auto precal =
+        PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
     const std::vector<double> A_11 = precal.get_added_mass_coeff(0, 0);
     ASSERT_EQ(7, A_11.size());
     ASSERT_DOUBLE_EQ(0.275560E+03 * 1e3, A_11.at(0));
@@ -298,7 +297,8 @@ TEST_F(PrecalParserTest, can_get_added_mass_coefficients_for_each_frequency)
 
 TEST_F(PrecalParserTest, can_get_added_mass_coefficients_for_each_frequency_with_si_unit)
 {
-    const auto precal = PrecalParser::from_string(test_data::precal_with_si_unit());
+    const auto precal =
+        PrecalParser::from_string(test_data::read("precal/precal_with_si_unit.raodb.ini"));
     const std::vector<double> A_11 = precal.get_added_mass_coeff(0, 0);
     ASSERT_EQ(7, A_11.size());
     ASSERT_DOUBLE_EQ(0.275560E+03, A_11.at(0));
@@ -312,7 +312,8 @@ TEST_F(PrecalParserTest, can_get_added_mass_coefficients_for_each_frequency_with
 
 TEST_F(PrecalParserTest, can_get_radiation_damping_matrix_coefficients_for_each_frequency)
 {
-    const auto precal = PrecalParser::from_string(test_data::precal());
+    const auto precal =
+        PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
     const std::vector<double> Br_34 = precal.get_radiation_damping_coeff(2, 3);
     ASSERT_EQ(7, Br_34.size());
     ASSERT_DOUBLE_EQ(-0.223749E-03 * 1e3, Br_34.at(0));
@@ -328,7 +329,8 @@ TEST_F(
     PrecalParserTest,
     can_get_radiation_damping_matrix_coefficients_for_each_frequency_with_si_unit)
 {
-    const auto precal = PrecalParser::from_string(test_data::precal_with_si_unit());
+    const auto precal =
+        PrecalParser::from_string(test_data::read("precal/precal_with_si_unit.raodb.ini"));
     const std::vector<double> Br_34 = precal.get_radiation_damping_coeff(2, 3);
     ASSERT_EQ(7, Br_34.size());
     ASSERT_DOUBLE_EQ(-0.223749E-03, Br_34.at(0));
@@ -342,7 +344,7 @@ TEST_F(
 
 TEST_F(PrecalParserTest, can_parse_diffraction_module_raos)
 {
-    auto precal = PrecalParser::from_string(test_data::precal());
+    auto precal = PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
 
     const std::vector<double> periods = precal.get_diffraction_module_periods();
     ASSERT_EQ(7, periods.size());
@@ -388,7 +390,8 @@ TEST_F(PrecalParserTest, can_parse_diffraction_module_raos)
 
 TEST_F(PrecalParserTest, can_parse_diffraction_module_raos_with_si_unit)
 {
-    auto precal = PrecalParser::from_string(test_data::precal_with_si_unit());
+    auto precal =
+        PrecalParser::from_string(test_data::read("precal/precal_with_si_unit.raodb.ini"));
 
     const std::vector<double> periods = precal.get_diffraction_module_periods();
     ASSERT_EQ(7, periods.size());
@@ -426,7 +429,7 @@ TEST_F(PrecalParserTest, can_parse_diffraction_module_raos_with_si_unit)
 
 TEST_F(PrecalParserTest, can_parse_diffraction_phase_raos)
 {
-    auto precal = PrecalParser::from_string(test_data::precal());
+    auto precal = PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
 
     const std::vector<double> periods = precal.get_diffraction_phase_periods();
     ASSERT_EQ(7, periods.size());
@@ -470,7 +473,7 @@ TEST_F(PrecalParserTest, can_parse_diffraction_phase_raos)
 TEST_F(PrecalParserTest, can_parse_froude_krylov_module_raos)
 {
     // sim > parRES > expIncWaveFrc
-    auto precal = PrecalParser::from_string(test_data::precal());
+    auto precal = PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
 
     const std::vector<double> periods = precal.get_froude_krylov_module_periods();
     ASSERT_EQ(7, periods.size());
@@ -515,7 +518,8 @@ TEST_F(PrecalParserTest, can_parse_froude_krylov_module_raos)
 TEST_F(PrecalParserTest, can_parse_froude_krylov_module_raos_with_si_unit)
 {
     // sim > parRES > expIncWaveFrc
-    auto precal = PrecalParser::from_string(test_data::precal_with_si_unit());
+    auto precal =
+        PrecalParser::from_string(test_data::read("precal/precal_with_si_unit.raodb.ini"));
 
     const std::vector<double> periods = precal.get_froude_krylov_module_periods();
     ASSERT_EQ(7, periods.size());
@@ -552,7 +556,7 @@ TEST_F(PrecalParserTest, can_parse_froude_krylov_module_raos_with_si_unit)
 
 TEST_F(PrecalParserTest, can_parse_froude_krylov_phase_raos)
 {
-    auto precal = PrecalParser::from_string(test_data::precal());
+    auto precal = PrecalParser::from_string(test_data::read("tutorials/ONRT_SIMMAN.raodb.ini"));
 
     const std::vector<double> periods = precal.get_froude_krylov_phase_periods();
     ASSERT_EQ(7, periods.size());

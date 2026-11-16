@@ -10,7 +10,7 @@
 #include "ResistanceCurveForceModel.hpp"
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 
 constexpr double EPS = 1E-6;
 
@@ -21,7 +21,7 @@ ResistanceCurveForceModelTest::ResistanceCurveForceModelTest()
 
 TEST_F(ResistanceCurveForceModelTest, parser)
 {
-    const auto r = ResistanceCurveForceModel::parse(test_data::resistance_curve());
+    const auto r = ResistanceCurveForceModel::parse(test_data::read("yaml/resistance_curve.yml"));
     ASSERT_EQ(8, r.R.size());
     ASSERT_EQ(8, r.Va.size());
 
@@ -50,7 +50,7 @@ TEST_F(ResistanceCurveForceModelTest, example)
     //! [ResistanceCurveForceModelTest example]
     EnvironmentAndFrames env;
     ResistanceCurveForceModel F(
-        ResistanceCurveForceModel::parse(test_data::resistance_curve()),
+        ResistanceCurveForceModel::parse(test_data::read("yaml/resistance_curve.yml")),
         "",
         env);
     //! [ResistanceCurveForceModelTest example]
@@ -94,7 +94,7 @@ TEST_F(
 {
     EnvironmentAndFrames env;
     ResistanceCurveForceModel F(
-        ResistanceCurveForceModel::parse(test_data::resistance_curve()),
+        ResistanceCurveForceModel::parse(test_data::read("yaml/resistance_curve.yml")),
         "",
         env);
     BodyStates states;
@@ -118,7 +118,7 @@ TEST_F(
 {
     EnvironmentAndFrames env;
     ResistanceCurveForceModel F(
-        ResistanceCurveForceModel::parse(test_data::resistance_curve()),
+        ResistanceCurveForceModel::parse(test_data::read("yaml/resistance_curve.yml")),
         "",
         env);
     BodyStates states;
@@ -140,7 +140,7 @@ TEST_F(ResistanceCurveForceModelTest, with_filtered_states)
 {
     EnvironmentAndFrames env;
     ResistanceCurveForceModel F(
-        ResistanceCurveForceModel::parse(test_data::resistance_curve()),
+        ResistanceCurveForceModel::parse(test_data::read("yaml/resistance_curve.yml")),
         "",
         env);
     YamlFilteredStates filters;

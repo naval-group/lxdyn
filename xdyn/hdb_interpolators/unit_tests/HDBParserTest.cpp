@@ -9,9 +9,9 @@
 
 #include <cmath>
 
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/hdb_interpolators/HDBParser.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
 #define PI M_PI
 constexpr double EPS = 1E-10;
 
@@ -19,7 +19,7 @@ HDBParserTest::HDBParserTest() : a(ssc::random_data_generator::DataGenerator(833
 
 TEST_F(HDBParserTest, can_get_added_mass)
 {
-    const HDBParser builder = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser builder = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     const auto Ma = builder.get_added_mass_array();
     ASSERT_EQ(6, Ma.size());
     ASSERT_DOUBLE_EQ(1, Ma.at(0).first);
@@ -49,7 +49,7 @@ TEST_F(HDBParserTest, can_get_added_mass)
 
 TEST_F(HDBParserTest, can_retrieve_radiation_damping)
 {
-    const HDBParser builder = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser builder = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     const auto Br = builder.get_radiation_damping_array();
     ASSERT_EQ(6, Br.size());
     ASSERT_DOUBLE_EQ(1, Br.at(0).first);
@@ -70,7 +70,7 @@ TEST_F(HDBParserTest, can_retrieve_radiation_damping)
 TEST_F(HDBParserTest, can_retrieve_initial_values)
 {
     //! [HDBDataTest example]
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     //! [HDBDataTest example]
 
     //! [HDBDataTest expected output]
@@ -98,7 +98,7 @@ TEST_F(HDBParserTest, can_retrieve_initial_values)
 
 TEST_F(HDBParserTest, can_retrieve_added_mass_at_Tp_0)
 {
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     const auto M = data.get_added_mass();
     ASSERT_EQ(6, M.cols());
     ASSERT_EQ(6, M.rows());
@@ -159,7 +159,7 @@ TEST_F(HDBParserTest, can_retrieve_added_mass_at_Tp_0)
 
 TEST_F(HDBParserTest, can_retrieve_angular_frequencies_for_radiation_damping)
 {
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     const auto angular_frequencies = data.get_angular_frequencies();
     ASSERT_EQ(6, angular_frequencies.size());
     ASSERT_EQ(2 * PI / 1., angular_frequencies.at(5));
@@ -172,7 +172,7 @@ TEST_F(HDBParserTest, can_retrieve_angular_frequencies_for_radiation_damping)
 
 TEST_F(HDBParserTest, can_retrieve_vectors_for_each_element_in_radiation_damping_matrix)
 {
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     for (size_t i = 0; i < 6; ++i) {
         for (size_t j = 0; j < 6; ++j) {
             ASSERT_EQ(6, data.get_radiation_damping_coeff(i, j).size());
@@ -189,7 +189,7 @@ TEST_F(HDBParserTest, can_retrieve_vectors_for_each_element_in_radiation_damping
 
 TEST_F(HDBParserTest, can_retrieve_vector_of_vectors_for_RAOs)
 {
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     const std::array<std::vector<std::vector<double>>, 6> module =
         data.get_froude_krylov_module_tables();
     const std::array<std::vector<std::vector<double>>, 6> phase =
@@ -231,7 +231,7 @@ TEST_F(HDBParserTest, can_retrieve_vector_of_vectors_for_RAOs)
 
 TEST_F(HDBParserTest, can_retrieve_omegas_for_RAOs)
 {
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     const std::vector<double> Tps1 = data.get_froude_krylov_module_periods();
     const std::vector<double> Tps2 = data.get_froude_krylov_phase_periods();
     const std::vector<double> Tps3 = data.get_wave_drift_periods();
@@ -261,7 +261,7 @@ TEST_F(HDBParserTest, can_retrieve_omegas_for_RAOs)
 
 TEST_F(HDBParserTest, can_retrieve_psis_for_RAOs)
 {
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     const std::vector<double> psi1 = data.get_froude_krylov_module_psis();
     const std::vector<double> psi2 = data.get_froude_krylov_phase_psis();
     const std::vector<double> psi3 = data.get_wave_drift_psis();
@@ -277,14 +277,14 @@ TEST_F(HDBParserTest, can_retrieve_psis_for_RAOs)
 
 TEST_F(HDBParserTest, bug_3238)
 {
-    const HDBParser data = HDBParser::from_string(test_data::bug_3238_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/bug_3238.hdb"));
     ASSERT_THROW(data.get_diffraction_module(), InvalidInputException);
     ASSERT_THROW(data.get_diffraction_phase(), InvalidInputException);
 }
 
 TEST_F(HDBParserTest, can_get_forward_speed)
 {
-    const HDBParser data = HDBParser::from_string(test_data::test_ship_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("hdb/test_ship.hdb"));
     ASSERT_DOUBLE_EQ(data.get_forward_speed(), 0.);
 }
 
@@ -292,12 +292,12 @@ TEST_F(
     HDBParserTest,
     should_be_able_to_have_different_periods_for_added_mass_and_List_calculated_periods)
 {
-    ASSERT_NO_THROW(HDBParser::from_string(test_data::hdb_issue_184()));
+    ASSERT_NO_THROW(HDBParser::from_string(test_data::read("hdb/issue_184.hdb")));
 }
 
 TEST_F(HDBParserTest, can_retrieve_froude_krylov_modules_and_phases)
 {
-    const HDBParser data = HDBParser::from_string(test_data::big_hdb());
+    const HDBParser data = HDBParser::from_string(test_data::read("tutorials/big.hdb"));
     const std::array<std::vector<std::vector<double>>, 6> module =
         data.get_froude_krylov_module_tables();
     const std::array<std::vector<std::vector<double>>, 6> phase =

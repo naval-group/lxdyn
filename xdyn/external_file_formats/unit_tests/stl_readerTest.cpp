@@ -1,41 +1,41 @@
 #include "stl_readerTest.hpp"
 
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/MeshException.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
 
 TEST_F(StlReaderTest, should_be_able_to_detect_ascii_file)
 {
-    ASSERT_EQ(StlType::ASCII, identify_stl(test_data::single_facet()));
+    ASSERT_EQ(StlType::ASCII, identify_stl(test_data::read("tutorials/single_facet.stl")));
 }
 
 TEST_F(StlReaderTest, should_be_able_to_detect_ascii_file_even_with_starting_spaces)
 {
-    ASSERT_EQ(StlType::ASCII, identify_stl(test_data::single_facet()));
-    ASSERT_EQ(StlType::ASCII, identify_stl("\t" + test_data::three_facets()));
-    ASSERT_EQ(StlType::ASCII, identify_stl("   \t  " + test_data::cube()));
-    ASSERT_EQ(StlType::ASCII, identify_stl(test_data::big_cube()));
+    ASSERT_EQ(StlType::ASCII, identify_stl(test_data::read("tutorials/single_facet.stl")));
+    ASSERT_EQ(StlType::ASCII, identify_stl("\t" + test_data::read("tutorials/three_facets.stl")));
+    ASSERT_EQ(StlType::ASCII, identify_stl("   \t  " + test_data::read("tutorials/cube.stl")));
+    ASSERT_EQ(StlType::ASCII, identify_stl(test_data::read("tutorials/big_cube.stl")));
 }
 TEST_F(StlReaderTest, should_be_able_to_detect_ascii_file_even_with_starting_spaces2)
 {
-    ASSERT_EQ(StlType::BINARY, identify_stl(test_data::binary_stl()));
+    ASSERT_EQ(StlType::BINARY, identify_stl(test_data::read("stl/cube_binary.stl")));
 }
 
 TEST_F(StlReaderTest, number_of_facets_should_be_correct_for_a_single_facet_file)
 {
-    const VectorOfVectorOfPoints facets = read_stl(test_data::single_facet());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/single_facet.stl"));
     ASSERT_EQ(1, facets.size());
 }
 
 TEST_F(StlReaderTest, number_of_facets_should_be_correct_for_a_three_facet_file)
 {
-    const VectorOfVectorOfPoints facets = read_stl(test_data::three_facets());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/three_facets.stl"));
     ASSERT_EQ(3, facets.size());
 }
 
 TEST_F(StlReaderTest, should_be_able_to_read_a_single_facet_properly)
 {
-    const VectorOfVectorOfPoints facets = read_stl(test_data::single_facet());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/single_facet.stl"));
     ASSERT_EQ(1, facets.size());
     ASSERT_DOUBLE_EQ(1.0, facets.at(0)[0][0]);
     ASSERT_DOUBLE_EQ(2.1, facets.at(0)[0][1]);
@@ -50,7 +50,7 @@ TEST_F(StlReaderTest, should_be_able_to_read_a_single_facet_properly)
 
 TEST_F(StlReaderTest, should_be_able_to_read_several_facets_properly)
 {
-    const VectorOfVectorOfPoints facets = read_stl(test_data::three_facets());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/three_facets.stl"));
     ASSERT_EQ(3, facets.size());
     ASSERT_DOUBLE_EQ(-0.50, facets.at(0)[0][0]);
     ASSERT_DOUBLE_EQ(-0.50, facets.at(0)[0][1]);
@@ -192,7 +192,7 @@ TEST_F(StlReaderTest, should_ignore_solid_and_endsolid_if_within_header)
 
 TEST_F(StlReaderTest, should_be_able_to_read_a_binary_cube)
 {
-    const VectorOfVectorOfPoints facets = read_stl(test_data::binary_stl());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("stl/cube_binary.stl"));
 }
 
 TEST_F(StlReaderTest, binary_size_counts_triangles_beyond_127)

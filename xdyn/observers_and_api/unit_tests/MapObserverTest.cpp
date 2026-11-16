@@ -10,9 +10,8 @@
 
 #include "ListOfObservers.hpp"
 #include "MapObserver.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 
 constexpr double EPS = 1E-8;
@@ -43,7 +42,7 @@ TEST_F(MapObserverTest, example)
     //! [MapObserverTest example]
     const double dt = 1;
     const double tend = 1;
-    auto sys = get_system(test_data::falling_ball_example(), 0);
+    auto sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
 
     ssc::solver::Scheduler scheduler(0, tend, dt);
     auto observers = observe({"x(ball)"});
@@ -62,7 +61,10 @@ TEST_F(MapObserverTest, GM)
 {
     const double dt = 1;
     const double tend = 1;
-    auto sys = get_system(test_data::GM_cube(), test_data::cube_for_gm_test(), 0);
+    auto sys = get_system(
+        test_data::read("yaml/GM_cube.yml"),
+        test_data::read("stl/cube_for_gm_test.stl"),
+        0);
     ssc::solver::Scheduler scheduler(0, tend, dt);
     auto observers = observe({"Fz(GM,cube,NED)", "GM(cube)"});
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
@@ -103,7 +105,10 @@ TEST_F(MapObserverTest, blocked_state_force_residuals_should_appear)
 {
     const double dt = 1;
     const double tend = 1;
-    auto sys = get_system(test_data::full_example_with_diagonal_inertia(), test_data::cube(), 0);
+    auto sys = get_system(
+        test_data::read("yaml/full_example_with_diagonal_inertia.yml"),
+        test_data::read("tutorials/cube.stl"),
+        0);
     ssc::solver::Scheduler scheduler(0, tend, dt);
     auto observers = observe(
         {"Fx(blocked states,body 1,body 1)",

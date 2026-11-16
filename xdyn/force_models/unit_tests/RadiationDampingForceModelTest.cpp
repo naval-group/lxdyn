@@ -12,14 +12,12 @@
 
 #include "xdyn/core/BodyStates.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/force_models/RadiationDampingForceModel.hpp"
 #include "xdyn/hdb_interpolators/RadiationDampingBuilder.hpp"
 #include "xdyn/hdb_interpolators/unit_tests/hdb_test.hpp"
 #include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/precal_test_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #define PI M_PI
-#include <fstream>
 
 constexpr double EPS = 5E-2;
 
@@ -87,7 +85,8 @@ YamlRadiationDamping RadiationDampingForceModelTest::get_yaml_data(const bool sh
 TEST_F(RadiationDampingForceModelTest, parser)
 {
     const YamlRadiationDamping r =
-        RadiationDampingForceModel::parse(test_data::radiation_damping(), false).yaml;
+        RadiationDampingForceModel::parse(test_data::read("yaml/radiation_damping.yml"), false)
+            .yaml;
     ASSERT_EQ("test_ship.hdb", r.hdb_filename);
     ASSERT_EQ(50, r.nb_of_points_for_retardation_function_discretization);
     ASSERT_DOUBLE_EQ(30, r.omega_max);
@@ -466,7 +465,9 @@ TEST_F(RadiationDampingForceModelTest, precal_r_filename_is_read_properly)
 TEST_F(RadiationDampingForceModelTest, can_use_data_from_precal_r)
 {
     const std::string yaml = "model: radiation damping\n"
-                             "raodb: data.raodb.ini\n"
+                             "raodb: " +
+                             test_data::path("tutorials/ONRT_SIMMAN.raodb.ini") +
+                             "\n"
                              "type of quadrature for cos transform: simpson\n"
                              "type of quadrature for convolution: trapezoidal\n"
                              "nb of points for retardation function discretization: 50\n"
@@ -480,9 +481,6 @@ TEST_F(RadiationDampingForceModelTest, can_use_data_from_precal_r)
                              "    x: {value: 0.696, unit: m}\n"
                              "    y: {value: 0, unit: m}\n"
                              "    z: {value: 1.418, unit: m}\n";
-    std::ofstream precalr_file("data.raodb.ini");
-    precalr_file << test_data::precal();
-    precalr_file.close();  // Read back below: must be flushed to disk first
     RadiationDampingForceModel::Input input = RadiationDampingForceModel::parse(yaml);
     const EnvironmentAndFrames env;
     const std::string body_name = a.random<std::string>();

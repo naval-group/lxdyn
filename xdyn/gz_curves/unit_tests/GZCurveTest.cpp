@@ -10,19 +10,18 @@
 #include <cmath>
 
 #include "GZCurve.hpp"
-#include "xdyn/binary_stl_data/generate_test_ship.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/external_file_formats/stl_writer.hpp"
 #include "xdyn/gz_curves/make_sim_for_GZ.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #define PI M_PI
 
 static Sim& shared_sim()
 {
     static Sim ret = GZ::make_sim(
-        test_data::test_ship_hydrostatic_test("non-linear hydrostatic (exact)"),
-        test_data::cube());
+        test_data::read("tutorials/tutorial_02_exact_hydrostatic.yml"),
+        test_data::read("tutorials/cube.stl"));
     return ret;
 }
 
@@ -96,21 +95,27 @@ TEST_F(GZCurveTest, should_throw_if_phi_max_lower_than_dphi)
 
 TEST_F(GZCurveTest, can_calculate_zeq_for_phi_0)
 {
-    const Sim sim = GZ::make_sim(test_data::oscillating_cube_example(), test_data::cube());
+    const Sim sim = GZ::make_sim(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
     const GZ::Curve calculate(sim);
     ASSERT_NEAR(1000. / 1026. - 0.5, calculate.zeq(0, 0), EPS);
 }
 
 TEST_F(GZCurveTest, can_calculate_GZ_for_phi_0)
 {
-    const Sim sim = GZ::make_sim(test_data::oscillating_cube_example(), test_data::cube());
+    const Sim sim = GZ::make_sim(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
     const GZ::Curve calculate(sim);
     ASSERT_NEAR(0, calculate.gz(0), EPS);
 }
 
 TEST_F(GZCurveTest, LONG_validate_gz_against_python_code)
 {
-    const Sim sim = GZ::make_sim(test_data::test_ship_damping(), write_stl(test_ship()));
+    const Sim sim = GZ::make_sim(
+        test_data::read("tutorials/tutorial_04_damping.yml"),
+        write_stl(read_stl(test_data::read("tutorials/test_ship.stl"))));
     const GZ::Curve calculate(sim);
 
     ASSERT_SMALL_RELATIVE_ERROR(-7.78E-001, calculate.gz(-70 * PI / 180.), 0.05);
@@ -146,6 +151,7 @@ TEST_F(GZCurveTest, LONG_validate_gz_against_python_code)
 
 TEST_F(GZCurveTest, should_throw_if_ship_is_denser_than_water)
 {
-    const Sim sim = GZ::make_sim(test_data::bug_3004(), test_data::cube());
+    const Sim sim =
+        GZ::make_sim(test_data::read("yaml/bug_3004.yml"), test_data::read("tutorials/cube.stl"));
     ASSERT_THROW({ GZ::Curve simulate(sim); }, InvalidInputException);
 }

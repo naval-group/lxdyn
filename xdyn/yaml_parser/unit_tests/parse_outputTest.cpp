@@ -7,14 +7,14 @@
 
 #include "parse_outputTest.hpp"
 
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 
 parse_outputTest::parse_outputTest() : a(ssc::random_data_generator::DataGenerator(215451)) {}
 
 TEST_F(parse_outputTest, can_parse_outputs)
 {
-    const auto res = parse_output(test_data::full_example());
+    const auto res = parse_output(test_data::read("yaml/full_example.yml"));
     ASSERT_EQ(2, res.size());
     ASSERT_EQ("csv", res.at(0).format);
     ASSERT_EQ("tutorial_1.csv", res.at(0).filename);

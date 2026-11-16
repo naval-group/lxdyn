@@ -12,7 +12,7 @@
 
 #include "MMGPropellerForceModel.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #define PI M_PI
 
 constexpr double EPS = 1E-6;
@@ -87,7 +87,7 @@ TEST_F(MMGPropellerForceModelTest, parser)
     /*
     The purpose of this test is to check that the input data are well parsed
     */
-    const auto k = MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    const auto k = MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml"));
     ASSERT_EQ("port side propeller", k.name);
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.angle.phi);
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.angle.theta);
@@ -129,7 +129,8 @@ TEST_F(MMGPropellerForceModelTest, check_propeller_longitudinal_location_in_MMG_
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Get input data
-    MMGPropellerForceModel::Yaml input = MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    MMGPropellerForceModel::Yaml input =
+        MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml"));
     // Create propeller model
     const MMGPropellerForceModel propModel(input, b->get_name(), env);
 
@@ -170,7 +171,8 @@ TEST_F(MMGPropellerForceModelTest, check_CoG_location_in_MMG_frame)
     // Create body
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Get input data
-    MMGPropellerForceModel::Yaml input = MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    MMGPropellerForceModel::Yaml input =
+        MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml"));
     // Create propeller model
     const MMGPropellerForceModel propModel(input, b->get_name(), env);
 
@@ -214,7 +216,7 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model
     const MMGPropellerForceModel propModel(
-        MMGPropellerForceModel::parse(test_data::MMGPropeller()),
+        MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml")),
         b->get_name(),
         env);
 
@@ -286,7 +288,8 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
         EPS);
 
     // Case 9: Define a case with body origin, MMG origin and CoG separated
-    MMGPropellerForceModel::Yaml input = MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    MMGPropellerForceModel::Yaml input =
+        MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml"));
     // We define the body origin 10m forward from midship and 5m below waterline
     input.application_point.x = -10;
     input.application_point.z = 5;
@@ -307,7 +310,7 @@ TEST_F(MMGPropellerForceModelTest, check_wake_factor_calculation)
     // FORMULA OKUDA 2019 : when C0=0, it is the formula from Okuda et. all 2019 which is used
 
     // Case 10: Verify Okuda formula
-    input = MMGPropellerForceModel::parse(test_data::MMGPropeller());
+    input = MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml"));
     input.C2[0] = 1;
     input.C2[1] = 1;
     input.C0 = -2.5;
@@ -334,7 +337,7 @@ TEST_F(MMGPropellerForceModelTest, check_kt_calculation)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model
     const MMGPropellerForceModel propModel(
-        MMGPropellerForceModel::parse(test_data::MMGPropeller()),
+        MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml")),
         b->get_name(),
         env);
 
@@ -358,7 +361,7 @@ TEST_F(MMGPropellerForceModelTest, force)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model
     const MMGPropellerForceModel propModel(
-        MMGPropellerForceModel::parse(test_data::MMGPropeller()),
+        MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml")),
         b->get_name(),
         env);
 
@@ -402,7 +405,7 @@ TEST_F(MMGPropellerForceModelTest, J_outside_domain)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     // Create propeller model
     const MMGPropellerForceModel propModel(
-        MMGPropellerForceModel::parse(test_data::MMGPropeller()),
+        MMGPropellerForceModel::parse(test_data::read("yaml/MMGPropeller.yml")),
         b->get_name(),
         env);
 

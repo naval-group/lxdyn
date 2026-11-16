@@ -11,7 +11,7 @@
 
 #include "JSONSerializer.hpp"
 #include "XdynForME.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 constexpr double EPS = 1E-8;
 
 XdynForMETest::XdynForMETest() : a(ssc::random_data_generator::DataGenerator(123456789)) {}
@@ -21,10 +21,11 @@ TEST_F(XdynForMETest, test_falling_ball_with_yaml)
     //! [XdynForMETest example]
 
     const double g = 9.81;
-    const std::string yaml = test_data::falling_ball_example();
+    const std::string yaml = test_data::read("tutorials/tutorial_01_falling_ball.yml");
 
     XdynForME xdyn_for_me(yaml);
-    const std::string input_yaml = test_data::complete_yaml_message_for_falling_ball();
+    const std::string input_yaml =
+        test_data::read("json/complete_yaml_message_for_falling_ball.json");
     const YamlState d_dt = xdyn_for_me.handle(deserialize(input_yaml));
 
     //! [XdynForMETest example]
@@ -47,7 +48,7 @@ TEST_F(XdynForMETest, test_falling_ball_with_yaml)
 
 TEST_F(XdynForMETest, complete_test_with_commands_and_delay)
 {
-    const std::string yaml = test_data::simserver_test_with_commands_and_delay();
+    const std::string yaml = test_data::read("yaml/simserver_test_with_commands_and_delay.yml");
     XdynForME xdyn_for_me(yaml);
     const std::string input_yaml =
         "{\"Dt\": 10.0,\n"
@@ -82,7 +83,7 @@ TEST_F(XdynForMETest, complete_test_with_commands_and_delay_just_test_quaternion
 {
     //! [XdynForMETest example]
 
-    const std::string yaml = test_data::simserver_test_with_commands_and_delay();
+    const std::string yaml = test_data::read("yaml/simserver_test_with_commands_and_delay.yml");
     XdynForME xdyn_for_me(yaml);
     const std::string input_yaml =
         "{\"Dt\": 10.0,\n"
@@ -136,7 +137,7 @@ TEST_F(XdynForMETest, complete_test_with_commands_and_delay_just_test_quaternion
 
 TEST_F(XdynForMETest, can_get_extra_observations)
 {
-    const std::string yaml = test_data::simserver_test_with_commands_and_delay();
+    const std::string yaml = test_data::read("yaml/simserver_test_with_commands_and_delay.yml");
     XdynForME xdyn_for_me(yaml);
     const std::string input_yaml =
         "{\"Dt\": 10.0,\n"
@@ -164,7 +165,7 @@ TEST_F(XdynForMETest, can_get_extra_observations)
 
 TEST_F(XdynForMETest, extra_observations_response_is_in_sync_with_request)
 {
-    const std::string yaml = test_data::simserver_test_with_commands_and_delay();
+    const std::string yaml = test_data::read("yaml/simserver_test_with_commands_and_delay.yml");
     XdynForME xdyn_for_me(yaml);
     std::string input_yaml =
         "{\"Dt\": 10.0,\n"

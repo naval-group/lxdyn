@@ -8,16 +8,16 @@
 #include "stl_writerTest.hpp"
 
 #include "base91x/base91.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/external_file_formats/stl_writer.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
 
 stl_writerTest::stl_writerTest() : a(ssc::random_data_generator::DataGenerator(542)) {}
 
 TEST_F(stl_writerTest, example)
 {
-    const VectorOfVectorOfPoints expected = read_stl(test_data::three_facets());
+    const VectorOfVectorOfPoints expected = read_stl(test_data::read("tutorials/three_facets.stl"));
     const VectorOfVectorOfPoints actual = read_stl(write_stl(expected));
     ASSERT_EQ(expected.size(), actual.size());
     for (size_t i = 0; i < expected.size(); ++i) {
@@ -54,7 +54,7 @@ TEST_F(stl_writerTest, can_read_and_write_binary_stl)
 
 TEST_F(stl_writerTest, can_read_binary_stl_from_string)
 {
-    const VectorOfVectorOfPoints from_ascii = read_stl(test_data::cube());
+    const VectorOfVectorOfPoints from_ascii = read_stl(test_data::read("tutorials/cube.stl"));
     const std::string s =
         ";C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$A;C2W$AMAAAAAAAAAAAAAAA4}BAC\"EBAA1hAAT|DAAA#AAA1hAAT|DAAA#AAAHLAAT|DAAAAAAAAAAAAAk_HAAASEAAcsBA+>PAAA+CAA4}AAv(fAAA.QAAT|BABt#AAAAAAAAAAAAAC\"JCAAOWAA+>XAAAAAAAP(AA+>XAAAAAAAP(AA+>HAAAAAAAAAAAAAAAAAAATEAAcsAAv(vAAAAAAAcsBAv(PAAAAAAAcsAAv(PAAAAAAAAA4}FAAAAAAAAAAA4}CABtEBAAAAAAT|FAC\"EBAAPLAAk_LAAA#AAAPLAAAA+>vAAAAAAAAAAA+>XAAASEAAAAAA+>XAAAjBAA8sAAv(vAAA+CAAAAAAAABt#AAAAAAAAAAABtfAAA.QAA4}BAC\"fAAA.QAAAAAABtfAAAxFAAAAAAAAC\"#AAAuWAAAAAAC\"fAAA.QAA4}BAC\"fAAAxFAAAAAABtfAAAxFAA4}BAAAAAAAAAf(AAAAAAAAJCAAP(AAAAAAAA#AAA1hAAAAAAC\"fAAA.QAA4}BAAAAAAAAAf(AAAAAAAAJCAAP(AAAAAAAA#AAA1hAAT|DAAAJCAAP(AAk_HAAAAAXLAA4}BAAAAAAA.QAAT|BABt#AAAHLAAk_DAC\"#AAAHLAAk_DAAAAAAAAAAAAAk_HAAAAAAAP(AA+>HAAAkBAAcsAAv(PAAAAAAAcsBAv(PAAAAAAA";
     const VectorOfVectorOfPoints from_binary = read_binary_stl(base<91>::decode(s));

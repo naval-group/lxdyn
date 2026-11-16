@@ -11,8 +11,8 @@
 
 #include "env_for_tests.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/force_models/RudderForceModel.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #define PI M_PI
 
 constexpr double DEG2RAD = PI / 180.;
@@ -217,7 +217,7 @@ TEST_F(RudderForceModelTest, get_fluid_angle)
 
 TEST_F(RudderForceModelTest, parser)
 {
-    const auto w = RudderForceModel::parse(test_data::rudder());
+    const auto w = RudderForceModel::parse(test_data::read("yaml/rudder.yml"));
     ASSERT_DOUBLE_EQ(0.5, w.blade_area_ratio);
     ASSERT_EQ("port side propeller", w.name);
     ASSERT_EQ(3, w.number_of_blades);
@@ -255,7 +255,10 @@ TEST_F(RudderForceModelTest, force_and_torque)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
     // Create rudder force model
-    const RudderForceModel rudder(RudderForceModel::parse(test_data::rudder()), b->get_name(), env);
+    const RudderForceModel rudder(
+        RudderForceModel::parse(test_data::read("yaml/rudder.yml")),
+        b->get_name(),
+        env);
 
     // Check model name
     ASSERT_EQ("propeller+rudder", rudder.model_name());
@@ -295,7 +298,10 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
     BodyPtr b(BodyBuilder(env.rot).build(BODY, VectorOfVectorOfPoints(), 0, 0, env.rot, true));
     auto states = b->get_states();
     // Create rudder force model
-    const RudderForceModel rudder(RudderForceModel::parse(test_data::rudder()), b->get_name(), env);
+    const RudderForceModel rudder(
+        RudderForceModel::parse(test_data::read("yaml/rudder.yml")),
+        b->get_name(),
+        env);
 
     // Define body velocities
     const double t = 24;
@@ -336,7 +342,7 @@ TEST_F(RudderForceModelTest, force_and_torque_with_phi_angle)
     rotated by an angle phi around its x-axis.
     */
 
-    std::string input = test_data::rudder();
+    std::string input = test_data::read("yaml/rudder.yml");
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body

@@ -15,17 +15,18 @@
 #include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/environment_models/DefaultWindModel.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/force_models/GravityForceModel.hpp"
 #include "xdyn/listeners_and_controllers/builders.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 static const YamlSimulatorInput& shared_input()
 {
-    static const YamlSimulatorInput ret = SimulatorYamlParser(test_data::full_example()).parse();
+    static const YamlSimulatorInput ret =
+        SimulatorYamlParser(test_data::read("yaml/full_example.yml")).parse();
     return ret;
 }
 

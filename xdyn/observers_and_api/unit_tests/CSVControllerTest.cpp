@@ -12,9 +12,9 @@
 #include <cstdio>  // For remove
 #include <ssc/solver/Scheduler.hpp>
 
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/listeners_and_controllers/CSVController.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_controllers.hpp"
 #define PI M_PI
 
@@ -116,7 +116,7 @@ TEST_F(CSVControllerTest, can_read_data_from_csv)
     const double tstart = 0.1;
     const double dt = 0.5;
     ssc::solver::Scheduler scheduler(tstart, 2, dt);
-    Sim sys = get_system(test_data::falling_ball_example(), 0);
+    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
     controller.callback(scheduler, sys);
     // First time step is t0 = 0: all commands are zeros because t0 in CSV is 0.2
     ASSERT_NEAR(0, sys.get_input_value("port side propeller(rpm)"), 1e-6);
@@ -137,7 +137,7 @@ TEST_F(CSVControllerTest, can_read_data_from_csv_with_time_shift)
     const double tstart = 0.1;
     const double dt = 0.5;
     ssc::solver::Scheduler scheduler(tstart, 2, dt);
-    Sim sys = get_system(test_data::falling_ball_example(), 0);
+    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
     controller.callback(scheduler, sys);
     // First time step is t0 = 0.1: t0 in CSV was shifted
     ASSERT_EQ(tstart, scheduler.get_time());

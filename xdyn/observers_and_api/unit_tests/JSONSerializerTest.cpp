@@ -6,7 +6,7 @@
 
 #include "JSONSerializer.hpp"
 #include "SimServerInputs.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 
 JSONSerializerTest::JSONSerializerTest()
     : a(ssc::random_data_generator::DataGenerator(42))
@@ -31,7 +31,7 @@ TEST_F(JSONSerializerTest, can_parse_simple_history)
     const double state_step = -20;
     const size_t size_test = 5;
 
-    YamlSimServerInputs history = deserialize(test_data::dummy_history());
+    YamlSimServerInputs history = deserialize(test_data::read("json/dummy_history.json"));
 
     ASSERT_EQ(1234.5, history.Dt);
     ASSERT_EQ(size_test, history.states.size());
@@ -56,14 +56,16 @@ TEST_F(JSONSerializerTest, can_parse_simple_history)
 
 TEST_F(JSONSerializerTest, can_parse_commands)
 {
-    YamlSimServerInputs yinfos = deserialize(test_data::complete_yaml_message_from_gui());
+    YamlSimServerInputs yinfos =
+        deserialize(test_data::read("json/complete_yaml_message_from_gui.json"));
     ASSERT_EQ(yinfos.commands.find("RPM")->second, 1.2);
     ASSERT_EQ(yinfos.commands.find("B1")->second, 0.1);
 }
 
 TEST_F(JSONSerializerTest, can_parse_requested_output)
 {
-    YamlSimServerInputs yinfos = deserialize(test_data::JSON_message_with_requested_output());
+    YamlSimServerInputs yinfos =
+        deserialize(test_data::read("json/JSON_message_with_requested_output.json"));
     ASSERT_TRUE(
         std::find(
             yinfos.requested_output.begin(),
@@ -76,7 +78,8 @@ TEST_F(JSONSerializerTest, can_parse_requested_output)
 
 TEST_F(JSONSerializerTest, Dt_should_not_be_compulsory)
 {
-    YamlSimServerInputs yinfos = deserialize(test_data::simserver_message_without_Dt());
+    YamlSimServerInputs yinfos =
+        deserialize(test_data::read("json/simserver_message_without_Dt.json"));
     ASSERT_EQ(yinfos.Dt, 0);
 }
 

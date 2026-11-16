@@ -12,9 +12,8 @@
 
 #include "GZTypes.hpp"
 #include "ResultantForceComputer.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/gz_curves/make_sim_for_GZ.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 #define PI M_PI
 constexpr double EPS = 1E-10;
@@ -22,7 +21,9 @@ constexpr double BIG_EPS = 1E-5;
 
 static Sim& shared_sim()
 {
-    static Sim ret = GZ::make_sim(test_data::oscillating_cube_example(), test_data::cube());
+    static Sim ret = GZ::make_sim(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
     return ret;
 }
 
@@ -34,7 +35,9 @@ ResultantForceComputerTest::ResultantForceComputerTest()
 TEST_F(ResultantForceComputerTest, sim_only_contains_gravity_and_hydrostatic_forces)
 {
     sim.reset_history();
-    const auto s = GZ::make_sim(test_data::stable_cube_example(), test_data::cube());
+    const auto s = GZ::make_sim(
+        test_data::read("tutorials/stable_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     std::map<std::string, std::vector<ForcePtr>> forces = s.get_forces();
     std::set<std::string> force_models;
@@ -52,7 +55,9 @@ TEST_F(ResultantForceComputerTest, sim_only_contains_gravity_and_hydrostatic_for
 TEST_F(ResultantForceComputerTest, sim_only_contains_default_surface_elevation)
 {
     sim.reset_history();
-    const auto s = GZ::make_sim(test_data::cube_in_waves(), test_data::cube());
+    const auto s = GZ::make_sim(
+        test_data::read("tutorials/cube_in_waves.yml"),
+        test_data::read("tutorials/cube.stl"));
     EnvironmentAndFrames env = s.get_env();
     for (size_t i = 0; i < 1000; ++i) {
         const std::vector<double> x{a.random<double>().between(-1000, 1000)};
@@ -136,7 +141,9 @@ TEST_F(ResultantForceComputerTest, LONG_can_compute_resultant_for_any_angle)
 {
     sim.reset_history();
     GZ::ResultantForceComputer sum_of_forces(
-        GZ::make_sim(test_data::oscillating_cube_example(), test_data::cube()));
+        GZ::make_sim(
+            test_data::read("tutorials/oscillating_cube_test.yml"),
+            test_data::read("tutorials/cube.stl")));
     const size_t n = 100;
     for (size_t i = 0; i < n; ++i) {
         const double angle = -PI + (2 * PI) * (double)(i) / (std::max(1., (double)n - 1));

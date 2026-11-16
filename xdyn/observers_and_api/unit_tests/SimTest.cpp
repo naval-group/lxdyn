@@ -15,16 +15,13 @@
 
 #include "MapObserverTest.hpp"
 #include "SimObserver.hpp"
-#include "xdyn/binary_stl_data/generate_test_ship.hpp"
 #include "xdyn/core/Sim.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
+#include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/observers_and_api/ListOfObservers.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/precal_test_data.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 #define PI M_PI
@@ -36,7 +33,7 @@ const double DEG = atan(1.) / 45.;
 
 static const VectorOfVectorOfPoints& shared_test_ship_stl()
 {
-    static const VectorOfVectorOfPoints ret = test_ship();
+    static const VectorOfVectorOfPoints ret = read_stl(test_data::read("tutorials/test_ship.stl"));
     return ret;
 }
 
@@ -56,8 +53,9 @@ TEST_F(SimTest, can_simulate_falling_ball)
 {
     const size_t N = 10;
     ssc::solver::Scheduler scheduler(0, N, 1);
-    const auto res =
-        simulate<ssc::solver::EulerStepper>(test_data::falling_ball_example(), scheduler);
+    const auto res = simulate<ssc::solver::EulerStepper>(
+        test_data::read("tutorials/tutorial_01_falling_ball.yml"),
+        scheduler);
     ASSERT_EQ(N + 1, res.size());
     const double g = 9.81;
     for (size_t i = 0; i < N + 1; ++i) {
@@ -86,8 +84,8 @@ TEST_F(SimTest, LONG_can_simulate_oscillating_cube)
     const double tend = 10;
     ssc::solver::Scheduler scheduler(0, tend, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::oscillating_cube_example(),
-        test_data::cube(),
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"),
         scheduler);
 
     const double g = 9.81;
@@ -128,8 +126,8 @@ TEST_F(SimTest, LONG_can_simulate_stable_cube)
     const double tend = 10;
     ssc::solver::Scheduler scheduler(0, tend, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::stable_cube_example(),
-        test_data::cube(),
+        test_data::read("tutorials/stable_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"),
         scheduler);
 
     const size_t N = (size_t)(floor(tend / dt + 0.5)) + 1;
@@ -162,7 +160,8 @@ TEST_F(SimTest, LONG_can_simulate_stable_cube)
 TEST_F(SimTest, initial_angle_should_not_change_results_for_falling_ball)
 {
     const size_t N = 3;
-    auto yaml = SimulatorYamlParser(test_data::falling_ball_example()).parse();
+    auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_01_falling_ball.yml")).parse();
     yaml.bodies.front()
         .initial_position_of_body_frame_relative_to_NED_projected_in_NED.angle.theta = 45 * DEG;
     yaml.bodies.front().initial_velocity_of_body_frame_relative_to_NED_projected_in_body.u = 0;
@@ -188,7 +187,8 @@ TEST_F(SimTest, initial_angle_should_not_change_results_for_falling_ball)
 
 TEST_F(SimTest, LONG_hydrostatic_test_on_test_ship)
 {
-    const auto yaml = SimulatorYamlParser(test_data::test_ship_fast_hydrostatic_test()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_02_fast_hydrostatic.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 4.79, 0.479);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(11, res.size());
@@ -208,14 +208,15 @@ TEST_F(SimTest, LONG_hydrostatic_test_on_test_ship)
 
 TEST_F(SimTest, LONG_exact_hydrostatic_test_on_test_ship)
 {
-    const auto yaml = SimulatorYamlParser(test_data::test_ship_exact_hydrostatic_test()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_02_exact_hydrostatic.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 0.1, 0.4);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
 }
 
 TEST_F(SimTest, should_throw_if_wave_output_mesh_does_not_exist)
 {
-    auto input = SimulatorYamlParser(test_data::waves()).parse();
+    auto input = SimulatorYamlParser(test_data::read("tutorials/tutorial_03_waves.yml")).parse();
     boost::replace_all(
         input.environment[0].yaml,
         "frame of reference: NED",
@@ -226,7 +227,7 @@ TEST_F(SimTest, should_throw_if_wave_output_mesh_does_not_exist)
 
 TEST_F(SimTest, can_generate_wave_height_on_mesh)
 {
-    const Sim sys = get_system(test_data::waves(), 0);
+    const Sim sys = get_system(test_data::read("tutorials/tutorial_03_waves.yml"), 0);
     const double t = 9951191801.8523445;
     const ssc::kinematics::PointMatrix w = sys.get_waves(t);
 
@@ -270,7 +271,10 @@ TEST_F(SimTest, can_generate_wave_height_on_mesh)
 
 TEST_F(SimTest, can_generate_wave_height_on_mesh_for_default_wave_model)
 {
-    const Sim sys = get_system(test_data::stable_rolling_cube_test(), test_data::cube(), 0);
+    const Sim sys = get_system(
+        test_data::read("tutorials/stable_rolling_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"),
+        0);
     ssc::kinematics::PointMatrix w = sys.get_waves(a.random<double>());
     ASSERT_EQ(200, w.m.cols());
     for (long i = 0; i < 200; ++i) {
@@ -280,7 +284,8 @@ TEST_F(SimTest, can_generate_wave_height_on_mesh_for_default_wave_model)
 
 TEST_F(SimTest, LONG_waves_test_on_test_ship)
 {
-    const auto yaml = SimulatorYamlParser(test_data::test_ship_waves_test()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/test_ship_in_waves.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 4.79, 0.479);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(11, res.size());
@@ -291,14 +296,16 @@ TEST_F(SimTest, LONG_waves_test_on_test_ship)
 
 TEST_F(SimTest, LONG_froude_krylov)
 {
-    const auto yaml = SimulatorYamlParser(test_data::test_ship_froude_krylov()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_05_froude_krylov.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 4.79, 0.479);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
 }
 
 TEST_F(SimTest, LONG_test_ship_damping)
 {
-    const auto yaml = SimulatorYamlParser(test_data::test_ship_damping()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_04_damping.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 20, 1);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(21, res.size());
@@ -308,7 +315,7 @@ TEST_F(SimTest, LONG_test_ship_damping)
 
 TEST_F(SimTest, DISABLED_LONG_bug_2655)
 {
-    const auto yaml = SimulatorYamlParser(test_data::bug_2655()).parse();
+    const auto yaml = SimulatorYamlParser(test_data::read("yaml/bug_2655.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 1.4, 0.1);
     const auto res = simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler);
     ASSERT_EQ(15, res.size());
@@ -317,7 +324,8 @@ TEST_F(SimTest, DISABLED_LONG_bug_2655)
 
 TEST_F(SimTest, LONG_propulsion_and_resistance)
 {
-    const auto yaml = SimulatorYamlParser(test_data::propulsion_and_resistance()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("yaml/propulsion_and_resistance.yml")).parse();
     ssc::data_source::DataSource commands;
     commands.set<double>("propeller(rpm)", 100 * (2 * PI) / 60.);
     commands.set<double>("propeller(P/D)", 1.064935);
@@ -347,7 +355,7 @@ TEST_F(SimTest, LONG_propulsion_and_resistance)
 
 TEST_F(SimTest, DISABLED_LONG_bug_2641)
 {
-    const auto yaml = SimulatorYamlParser(test_data::bug_2641()).parse();
+    const auto yaml = SimulatorYamlParser(test_data::read("yaml/bug_2641.yml")).parse();
     ssc::data_source::DataSource commands;
     commands.set<double>("propeller(rpm)", 5 * (2 * PI));
     commands.set<double>("propeller(P/D)", 0.67);
@@ -358,11 +366,12 @@ TEST_F(SimTest, DISABLED_LONG_bug_2641)
 
 TEST_F(SimTest, bug_in_exact_hydrostatic)
 {
-    const auto yaml = SimulatorYamlParser(test_data::test_ship_exact_hydrostatic_test()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_02_exact_hydrostatic.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 0.1, 0.4);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::bug_in_exact_hydrostatic(),
-        test_data::cube(),
+        test_data::read("yaml/bug_in_exact_hydrostatic.yml"),
+        test_data::read("tutorials/cube.stl"),
         scheduler);
     for (auto r : res) {
         ASSERT_FALSE(std::isnan(r.x.front()));
@@ -385,8 +394,8 @@ TEST_F(SimTest, rolling_cube_with_big_mesh)
     double eps = 1E-1;
     ssc::solver::Scheduler scheduler(0, 1, 0.1);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::new_oscillating_cube_example(),
-        test_data::big_cube(),
+        test_data::read("yaml/new_oscillating_cube_example.yml"),
+        test_data::read("tutorials/big_cube.stl"),
         scheduler);
     std::vector<double> phi;
     for (const auto& r : res) {
@@ -422,7 +431,8 @@ TEST_F(SimTest, LONG_bug_2714_heading_keeping)
 {
     ssc::data_source::DataSource command_listener;
     command_listener.set<double>("controller(psi_co)", 0);
-    const auto yaml = SimulatorYamlParser(test_data::bug_2714_heading_keeping()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("yaml/bug_2714_heading_keeping.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 0.1, 0.1);
     const auto res =
         simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler, command_listener);
@@ -435,7 +445,8 @@ TEST_F(SimTest, LONG_bug_2714_station_keeping)
     command_listener.set<double>("controller(x_co)", 0);
     command_listener.set<double>("controller(y_co)", 0);
     command_listener.set<double>("controller(psi_co)", 0);
-    const auto yaml = SimulatorYamlParser(test_data::bug_2714_station_keeping()).parse();
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("yaml/bug_2714_station_keeping.yml")).parse();
     ssc::solver::Scheduler scheduler(0, 0.1, 0.1);
     const auto res =
         simulate<ssc::solver::RK4Stepper>(yaml, test_ship_stl, scheduler, command_listener);
@@ -444,7 +455,7 @@ TEST_F(SimTest, LONG_bug_2714_station_keeping)
 
 TEST_F(SimTest, DISABLED_LONG_bug_2732)
 {
-    const auto yaml = test_data::bug_2732();
+    const auto yaml = test_data::read("yaml/bug_2732.yml");
     ListOfObservers observer(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
     command_listener.set<double>("Prop. & rudder(rpm)", 50);
@@ -458,7 +469,7 @@ TEST_F(SimTest, DISABLED_LONG_bug_2732)
 
 TEST_F(SimTest, LONG_bug_2838)
 {
-    const auto yaml = test_data::bug_2838();
+    const auto yaml = test_data::read("yaml/bug_2838.yml");
     ListOfObservers observer(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
     command_listener.set<double>("PropRudd(rpm)", 50);
@@ -477,7 +488,7 @@ TEST_F(SimTest, LONG_bug_2838)
 
 TEST_F(SimTest, LONG_bug_2845)
 {
-    const auto yaml = test_data::bug_2845();
+    const auto yaml = test_data::read("yaml/bug_2845.yml");
     ListOfObservers observer(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
     command_listener.set<double>("PropRudd(rpm)", 50);
@@ -537,7 +548,7 @@ TEST_F(SimTest, LONG_bug_2845)
 
 TEST_F(SimTest, LONG_can_retrieve_maneuvering_force)
 {
-    const auto yaml = test_data::bug_2845();
+    const auto yaml = test_data::read("yaml/bug_2845.yml");
     ListOfObservers observer(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
     command_listener.set<double>("PropRudd(rpm)", 50);
@@ -555,7 +566,7 @@ TEST_F(SimTest, LONG_can_retrieve_maneuvering_force)
 
 TEST_F(SimTest, LONG_can_use_commands_in_maneuvering_model)
 {
-    const auto yaml = test_data::maneuvering_with_commands();
+    const auto yaml = test_data::read("yaml/maneuvering_with_commands.yml");
     ListOfObservers observer(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
     command_listener.check_in(__PRETTY_FUNCTION__);
@@ -580,8 +591,8 @@ TEST_F(SimTest, linear_hydrostatics_without_waves)
     const double dt = 0.1;
     ssc::solver::Scheduler scheduler(0, T, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::test_ship_linear_hydrostatics_without_waves(),
-        test_data::cube(),
+        test_data::read("yaml/test_ship_linear_hydrostatics_without_waves.yml"),
+        test_data::read("tutorials/cube.stl"),
         scheduler);
 
     const double k = 100002.8;
@@ -611,8 +622,8 @@ TEST_F(SimTest, LONG_linear_hydrostatics_with_waves)
     const double dt = 0.1;
     ssc::solver::Scheduler scheduler(0, T, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::test_ship_linear_hydrostatics_with_waves(),
-        test_data::cube(),
+        test_data::read("yaml/test_ship_linear_hydrostatics_with_waves.yml"),
+        test_data::read("tutorials/cube.stl"),
         scheduler);
 
     const double eps = 1E-3;
@@ -637,7 +648,7 @@ TEST_F(SimTest, LONG_can_simulate_radiation_damping)
     const double T = 12;
     const double dt = 0.2;
     std::ofstream of("test_ship.hdb");
-    of << test_data::test_ship_hdb();
+    of << test_data::read("hdb/test_ship.hdb");
     ssc::data_source::DataSource command_listener;
     command_listener.check_in(__PRETTY_FUNCTION__);
     command_listener.set<double>("propeller(rpm)", 50);
@@ -646,8 +657,8 @@ TEST_F(SimTest, LONG_can_simulate_radiation_damping)
     command_listener.check_out();
     ssc::solver::Scheduler scheduler(0, T, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::test_ship_radiation_damping(),
-        test_data::cube(),
+        test_data::read("yaml/test_ship_radiation_damping.yml"),
+        test_data::read("tutorials/cube.stl"),
         scheduler,
         command_listener);
     ASSERT_NEAR(0.64349959363750842, body0(res.at(5)).x(), 1E-3);
@@ -657,14 +668,14 @@ TEST_F(SimTest, can_use_added_mass_matrix_from_precalr_file)
 {
     const std::string filename = "ONRT_SIMMAN.raodb.ini";
     std::ofstream of(filename);
-    of << test_data::precal();
+    of << test_data::read("tutorials/ONRT_SIMMAN.raodb.ini");
     of.close();
     const double T = 1;
     const double dt = 0.2;
     ssc::solver::Scheduler scheduler(0, T, dt);
     const auto res = simulate<ssc::solver::RK4Stepper>(
-        test_data::added_mass_from_precal_file(),
-        test_data::cube(),
+        test_data::read("tutorials/tutorial_12_precal_r.yml"),
+        test_data::read("tutorials/cube.stl"),
         scheduler);
     ASSERT_NEAR(0.011316202309435556, body0(res.at(5)).x(), 1E-3);
     remove(filename.c_str());
@@ -675,8 +686,8 @@ TEST_F(SimTest, bug_2963_should_not_be_able_to_use_fast_hydrostatic_without_spec
     ssc::solver::Scheduler scheduler(0, 1, 1);
     ASSERT_THROW(
         simulate<ssc::solver::RK4Stepper>(
-            test_data::bug_2963_hs_fast(),
-            test_data::cube(),
+            test_data::read("yaml/bug_2963_hs_fast.yml"),
+            test_data::read("tutorials/cube.stl"),
             scheduler),
         InvalidInputException);
 }
@@ -686,8 +697,8 @@ TEST_F(SimTest, bug_2963_should_not_be_able_to_use_exact_hydrostatic_without_spe
     ssc::solver::Scheduler scheduler(0, 1, 1);
     ASSERT_THROW(
         simulate<ssc::solver::RK4Stepper>(
-            test_data::bug_2963_hs_exact(),
-            test_data::cube(),
+            test_data::read("yaml/bug_2963_hs_exact.yml"),
+            test_data::read("tutorials/cube.stl"),
             scheduler),
         InvalidInputException);
 }
@@ -696,7 +707,10 @@ TEST_F(SimTest, bug_2963_should_not_be_able_to_use_froude_krylov_without_specify
 {
     ssc::solver::Scheduler scheduler(0, 1, 1);
     ASSERT_THROW(
-        simulate<ssc::solver::RK4Stepper>(test_data::bug_2963_fk(), test_data::cube(), scheduler),
+        simulate<ssc::solver::RK4Stepper>(
+            test_data::read("yaml/bug_2963_fk.yml"),
+            test_data::read("tutorials/cube.stl"),
+            scheduler),
         InvalidInputException);
 }
 
@@ -704,7 +718,10 @@ TEST_F(SimTest, bug_2963_should_not_be_able_to_use_GM_without_specifying_wave_mo
 {
     ssc::solver::Scheduler scheduler(0, 1, 1);
     ASSERT_THROW(
-        simulate<ssc::solver::RK4Stepper>(test_data::bug_2963_gm(), test_data::cube(), scheduler),
+        simulate<ssc::solver::RK4Stepper>(
+            test_data::read("yaml/bug_2963_gm.yml"),
+            test_data::read("tutorials/cube.stl"),
+            scheduler),
         InvalidInputException);
 }
 
@@ -712,7 +729,10 @@ TEST_F(SimTest, bug_2963_should_not_be_able_to_use_diffraction_without_specifyin
 {
     ssc::solver::Scheduler scheduler(0, 1, 1);
     ASSERT_THROW(
-        simulate<ssc::solver::RK4Stepper>(test_data::bug_2963_diff(), test_data::cube(), scheduler),
+        simulate<ssc::solver::RK4Stepper>(
+            test_data::read("yaml/bug_2963_diff.yml"),
+            test_data::read("tutorials/cube.stl"),
+            scheduler),
         InvalidInputException);
 }
 
@@ -721,7 +741,8 @@ TEST_F(SimTest, bug_3003_crash_in_manoeuvring_model)
     const double T = 0.1;
     const double dt = 0.1;
     ssc::solver::Scheduler scheduler(0, T, dt);
-    const auto res = simulate<ssc::solver::RK4Stepper>(test_data::bug_3003(), scheduler);
+    const auto res =
+        simulate<ssc::solver::RK4Stepper>(test_data::read("yaml/bug_3003.yml"), scheduler);
 
     const double eps = 1E-10;
     ASSERT_GT(res.size(), 0);
@@ -730,7 +751,7 @@ TEST_F(SimTest, bug_3003_crash_in_manoeuvring_model)
 
 TEST_F(SimTest, bug_2984)
 {
-    const auto yaml = test_data::bug_2984();
+    const auto yaml = test_data::read("yaml/bug_2984.yml");
     auto input = SimulatorYamlParser(yaml).parse();
     boost::replace_all(
         input.bodies[0].external_forces[0].yaml,
@@ -777,10 +798,10 @@ TEST_F(SimTest, bug_3217_hdb_interpolation_in_direction_incorrect_LONG)
     const double T = 0.1;
     const double dt = 0.1;
     std::ofstream hdb("v00_complet_FK_diffr.hdb");
-    hdb << test_data::bug_3210();
+    hdb << test_data::read("tutorials/test_ship.hdb");
     std::ofstream stl("test_ship.stl");
-    stl << test_data::cube();
-    const auto yaml = test_data::bug_3217();
+    stl << test_data::read("tutorials/cube.stl");
+    const auto yaml = test_data::read("yaml/bug_3217.yml");
     ListOfObservers observers(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
     auto input = SimulatorYamlParser(yaml).parse();
@@ -849,10 +870,10 @@ TEST_F(SimTest, bug_3227_wave_angle_mirroing_problem_for_diffraction_LONG)
     const double T = 0.1;
     const double dt = 0.1;
     std::ofstream hdb("v00_complet_FK_diffr.hdb");
-    hdb << test_data::bug_3210();
+    hdb << test_data::read("tutorials/test_ship.hdb");
     std::ofstream stl("test_ship.stl");
-    stl << test_data::cube();
-    const auto yaml = test_data::bug_3227();
+    stl << test_data::read("tutorials/cube.stl");
+    const auto yaml = test_data::read("yaml/bug_3227.yml");
 
     ListOfObservers observers(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
@@ -921,11 +942,11 @@ TEST_F(SimTest, bug_3230_advance_speed_not_taken_into_account_properly_for_diffr
     // Scoped so both streams close before the simulation reads the files back
     {
         std::ofstream hdb("ship_2008.HDB");
-        hdb << test_data::bug_3230_hdb();
+        hdb << test_data::read("hdb/bug_3230.hdb");
         std::ofstream stl("ship_2008.stl");
-        stl << test_data::cube();
+        stl << test_data::read("tutorials/cube.stl");
     }
-    const auto yaml = test_data::yml_bug_3230();
+    const auto yaml = test_data::read("yaml/bug_3230.yml");
 
     ListOfObservers observers(parse_output(yaml));
     ssc::data_source::DataSource command_listener;
@@ -943,8 +964,8 @@ TEST_F(SimTest, bug_3230_advance_speed_not_taken_into_account_properly_for_diffr
 TEST_F(SimTest, bug_3207_radiation_damping_crashes_LONG)
 {
     std::ofstream hdb("bug_3207.hdb");
-    hdb << test_data::bug_3207_hdb();
-    auto input = SimulatorYamlParser(test_data::bug_3207_yml()).parse();
+    hdb << test_data::read("hdb/test_ship.hdb");
+    auto input = SimulatorYamlParser(test_data::read("yaml/bug_3207.yml")).parse();
     const double t0 = 0;
     const double T = 15;
     const double dt = 0.2;
@@ -958,7 +979,7 @@ TEST_F(SimTest, bug_3241_blocked_dof_interpolation_problem_LONG)
     const double t0 = 0;
     const double T = 15;
     const double dt = 0.1;
-    const auto yaml = test_data::bug_3241();
+    const auto yaml = test_data::read("yaml/bug_3241.yml");
     ListOfObservers observers(parse_output(yaml));
     auto input = SimulatorYamlParser(yaml).parse();
 
@@ -980,7 +1001,7 @@ TEST_F(SimTest, issue_20_constant_force)
     const double t0 = 0;
     const double T = 15;
     const double dt = 0.1;
-    const auto yaml = test_data::issue_20();
+    const auto yaml = test_data::read("yaml/issue_20.yml");
     ListOfObservers observers(parse_output(yaml));
     auto input = SimulatorYamlParser(yaml).parse();
 
@@ -992,12 +1013,12 @@ TEST_F(SimTest, issue_20_constant_force)
 TEST_F(SimTest, bug_3187)
 {
     ssc::solver::Scheduler scheduler(0, 11, 1);
-    // const std::vector<Res> res = simulate<ssc::solver::EulerStepper>(test_data::bug_3187(),
-    // scheduler); // ABa 23/05/25 : Required to make test successful with new forced DoFs
-    // implementation. Otherwise, numerical errors with EulerStepper lead to non physical
-    // differences.
+    // const std::vector<Res> res =
+    // simulate<ssc::solver::EulerStepper>(test_data::read("yaml/bug_3187.yml"), scheduler); // ABa
+    // 23/05/25 : Required to make test successful with new forced DoFs implementation. Otherwise,
+    // numerical errors with EulerStepper lead to non physical differences.
     const std::vector<Res> res =
-        simulate<ssc::solver::RK4Stepper>(test_data::bug_3187(), scheduler);
+        simulate<ssc::solver::RK4Stepper>(test_data::read("yaml/bug_3187.yml"), scheduler);
 
     ASSERT_DOUBLE_EQ(1, res.at(0).x[3]);
     ASSERT_DOUBLE_EQ(1, res.at(1).x[3]);
@@ -1017,19 +1038,21 @@ TEST_F(SimTest, bug_3185_should_detect_frame_toto_does_not_exist)
 {
     ssc::solver::Scheduler scheduler(0, 11, 1);
     ASSERT_THROW(
-        simulate<ssc::solver::EulerStepper>(test_data::bug_3185_with_invalid_frame(), scheduler),
+        simulate<ssc::solver::EulerStepper>(
+            test_data::read("yaml/bug_3185_with_invalid_frame.yml"),
+            scheduler),
         InvalidInputException);
 }
 
 TEST_F(SimTest, bug_3185_should_simulate_properly)
 {
     ssc::solver::Scheduler scheduler(0, 11, 1);
-    simulate<ssc::solver::EulerStepper>(test_data::bug_3185(), scheduler);
+    simulate<ssc::solver::EulerStepper>(test_data::read("yaml/bug_3185.yml"), scheduler);
 }
 
 TEST_F(SimTest, bug_3185_all_data_should_be_there)
 {
-    const std::string yaml = test_data::bug_3185();
+    const std::string yaml = test_data::read("yaml/bug_3185.yml");
     ListOfObservers observer(parse_output(yaml));
     const auto input = SimulatorYamlParser(yaml).parse();
     auto sys = get_system(input, 0);
@@ -1054,7 +1077,7 @@ TEST_F(SimTest, bug_3185_all_data_should_be_there)
 
 TEST_F(SimTest, bug_3185_check_values)
 {
-    const std::string yaml = test_data::bug_3185();
+    const std::string yaml = test_data::read("yaml/bug_3185.yml");
     ListOfObservers observer(parse_output(yaml));
     const auto input = SimulatorYamlParser(yaml).parse();
     auto sys = get_system(input, 0);
@@ -1128,10 +1151,12 @@ TEST_F(SimTest, bug_3185_check_values)
 
 TEST_F(SimTest, LONG_can_use_controllers_to_output_commands)
 {
-    const auto yaml = SimulatorYamlParser(
-                          test_data::propulsion_and_resistance() +
-                          test_data::dummy_controllers_and_commands_for_propulsion_and_resistance())
-                          .parse();
+    const auto yaml =
+        SimulatorYamlParser(
+            test_data::read("yaml/propulsion_and_resistance.yml") +
+            test_data::read(
+                "yaml/dummy_controllers_and_commands_for_propulsion_and_resistance.yml"))
+            .parse();
     const size_t N = 250;
     ssc::solver::Scheduler scheduler(0, N, 1);
     // const std::vector<Res> res = simulate<ssc::solver::EulerStepper>(yaml, test_ship_stl,
@@ -1158,10 +1183,10 @@ TEST_F(SimTest, LONG_can_use_controllers_to_output_commands)
 
 TEST_F(SimTest, LONG_can_simulate_heading_keeping_using_controllers)
 {
-    const auto yaml =
-        SimulatorYamlParser(
-            test_data::heading_keeping_base() + test_data::heading_keeping_controllers())
-            .parse();
+    const auto yaml = SimulatorYamlParser(
+                          test_data::read("yaml/heading_keeping_base.yml") +
+                          test_data::read("yaml/heading_keeping_controllers.yml"))
+                          .parse();
     const size_t N = 800;
     ssc::solver::Scheduler scheduler(0, N, 1);
     const std::vector<Res> res = simulate<ssc::solver::EulerStepper>(yaml, scheduler);
@@ -1215,7 +1240,8 @@ TEST_F(SimTest, LONG_can_simulate_heading_with_non_constant_controllers_setpoint
                                 << "    \n";
 
     const auto yaml =
-        SimulatorYamlParser(test_data::heading_keeping_base() + heading_keeping_controllers.str())
+        SimulatorYamlParser(
+            test_data::read("yaml/heading_keeping_base.yml") + heading_keeping_controllers.str())
             .parse();
     const size_t N = 800;
     ssc::solver::Scheduler scheduler(0, N, 1);
@@ -1243,8 +1269,9 @@ TEST_F(SimTest, should_throw_if_a_controller_has_an_unknown_type)
     ssc::solver::Scheduler scheduler(0, 11, 1);
     ASSERT_THROW(
         simulate<ssc::solver::EulerStepper>(
-            test_data::falling_ball_example() + test_data::setpoints() + test_data::controllers() +
-                test_data::unknown_controller(),
+            test_data::read("tutorials/tutorial_01_falling_ball.yml") +
+                test_data::read("yaml/setpoints.yml") + test_data::read("yaml/controllers.yml") +
+                test_data::read("yaml/unknown_controller.yml"),
             scheduler),
         InvalidInputException);
 }
@@ -1263,7 +1290,7 @@ struct DerivativeSizeCheckingSim : public Sim {
 
 TEST_F(SimTest, should_initialize_outputs_of_several_bodies)
 {
-    const std::string yaml = test_data::falling_ball_example();
+    const std::string yaml = test_data::read("tutorials/tutorial_01_falling_ball.yml");
     auto input = SimulatorYamlParser(yaml).parse();
     input.bodies.push_back(
         SimulatorYamlParser(boost::replace_all_copy(yaml, "ball", "ball2")).parse().bodies.front());

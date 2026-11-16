@@ -13,13 +13,12 @@
 #include "xdyn/core/BodyBuilder.hpp"
 #include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/SimulatorBuilder.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/environment_models/DefaultWindModel.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
 #include "xdyn/listeners_and_controllers/builders.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 // STL
@@ -277,10 +276,12 @@ TEST_F(BlockedDOFTest, define_matrix_of_forced_DoF)
 {
     // ARRANGE
     std::ofstream writeHDB("KVLCC2.hdb");
-    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB << test_data::read("hdb/test_ship.hdb");
     writeHDB.close();
     YamlSimulatorInput yaml =
-        SimulatorYamlParser(test_data::kvlcc2() + test_data::blockedDoF_OTT()).parse();
+        SimulatorYamlParser(
+            test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_OTT.yml"))
+            .parse();
     std::remove("KVLCC2.hdb");
     // ACT
     BlockedDOF blocked_states((yaml.bodies.front()).blocked_dof, 0);
@@ -310,10 +311,12 @@ TEST_F(BlockedDOFTest, force_acceleration)
 {
     // ARRANGE
     std::ofstream writeHDB("KVLCC2.hdb");
-    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB << test_data::read("hdb/test_ship.hdb");
     writeHDB.close();
     YamlSimulatorInput input =
-        SimulatorYamlParser(test_data::kvlcc2() + test_data::blockedDoF_OTT()).parse();
+        SimulatorYamlParser(
+            test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_OTT.yml"))
+            .parse();
     SimulatorBuilder builder(input);
     builder.can_parse<DefaultSurfaceElevation>();
     builder.can_parse<DefaultWindModel>();
@@ -355,10 +358,12 @@ TEST_F(BlockedDOFTest, define_matrix_of_forcing_force_according_to_user_info)
 {
     // ARRANGE
     std::ofstream writeHDB("KVLCC2.hdb");
-    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB << test_data::read("hdb/test_ship.hdb");
     writeHDB.close();
     YamlSimulatorInput yaml =
-        SimulatorYamlParser(test_data::kvlcc2() + test_data::blockedDoF_idealRudder()).parse();
+        SimulatorYamlParser(
+            test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_idealRudder.yml"))
+            .parse();
     std::remove("KVLCC2.hdb");
     // ACT
     BlockedDOF blocked_states((yaml.bodies.front()).blocked_dof, 0);
@@ -384,10 +389,12 @@ TEST_F(BlockedDOFTest, force_acceleration_w_idealRudder)
 {
     // ARRANGE
     std::ofstream writeHDB("KVLCC2.hdb");
-    writeHDB << test_data::KVLCC2_hdb();
+    writeHDB << test_data::read("hdb/test_ship.hdb");
     writeHDB.close();
     YamlSimulatorInput input =
-        SimulatorYamlParser(test_data::kvlcc2() + test_data::blockedDoF_idealRudder()).parse();
+        SimulatorYamlParser(
+            test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_idealRudder.yml"))
+            .parse();
     SimulatorBuilder builder(input);
     builder.can_parse<DefaultSurfaceElevation>();
     builder.can_parse<DefaultWindModel>();

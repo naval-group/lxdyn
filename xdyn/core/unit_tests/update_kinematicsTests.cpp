@@ -10,8 +10,8 @@
 #include <ssc/kinematics.hpp>
 
 #include "BodyBuilderTest.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/core/update_kinematics.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 constexpr double EPS = 1E-10;
@@ -22,7 +22,7 @@ update_kinematicsTests::update_kinematicsTests() : a(ssc::random_data_generator:
 
 TEST_F(update_kinematicsTests, can_get_initial_states)
 {
-    const auto yaml = SimulatorYamlParser(test_data::full_example()).parse();
+    const auto yaml = SimulatorYamlParser(test_data::read("yaml/full_example.yml")).parse();
     const StateType x = get_initial_states(yaml.rotations, yaml.bodies);
     ASSERT_EQ(13, x.size());
     ASSERT_DOUBLE_EQ(4, x.at(0));

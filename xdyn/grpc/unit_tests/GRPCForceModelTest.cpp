@@ -8,24 +8,24 @@
 #include "GRPCForceModelTest.hpp"
 
 #include "GRPCForceModel.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 TEST_F(GRPCForceModelTest, can_parse_reference_frame)
 {
-    const auto input = GRPCForceModel::parse(test_data::gRPC_force_model());
+    const auto input = GRPCForceModel::parse(test_data::read("yaml/gRPC_force_model.yml"));
     ASSERT_EQ("force-model:9002", input.url);
 }
 
 TEST_F(GRPCForceModelTest, can_parse_name)
 {
-    const auto input = GRPCForceModel::parse(test_data::gRPC_force_model());
+    const auto input = GRPCForceModel::parse(test_data::read("yaml/gRPC_force_model.yml"));
     ASSERT_EQ("parametric oscillator", input.name);
 }
 
 TEST_F(GRPCForceModelTest, can_parse_rest_of_yaml_parameters)
 {
-    const auto input = GRPCForceModel::parse(test_data::gRPC_force_model());
+    const auto input = GRPCForceModel::parse(test_data::read("yaml/gRPC_force_model.yml"));
     ASSERT_EQ(
         "name: parametric oscillator\n"
         "model: grpc\n"
@@ -37,14 +37,15 @@ TEST_F(GRPCForceModelTest, can_parse_rest_of_yaml_parameters)
 
 TEST_F(GRPCForceModelTest, can_parse_hdb)
 {
-    const auto input = GRPCForceModel::parse(test_data::gRPC_force_model() + "hdb: some_hdb.hdb\n");
+    const auto input =
+        GRPCForceModel::parse(test_data::read("yaml/gRPC_force_model.yml") + "hdb: some_hdb.hdb\n");
     ASSERT_EQ("some_hdb.hdb", input.hdb_filename);
 }
 
 TEST_F(GRPCForceModelTest, can_parse_precal)
 {
-    const auto input =
-        GRPCForceModel::parse(test_data::gRPC_force_model() + "raodb: some_precal.ini\n");
+    const auto input = GRPCForceModel::parse(
+        test_data::read("yaml/gRPC_force_model.yml") + "raodb: some_precal.ini\n");
     ASSERT_EQ("some_precal.ini", input.precal_filename);
 }
 
@@ -52,10 +53,12 @@ TEST_F(GRPCForceModelTest, should_throw_if_both_hdb_and_precal_are_defined_in_an
 {
     ASSERT_THROW(
         GRPCForceModel::parse(
-            test_data::gRPC_force_model() + "hdb: some_hdb.hdb\n" + "raodb: some_precal.ini\n"),
+            test_data::read("yaml/gRPC_force_model.yml") + "hdb: some_hdb.hdb\n" +
+            "raodb: some_precal.ini\n"),
         InvalidInputException);
     ASSERT_THROW(
         GRPCForceModel::parse(
-            test_data::gRPC_force_model() + "raodb: some_precal.ini\n" + "hdb: some_hdb.hdb\n"),
+            test_data::read("yaml/gRPC_force_model.yml") + "raodb: some_precal.ini\n" +
+            "hdb: some_hdb.hdb\n"),
         InvalidInputException);
 }

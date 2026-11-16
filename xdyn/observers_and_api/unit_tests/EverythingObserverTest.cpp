@@ -12,9 +12,8 @@
 
 #include "EverythingObserver.hpp"
 #include "ListOfObservers.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 #define PI M_PI
 
@@ -43,7 +42,8 @@ TEST_F(EverythingObserverTest, example)
     //! [MapObserverTest example]
     const double dt = 1;
     const double tend = 1;
-    auto sys = get_system(test_data::GM_cube(), test_data::cube(), 0);
+    auto sys =
+        get_system(test_data::read("yaml/GM_cube.yml"), test_data::read("tutorials/cube.stl"), 0);
     auto list_of_observers = observers();
 
     ssc::solver::Scheduler scheduler(0, tend, dt);
@@ -65,7 +65,10 @@ TEST_F(EverythingObserverTest, GM)
     const double max_relative_error = 1E-2;
     const double dt = 1;
     const double tend = 1;
-    auto sys = get_system(test_data::GM_cube(), test_data::cube_for_gm_test(), 0);
+    auto sys = get_system(
+        test_data::read("yaml/GM_cube.yml"),
+        test_data::read("stl/cube_for_gm_test.stl"),
+        0);
     ssc::solver::Scheduler scheduler(0, tend, dt);
     auto list_of_observers = observers();
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, list_of_observers);

@@ -13,7 +13,7 @@
 #include "gmock/gmock.h"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #define PI M_PI
 
 using namespace maneuvering;
@@ -27,7 +27,7 @@ ManeuveringForceModelTest::ManeuveringForceModelTest()
 TEST_F(ManeuveringForceModelTest, can_parse_frame_of_reference)
 {
     //! [ManeuveringForceModelTest example]
-    const auto data = ManeuveringForceModel::parse(test_data::maneuvering());
+    const auto data = ManeuveringForceModel::parse(test_data::read("yaml/maneuvering.yml"));
     //! [ManeuveringForceModelTest example]
     //! [ManeuveringForceModelTest expected output]
     ASSERT_DOUBLE_EQ(0.696, data.frame_of_reference.coordinates.x);
@@ -41,7 +41,7 @@ TEST_F(ManeuveringForceModelTest, can_parse_frame_of_reference)
 
 TEST_F(ManeuveringForceModelTest, can_parse_X_Y_Z_K_M_N)
 {
-    auto data = ManeuveringForceModel::parse(test_data::maneuvering());
+    auto data = ManeuveringForceModel::parse(test_data::read("yaml/maneuvering.yml"));
     ASSERT_EQ("0.5*rho*Vs^2*L^2*X_", data.var2expr["X"]);
     ASSERT_EQ("0.5*rho*Vs^2*L^2*Y_", data.var2expr["Y"]);
     ASSERT_EQ("0", data.var2expr["Z"]);
@@ -52,13 +52,13 @@ TEST_F(ManeuveringForceModelTest, can_parse_X_Y_Z_K_M_N)
 
 TEST_F(ManeuveringForceModelTest, can_parse_model_name)
 {
-    auto data = ManeuveringForceModel::parse(test_data::maneuvering());
+    auto data = ManeuveringForceModel::parse(test_data::read("yaml/maneuvering.yml"));
     ASSERT_EQ("test", data.name);
 }
 
 TEST_F(ManeuveringForceModelTest, can_parse_commands)
 {
-    auto data = ManeuveringForceModel::parse(test_data::maneuvering());
+    auto data = ManeuveringForceModel::parse(test_data::read("yaml/maneuvering.yml"));
     ASSERT_THAT(data.commands, ElementsAre("a", "b", "c"));
 }
 
@@ -364,7 +364,8 @@ man(0.1,2.04,6.28,0.45,0.01,5.869,0.23,0,0.38)
 
 TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model_with_same_frame_of_reference)
 {
-    auto data = ManeuveringForceModel::parse(test_data::maneuvering_with_same_frame_of_reference());
+    auto data = ManeuveringForceModel::parse(
+        test_data::read("yaml/maneuvering_with_same_frame_of_reference.yml"));
     const auto env = get_env_with_default_rotation_convention();
     const double t = 0;
     auto states = get_body("TestShip")->get_states();
@@ -401,7 +402,8 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model_with_same_
 
 TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model_with_same_frame_of_reference2)
 {
-    auto data = ManeuveringForceModel::parse(test_data::maneuvering_with_same_frame_of_reference());
+    auto data = ManeuveringForceModel::parse(
+        test_data::read("yaml/maneuvering_with_same_frame_of_reference.yml"));
     const auto env = get_env_with_default_rotation_convention();
     const double t = 0;
     auto states = get_body("TestShip")->get_states();
@@ -464,7 +466,7 @@ def get_force_and_torque(x, y, z, u, v, w, p, q, r, phi, theta, psi, tx, ty, tz)
 
 TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model)
 {
-    auto data = ManeuveringForceModel::parse(test_data::maneuvering());
+    auto data = ManeuveringForceModel::parse(test_data::read("yaml/maneuvering.yml"));
     const auto env = get_env_with_default_rotation_convention();
     const double t = 0;
     auto states = get_body("TestShip")->get_states();
@@ -501,7 +503,7 @@ TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model)
 
 TEST_F(ManeuveringForceModelTest, can_evaluate_full_maneuvering_model2)
 {
-    auto data = ManeuveringForceModel::parse(test_data::maneuvering());
+    auto data = ManeuveringForceModel::parse(test_data::read("yaml/maneuvering.yml"));
     const auto env = get_env_with_default_rotation_convention();
     const double t = 0;
     auto states = get_body("TestShip")->get_states();
@@ -666,7 +668,7 @@ TEST_F(ManeuveringForceModelTest, can_use_euler_angles_in_maneuvering)
 
 TEST_F(ManeuveringForceModelTest, can_get_Tmax)
 {
-    const auto data = ManeuveringForceModel::parse(test_data::man_with_delay());
+    const auto data = ManeuveringForceModel::parse(test_data::read("yaml/man_with_delay.yml"));
     const auto env = get_env_with_default_rotation_convention();
     ManeuveringForceModel force(data, "ball", env);
     ASSERT_DOUBLE_EQ(10, force.get_Tmax());

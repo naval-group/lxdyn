@@ -109,7 +109,9 @@ pub fn addTests(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) *std.Bui
     // The tests include their module's headers by bare name.
     for (moduleDirs(b)) |dir| m.addIncludePath(b.path(b.pathJoin(&.{ "xdyn", dir })));
     m.addCSourceFiles(.{ .root = b.path("xdyn/executables"), .files = &.{"run_all_tests.cpp"}, .flags = ctx.cpp_flags });
-    m.addCSourceFiles(.{ .root = b.path("xdyn"), .files = unitTestSources(b), .flags = ctx.cpp_flags });
+    // Absolute, so a test finds its fixtures wherever the suite is started from.
+    const test_data = b.fmt("-DXDYN_TEST_DATA_DIR=\"{s}\"", .{root.fromRoot(b, "test_data")});
+    m.addCSourceFiles(.{ .root = b.path("xdyn"), .files = unitTestSources(b), .flags = root.concat(b, ctx.cpp_flags, &.{test_data}) });
     m.linkLibrary(libxdyn);
     m.addObjectFile(.{ .cwd_relative = b.fmt("{s}/libxdyndeps_test.a", .{ctx.deps_root}) });
     ctx.linkDeps(m);
