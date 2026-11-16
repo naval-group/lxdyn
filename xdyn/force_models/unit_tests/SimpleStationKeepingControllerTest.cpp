@@ -10,7 +10,7 @@
 #include <cmath>
 
 #include "SimpleStationKeepingController.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #define PI M_PI
 
 constexpr double EPS = 1E-14;
@@ -22,7 +22,8 @@ SimpleStationKeepingControllerTest::SimpleStationKeepingControllerTest()
 
 TEST_F(SimpleStationKeepingControllerTest, parser)
 {
-    const auto k = SimpleStationKeepingController::parse(test_data::simple_station_keeping());
+    const auto k =
+        SimpleStationKeepingController::parse(test_data::read("yaml/simple_station_keeping.yml"));
     ASSERT_DOUBLE_EQ(2, k.T_x);
     ASSERT_DOUBLE_EQ(3, k.T_y);
     ASSERT_DOUBLE_EQ(4, k.T_psi);
@@ -34,7 +35,8 @@ TEST_F(SimpleStationKeepingControllerTest, parser)
 
 TEST_F(SimpleStationKeepingControllerTest, force_and_torque)
 {
-    auto input = SimpleStationKeepingController::parse(test_data::simple_station_keeping());
+    auto input =
+        SimpleStationKeepingController::parse(test_data::read("yaml/simple_station_keeping.yml"));
     input.T_x = 2 * PI;
     input.T_y = 2 * PI / 3;
     input.T_psi = 2 * PI / 4;

@@ -1,8 +1,8 @@
 #include "SimulationServerObserverTest.hpp"
 
 #include "SimulationServerObserver.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 
 SimulationServerObserverTest::SimulationServerObserverTest()
@@ -14,7 +14,7 @@ TEST_F(SimulationServerObserverTest, requested_additional_variables_are_availabl
 {
     const double dt = 1;
     const double tend = 10;
-    auto sys = get_system(test_data::falling_ball_example(), 0);
+    auto sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
 
     SimulationServerObserver observer({"Fz(gravity,ball,ball)"});
     ssc::solver::Scheduler scheduler(0, tend, dt);

@@ -11,10 +11,10 @@
 #include <ssc/solver/DiscreteSystem.hpp>
 #include <ssc/solver/Scheduler.hpp>
 
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/listeners_and_controllers/PIDController.hpp"
 #include "xdyn/listeners_and_controllers/listeners.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_controllers.hpp"
 #include "xdyn/yaml_parser/parse_time_series.hpp"
 #define PI M_PI
@@ -91,7 +91,7 @@ TEST_F(PIDControllerTest, update_command_in_ds_example)
     const double x = 2 * rpm_co;
     const double y = rpm_co + 0.05;
 
-    Sim sys = get_system(test_data::falling_ball_example(), 0);
+    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
 
     //! [callback example]
     // First time step
@@ -122,7 +122,7 @@ TEST_F(PIDControllerTest, can_compute_PID_commands)
         pid_specific_yaml(Kp, Ki, Kd, "rpm_co", "propeller(rpm)") +
             "state weights:\n    x: 1\n    y: -1\n");
 
-    Sim sys = get_system(test_data::falling_ball_example(), 0);
+    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
 
     // First time step
     ASSERT_EQ(tstart, scheduler.get_time());
@@ -190,7 +190,7 @@ TEST_F(PIDControllerTest, can_compute_PID_commands_several_times_at_first_time_s
         pid_specific_yaml(Kp, Ki, Kd, "rpm_co", "propeller(rpm)") +
             "state weights:\n    x: 1\n    y: -1\n");
 
-    Sim sys = get_system(test_data::falling_ball_example(), 0);
+    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
 
     // First time step
     ASSERT_EQ(tstart, scheduler.get_time());
@@ -233,7 +233,7 @@ TEST_F(PIDControllerTest, can_use_euler_angles_in_states)
         a.random<std::string>(),
         pid_specific_yaml(Kp, Ki, Kd, "psi", "propeller(psi_co)") + "state weights:\n    psi: 1\n");
 
-    Sim sys = get_system(test_data::falling_ball_example(), 0);
+    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
 
     const double psi = 0.45;
     const double error = -0.05;
@@ -266,7 +266,7 @@ TEST_F(PIDControllerTest, can_use_euler_angles_in_states)
 TEST_F(PIDControllerTest, can_initialize_controllers)
 {
     //! [controllersTest initialize_controllers]
-    Sim sys = get_system(test_data::falling_ball_example(), 0);
+    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
     const double tstart = 0.1;
     const double dt = 1;
     ssc::solver::Scheduler scheduler(tstart, 10, dt);

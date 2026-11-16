@@ -11,7 +11,7 @@
 #include "BasicBuoyancyForceModel.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 
 #define BODY "body 1"
 
@@ -28,7 +28,8 @@ TEST_F(BasicBuoyancyForceModelTest, example)
     env.rho = 1000;
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
-    const auto input = BasicBuoyancyForceModel::parse(test_data::basic_buoyancy_force());
+    const auto input =
+        BasicBuoyancyForceModel::parse(test_data::read("yaml/basic_buoyancy_force.yml"));
     BasicBuoyancyForceModel F(input, BODY, env);
     ASSERT_EQ("basic buoyancy", F.model_name());
     BodyStates states = get_body(BODY)->get_states();
@@ -65,7 +66,8 @@ TEST_F(BasicBuoyancyForceModelTest, example_with_an_orientation)
     env.rho = 1000;
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(Transform(rot, "NED", BODY));
-    const auto input = BasicBuoyancyForceModel::parse(test_data::basic_buoyancy_force());
+    const auto input =
+        BasicBuoyancyForceModel::parse(test_data::read("yaml/basic_buoyancy_force.yml"));
     BasicBuoyancyForceModel F(input, BODY, env);
     BodyStates states = get_body(BODY)->get_states();
 
@@ -87,7 +89,8 @@ TEST_F(BasicBuoyancyForceModelTest, potential_energy)
     env.rho = 1000;
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
     env.k->add(ssc::kinematics::Transform(ssc::kinematics::Point("NED"), BODY));
-    const auto input = BasicBuoyancyForceModel::parse(test_data::basic_buoyancy_force());
+    const auto input =
+        BasicBuoyancyForceModel::parse(test_data::read("yaml/basic_buoyancy_force.yml"));
     BasicBuoyancyForceModel F(input, BODY, env);
     BodyStates states = get_body(BODY)->get_states();
 

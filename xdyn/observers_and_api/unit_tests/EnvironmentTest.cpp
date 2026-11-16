@@ -4,10 +4,9 @@
 #include <fstream>
 
 #include "xdyn/core/EnvironmentAndFrames.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #define PI M_PI
 
@@ -15,9 +14,9 @@ TEST_F(EnvironmentTest, can_get_wave_elevation_with_test_data_full_example)
 {
     const std::string stl_filename("test_ship.stl");
     std::ofstream stl(stl_filename);
-    stl << test_data::cube();
+    stl << test_data::read("tutorials/cube.stl");
     stl.close();
-    Sim sim = get_system(test_data::full_example());
+    Sim sim = get_system(test_data::read("yaml/full_example.yml"));
     auto waves = sim.get_env().w;
     std::vector<double> res =
         waves->get_and_check_wave_height(std::vector<double>{0.0}, std::vector<double>{0.0}, 0);
@@ -28,7 +27,7 @@ TEST_F(EnvironmentTest, can_get_wave_elevation_with_test_data_full_example)
 
 TEST_F(EnvironmentTest, can_get_wave_elevation_with_simple_waves)
 {
-    Sim sim = get_system(test_data::simple_waves());
+    Sim sim = get_system(test_data::read("yaml/simple_waves.yml"));
     auto waves = sim.get_env().w;
     std::vector<double> res =
         waves->get_and_check_wave_height(std::vector<double>{0.0}, std::vector<double>{0.0}, 0);
@@ -38,7 +37,7 @@ TEST_F(EnvironmentTest, can_get_wave_elevation_with_simple_waves)
 
 TEST_F(EnvironmentTest, can_get_wave_elevation_with_waves_from_a_list_of_rays)
 {
-    Sim sim = get_system(test_data::waves_from_a_list_of_rays());
+    Sim sim = get_system(test_data::read("yaml/waves_from_a_list_of_rays.yml"));
     auto waves = sim.get_env().w;
     std::vector<double> res =
         waves->get_and_check_wave_height(std::vector<double>{0.0}, std::vector<double>{0.0}, 0);

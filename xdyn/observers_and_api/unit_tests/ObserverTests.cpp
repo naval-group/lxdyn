@@ -16,6 +16,7 @@
 #include "ListOfObservers.hpp"
 #include "MapObserver.hpp"
 #include "xdyn/core/Sim.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/test_data_generator/stl_data.hpp"
@@ -44,8 +45,8 @@ TEST_F(ObserverTests, can_observe_using_a_websocket)
     std::shared_ptr<ssc::websocket::Server> w =
         std::make_shared<ssc::websocket::Server>(handler, WEBSOCKET_PORT);
     {
-        const auto yaml = test_data::oscillating_cube_example();
-        const auto mesh = test_data::cube();
+        const auto yaml = test_data::read("tutorials/oscillating_cube_test.yml");
+        const auto mesh = test_data::read("tutorials/cube.stl");
         Sim sys = get_system(yaml, mesh, 0);
         YamlOutput out;
         out.address = WEBSOCKET_ADDRESS;
@@ -68,8 +69,8 @@ TEST_F(ObserverTests, can_observe_using_a_websocket)
 TEST_F(ObserverTests, can_output_all_results)
 {
     // This is to test Observer
-    const auto yaml = test_data::oscillating_cube_example();
-    const auto mesh = test_data::cube();
+    const auto yaml = test_data::read("tutorials/oscillating_cube_test.yml");
+    const auto mesh = test_data::read("tutorials/cube.stl");
     Sim sys = get_system(yaml, mesh, 0);
     // Should output all results when using default constructor
     MapObserver observer = MapObserver();

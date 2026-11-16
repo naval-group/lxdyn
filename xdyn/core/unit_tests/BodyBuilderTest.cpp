@@ -8,12 +8,11 @@
 #include "BodyBuilderTest.hpp"
 
 #include "BodyBuilder.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_data_structures/YamlDynamics6x6Matrix.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/mesh/Mesh.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
@@ -31,16 +30,17 @@ BodyBuilderTest::BodyBuilderTest()
 
 BodyPtr BodyBuilderTest::build_body(size_t idx)
 {
-    const auto yaml = SimulatorYamlParser(test_data::full_example()).parse();
-    const auto mesh = read_stl(test_data::cube());
+    const auto yaml = SimulatorYamlParser(test_data::read("yaml/full_example.yml")).parse();
+    const auto mesh = read_stl(test_data::read("tutorials/cube.stl"));
     BodyBuilder builder(yaml.rotations);
     return builder.build(yaml.bodies.front(), mesh, idx, 0, yaml.rotations, 0);
 }
 
 BodyPtr BodyBuilderTest::build_body_with_filtered_states()
 {
-    const auto yaml = SimulatorYamlParser(test_data::tutorial_10_gRPC_force_model()).parse();
-    const auto mesh = read_stl(test_data::cube());
+    const auto yaml =
+        SimulatorYamlParser(test_data::read("tutorials/tutorial_10_gRPC_force_model.yml")).parse();
+    const auto mesh = read_stl(test_data::read("tutorials/cube.stl"));
     BodyBuilder builder(yaml.rotations);
     return builder.build(yaml.bodies.front(), mesh, 0, 0, yaml.rotations, 100);
 }
@@ -549,7 +549,7 @@ TEST_F(BodyBuilderTest, hydrodynamic_forces_calculation_point_in_body_frame)
 
 TEST_F(BodyBuilderTest, build_added_matrix_on_full_example)
 {
-    const auto yaml = SimulatorYamlParser(test_data::full_example()).parse();
+    const auto yaml = SimulatorYamlParser(test_data::read("yaml/full_example.yml")).parse();
     const Eigen::Matrix<double, 6, 6> ret =
         build_added_matrix("my_body", yaml.bodies[0].dynamics.added_mass);
     const auto states = body->get_states();

@@ -11,7 +11,8 @@
 
 #include "ForceTester.hpp"
 #include "gmock/gmock.h"
-#include "xdyn/binary_stl_data/generate_test_ship.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
+#include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/external_file_formats/stl_writer.hpp"
 #include "xdyn/force_models/BasicBuoyancyForceModel.hpp"
 #include "xdyn/force_models/ExactHydrostaticForceModel.hpp"
@@ -20,9 +21,6 @@
 #include "xdyn/force_models/GravityForceModel.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/check_input_yaml.hpp"
 
@@ -37,7 +35,9 @@ ForceTests::ForceTests() : a(ssc::random_data_generator::DataGenerator(8222)) {}
 
 TEST_F(ForceTests, LONG_fast_hydrostatic_should_only_be_along_z)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<FastHydrostaticForceModel>();
     const size_t n = 100;
@@ -57,7 +57,9 @@ TEST_F(ForceTests, LONG_fast_hydrostatic_should_only_be_along_z)
 
 TEST_F(ForceTests, DISABLED_fast_hydrostatic_should_only_be_along_z_for_test_ship)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_ship());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        read_stl(test_data::read("tutorials/test_ship.stl")));
 
     test.add<FastHydrostaticForceModel>();
     const size_t n = 100;
@@ -83,7 +85,9 @@ TEST_F(ForceTests, DISABLED_fast_hydrostatic_should_only_be_along_z_for_test_shi
 
 TEST_F(ForceTests, LONG_rotation_around_z_should_not_change_anything_for_fast_hydrostatic)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_ship());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        read_stl(test_data::read("tutorials/test_ship.stl")));
 
     test.add<FastHydrostaticForceModel>();
     const size_t n = 100;
@@ -99,7 +103,9 @@ TEST_F(ForceTests, LONG_rotation_around_z_should_not_change_anything_for_fast_hy
 
 TEST_F(ForceTests, DISABLED_no_torque_on_y_and_z_for_fast_hydrostatic_when_rotating_around_x)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<FastHydrostaticForceModel>();
     const size_t n = 100;
@@ -113,7 +119,9 @@ TEST_F(ForceTests, DISABLED_no_torque_on_y_and_z_for_fast_hydrostatic_when_rotat
 
 TEST_F(ForceTests, DISABLED_no_torque_on_x_and_z_for_fast_hydrostatic_when_rotating_around_y)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<FastHydrostaticForceModel>();
     const size_t n = 100;
@@ -127,7 +135,9 @@ TEST_F(ForceTests, DISABLED_no_torque_on_x_and_z_for_fast_hydrostatic_when_rotat
 
 TEST_F(ForceTests, DISABLED_no_torque_for_fast_hydrostatic_when_cube_is_at_45_deg_around_x)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<FastHydrostaticForceModel>();
     const auto F = test.force_in_ned(0, 0, 0, PI / 4, 0, 0);
@@ -138,7 +148,9 @@ TEST_F(ForceTests, DISABLED_no_torque_for_fast_hydrostatic_when_cube_is_at_45_de
 
 TEST_F(ForceTests, LONG_norm_of_fast_torque_should_be_equal_for_opposite_rotations_of_the_cube)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<FastHydrostaticForceModel>();
     const size_t n = 100;
@@ -165,7 +177,9 @@ TEST_F(
     ForceTests,
     force_should_be_correct_for_fast_hydrostatic_when_cube_is_at_45_deg_around_x_and_y)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<FastHydrostaticForceModel>();
     const auto F = test.force_in_ned(0, 0, 0, PI / 4, PI / 4, 0);
@@ -176,7 +190,9 @@ TEST_F(
 
 TEST_F(ForceTests, LONG_exact_hydrostatic_should_only_be_along_z)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<ExactHydrostaticForceModel>();
     const size_t n = 100;
@@ -196,7 +212,9 @@ TEST_F(ForceTests, LONG_exact_hydrostatic_should_only_be_along_z)
 
 TEST_F(ForceTests, DISABLED_exact_hydrostatic_should_only_be_along_z_for_test_ship)
 {
-    ForceTester test(test_data::test_ship_exact_hydrostatic_test(), test_ship());
+    ForceTester test(
+        test_data::read("tutorials/tutorial_02_exact_hydrostatic.yml"),
+        read_stl(test_data::read("tutorials/test_ship.stl")));
 
     test.add<ExactHydrostaticForceModel>();
     const size_t n = 100;
@@ -222,7 +240,9 @@ TEST_F(ForceTests, DISABLED_exact_hydrostatic_should_only_be_along_z_for_test_sh
 
 TEST_F(ForceTests, LONG_rotation_around_z_should_not_change_anything_for_exact_hydrostatic)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_ship());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        read_stl(test_data::read("tutorials/test_ship.stl")));
 
     test.add<ExactHydrostaticForceModel>();
     const size_t n = 100;
@@ -238,7 +258,9 @@ TEST_F(ForceTests, LONG_rotation_around_z_should_not_change_anything_for_exact_h
 
 TEST_F(ForceTests, DISABLED_no_torque_on_y_and_z_for_exact_hydrostatic_when_rotating_around_x)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<ExactHydrostaticForceModel>();
     const size_t n = 100;
@@ -252,7 +274,9 @@ TEST_F(ForceTests, DISABLED_no_torque_on_y_and_z_for_exact_hydrostatic_when_rota
 
 TEST_F(ForceTests, DISABLED_no_torque_on_x_and_z_for_exact_hydrostatic_when_rotating_around_y)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<ExactHydrostaticForceModel>();
     const size_t n = 100;
@@ -266,7 +290,9 @@ TEST_F(ForceTests, DISABLED_no_torque_on_x_and_z_for_exact_hydrostatic_when_rota
 
 TEST_F(ForceTests, DISABLED_no_torque_for_exact_hydrostatic_when_cube_is_at_45_deg_around_x)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<ExactHydrostaticForceModel>();
     const auto F = test.force_in_ned(0, 0, 0, PI / 4, 0, 0);
@@ -277,7 +303,9 @@ TEST_F(ForceTests, DISABLED_no_torque_for_exact_hydrostatic_when_cube_is_at_45_d
 
 TEST_F(ForceTests, LONG_norm_of_exact_torque_should_be_equal_for_opposite_rotations_of_the_cube)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<ExactHydrostaticForceModel>();
     const size_t n = 100;
@@ -304,7 +332,9 @@ TEST_F(
     ForceTests,
     force_should_be_correct_for_exact_hydrostatic_when_cube_is_at_45_deg_around_x_and_y)
 {
-    ForceTester test(test_data::oscillating_cube_example(), test_data::cube());
+    ForceTester test(
+        test_data::read("tutorials/oscillating_cube_test.yml"),
+        test_data::read("tutorials/cube.stl"));
 
     test.add<ExactHydrostaticForceModel>();
     const auto F = test.force_in_ned(0, 0, 0, PI / 4, PI / 4, 0);
@@ -315,14 +345,16 @@ TEST_F(
 
 TEST_F(ForceTests, LONG_validation_of_test_ship_volume_against_VTK)
 {
-    ForceTester test(test_data::test_ship_damping(), write_stl(test_ship()));
+    ForceTester test(
+        test_data::read("tutorials/tutorial_04_damping.yml"),
+        write_stl(read_stl(test_data::read("tutorials/test_ship.stl"))));
     ASSERT_NEAR(ANTHINEAS_VOLUME, test.emerged_volume(0, 0, -100, 0, 0, 0), 1E-4);
     ASSERT_NEAR(ANTHINEAS_VOLUME, test.immersed_volume(0, 0, 100, 0, 0, 0), 1E-4);
 }
 
 TEST_F(ForceTests, validation_of_L_volume_against_VTK)
 {
-    ForceTester test(test_data::L_config(), L());
+    ForceTester test(test_data::read("yaml/L_config.yml"), L());
     const double z0 = -2.5 / 3;
     const double eps = 1E-6;
     ASSERT_NEAR(0, test.immersed_volume(0, 0, z0, 0, 0, 0), eps);
@@ -341,7 +373,9 @@ TEST_F(ForceTests, validation_of_L_volume_against_VTK)
 
 TEST_F(ForceTests, LONG_immersed_and_emerged_surfaces_are_correct)
 {
-    ForceTester test(test_data::test_ship_damping(), write_stl(test_ship()));
+    ForceTester test(
+        test_data::read("tutorials/tutorial_04_damping.yml"),
+        write_stl(read_stl(test_data::read("tutorials/test_ship.stl"))));
     double immersed_surface = test.immersed_surface(0, 0, 1, -PI / 2, 0, 0);
     double emerged_surface = test.emerged_surface(0, 0, 1, -PI / 2, 0, 0);
     ASSERT_NEAR(495.51109419742073214, immersed_surface + emerged_surface, 1E-10);
@@ -353,7 +387,9 @@ TEST_F(ForceTests, LONG_immersed_and_emerged_surfaces_are_correct)
 TEST_F(ForceTests, DISABLED_LONG_bug_detected_in_GZ)
 {
     const double eps = 1.0103e-12;
-    ForceTester test(test_data::test_ship_damping(), write_stl(test_ship()));
+    ForceTester test(
+        test_data::read("tutorials/tutorial_04_damping.yml"),
+        write_stl(read_stl(test_data::read("tutorials/test_ship.stl"))));
     test.immersed_volume(0, 0, -eps / 2, -PI / 2, 0, 0);
     const double V1_immersed = test.immersed_volume(0, 0, -eps / 2, -PI / 2, 0, 0);
     const double V1_emerged = test.immersed_volume(0, 0, -eps / 2, -PI / 2, 0, 0);
@@ -376,7 +412,7 @@ TEST_F(ForceTests, DISABLED_LONG_bug_detected_in_GZ)
 
 TEST_F(ForceTests, bug_3004)
 {
-    ForceTester test(test_data::bug_3004(), test_data::cube());
+    ForceTester test(test_data::read("yaml/bug_3004.yml"), test_data::read("tutorials/cube.stl"));
     test.add<GMForceModel>("model: gm \n"
                            "name of hydrostatic force model: non-linear hydrostatic (fast)\n"
                            "roll step: {value: 1, unit: degree}");
@@ -386,8 +422,8 @@ TEST_F(ForceTests, bug_3004)
 
 EnvironmentAndFrames ForceTests::get_env(const YamlModel& waves, const std::string& body_name) const
 {
-    const std::string yaml = test_data::test_ship_waves_test();
-    const std::string stl = test_data::single_facet();
+    const std::string yaml = test_data::read("tutorials/test_ship_in_waves.yml");
+    const std::string stl = test_data::read("tutorials/single_facet.stl");
     auto input = SimulatorYamlParser(yaml).parse();
     YamlBody body = input.bodies.front();
     body.external_forces.clear();
@@ -526,7 +562,7 @@ TEST_F(
         env,
         "body",
         config_such_that_rao_point_is_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
 
     const auto states = get_whole_body_state_with_psi_equal_to(0, "body");
     const double t = 0;
@@ -562,7 +598,7 @@ TEST_F(
         env,
         "body",
         config_such_that_rao_point_is_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state_with_psi_equal_to(0, "body");
     const double t = 0;
     const auto tau = F(states, t, env);
@@ -594,7 +630,7 @@ TEST_F(ForceTests, bug_3210_interpolation_in_incidence_no_interpolation_in_perio
         env,
         "body",
         config_such_that_rao_point_is_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state_with_psi_equal_to(0, "body");
     const double t = 0;
     const auto tau = F(states, t, env);
@@ -636,7 +672,7 @@ TEST_F(ForceTests, bug_3210_no_interpolation_in_incidence_interpolation_in_perio
         env,
         "body",
         config_such_that_rao_point_is_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state_with_psi_equal_to(0, "body");
     const double t = 0;
     const auto tau = F(states, t, env);
@@ -682,7 +718,7 @@ TEST_F(ForceTests, bug_3210_no_interpolation_in_incidence_no_interpolation_in_pe
         env,
         "body",
         config_such_that_rao_point_is_not_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state_with_psi_equal_to(0, "body");
     const double t = 0;
     const auto tau = F(states, t, env);
@@ -730,7 +766,7 @@ TEST_F(
         env,
         "body",
         config_such_that_rao_point_is_not_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state_with_psi_equal_to(0, "body");
     const double t = 5;
     const auto tau = F(states, t, env);
@@ -779,7 +815,7 @@ TEST_F(
         env,
         "body",
         config_such_that_rao_point_is_not_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state_with_psi_equal_to(0, "body");
     const double t = 3;
     const auto tau = F(states, t, env);
@@ -847,7 +883,7 @@ TEST_F(
         env,
         "body",
         config_such_that_rao_point_is_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state_with_psi_equal_to(12, "body");
     const double t = 0;
     const auto tau = F(states, t, env);
@@ -892,7 +928,7 @@ TEST_F(ForceTests, bug_3239_reference_frame_is_incorrect)
         env,
         "body",
         config_such_that_rao_point_is_zero,
-        test_data::bug_3210());
+        test_data::read("tutorials/test_ship.hdb"));
     const auto states = get_whole_body_state(0, 0, 0, 0, 0, 0, "body");
     const double t = 0;
     const auto tau = F(states, t, env);

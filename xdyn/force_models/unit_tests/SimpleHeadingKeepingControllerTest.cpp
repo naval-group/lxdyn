@@ -11,7 +11,7 @@
 
 #include "SimpleHeadingKeepingController.hpp"
 #include "xdyn/core/BodyStates.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #define PI M_PI
 
 constexpr double EPS = 1E-14;
@@ -23,7 +23,8 @@ SimpleHeadingKeepingControllerTest::SimpleHeadingKeepingControllerTest()
 
 TEST_F(SimpleHeadingKeepingControllerTest, parser)
 {
-    const auto k = SimpleHeadingKeepingController::parse(test_data::simple_track_keeping());
+    const auto k =
+        SimpleHeadingKeepingController::parse(test_data::read("yaml/simple_heading_keeping.yml"));
     ASSERT_DOUBLE_EQ(4, k.Tp);
     ASSERT_DOUBLE_EQ(0.9, k.ksi);
     ASSERT_EQ("controller", k.name);
@@ -31,7 +32,8 @@ TEST_F(SimpleHeadingKeepingControllerTest, parser)
 
 TEST_F(SimpleHeadingKeepingControllerTest, force_and_torque)
 {
-    auto input = SimpleHeadingKeepingController::parse(test_data::simple_track_keeping());
+    auto input =
+        SimpleHeadingKeepingController::parse(test_data::read("yaml/simple_heading_keeping.yml"));
     input.Tp = 2 * PI;
     EnvironmentAndFrames env;
     env.rot = YamlRotation("angle", {"z", "y'", "x''"});

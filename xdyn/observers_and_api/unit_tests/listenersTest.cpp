@@ -8,10 +8,10 @@
 #include "listenersTest.hpp"
 
 #include "xdyn/core/Sim.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/listeners_and_controllers/PIDController.hpp"
 #include "xdyn/listeners_and_controllers/listeners.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/parse_controllers.hpp"
 #include "xdyn/yaml_parser/parse_time_series.hpp"
 
@@ -24,7 +24,8 @@ listenersTest::listenersTest() : a(ssc::random_data_generator::DataGenerator(545
 TEST_F(listenersTest, example)
 {
     //! [listenersTest listen_to_file_example]
-    auto ds = make_command_listener(parse_command_yaml(test_data::controlled_forces()));
+    auto ds =
+        make_command_listener(parse_command_yaml(test_data::read("yaml/controlled_forces.yml")));
     ds.check_in("listenersTest (example)");
     ds.set<double>("t", 0);
     ASSERT_DOUBLE_EQ(3, ds.get<double>("propeller(rpm)"));
@@ -52,7 +53,8 @@ TEST_F(listenersTest, can_parse_simple_track_keeping_commands)
     const std::string commands = "  - name: controller\n"
                                  "    t: [0,1,3,10]\n"
                                  "    psi_co: {unit: rad, values: [0.25, 0.30, 0.40, 0]}\n";
-    auto ds = make_command_listener(parse_command_yaml(test_data::controlled_forces() + commands));
+    auto ds = make_command_listener(
+        parse_command_yaml(test_data::read("yaml/controlled_forces.yml") + commands));
     ds.check_in("listenersTest (can_parse_simple_track_keeping_commands)");
     ds.set<double>("t", 0);
     ASSERT_NEAR(0.25, ds.get<double>("controller(psi_co)"), EPS);
@@ -82,7 +84,7 @@ TEST_F(listenersTest, can_parse_simple_track_keeping_commands)
 
 TEST_F(listenersTest, bug_2961_can_have_a_single_value_for_commands)
 {
-    auto ds = make_command_listener(parse_command_yaml(test_data::bug_2961()));
+    auto ds = make_command_listener(parse_command_yaml(test_data::read("yaml/bug_2961.yml")));
     ds.check_in("listenersTest (bug_2961_can_have_a_single_value_for_commands)");
     for (size_t i = 0; i < 100; ++i) {
         ds.set<double>("t", a.random<double>());
@@ -94,7 +96,7 @@ TEST_F(listenersTest, bug_2961_can_have_a_single_value_for_commands)
 TEST_F(listenersTest, can_add_setpoints_to_an_empty_ds)
 {
     ssc::data_source::DataSource ds;
-    add_setpoints_listener(ds, parse_setpoint_yaml(test_data::setpoints()));
+    add_setpoints_listener(ds, parse_setpoint_yaml(test_data::read("yaml/setpoints.yml")));
     ds.check_in("listenersTest (can_add_setpoints_to_an_empty_ds)");
     ds.set<double>("t", 0);
     ASSERT_DOUBLE_EQ(3, ds.get<double>("rpm_co"));
@@ -119,7 +121,7 @@ TEST_F(listenersTest, can_add_setpoints_to_an_empty_ds)
 TEST_F(listenersTest, can_have_a_single_value_for_setpoints)
 {
     ssc::data_source::DataSource ds;
-    add_setpoints_listener(ds, parse_setpoint_yaml(test_data::setpoints()));
+    add_setpoints_listener(ds, parse_setpoint_yaml(test_data::read("yaml/setpoints.yml")));
     ds.check_in("listenersTest (can_have_a_single_value_for_setpoints)");
     for (size_t i = 0; i < 100; ++i) {
         ds.set<double>("t", a.random<double>());
@@ -134,11 +136,11 @@ TEST_F(listenersTest, can_add_setpoints_when_commands_with_same_name_already_exi
         "commands:\n"
         "  - name: propeller\n"
         "    t: [0]\n"
-        "    rpm_co: {unit: rad/s, values: [50]}\n"  // also defined in test_data::setpoints()
+        "    rpm_co: {unit: rad/s, values: [50]}\n"  // also in test_data/yaml/setpoints.yml
         "    command: {unit: 1, values: [42]}\n";
     ssc::data_source::DataSource ds = make_command_listener(parse_command_yaml(commands));
 
-    add_setpoints_listener(ds, parse_setpoint_yaml(test_data::setpoints()));
+    add_setpoints_listener(ds, parse_setpoint_yaml(test_data::read("yaml/setpoints.yml")));
     ds.check_in("listenersTest (can_add_setpoints_when_commands_with_same_name_already_exist)");
     ds.set<double>("t", 0);
     ASSERT_DOUBLE_EQ(3, ds.get<double>("rpm_co"));               // setpoints value
@@ -199,7 +201,7 @@ TEST_F(listenersTest, get_pid_controllers_example)
     //! [controllersTest listen_to_file_example]
     const auto controllers = build_controllers(
         0,
-        parse_controller_yaml(test_data::controllers()),
+        parse_controller_yaml(test_data::read("yaml/controllers.yml")),
         parse_command_yaml(commands),
         sim);
     ASSERT_EQ(2, controllers.size());
@@ -219,7 +221,7 @@ TEST_F(listenersTest, should_throw_if_controllers_and_commands_define_the_same_c
         "    t: [0]\n"
         "    rpm: {unit: rad/s, values: [3]}\n");
     const std::vector<YamlController> yaml_controllers =
-        parse_controller_yaml(test_data::controllers());
+        parse_controller_yaml(test_data::read("yaml/controllers.yml"));
 
     Sim sim = get_dummy_sim();
     ASSERT_THROW(build_controllers(0, yaml_controllers, yaml_commands, sim), InvalidInputException);

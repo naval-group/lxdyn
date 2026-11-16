@@ -10,8 +10,8 @@
 #include "KtKqForceModel.hpp"
 #include "gmock/gmock.h"
 #include "xdyn/core/BodyBuilder.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/NumericalErrorException.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 using ::testing::ElementsAreArray;
 
 #include <cmath>
@@ -27,7 +27,7 @@ KtKqForceModelTest::KtKqForceModelTest() : a(ssc::random_data_generator::DataGen
 
 TEST_F(KtKqForceModelTest, parser)
 {
-    const auto k = KtKqForceModel::parse(test_data::kt_kq());
+    const auto k = KtKqForceModel::parse(test_data::read("yaml/kt_kq.yml"));
     ASSERT_EQ("port side propeller", k.name);
     ASSERT_DOUBLE_EQ(0, k.position_of_propeller_frame.angle.phi);
     ASSERT_DOUBLE_EQ(-10 * DEG2RAD, k.position_of_propeller_frame.angle.theta);
@@ -91,7 +91,7 @@ TEST_F(KtKqForceModelTest, parser)
 TEST_F(KtKqForceModelTest, force)
 {
     // Load and modify yaml input
-    auto input = KtKqForceModel::parse(test_data::kt_kq());
+    auto input = KtKqForceModel::parse(test_data::read("yaml/kt_kq.yml"));
     // Create environnement
     EnvironmentAndFrames env;
     env.rho = 1024;
@@ -126,7 +126,7 @@ TEST_F(KtKqForceModelTest, force)
 TEST_F(KtKqForceModelTest, clarify_exception_message_for_Kt_Kq_interpolation_errors)
 {
     // Load and modify yaml input
-    auto input = KtKqForceModel::parse(test_data::kt_kq());
+    auto input = KtKqForceModel::parse(test_data::read("yaml/kt_kq.yml"));
     // Create environnement
     EnvironmentAndFrames env;
     env.rho = 1024;

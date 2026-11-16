@@ -1,12 +1,12 @@
 #include "stl_io_hdf5Test.hpp"
 
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/external_file_formats/stl_io_hdf5.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
 
 TEST_F(stl_io_hdf5Test, should_be_able_to_create_the_correct_number_of_points_and_triangles)
 {
-    const VectorOfVectorOfPoints facets = read_stl(test_data::single_facet());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/single_facet.stl"));
     const SVectorOfVectorOfPoints sv(facets);
     ASSERT_EQ(3, sv.nPoints);
     ASSERT_EQ(1, sv.nTriangles);
@@ -15,7 +15,7 @@ TEST_F(stl_io_hdf5Test, should_be_able_to_create_the_correct_number_of_points_an
 TEST_F(stl_io_hdf5Test, should_be_able_to_export_triangulated_mesh)
 {
     const std::string fileName("should_be_able_to_export_triangulated_mesh.h5");
-    const VectorOfVectorOfPoints facets = read_stl(test_data::single_facet());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/single_facet.stl"));
     {
         writeMeshToHdf5File(fileName, "mesh", facets);
     }
@@ -25,7 +25,7 @@ TEST_F(stl_io_hdf5Test, should_be_able_to_export_triangulated_mesh)
 TEST_F(stl_io_hdf5Test, should_be_able_to_read_triangulated_mesh_with_one_facet)
 {
     const std::string fileName("should_be_able_to_read_triangulated_mesh.h5");
-    const VectorOfVectorOfPoints facets = read_stl(test_data::single_facet());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/single_facet.stl"));
     {
         writeMeshToHdf5File(fileName, "mesh", facets);
     }
@@ -48,7 +48,7 @@ TEST_F(stl_io_hdf5Test, should_be_able_to_read_triangulated_mesh_with_one_facet)
 TEST_F(stl_io_hdf5Test, should_be_able_to_read_triangulated_mesh_with_several_facets)
 {
     const std::string fileName("should_be_able_to_read_triangulated_mesh.h5");
-    const VectorOfVectorOfPoints facets = read_stl(test_data::three_facets());
+    const VectorOfVectorOfPoints facets = read_stl(test_data::read("tutorials/three_facets.stl"));
     {
         writeMeshToHdf5File(fileName, "mesh", facets);
     }

@@ -10,9 +10,9 @@
 #include <cmath>
 
 #include "RaoInterpolator.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/external_data_structures/YamlRAO.hpp"
 #include "xdyn/hdb_interpolators/HDBParser.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
 #define PI M_PI
 
 DiffractionInterpolatorTest::DiffractionInterpolatorTest()
@@ -23,7 +23,7 @@ DiffractionInterpolatorTest::DiffractionInterpolatorTest()
 TEST_F(DiffractionInterpolatorTest, example)
 {
     //! [DiffractionInterpolatorTest example]
-    const HDBParser parser = HDBParser::from_string(test_data::bug_3210());
+    const HDBParser parser = HDBParser::from_string(test_data::read("tutorials/test_ship.hdb"));
     YamlRAO yaml;
     yaml.mirror = true;
     RaoInterpolator radiation(parser, yaml);
@@ -43,8 +43,7 @@ TEST_F(DiffractionInterpolatorTest, example)
 
 TEST_F(DiffractionInterpolatorTest, example_deprecated_aquaplus_format)
 {
-    const HDBParser parser =
-        HDBParser::from_string(test_data::bug_3210_deprecated_aquaplus_format());
+    const HDBParser parser = HDBParser::from_string(test_data::read("tutorials/test_ship.hdb"));
     YamlRAO yaml;
     yaml.mirror = true;
     RaoInterpolator radiation(parser, yaml);

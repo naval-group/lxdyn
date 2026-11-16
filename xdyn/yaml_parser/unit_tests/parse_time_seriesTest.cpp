@@ -8,7 +8,7 @@
 #include "parse_time_seriesTest.hpp"
 
 #include "parse_time_series.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 
 parse_time_seriesTest::parse_time_seriesTest()
     : a(ssc::random_data_generator::DataGenerator(542121))
@@ -22,7 +22,7 @@ TEST_F(parse_time_seriesTest, example)
                                       "    t: [0,1,3,10]\n"
                                       "    psi_co: {unit: rad, values: [0.25, 0.30, 0.40, 0]}\n";
     std::vector<YamlTimeSeries> commands =
-        parse_command_yaml(test_data::controlled_forces() + commands_yaml);
+        parse_command_yaml(test_data::read("yaml/controlled_forces.yml") + commands_yaml);
     ASSERT_EQ(2, commands.size());
     ASSERT_EQ("propeller", commands[0].name);
     ASSERT_EQ(4, commands[0].t.size());
@@ -60,7 +60,8 @@ TEST_F(parse_time_seriesTest, example)
 TEST_F(parse_time_seriesTest, setpoints_example)
 {
     //! [parse_setpoint_yaml example]
-    std::vector<YamlTimeSeries> setpoints = parse_setpoint_yaml(test_data::setpoints());
+    std::vector<YamlTimeSeries> setpoints =
+        parse_setpoint_yaml(test_data::read("yaml/setpoints.yml"));
     ASSERT_EQ(2, setpoints.size());
 
     ASSERT_EQ("", setpoints[0].name);

@@ -8,9 +8,9 @@
 
 #include "xdyn/core/BodyBuilder.hpp"
 #include "xdyn/core/BodyStates.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/force_models/WageningenControlledForceModel.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 constexpr double EPS = 1E-2;
 constexpr int NB_TRIALS = 100;
@@ -42,7 +42,7 @@ WageningenControlledForceModelTest::WageningenControlledForceModelTest()
 
 TEST_F(WageningenControlledForceModelTest, parser)
 {
-    const auto w = WageningenControlledForceModel::parse(test_data::wageningen());
+    const auto w = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     ASSERT_DOUBLE_EQ(0.5, w.blade_area_ratio);
     ASSERT_EQ("port side propeller", w.name);
     ASSERT_EQ(3, w.number_of_blades);
@@ -62,7 +62,7 @@ TEST_F(WageningenControlledForceModelTest, parser)
 
 TEST_F(WageningenControlledForceModelTest, should_throw_if_blade_area_ratio_is_outside_bounds)
 {
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     for (size_t i = 0; i < NB_TRIALS; ++i) {
         input.blade_area_ratio = a.random<double>().between(0, 0.3);
         ASSERT_THROW(WageningenControlledForceModel w(input, "", get_env()), InvalidInputException);
@@ -77,7 +77,7 @@ TEST_F(WageningenControlledForceModelTest, should_throw_if_blade_area_ratio_is_o
 
 TEST_F(WageningenControlledForceModelTest, should_throw_if_number_of_blades_is_outside_bounds)
 {
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     input.number_of_blades = 0;
     ASSERT_THROW(WageningenControlledForceModel w(input, "", get_env()), InvalidInputException);
     input.number_of_blades = 1;
@@ -104,9 +104,9 @@ TEST_F(WageningenControlledForceModelTest, should_throw_if_number_of_blades_is_o
 
 TEST_F(WageningenControlledForceModelTest, Kt_should_issue_a_warning_if_P_D_is_outside_bounds)
 {
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     const WageningenControlledForceModel w(
-        WageningenControlledForceModel::parse(test_data::wageningen()),
+        WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml")),
         "",
         get_env());
     size_t Z;
@@ -149,9 +149,9 @@ TEST_F(WageningenControlledForceModelTest, Kt_should_issue_a_warning_if_P_D_is_o
 
 TEST_F(WageningenControlledForceModelTest, Kt_should_throw_if_J_is_outside_bounds)
 {
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     const WageningenControlledForceModel w(
-        WageningenControlledForceModel::parse(test_data::wageningen()),
+        WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml")),
         "",
         get_env());
     size_t Z;
@@ -193,9 +193,9 @@ TEST_F(WageningenControlledForceModelTest, Kt_should_throw_if_J_is_outside_bound
 
 TEST_F(WageningenControlledForceModelTest, Kq_should_throw_if_P_D_is_outside_bounds)
 {
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     const WageningenControlledForceModel w(
-        WageningenControlledForceModel::parse(test_data::wageningen()),
+        WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml")),
         "",
         get_env());
     size_t Z;
@@ -237,9 +237,9 @@ TEST_F(WageningenControlledForceModelTest, Kq_should_throw_if_P_D_is_outside_bou
 
 TEST_F(WageningenControlledForceModelTest, Kq_should_throw_if_J_is_outside_bounds)
 {
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     const WageningenControlledForceModel w(
-        WageningenControlledForceModel::parse(test_data::wageningen()),
+        WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml")),
         "",
         get_env());
     size_t Z;
@@ -283,7 +283,7 @@ TEST_F(WageningenControlledForceModelTest, KT)
 {
     //! [WageningenControlledForceModelTest KT_example]
     const WageningenControlledForceModel w(
-        WageningenControlledForceModel::parse(test_data::wageningen()),
+        WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml")),
         "",
         get_env());
     ASSERT_EQ("wageningen B-series", w.model_name());
@@ -319,7 +319,7 @@ TEST_F(WageningenControlledForceModelTest, KQ)
 {
     //! [WageningenControlledForceModelTest KQ_example]
     const WageningenControlledForceModel w(
-        WageningenControlledForceModel::parse(test_data::wageningen()),
+        WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml")),
         "",
         get_env());
     ASSERT_EQ("wageningen B-series", w.model_name());
@@ -364,7 +364,7 @@ TEST_F(WageningenControlledForceModelTest, KQ)
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_without_rotations)
 {
     // Load and modify yaml input
-    std::string input_data = test_data::wageningen();
+    std::string input_data = test_data::read("yaml/wageningen.yml");
     std::string old_str = "    theta: {value: -10";
     std::string new_str = "    theta: {value:   0";
     input_data.replace(input_data.find(old_str), old_str.length(), new_str);
@@ -393,7 +393,7 @@ TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_without_r
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_with_rotations)
 {
     // Load yaml input
-    std::string input_data = test_data::wageningen();
+    std::string input_data = test_data::read("yaml/wageningen.yml");
     // Create environnement
     EnvironmentAndFrames env = get_env();
     // Create body
@@ -417,7 +417,7 @@ TEST_F(WageningenControlledForceModelTest, can_calculate_advance_speed_with_rota
 TEST_F(WageningenControlledForceModelTest, can_calculate_advance_ratio)
 {
     const WageningenControlledForceModel w(
-        WageningenControlledForceModel::parse(test_data::wageningen()),
+        WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml")),
         "",
         get_env());
     std::map<std::string, double> commands;
@@ -428,7 +428,7 @@ TEST_F(WageningenControlledForceModelTest, can_calculate_advance_ratio)
 TEST_F(WageningenControlledForceModelTest, force_and_torque)
 {
     // Load and modify yaml input
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     input.blade_area_ratio = 0.4;
     // Create environnement
     EnvironmentAndFrames env = get_env();
@@ -461,7 +461,7 @@ TEST_F(WageningenControlledForceModelTest, force_and_torque)
 TEST_F(WageningenControlledForceModelTest, torque_should_have_sign_corresponding_to_rotation)
 {
     // Load and modify yaml input
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     // Create environnement
     EnvironmentAndFrames env = get_env();
     env.rho = a.random<double>().greater_than(0);
@@ -486,7 +486,7 @@ TEST_F(WageningenControlledForceModelTest, torque_should_have_sign_corresponding
 TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_zero)
 {
     // Load and modify yaml input
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     input.blade_area_ratio = 0.4;
     // Create environnement
     EnvironmentAndFrames env = get_env();
@@ -513,7 +513,7 @@ TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_z
 TEST_F(WageningenControlledForceModelTest, bug_2825_can_use_propeller_with_rpm_near_zero)
 {
     // Load and modify yaml input
-    auto input = WageningenControlledForceModel::parse(test_data::wageningen());
+    auto input = WageningenControlledForceModel::parse(test_data::read("yaml/wageningen.yml"));
     input.blade_area_ratio = 0.4;
     // Create environnement
     EnvironmentAndFrames env = get_env();

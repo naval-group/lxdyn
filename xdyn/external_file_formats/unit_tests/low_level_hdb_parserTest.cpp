@@ -7,11 +7,11 @@
 
 #include "low_level_hdb_parserTest.hpp"
 
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/external_file_formats/hdb_grammar.hpp"
 #include "xdyn/external_file_formats/hdb_parser_internal_data_structures.hpp"
 #include "xdyn/external_file_formats/hdb_to_ast.hpp"
 #include "xdyn/external_file_formats/pretty_print_hdb.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
 
 using boost::spirit::ascii::blank;
 
@@ -329,7 +329,7 @@ TEST_F(low_level_hdb_parserTest, vector_rule_should_not_parse_matrix)
 
 TEST_F(low_level_hdb_parserTest, can_parse_file_to_internal_data_structure)
 {
-    const hdb::AST hdb_file = hdb::parse(test_data::test_ship_hdb());
+    const hdb::AST hdb_file = hdb::parse(test_data::read("hdb/test_ship.hdb"));
     ASSERT_EQ(1, hdb_file.string_keys.size());
     ASSERT_EQ("AQUA+", hdb_file.string_keys.front().value);
     ASSERT_EQ(5, hdb_file.value_keys.size());

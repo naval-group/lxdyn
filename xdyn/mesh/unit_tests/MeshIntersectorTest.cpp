@@ -7,12 +7,11 @@
 #include <ssc/macros.hpp>
 
 #include "mesh_manipulations.hpp"
-#include "xdyn/binary_stl_data/generate_test_ship.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/mesh/MeshBuilder.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/stl_data.hpp"
 
 constexpr double EPS = 1E-6;
 
@@ -566,7 +565,7 @@ TEST_F(MeshIntersectorTest, can_compute_the_volume_of_a_cube)
 
 TEST_F(MeshIntersectorTest, can_compute_the_volume_of_a_cube_with_lots_of_irregular_facets)
 {
-    MeshIntersector intersector(read_stl(test_data::big_cube()));
+    MeshIntersector intersector(read_stl(test_data::read("tutorials/big_cube.stl")));
     const std::vector<double> dz(intersector.mesh->total_number_of_nodes, 1);
     intersector.update_intersection_with_free_surface(dz, dz);
     ASSERT_SMALL_RELATIVE_ERROR(
@@ -688,7 +687,7 @@ TEST_F(MeshIntersectorTest, can_compute_the_volume_of_a_partially_immersed_cube)
 
 TEST_F(MeshIntersectorTest, LONG_can_compute_the_volume_of_the_anthineas)
 {
-    MeshIntersector intersector(test_ship());
+    MeshIntersector intersector(read_stl(test_data::read("tutorials/test_ship.stl")));
     const std::vector<double> dz(intersector.mesh->total_number_of_nodes, 1);
     intersector.update_intersection_with_free_surface(dz, dz);
     ASSERT_NEAR(601.726, intersector.emerged_volume() + intersector.immersed_volume(), 1E-3);
@@ -949,7 +948,7 @@ TEST_F(MeshIntersectorTest, can_calculate_the_volume_of_a_unit_cube)
     half_immersed[6] = -0.5;
     half_immersed[7] = -0.5;
 
-    MeshIntersector intersector(read_stl(test_data::cube()));
+    MeshIntersector intersector(read_stl(test_data::read("tutorials/cube.stl")));
 
     intersector.update_intersection_with_free_surface(half_immersed, half_immersed);
     ASSERT_SMALL_RELATIVE_ERROR(

@@ -7,12 +7,9 @@
 
 #include "LinearFroudeKrylovForceModelTest.hpp"
 
-#include <fstream>
-
 #include "DiffractionForceModelTest.hpp"
 #include "LinearFroudeKrylovForceModel.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
-#include "xdyn/test_data_generator/precal_test_data.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 
 #define BODY_NAME "TestShip"
 
@@ -25,14 +22,9 @@ TEST_F(LinearFroudeKrylovForceModelTest, encounter_frequency_example)
 {
     EnvironmentAndFrames env = DiffractionForceModelTest::get_waves_env(64., 0.);
     BodyStates states;
-    std::ofstream hdb_file("data.hdb");
-    hdb_file << test_data::big_hdb();
-    // Read back below: without close(), the filebuf tail may not be on disk yet — libc++
-    // does not write through on large writes the way libstdc++ does
-    hdb_file.close();
     YamlRAO input;
     input.calculation_point = YamlCoordinates(0.696, 0, 1.418);
-    input.hdb_filename = "data.hdb";
+    input.hdb_filename = test_data::path("tutorials/big.hdb");
     input.mirror = true;
     input.use_encounter_period = true;
     input.type_of_rao = YamlRAO::TypeOfRao::FROUDE_KRYLOV_RAO;
@@ -67,12 +59,9 @@ TEST_F(LinearFroudeKrylovForceModelTest, precal_r_example)
 {
     EnvironmentAndFrames env = DiffractionForceModelTest::get_waves_env(10.47198, 0.);
     BodyStates states;
-    std::ofstream precalr_file("data.raodb.ini");
-    precalr_file << test_data::precal();
-    precalr_file.close();  // Read back below: must be flushed to disk first
     YamlRAO input;
     input.calculation_point = YamlCoordinates(0, 0, 0);
-    input.precal_filename = "data.raodb.ini";
+    input.precal_filename = test_data::path("tutorials/ONRT_SIMMAN.raodb.ini");
     input.mirror = true;
     input.use_encounter_period = true;
     input.type_of_rao = YamlRAO::TypeOfRao::FROUDE_KRYLOV_RAO;

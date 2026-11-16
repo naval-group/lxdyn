@@ -14,7 +14,6 @@
 #include "BodyWithSurfaceForces.hpp"
 #include "EnvironmentAndFrames.hpp"
 #include "State.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #define PI M_PI
 

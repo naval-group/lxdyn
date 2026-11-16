@@ -8,12 +8,13 @@
 #include "GrpcControllerInterfaceTest.hpp"
 
 #include "GrpcControllerInterface.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 TEST_F(GrpcControllerInterfaceTest, can_parse_url)
 {
-    const auto input = GrpcControllerInterface::parse(test_data::gRPC_controller());
+    const auto input =
+        GrpcControllerInterface::parse(test_data::read("yaml/grpc_controller_params.yml"));
     ASSERT_EQ("pid:9002", input.url);
 }
 
@@ -35,7 +36,8 @@ TEST_F(GrpcControllerInterfaceTest, should_throw_a_helpful_message_if_input_is_i
 
 TEST_F(GrpcControllerInterfaceTest, can_parse_name)
 {
-    const auto input = GrpcControllerInterface::parse(test_data::gRPC_controller());
+    const auto input =
+        GrpcControllerInterface::parse(test_data::read("yaml/grpc_controller_params.yml"));
     ASSERT_EQ("PID", input.name);
 }
 
@@ -43,6 +45,7 @@ TEST_F(
     GrpcControllerInterfaceTest,
     rest_of_yaml_should_be_available_for_use_by_grpc_method_set_parameters)
 {
-    const auto input = GrpcControllerInterface::parse(test_data::gRPC_controller());
-    ASSERT_EQ(test_data::gRPC_controller(), input.yaml);
+    const auto input =
+        GrpcControllerInterface::parse(test_data::read("yaml/grpc_controller_params.yml"));
+    ASSERT_EQ(test_data::read("yaml/grpc_controller_params.yml"), input.yaml);
 }

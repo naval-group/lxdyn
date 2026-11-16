@@ -15,8 +15,8 @@
 #include "xdyn/core/BodyBuilder.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
+#include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/test_data_generator/TriMeshTestData.hpp"
-#include "xdyn/test_data_generator/yaml_data.hpp"
 
 #define BODY "body 1"
 
@@ -30,61 +30,61 @@ ConstantForceModelTest::ConstantForceModelTest()
 
 TEST_F(ConstantForceModelTest, can_parse_reference_frame)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_EQ("NED", input.frame);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_x)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(0.5, input.x);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_y)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(-0.2, input.y);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_z)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(-440, input.z);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_X)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(10e3, input.X);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_Y)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(20e3, input.Y);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_Z)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(30e3, input.Z);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_K)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(100e3, input.K);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_M)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(200e3, input.M);
 }
 
 TEST_F(ConstantForceModelTest, can_parse_N)
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     ASSERT_DOUBLE_EQ(300e3, input.N);
 }
 
@@ -143,7 +143,7 @@ EnvironmentAndFrames ConstantForceModelTest::get_env() const
 
 ConstantForceModel ConstantForceModelTest::get_constant_force(EnvironmentAndFrames& env) const
 {
-    const auto input = ConstantForceModel::parse(test_data::constant_force());
+    const auto input = ConstantForceModel::parse(test_data::read("yaml/constant_force.yml"));
     return ConstantForceModel(input, "Anthineas", env);
 }
 
