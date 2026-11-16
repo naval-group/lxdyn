@@ -14,7 +14,7 @@
 #include "RadiationDampingBuilder.hpp"
 #include "hdb_test.hpp"
 #include "xdyn/hdb_interpolators/History.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
+#include "xdyn/hdb_interpolators/unit_tests/analytical_radiation_damping.hpp"
 #define PI M_PI
 
 constexpr double EPS = 1E-10;

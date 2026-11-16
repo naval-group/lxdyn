@@ -9,7 +9,7 @@
 #include <cmath>
 
 #include "RadiationDampingBuilder.hpp"
-#include "xdyn/test_data_generator/hdb_data.hpp"
+#include "xdyn/hdb_interpolators/unit_tests/analytical_radiation_damping.hpp"
 #define PI M_PI
 
 std::function<double(double)> get_interpolated_Br()

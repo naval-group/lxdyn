@@ -16,7 +16,7 @@
 #include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 
 #define BODY "body 1"
 

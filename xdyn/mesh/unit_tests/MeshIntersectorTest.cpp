@@ -11,7 +11,7 @@
 #include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/mesh/MeshBuilder.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 
 constexpr double EPS = 1E-6;
 

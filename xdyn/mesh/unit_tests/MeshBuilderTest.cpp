@@ -7,7 +7,7 @@
 #include "xdyn/exceptions/MeshException.hpp"
 #include "xdyn/mesh/Mesh.hpp"
 #include "xdyn/mesh/MeshBuilder.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 
 size_t get_oriented_edge_index(const size_t& e)
 {
@@ -200,12 +200,4 @@ TEST_F(MeshBuilderTest, can_build_n_gone)
 TEST_F(MeshBuilderTest, bug_when_building_trapezium)
 {
     ASSERT_NO_THROW(MeshBuilder(trapezium()).build());
-}
-
-TEST_F(MeshBuilderTest, convert_stl_files_to_code)
-{
-    Mesh mesh = MeshBuilder(generated_stl()).build();
-    ASSERT_EQ(12, mesh.facets.size());
-    ASSERT_EQ(8, mesh.nodes.cols());
-    ASSERT_EQ(3, mesh.nodes.rows());
 }

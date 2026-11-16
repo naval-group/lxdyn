@@ -5,7 +5,7 @@
 #include "JSONSerializer.hpp"
 #include "XdynForCS.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 constexpr double EPS = 1E-8;
 
 XdynForCSTest::XdynForCSTest() : a(ssc::random_data_generator::DataGenerator(123456789)) {}

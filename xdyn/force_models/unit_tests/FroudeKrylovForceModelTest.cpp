@@ -22,7 +22,7 @@
 #include "xdyn/environment_models/discretize.hpp"
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #define PI M_PI
 
 constexpr double EPS = 1E-8;

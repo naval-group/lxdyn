@@ -13,7 +13,7 @@
 #include "xdyn/exceptions/MeshException.hpp"
 #include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 #include "xdyn/mesh/MeshBuilder.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 
 mesh_manipulationsTest::mesh_manipulationsTest() : a(ssc::random_data_generator::DataGenerator(321))
 {
