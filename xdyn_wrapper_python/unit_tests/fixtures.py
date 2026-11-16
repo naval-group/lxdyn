@@ -3,8 +3,8 @@
 from pathlib import Path
 
 import numpy as np
-from xdyn.core import BodyBuilder, BodyPtr
-from xdyn.core.io import YamlRotation
+from xdyn.core import BodyBuilder, BodyPtr, YamlDynamics6x6Matrix
+from xdyn.core.io import YamlBody, YamlRotation
 
 # Relative to this file, so a wheel tested from a clean venv finds them too.
 TEST_DATA = Path(__file__).resolve().parents[2] / "test_data"
@@ -46,7 +46,17 @@ def unit_cube() -> Mesh:
 
 
 def get_body(name: str, mesh: Mesh | None = None) -> BodyPtr:
+    """A body with unit inertia and added mass, for tests that only need one to exist."""
+    identity = YamlDynamics6x6Matrix()
+    identity.frame = name
+    for i in range(6):
+        setattr(identity, f"row_{i + 1}", [1.0 if i == j else 0.0 for j in range(6)])
+    body = YamlBody()
+    body.name = name
+    body.dynamics.centre_of_inertia.frame = name
+    body.dynamics.rigid_body_inertia = identity
+    body.dynamics.added_mass = identity
     rot = YamlRotation("angle", ["z", "y'", "x''"])
-    return BodyBuilder(rot).build_for_test(
-        name, two_triangles() if mesh is None else mesh, 0, 0.0, rot, 0.0, False
+    return BodyBuilder(rot).build(
+        body, two_triangles() if mesh is None else mesh, 0, 0.0, rot, 0.0, False
     )

@@ -31,6 +31,7 @@
 #include "xdyn/external_data_structures/YamlController.hpp"
 #include "xdyn/external_data_structures/YamlCoordinates.hpp"
 #include "xdyn/external_data_structures/YamlDynamics.hpp"
+#include "xdyn/external_data_structures/YamlDynamics6x6Matrix.hpp"
 #include "xdyn/external_data_structures/YamlPoint.hpp"
 #include "xdyn/external_data_structures/YamlPosition.hpp"
 #include "xdyn/external_data_structures/YamlRAO.hpp"
@@ -569,28 +570,7 @@ void py_add_module_xdyn_core(py::module& m0)
             py::arg("convention"),
             py::arg("Tmax"),
             py::arg("has_surface_forces") = false,
-            "Build a 'Body' object from YAML & STL data")
-        .def(
-            "build_for_test",
-            static_cast<BodyPtr (BodyBuilder::*)(
-                const std::string& /*name*/,
-                const VectorOfVectorOfPoints& /*mesh*/,
-                const size_t /*idx*/,
-                const double /*t0*/,
-                const YamlRotation& /*convention*/,
-                const double /*Tmax*/,
-                const bool /*has_surface_forces = false*/
-            ) const>(&BodyBuilder::build),
-            py::arg("name"),
-            py::arg("mesh"),
-            py::arg("idx"),
-            py::arg("t0"),
-            py::arg("convention"),
-            py::arg("Tmax"),
-            py::arg("has_surface_forces") = false,
-            R"(Only used for testing purposes when we don't want to go
-               through the hassle of defining the inertia matrix & initial
-               positions)");
+            "Build a 'Body' object from YAML & STL data");
 
     py::class_<BodyStates>(m, "BodyStates")
         .def(py::init<const double>(), py::arg("Tmax") = 0.0)
@@ -724,6 +704,22 @@ void py_add_module_xdyn_core(py::module& m0)
         .def(py::init<>())
         .def_readwrite("name", &YamlPoint::name)
         .def_readwrite("frame", &YamlPoint::frame);
+
+    py::class_<YamlDynamics6x6Matrix>(m, "YamlDynamics6x6Matrix")
+        .def(py::init<>())
+        .def_readwrite("read_from_file", &YamlDynamics6x6Matrix::read_from_file)
+        .def_readwrite("hdb_filename", &YamlDynamics6x6Matrix::hdb_filename)
+        .def_readwrite("precal_filename", &YamlDynamics6x6Matrix::precal_filename)
+        .def_readwrite("frame", &YamlDynamics6x6Matrix::frame)
+        .def_readwrite(
+            "row_convention_xdyn_with_z_down",
+            &YamlDynamics6x6Matrix::row_convention_xdyn_with_z_down)
+        .def_readwrite("row_1", &YamlDynamics6x6Matrix::row_1)
+        .def_readwrite("row_2", &YamlDynamics6x6Matrix::row_2)
+        .def_readwrite("row_3", &YamlDynamics6x6Matrix::row_3)
+        .def_readwrite("row_4", &YamlDynamics6x6Matrix::row_4)
+        .def_readwrite("row_5", &YamlDynamics6x6Matrix::row_5)
+        .def_readwrite("row_6", &YamlDynamics6x6Matrix::row_6);
 
     py::class_<YamlDynamics>(m, "YamlDynamics")
         .def(py::init<>())
