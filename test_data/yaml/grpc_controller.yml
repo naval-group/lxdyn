@@ -1,0 +1,13 @@
+  - type: gRPC
+    name: my awesome controller
+    dt: 0.01
+    url: pid:9002
+    gains:
+        Kp: -1
+        Ki: 0
+        Kd: -1
+    setpoint: rpm_co
+    command: propeller(rpm)
+    state weights:
+        x: 1
+        y: -1

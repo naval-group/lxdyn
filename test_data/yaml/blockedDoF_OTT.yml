@@ -1,0 +1,18 @@
+    blocked dof:
+       from YAML:
+         - state: x
+           t: [0., 1000.]
+           value: [0, 8000.]
+           interpolation: linear
+         - state: y
+           t: [0., 1000.]
+           value: [0, 0.]
+           interpolation: linear
+         - state: phi
+           t: [0., 1000.]
+           value: [0., 0.]
+           interpolation: linear
+         - state: psi
+           t: [0., 1000.]
+           value: [0.2618, 0.2618]
+           interpolation: linear

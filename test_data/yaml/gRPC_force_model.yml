@@ -1,0 +1,5 @@
+name: parametric oscillator
+model: grpc
+url: force-model:9002
+k: 60
+c: 1

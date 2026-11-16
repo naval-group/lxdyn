@@ -1,0 +1,7 @@
+model: linear hydrostatics
+z eq: {value: -2, unit: m}
+theta eq: {value: 1, unit: deg}
+phi eq: {value: -3, unit: deg}
+K row 1: [1, 0 , 0]
+K row 2: [0, 1 , 0]
+K row 3: [0, 0 , 1]

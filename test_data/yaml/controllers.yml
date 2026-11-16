@@ -1,0 +1,24 @@
+controllers:
+  - type: pId
+    dt: 0.1
+    state weights:
+        x: 1
+        y: -1
+    setpoint: rpm_co
+    command: propeller(rpm)
+    gains:
+        Kp: 4.2
+        Ki: 0.25
+        Kd: 1
+    name: foo
+  - type: PID
+    dt: 0.5
+    state weights:
+        psi: 1
+    setpoint: psi_co
+    command: controller(psi)
+    name: bar
+    gains:
+        Kp: 0.52
+        Ki: 21.5
+        Kd: 2.2

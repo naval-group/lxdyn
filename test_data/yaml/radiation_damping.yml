@@ -1,0 +1,15 @@
+model: radiation damping
+hdb: test_ship.hdb
+type of quadrature for cos transform: simpson
+type of quadrature for convolution: clenshaw-curtis
+nb of points for retardation function discretization: 50
+omega min: {value: 0, unit: rad/s}
+omega max: {value: 30, unit: rad/s}
+tau min: {value: 0.2094395, unit: s}
+tau max: {value: 10, unit: s}
+output Br and K: true
+forward speed correction: true
+calculation point in body frame:
+    x: {value: 0.696, unit: m}
+    y: {value: 0, unit: m}
+    z: {value: 1.418, unit: m}

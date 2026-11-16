@@ -1,0 +1,11 @@
+model: constant force
+frame: NED
+x: {value: 0.5, unit: m}
+y: {value: -0.2, unit: m}
+z: {value: -440, unit: m}
+X: {value: 10, unit: kN}
+Y: {value: 20, unit: kN}
+Z: {value: 30, unit: kN}
+K: {value: 100, unit: kN*m}
+M: {value: 200, unit: kN*m}
+N: {value: 300, unit: kN*m}

@@ -1,0 +1,4 @@
+commands:
+  - name: controller
+    t: [0]
+    psi_co: {unit: deg, values: [30]}

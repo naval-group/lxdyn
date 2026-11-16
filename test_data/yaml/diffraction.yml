@@ -1,0 +1,8 @@
+model: diffraction
+hdb: test_ship.hdb
+calculation point in body frame:
+    x: {value: 0.696, unit: m}
+    y: {value: 0, unit: m}
+    z: {value: 1.418, unit: m}
+mirror for 180 to 360: true
+use encounter period: true
