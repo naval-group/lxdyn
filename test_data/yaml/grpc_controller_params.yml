@@ -1,0 +1,12 @@
+command: port side propeller(beta)
+dt: 1
+gains:
+  Kd: -1
+  Ki: 0
+  Kp: -1
+name: PID
+setpoint: psi_co
+state weights:
+  psi: 1
+type: grpc
+url: pid:9002

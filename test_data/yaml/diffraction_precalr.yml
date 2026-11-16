@@ -1,0 +1,4 @@
+model: diffraction
+raodb: test_ship.raodb.ini
+mirror for 180 to 360: true
+use encounter period: true

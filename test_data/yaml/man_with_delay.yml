@@ -1,0 +1,16 @@
+name: F
+reference frame:
+    frame: ball
+    x: {value: 0, unit: m}
+    y: {value: 0, unit: m}
+    z: {value: 0, unit: m}
+    phi: {value: 0, unit: deg}
+    theta: {value: 0, unit: deg}
+    psi: {value: 0, unit: deg}
+commands: [command1, b, a]
+X: 1E6*(x(t))
+Y: 1E6*(x(t-10))
+Z: 1E6*(command1*x(t))
+K: 1E6*(b*x(t-6)
+M: 1E6*(x(t-6) + command1*x(t-5) + 2*b*y(t-4) + z(t-3)/a)
+N: 0

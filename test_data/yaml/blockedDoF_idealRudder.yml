@@ -1,0 +1,7 @@
+    blocked dof:
+       from YAML:
+         - state: psi
+           t: [0., 1000.]
+           value: [0.2618, 0.2618]
+           interpolation: linear
+           how applied: [0., 1., 0., 0., 0., -170.]

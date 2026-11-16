@@ -1,0 +1,27 @@
+setpoints:
+    - t: [0]
+      psi_co: {unit: deg, values: [60]}
+controllers:
+    - type: PID
+      dt: 1
+      name: foo
+      state weights:
+        psi: 1
+      setpoint: psi_co
+      command: PSPropRudd(beta)
+      gains:
+        Kp: -1
+        Ki: 0
+        Kd: -1
+    - type: PID
+      dt: 1
+      name: bar
+      state weights:
+        psi: 1
+      setpoint: psi_co
+      command: SBPropRudd(beta)
+      gains:
+        Kp: -1
+        Ki: 0
+        Kd: -1
+    

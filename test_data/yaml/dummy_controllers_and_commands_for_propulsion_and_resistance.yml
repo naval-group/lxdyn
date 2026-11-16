@@ -1,0 +1,19 @@
+setpoints:
+  - t: [0]
+    rpm_co: {unit: rad/s, values: [10.4719755]}
+controllers:
+  - type: PID
+    name: foo
+    dt: 10
+    state weights:
+        x: 0
+    setpoint: rpm_co
+    command: propeller(rpm)
+    gains:
+        Kp: 1
+        Ki: 0
+        Kd: 0
+commands:
+  - name: propeller
+    t: [0]
+    P/D: {unit: 1, values: [1.064935]}

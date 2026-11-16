@@ -1,0 +1,40 @@
+name: MMG port side propeller
+model: MMG propeller+rudder
+position of propeller frame:
+    frame: body 1
+    x: {value: -152.73, unit: m}
+    y: {value: 0, unit: m}
+    z: {value: 0, unit: m}
+    phi: {value: 0, unit: rad}
+    theta: {value: 0, unit: deg}
+    psi: {value: 0, unit: deg}
+wake coefficient w: 0.35
+relative rotative efficiency etaR: 1
+thrust deduction factor t: 0.22
+rotation: clockwise
+diameter: {value: 9.86, unit: m}
+k0: 0.2931
+k1: -0.2753
+k2: -0.1385
+C0: 0.
+C1: 2.0
+C2: [1.1, 1.6]
+calculation point in body frame:
+    x: {value: 0, unit: m}
+    y: {value: 0, unit: m}
+    z: {value: 0, unit: m}
+rudder area: {value: 112.5, unit: m^2}
+rudder height: {value: 15.8, unit: m}
+xH: -0.464
+lR: -0.71
+tR: 0.387
+aH: 0.312
+gammaR: [0.395,0.640]
+epsilon: 1.09
+kappa: 0.5
+effective aspect ratio: 1.827
+position of rudder in body frame:
+    x: {value: -160, unit: m}
+    y: {value: 0, unit: m}
+    z: {value: 12.6, unit: m}
+Lpp: {value: 320, unit: m}
