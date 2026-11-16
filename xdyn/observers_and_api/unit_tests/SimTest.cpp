@@ -19,9 +19,9 @@
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/observers_and_api/ListOfObservers.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 #define PI M_PI

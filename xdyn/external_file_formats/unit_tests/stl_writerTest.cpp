@@ -11,7 +11,7 @@
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/external_file_formats/stl_writer.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 
 stl_writerTest::stl_writerTest() : a(ssc::random_data_generator::DataGenerator(542)) {}
 

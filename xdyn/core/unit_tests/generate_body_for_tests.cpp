@@ -9,7 +9,7 @@
 
 #include "xdyn/core/BodyBuilder.hpp"
 #include "xdyn/external_data_structures/YamlRotation.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 
 BodyPtr get_body(const std::string& name)
 {

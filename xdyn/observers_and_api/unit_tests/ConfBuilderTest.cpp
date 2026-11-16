@@ -2,7 +2,7 @@
 
 #include "ConfBuilder.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 
 ConfBuilderTest::ConfBuilderTest() : a(ssc::random_data_generator::DataGenerator(78910)) {}
 

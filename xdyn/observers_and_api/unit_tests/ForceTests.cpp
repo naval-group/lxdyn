@@ -19,8 +19,8 @@
 #include "xdyn/force_models/FastHydrostaticForceModel.hpp"
 #include "xdyn/force_models/GMForceModel.hpp"
 #include "xdyn/force_models/GravityForceModel.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/check_input_yaml.hpp"
 

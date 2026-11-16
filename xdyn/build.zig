@@ -17,8 +17,6 @@ const executables = [_]Executable{
     .{ .name = "xdyn-for-me", .source = "xdyn/executables/xdyn_for_me.cpp", .protos = &.{"model_exchange"} },
     .{ .name = "xdyn-grpc-airy", .source = "xdyn/executables/xdyn_grpc_airy.cpp" },
     .{ .name = "test_orbital_velocities", .source = "xdyn/executables/test_orbital_velocities_and_dynamic_pressures.cpp" },
-    .{ .name = "test_hs", .source = "xdyn/executables/test_hs.cpp" },
-    .{ .name = "convert_stl_files_to_code", .source = "xdyn/executables/convert_stl_files_to_code.cpp" },
     .{ .name = "convert_quaternion_to_euler", .source = "xdyn/executables/convert_quaternion_to_euler.cpp" },
 };
 
@@ -45,15 +43,11 @@ const warning_flags = [_][]const u8{
 };
 
 // Globbed out of their module and added back by addSources, each with a flag of its own.
-const compiled_separately = [_][]const u8{ "demo_scripts.cpp", "generate_test_ship.cpp" };
+const compiled_separately = [_][]const u8{"demo_scripts.cpp"};
 
-// The hand-written C++ flag set, shared by every component. stack-exhausted stays a warning: it
-// fires on stl_data.cpp depending on the runner's stack.
+// The hand-written C++ flag set, shared by every component.
 pub fn cppFlags(ctx: *const root.Ctx) []const []const u8 {
-    return root.concat(ctx.b, ctx.withDebug(&.{
-        "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-Wno-error=stack-exhausted",
-        "-fPIC",
-    }), &warning_flags);
+    return root.concat(ctx.b, ctx.withDebug(&.{ "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-fPIC" }), &warning_flags);
 }
 
 pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
@@ -69,8 +63,6 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
     }) });
     lib.addCSourceFiles(.{ .root = b.path("xdyn/interface_hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = c_flags });
     lib.addCSourceFiles(.{ .root = b.path("xdyn/observers_and_api"), .files = &.{"demo_scripts.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-c23-extensions"}) });
-    // One 253906-character string literal; ISO requires only 65536.
-    lib.addCSourceFiles(.{ .root = b.path("xdyn/binary_stl_data"), .files = &.{"generate_test_ship.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-overlength-strings"}) });
     proto.addSources(ctx, lib, &.{ "wave_types", "wave_grpc", "force", "controller" });
 }
 

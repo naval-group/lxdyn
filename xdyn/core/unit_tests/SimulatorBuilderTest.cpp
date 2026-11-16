@@ -20,7 +20,7 @@
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/force_models/GravityForceModel.hpp"
 #include "xdyn/listeners_and_controllers/builders.hpp"
-#include "xdyn/test_data_generator/TriMeshTestData.hpp"
+#include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 static const YamlSimulatorInput& shared_input()
