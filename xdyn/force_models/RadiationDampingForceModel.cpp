@@ -205,19 +205,26 @@ class RadiationDampingForceModel::Impl
 
         std::function<double(double)> get_K(const size_t i, const size_t j, const std::array<double, 6>& Ubar)
         {
-            if (forward_speed_correction && j >= 3) // 3 last column
+            if (forward_speed_correction && j >= 3)
             {
-                if (j == 3) // Column 4
+                // 3 last column
+                if (j == 3)
                 {
-                    return Kb[i][j] + Ubar[1]*Ka[i][2]; // Kb(i,j) + V*Ka(i,3)
+                    // Column 4
+                    // Kb(i,j) + V*Ka(i,3)
+                    return Kb[i][j] + Ubar[1]*Ka[i][2];
                 }
-                else if (j == 4) // Column 5
+                else if (j == 4)
                 {
-                    return Kb[i][j] - Ubar[0]*Ka[i][2]; // Kb(i,j) - U*Ka(i,3)
+                    // Column 5
+                    // Kb(i,j) - U*Ka(i,3)
+                    return Kb[i][j] - Ubar[0]*Ka[i][2];
                 }
-                else // Column 6
+                else
                 {
-                    return Kb[i][j] + Ubar[0]*Ka[i][1] - Ubar[1]*Ka[i][0]; // Kb(i,j) + U*Ka(i,2) - V*Ka(i,1)
+                    // Column 6
+                    // Kb(i,j) + U*Ka(i,2) - V*Ka(i,1)
+                    return Kb[i][j] + Ubar[0]*Ka[i][1] - Ubar[1]*Ka[i][0];
                 }
             }
             else

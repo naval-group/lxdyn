@@ -58,9 +58,11 @@ public:
         double Nphirr{0.0};
         double Nrphiphi{0.0};
         double a{0.0};
-        double b{0.0};//<! Caution: b is in "1/deg"
+        /// Caution: b is in "1/deg"
+        double b{0.0};
         double GM{0.0};
-        double zH{0.0};//<! Vertical position of the center of effort in body frame
+        /// Vertical position of the center of effort in body frame
+        double zH{0.0};
     };
     MMGManeuveringForceModel(const Input& input, const std::string& body_name, const EnvironmentAndFrames& env);
     MMGManeuveringForceModel() = delete;

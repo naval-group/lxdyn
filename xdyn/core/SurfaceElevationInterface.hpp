@@ -204,8 +204,10 @@ class SurfaceElevationInterface
         ssc::kinematics::PointMatrixPtr get_output_mesh_in_NED_frame(const ssc::kinematics::KinematicsPtr& k //!< Object used to compute the transforms to the NED frame
                                                                     ) const;
 
-        ssc::kinematics::PointMatrixPtr output_mesh;            //!< Mesh defined in the 'output' section of the YAML file. Points at which we want to know the wave height at each instant
-        std::pair<std::size_t,std::size_t> output_mesh_size;    //!< Mesh size defined as a pair containing nx and ny
+        /// Mesh defined in the 'output' section of the YAML file. Points at which we want to know the wave height at each instant
+        ssc::kinematics::PointMatrixPtr output_mesh;
+        /// Mesh size defined as a pair containing nx and ny
+        std::pair<std::size_t,std::size_t> output_mesh_size;
         std::vector<double> relative_wave_height_for_each_point_in_mesh;
         std::vector<double> surface_elevation_for_each_point_in_mesh;
 };

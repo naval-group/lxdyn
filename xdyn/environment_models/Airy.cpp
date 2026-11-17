@@ -44,7 +44,8 @@ double Airy::evaluate_rao(
     {
         THROW(__PRETTY_FUNCTION__, InternalErrorException, "Number of angular frequencies times number of incidences in HDB RAO is " << nb_of_omegas_x_nb_of_directions << ", which does not match spectrum size (" << flat_spectrum.k.size() << " (omega,psi) pairs)");
     }
-    for (size_t i = 0 ; i < nb_of_omegas_x_nb_of_directions ; ++i) // For each (omega,beta) pair
+    // For each (omega,beta) pair
+    for (size_t i = 0 ; i < nb_of_omegas_x_nb_of_directions ; ++i)
     {
         const double rao_amplitude = rao_module_for_each_frequency_and_incidence[i] * flat_spectrum.a[i];
         const double omega_t = flat_spectrum.omega[i] * t;
@@ -149,8 +150,10 @@ ssc::kinematics::PointMatrix Airy::orbital_velocity(
             {
                 const double omega = flat_spectrum.omega[i];
                 const double k = flat_spectrum.k[i];
-                const double pdyn_factor = flat_spectrum.pdyn_factor(k,z[point_index],0); // No stretching for the orbital velocity
-                const double pdyn_factor_sh = flat_spectrum.pdyn_factor_sh(k,z[point_index],0); // No stretching for the orbital velocity
+                // No stretching for the orbital velocity
+                const double pdyn_factor = flat_spectrum.pdyn_factor(k,z[point_index],0);
+                // No stretching for the orbital velocity
+                const double pdyn_factor_sh = flat_spectrum.pdyn_factor_sh(k,z[point_index],0);
                 const double k_xCosPsi_ySinPsi = k * (x[point_index] * flat_spectrum.cos_psi[i] + y[point_index] * flat_spectrum.sin_psi[i]);
                 const double theta = -omega * t + k_xCosPsi_ySinPsi + flat_spectrum.phase[i];
                 const double cos_theta = cos(theta);

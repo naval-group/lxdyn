@@ -450,7 +450,8 @@ void BlockedDOF::force_state_derivatives(StateType& dx_dt, const double t) const
             double forced_value = 0;
             try
             {
-                forced_value = dof.second->df(t); // Set forced value by interpolation in input data
+                // Set forced value by interpolation in input data
+                forced_value = dof.second->df(t);
             }
             catch(const ssc::interpolation::IndexFinderException& e)
             {
@@ -497,7 +498,8 @@ void BlockedDOF::get_forced_x_k(const double t, Eigen::Matrix<double,6,1>& x, si
                     case BlockableState::X:
                         try
                         {
-                            x(0) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            x(0) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -509,7 +511,8 @@ void BlockedDOF::get_forced_x_k(const double t, Eigen::Matrix<double,6,1>& x, si
                     case BlockableState::Y:
                         try
                         {
-                            x(1) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            x(1) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -521,7 +524,8 @@ void BlockedDOF::get_forced_x_k(const double t, Eigen::Matrix<double,6,1>& x, si
                     case BlockableState::Z:
                         try
                         {
-                            x(2) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            x(2) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -533,7 +537,8 @@ void BlockedDOF::get_forced_x_k(const double t, Eigen::Matrix<double,6,1>& x, si
                     case BlockableState::PHI:
                         try
                         {
-                            x(3) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            x(3) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -545,7 +550,8 @@ void BlockedDOF::get_forced_x_k(const double t, Eigen::Matrix<double,6,1>& x, si
                     case BlockableState::THETA:
                         try
                         {
-                            x(4) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            x(4) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -557,7 +563,8 @@ void BlockedDOF::get_forced_x_k(const double t, Eigen::Matrix<double,6,1>& x, si
                     case BlockableState::PSI:
                         try
                         {
-                            x(5) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            x(5) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -585,7 +592,8 @@ void BlockedDOF::get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, si
                     case BlockableState::U:
                         try
                         {
-                            v(0) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            v(0) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -597,7 +605,8 @@ void BlockedDOF::get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, si
                     case BlockableState::V:
                         try
                         {
-                            v(1) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            v(1) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -609,7 +618,8 @@ void BlockedDOF::get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, si
                     case BlockableState::W:
                         try
                         {
-                            v(2) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            v(2) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -621,7 +631,8 @@ void BlockedDOF::get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, si
                     case BlockableState::P:
                         try
                         {
-                            v(3) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            v(3) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -633,7 +644,8 @@ void BlockedDOF::get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, si
                     case BlockableState::Q:
                         try
                         {
-                            v(4) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            v(4) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {
@@ -645,7 +657,8 @@ void BlockedDOF::get_forced_v_k(const double t, Eigen::Matrix<double,6,1>& v, si
                     case BlockableState::R:
                         try
                         {
-                            v(5) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k)); // Set forced value by interpolation in input data
+                            // Set forced value by interpolation in input data
+                            v(5) = (k == 0)? (dof.second->f(t)):(dof.second->df(t,k));
                         }
                         catch(const ssc::interpolation::IndexFinderException& e)
                         {

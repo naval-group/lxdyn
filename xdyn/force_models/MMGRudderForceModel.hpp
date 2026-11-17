@@ -28,21 +28,30 @@ class MMGRudderForceModel : public ForceModel
   public:
     struct Yaml : MMGPropellerForceModel::Yaml
     {
-        double Ar{}; //!< Rudder projected area without considering the horn part(in m^2)
-        double b{}; //!< Rudder span (in m)
-        double xH_adim{}; //!< Non-dimensional longitudinal coordinate of acting point of the additional lateral force in MMG frame
-        double lR_adim{}; //!< Non-dimensional effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame
-        double tR{}; //!< Steering resistance deduction factor
-        double aH{}; //!< Rudder force increase factor
-        std::vector<double> gammaR; //!< Flow straightening coefficient (first value for negative
-                                    //!< $\beta_R$,second value for positive $\beta_R$)
-        double epsilon{};           //!< Ratio of wake fraction at propeller and rudder positions
-        double kappaMmg{}; //!< An experimental constant for expressing the fluid velocity at the
-                         //!< rudder location
-        double effective_aspect_ratio{}; //!< Rudder aspect ratio (considering the horn part)
-        YamlCoordinates position_of_the_rudder_in_the_body_frame; //!< Position of the rudder
-                                                                  //!< in the body frame
-        double Lpp{}; //!< Length between Perpendicular (for scaling xH and lR)
+        /// Rudder projected area without considering the horn part(in m^2)
+        double Ar{};
+        /// Rudder span (in m)
+        double b{};
+        /// Non-dimensional longitudinal coordinate of acting point of the additional lateral force in MMG frame
+        double xH_adim{};
+        /// Non-dimensional effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame
+        double lR_adim{};
+        /// Steering resistance deduction factor
+        double tR{};
+        /// Rudder force increase factor
+        double aH{};
+        /// Flow straightening coefficient (first value for negative $\beta_R$,second value for positive $\beta_R$)
+        std::vector<double> gammaR;
+        /// Ratio of wake fraction at propeller and rudder positions
+        double epsilon{};
+        /// An experimental constant for expressing the fluid velocity at the rudder location
+        double kappaMmg{};
+        /// Rudder aspect ratio (considering the horn part)
+        double effective_aspect_ratio{};
+        /// Position of the rudder in the body frame
+        YamlCoordinates position_of_the_rudder_in_the_body_frame;
+        /// Length between Perpendicular (for scaling xH and lR)
+        double Lpp{};
     };
 
     MMGRudderForceModel(const Yaml& input, const std::string& body_name,
@@ -87,8 +96,9 @@ class MMGRudderForceModel : public ForceModel
         double get_Fn(
             const double area,  //!< Rudder area (in m^2)
             const double speed, //!< Norm of the fluid velocity at the rudder location (in m/s)
+            /// Effective angle between the rudder and the inflow (in rad)
             const double rudder_inflow_angle)
-            const; //!< Effective angle between the rudder and the inflow (in rad)
+            const;
 
         /**  \brief Wrench (tensor) created by the rudder on the ship \details Expressed in body frame at the rudder location
          */
@@ -147,22 +157,33 @@ class MMGRudderForceModel : public ForceModel
 
       private:
         RudderModel(); // Disabled
-        double m_Ar;   //!< Rudder projected area without considering the horn part (in m^2)
-        double m_b;    //!< Rudder span (in m)
-        double m_D;    //!< Propeller diameter (in m)
-        double m_xH;   //!< Longitudinal coordinate of acting point of the additional lateral force in MMG frame (in m)
-        double m_lR;   //!< Effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame (in m)
-        double m_tR;   //!< Steering resistance deduction factor
-        double m_aH;   //!< Rudder force increase factor
-        std::vector<double> m_gammaR; //!< Flow straightening coefficient (first value for negative
-                                      //!< $\beta_R$,second value for positive $\beta_R$)
-        double m_epsilon;             //!< Ratio of wake fraction at propeller and rudder positions
-        double m_kappaMmg; //!< An experimental constant for expressing the fluid velocity at the
-                           //!< rudder location
-        double m_effective_aspect_ratio; //!< Rudder aspect ratio (considering the horn part)
+        /// Rudder projected area without considering the horn part (in m^2)
+        double m_Ar;
+        /// Rudder span (in m)
+        double m_b;
+        /// Propeller diameter (in m)
+        double m_D;
+        /// Longitudinal coordinate of acting point of the additional lateral force in MMG frame (in m)
+        double m_xH;
+        /// Effective longitudinal coordinate of rudder position in formula of $\beta_R$ in MMG frame (in m)
+        double m_lR;
+        /// Steering resistance deduction factor
+        double m_tR;
+        /// Rudder force increase factor
+        double m_aH;
+        /// Flow straightening coefficient (first value for negative $\beta_R$,second value for positive $\beta_R$)
+        std::vector<double> m_gammaR;
+        /// Ratio of wake fraction at propeller and rudder positions
+        double m_epsilon;
+        /// An experimental constant for expressing the fluid velocity at the rudder location
+        double m_kappaMmg;
+        /// Rudder aspect ratio (considering the horn part)
+        double m_effective_aspect_ratio;
         double m_rho;
-        Eigen::Vector3d position_of_the_rudder_frame_in_the_body_frame; //!< Position of the rudder frame (= MMG frame) in the body frame
-        Eigen::Vector3d position_of_the_rudder_in_the_body_frame; //!< Position of the rudder in the body frame
+        /// Position of the rudder frame (= MMG frame) in the body frame
+        Eigen::Vector3d position_of_the_rudder_frame_in_the_body_frame;
+        /// Position of the rudder in the body frame
+        Eigen::Vector3d position_of_the_rudder_in_the_body_frame;
     };
 
   protected:
@@ -173,11 +194,16 @@ class MMGRudderForceModel : public ForceModel
     RudderModel m_rudderModel;                //!< Rudder model
     
     // The following variables are computed at each time step and stored only for outputting
-    std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame
-    std::unique_ptr<Wrench> m_propeller_wrench_body_frame_at_Ob; //!< Propeller tensor in body frame
-    std::unique_ptr<Wrench> m_propeller_wrench_NED_frame_at_G;   //!< Propeller tensor in NED frame
-    std::unique_ptr<Wrench> m_rudder_wrench_body_frame_at_Ob; //!< Rudder tensor in internal frame
-    std::unique_ptr<Wrench> m_rudder_wrench_NED_frame_at_G;   //!< Rudder tensor in NED frame
+    /// Propeller tensor in internal frame
+    std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P;
+    /// Propeller tensor in body frame
+    std::unique_ptr<Wrench> m_propeller_wrench_body_frame_at_Ob;
+    /// Propeller tensor in NED frame
+    std::unique_ptr<Wrench> m_propeller_wrench_NED_frame_at_G;
+    /// Rudder tensor in internal frame
+    std::unique_ptr<Wrench> m_rudder_wrench_body_frame_at_Ob;
+    /// Rudder tensor in NED frame
+    std::unique_ptr<Wrench> m_rudder_wrench_NED_frame_at_G;
 };
 
 #endif /* MMGRUDDERFORCEMODEL_HPP_ */

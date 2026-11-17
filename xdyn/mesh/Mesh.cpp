@@ -51,7 +51,8 @@ size_t Mesh::create_facet_from_edges(const std::vector<size_t>& oriented_edge_li
     size_t nb_of_vertices = 0;
     for( size_t ei=0;ei<oriented_edge_list.size();ei++)
     {
-        size_t vertex_index = second_vertex_of_oriented_edge(oriented_edge_list[ei]); // Note: use second vertex rather than first for compatibility with existing tests
+        // Note: use second vertex rather than first for compatibility with existing tests
+        size_t vertex_index = second_vertex_of_oriented_edge(oriented_edge_list[ei]);
         if (not(vertex_inserted[vertex_index]))
         {
             vertex_list[ei]=vertex_index;

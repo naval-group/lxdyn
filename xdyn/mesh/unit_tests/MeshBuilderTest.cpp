@@ -83,10 +83,12 @@ TEST_F(MeshBuilderTest, should_be_able_to_represent_a_cube)
 TEST_F(MeshBuilderTest, can_enumerate_vertices_of_facets_in_same_order_than_edges)
 {
     const Mesh m = MeshBuilder(unit_cube()).build();
-    ASSERT_EQ( m.facets.size() , m.oriented_edges_per_facet.size() ); // The tables per facet have consistent size
+    // The tables per facet have consistent size
+    ASSERT_EQ( m.facets.size() , m.oriented_edges_per_facet.size() );
     for(size_t facet_index=0 ; facet_index < m.facets.size() ; ++facet_index) {
         Facet f = m.facets.at(facet_index);
-        ASSERT_EQ( f.vertex_index.size() , m.oriented_edges_per_facet.at(facet_index).size() ); // the facet has as many edges as vertices
+        // the facet has as many edges as vertices
+        ASSERT_EQ( f.vertex_index.size() , m.oriented_edges_per_facet.at(facet_index).size() );
         for(size_t iv=0 ; iv < f.vertex_index.size() ; ++iv ) {
             ASSERT_EQ( f.vertex_index[iv] ,
                        m.first_vertex_of_oriented_edge( m.oriented_edges_per_facet.at(facet_index).at(iv) ));
@@ -100,7 +102,8 @@ TEST_F(MeshBuilderTest, can_enumerate_vertices_of_facets_in_same_order_than_edge
 TEST_F(MeshBuilderTest, the_facets_of_an_edge_and_the_edges_of_a_facet)
 {
     const Mesh m = MeshBuilder(unit_cube()).build();
-    ASSERT_EQ(m.nb_of_static_edges , m.facets_per_edge.size()); // The tables per edge have consistent size
+    // The tables per edge have consistent size
+    ASSERT_EQ(m.nb_of_static_edges , m.facets_per_edge.size());
     for(size_t edge_index=0 ; edge_index < m.facets_per_edge.size() ; ++edge_index) {
         for(size_t fi=0 ; fi < m.facets_per_edge.at(edge_index).size() ; ++fi ) {
             size_t facet_index = m.facets_per_edge.at(edge_index).at(fi);

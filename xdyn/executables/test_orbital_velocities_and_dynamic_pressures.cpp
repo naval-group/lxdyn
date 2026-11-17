@@ -63,8 +63,10 @@ int main(int , char** ) // NOLINT(bugprone-exception-escape): a developer tool, 
     std::vector<double> x(nx);
     std::vector<double> y(nx, 0);
     std::vector<double> z(nz);
-    std::vector<double> usurf(nx); //!< u-component of the orbital velocity, taken on the air-water interface (free surface)
-    std::vector<double> wsurf(nx); //!< w-component of the orbital velocity, taken on the air-water interface (free surface)
+    /// u-component of the orbital velocity, taken on the air-water interface (free surface)
+    std::vector<double> usurf(nx);
+    /// w-component of the orbital velocity, taken on the air-water interface (free surface)
+    std::vector<double> wsurf(nx);
 
     for (size_t i = 0; i < nx; ++i)
     {

@@ -29,7 +29,8 @@ struct YamlState : AbstractStates<double>
     double phi;
     double theta;
     double psi;
-    std::map<std::string, double> extra_observations; //!< extra outputs from force models. Corresponds to 'extra_observations' in code/grpc/force.proto#L99
+    /// extra outputs from force models. Corresponds to 'extra_observations' in code/grpc/force.proto#L99
+    std::map<std::string, double> extra_observations;
 };
 
 bool operator==(const YamlState& state1, const YamlState& state2);

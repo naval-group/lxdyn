@@ -72,7 +72,8 @@ TEST_F(ObserverTests, can_output_all_results)
     const auto yaml = test_data::oscillating_cube_example();
     const auto mesh = test_data::cube();
     Sim sys = get_system(yaml, mesh, 0);
-    MapObserver observer = MapObserver(); // Should output all results when using default constructor
+    // Should output all results when using default constructor
+    MapObserver observer = MapObserver();
     ssc::solver::Scheduler scheduler(0, 1, 0.1);
     ssc::solver::quicksolve<ssc::solver::RK4Stepper>(sys, scheduler, observer);
     auto results = observer.get();

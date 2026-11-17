@@ -7,7 +7,8 @@ constexpr double EPS = 1E-6;
 std::string get_input_3dof();
 std::string get_input_3dof()
 {
-    std::stringstream ss; // Data from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y
+    // Data from H. Yasukawa and Y. Yoshimura, “Introduction of MMG standard method for ship maneuvering predictions,” Journal of Marine Science and Technology, vol. 20, no. 1, pp. 37–52, Nov. 2014, doi: 10.1007/s00773-014-0293-y
+    std::stringstream ss;
     ss << "calculation point in body frame:\n"
         <<"    x: {value: -11.1, unit: m}\n"
         <<"    y: {value: 0, unit: m}\n"
@@ -55,7 +56,8 @@ std::string get_input_3dof()
 std::string get_input_4dof();
 std::string get_input_4dof()
 {
-    std::stringstream ss; // Data from R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174, Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
+    // Data from R. Okuda, H. Yasukawa, and A. Matsuda, “Validation of maneuvering simulations for a KCS at different forward speeds using the 4-DOF MMG method,” Ocean Engineering, vol. 284, p. 115174, Sep. 2023, doi: 10.1016/j.oceaneng.2023.115174.
+    std::stringstream ss;
     ss << "calculation point in body frame:\n"
         <<"    x: {value: -3.39, unit: m}\n"
         <<"    y: {value: 0, unit: m}\n"

@@ -38,7 +38,8 @@ double AbstractWageningen::get_advance_speed_in_body_frame(const BodyStates& sta
     // The propeller sees the speed of advance through the water, so the NED current has to be
     // expressed in the body frame before it can be taken off the body-frame surge.
     const Eigen::Vector3d current_in_body = states.get_rot_from_ned_to_body().transpose()*env.get_UWCurrent(Eigen::Vector3d(states.x(), states.y(), states.z()), t);
-    return (1-get_wake_factor(states))*(states.u()-current_in_body(0));// Advance speed if the propeller axis is parallel to the ship x axis
+    // Advance speed if the propeller axis is parallel to the ship x axis
+    return (1-get_wake_factor(states))*(states.u()-current_in_body(0));
 }
 
 double AbstractWageningen::get_advance_speed_in_propeller_frame(const BodyStates& states, const double t, const EnvironmentAndFrames& env) const
@@ -79,7 +80,8 @@ AbstractWageningen::AbstractWageningen(const Yaml& input, const std::string& bod
 Wrench AbstractWageningen::get_pure_thrust_force(const BodyStates& states, const double t_, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const
 {
     Wrench tau(ssc::kinematics::Point(name,0,0,0), name);
-    const double n2 = commands.at("rpm")*commands.at("rpm")/(4*PI*PI); // n in rps (turns per second)
+    // n in rps (turns per second)
+    const double n2 = commands.at("rpm")*commands.at("rpm")/(4*PI*PI);
     const double Va = get_advance_speed_in_propeller_frame(states, t_, env);
     const double J = get_advance_ratio(commands, Va);
     tau.X() = env.rho*n2*D4*get_Kt(commands, J);
@@ -89,7 +91,8 @@ Wrench AbstractWageningen::get_pure_thrust_force(const BodyStates& states, const
 Wrench AbstractWageningen::get_force(const BodyStates& states, const double t_, const EnvironmentAndFrames& env, const std::map<std::string,double>& commands) const
 {
     Wrench tau(ssc::kinematics::Point(name,0,0,0), name);
-    const double n2 = commands.at("rpm")*commands.at("rpm")/(4*PI*PI); // n in rps (turns per second)
+    // n in rps (turns per second)
+    const double n2 = commands.at("rpm")*commands.at("rpm")/(4*PI*PI);
     const double Va = get_advance_speed_in_propeller_frame(states, t_, env);
     const double J = get_advance_ratio(commands, Va);
     // The thrust deduction factor is only meaningful if the propeller axis is parallel to the body X-axis

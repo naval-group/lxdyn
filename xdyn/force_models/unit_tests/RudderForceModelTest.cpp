@@ -295,11 +295,13 @@ TEST_F(RudderForceModelTest, force_and_torque_rudder_alone)
 
     // Create commands
     std::map<std::string,double> commands;
-    commands["rpm"] = 200;//defaut unit is rad/s
+    // defaut unit is rad/s
+    commands["rpm"] = 200;
     commands["P/D"] = 1.2;
     commands["beta"] = PI/6;
     const double prop_thrust=1024*(10000/PI/PI)*16*0.479798653;
-    const double cos_theta_cos_psi = 0.9846577620214009;// with theta=-10° and psi=-1° from input data
+    // with theta=-10° and psi=-1° from input data
+    const double cos_theta_cos_psi = 0.9846577620214009;
 
     const auto rudder_force = rudder.get_rudder_force(states, t, env, commands, prop_thrust * cos_theta_cos_psi);// rudder forces and moments in body frame expressed at the rudder location
 

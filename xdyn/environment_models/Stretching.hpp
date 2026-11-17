@@ -33,8 +33,10 @@ class Stretching
 
     private:
         Stretching(); // Disabled
-        double delta; //!< 0 for Wheeler stretching, 1 for linear extrapolation
-        double h;     //!< Depth (in meters) over which the stretching is taken into account. Should usually be equal to "depth" (or 0 for no stretching)
+        /// 0 for Wheeler stretching, 1 for linear extrapolation
+        double delta;
+        /// Depth (in meters) over which the stretching is taken into account. Should usually be equal to "depth" (or 0 for no stretching)
+        double h;
 };
 
 

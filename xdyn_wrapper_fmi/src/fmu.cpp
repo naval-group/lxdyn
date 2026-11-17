@@ -338,8 +338,9 @@ extern "C"
                 const std::string environment = value[k] ? value[k] : "";
                 if (i.sim and environment != i.environment)
                     throw std::logic_error("xdyn.environment is fixed after initialization");
+                // fails here rather than at initialization
                 if (not(environment.empty()))
-                    with_environment(i.yaml, environment); // fails here rather than at initialization
+                    with_environment(i.yaml, environment);
                 i.environment = environment;
             }
             return fmi2OK;

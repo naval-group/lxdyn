@@ -46,7 +46,8 @@ bool invalid(const XdynGrpcAiryCommandLineArguments& input)
                  << "You can define one using the -p flag. Check the available port range using the -h flag." << std::endl;
         return true;
     }
-    if (input.port < 1024) // input.port is always less than 65536 because it is a short unsigned int.
+    // input.port is always less than 65536 because it is a short unsigned int.
+    if (input.port < 1024)
     {
         std::cerr << "Error: you cannot start this gRPC server on port " << input.port << ": only range 1024-65535 is available." << std::endl;
         return true;

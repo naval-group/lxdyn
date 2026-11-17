@@ -31,21 +31,25 @@ AeroPolarForceModel::AeroPolarForceModel(const Input& input, const std::string& 
     {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "Apparent wind angle must be provided from 0deg to either 180deg (symmetry) or 360deg.");
     }
-    if (max_beta < M_PI+eps) // max_beta is close to pi
+    if (max_beta < M_PI+eps)
     {
+        // max_beta is close to pi
         symmetry = true;
     }
-    else if (max_beta < 2*M_PI-eps) // max_beta is between pi and 2*pi (but not close enough to either)
+    else if (max_beta < 2*M_PI-eps)
     {
+        // max_beta is between pi and 2*pi (but not close enough to either)
         std::cerr << "WARNING: In an aerodynamic polar force model '" << name << "', you provided a maximum apparent wind angle between 180deg and 360deg. Symmetry will be assumed and values over 180deg will be ignored." << std::endl;
         symmetry = true;
     }
-    else if (max_beta < 2*M_PI+eps) // max_beta is close to 2*pi
+    else if (max_beta < 2*M_PI+eps)
     {
+        // max_beta is close to 2*pi
         symmetry = false;
     }
-    else // max_beta is over 2*pi (but not close enough)
+    else
     {
+        // max_beta is over 2*pi (but not close enough)
         std::cerr << "WARNING: In an aerodynamic polar force model '" << name << "', you provided a maximum apparent wind higher than 360deg. All values over 360deg will be ignored." << std::endl;
         symmetry = false;
     }
@@ -77,30 +81,38 @@ Wrench AeroPolarForceModel::get_force(const BodyStates& states, const double t, 
     const Eigen::Vector3d application_point_in_NED = Eigen::Vector3d(states.x(), states.y(), states.z()) + rotation*calculation_point;
     const Eigen::Vector3d wind_in_NED = env.wind->get_wind(application_point_in_NED, t);
     const Eigen::Vector3d true_wind_in_body_frame = rotation.transpose()*wind_in_NED;
-    const Eigen::Vector3d W = true_wind_in_body_frame - Vp; // Apparent wind in body frame
-    const double U = sqrt(W(0)*W(0) + W(1)*W(1)); // Apparent wind speed projected in the body horizontal plane
-    const double beta = atan2(-W(1), -W(0)); // Incident angle of the flow, in [-pi,pi]
-    double alpha = beta; // Angle of attack
+    // Apparent wind in body frame
+    const Eigen::Vector3d W = true_wind_in_body_frame - Vp;
+    // Apparent wind speed projected in the body horizontal plane
+    const double U = sqrt(W(0)*W(0) + W(1)*W(1));
+    // Incident angle of the flow, in [-pi,pi]
+    const double beta = atan2(-W(1), -W(0));
+    // Angle of attack
+    double alpha = beta;
     if (angle_command)
     {
         alpha -= commands.at(angle_command.value());
     }
-    alpha = remainder(alpha, 2*M_PI); // Putting alpha in [-pi,pi]
+    // Putting alpha in [-pi,pi]
+    alpha = remainder(alpha, 2*M_PI);
     if (alpha<0)
     {
-        alpha += 2*M_PI; // Putting alpha in [0,2*pi]
+        // Putting alpha in [0,2*pi]
+        alpha += 2*M_PI;
     }
     const double alpha_prime = (symmetry && alpha>M_PI) ? 2*M_PI - alpha : alpha;
     const double lift = 0.5*Cl->f(alpha_prime)*env.get_rho_air()*pow(U, 2)*reference_area;
     const double drag = 0.5*Cd->f(alpha_prime)*env.get_rho_air()*pow(U, 2)*reference_area;
     Wrench ret(ssc::kinematics::Point(body_name, calculation_point), body_name);
-    if (alpha<=M_PI) // Starboard wind
+    if (alpha<=M_PI)
     {
+        // Starboard wind
         ret.X() = -drag*cos(beta) + lift*sin(beta);
         ret.Y() = -drag*sin(beta) - lift*cos(beta);
     }
-    else // Port wind
+    else
     {
+        // Port wind
         ret.X() = -drag*cos(beta) - lift*sin(beta);
         ret.Y() = -drag*sin(beta) + lift*cos(beta);
     }

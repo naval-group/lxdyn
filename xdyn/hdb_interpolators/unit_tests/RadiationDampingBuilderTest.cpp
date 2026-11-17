@@ -310,7 +310,8 @@ TEST_F(RadiationDampingBuilderTest, can_compute_K)
 {
     size_t N = 50;
     const double omega_max = 30;
-    RadiationDampingBuilder builder(TypeOfQuadrature::SIMPSON, TypeOfQuadrature::CLENSHAW_CURTIS);//SIMPSON);
+    // SIMPSON);
+    RadiationDampingBuilder builder(TypeOfQuadrature::SIMPSON, TypeOfQuadrature::CLENSHAW_CURTIS);
     auto taus = builder.build_regular_intervals(2*PI/omega_max,10,N);
     const auto K  = get_interpolated_K();
     for (auto tau:taus) ASSERT_NEAR(test_data::analytical_K(tau), K(tau), 1E-4) << "tau = " << tau;

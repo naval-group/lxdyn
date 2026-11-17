@@ -16,7 +16,8 @@ struct YamlGRPC
 {
     std::string url;
     std::string rest_of_the_yaml;
-    YamlWaveOutput output; //!< Defines what wave data is outputted during the simulation & how it is generated
+    /// Defines what wave data is outputted during the simulation & how it is generated
+    YamlWaveOutput output;
 };
 
 

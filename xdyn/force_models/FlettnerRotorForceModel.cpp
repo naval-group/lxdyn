@@ -45,14 +45,18 @@ Wrench FlettnerRotorForceModel::get_force(const BodyStates& states, const double
 {
     const Eigen::Vector3d omega(states.p(), states.q(), states.r());
     const Eigen::Vector3d Vo(states.u(), states.v(), states.w());
-    const Eigen::Vector3d Vp_body = Vo - calculation_point.cross(omega); // Velocity of point P of body relative to NED, expressed in body frame
+    // Velocity of point P of body relative to NED, expressed in body frame
+    const Eigen::Vector3d Vp_body = Vo - calculation_point.cross(omega);
     const auto rotation = states.get_rot_from_ned_to_body();
-    const Eigen::Vector3d P_NED = Eigen::Vector3d(states.x(), states.y(), states.z()) + rotation*calculation_point; // Coordinates of point P in NED frame
+    // Coordinates of point P in NED frame
+    const Eigen::Vector3d P_NED = Eigen::Vector3d(states.x(), states.y(), states.z()) + rotation*calculation_point;
     const Eigen::Vector3d wind_in_NED = env.wind->get_wind(P_NED, t);
     const Eigen::Vector3d true_wind_in_body_frame = rotation.transpose()*wind_in_NED;
-    const Eigen::Vector3d W = true_wind_in_body_frame - Vp_body; // Apparent wind in body frame
+    // Apparent wind in body frame
+    const Eigen::Vector3d W = true_wind_in_body_frame - Vp_body;
     const double beta = atan2(-W(1), -W(0));
-    const double U = sqrt(W(0)*W(0) + W(1)*W(1)); // Apparent wind speed projected in the internal horizontal plane
+    // Apparent wind speed projected in the internal horizontal plane
+    const double U = sqrt(W(0)*W(0) + W(1)*W(1));
 
     const double rpm = commands.at("rpm");
     *spin_ratio = (rpm!=0. && U>0.) ? std::abs(rpm*radius/U) : 0.;

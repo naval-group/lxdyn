@@ -16,12 +16,18 @@ class RudderForceModel : public ForceModel
     public:
         struct Yaml : WageningenControlledForceModel::Yaml
         {
-            double Ar{};                                                    //!< Rudder area (in m^2) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
-            double b{};                                                     //!< Rudder height (in m) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
-            double effective_aspect_ratio_factor{};                         //!< Non-dimensional (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 97 § b)
-            double lift_coeff{};                                            //!< Non-dimensional: lift is multiplied by it (for tuning)
-            double drag_coeff{};                                            //!< Non-dimensional: drag is multiplied by it (for tuning)
-            YamlCoordinates position_of_the_rudder_frame_in_the_body_frame; //!< Position of the rudder in the body frame
+            /// Rudder area (in m^2) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
+            double Ar{};
+            /// Rudder height (in m) (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 76 fig. 1.2.4)
+            double b{};
+            /// Non-dimensional (cf. "Maneuvering Technical Manual", J. Brix, Seehafen Verlag, p. 97 § b)
+            double effective_aspect_ratio_factor{};
+            /// Non-dimensional: lift is multiplied by it (for tuning)
+            double lift_coeff{};
+            /// Non-dimensional: drag is multiplied by it (for tuning)
+            double drag_coeff{};
+            /// Position of the rudder in the body frame
+            YamlCoordinates position_of_the_rudder_frame_in_the_body_frame;
         };
 
         RudderForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
@@ -145,15 +151,18 @@ class RudderForceModel : public ForceModel
             private:
                 RudderModel(); // Disabled
                 double Ar;// Rudder lateral projected area (in m^2)
-                double D; //!< Propeller diameter (in m)
-                double Kr;//!< Contraction factor (cf. Marine Rudders & Control Surfaces, Molland & Turnock, eq. 3.37 p.51)
+                /// Propeller diameter (in m)
+                double D;
+                /// Contraction factor (cf. Marine Rudders & Control Surfaces, Molland & Turnock, eq. 3.37 p.51)
+                double Kr;
                 double chord;// Rudder mean chord (in m)
                 double lambda;// Rudder effective aspect ratio
                 double lift_coeff;//Tuning coefficient for the rudder lift
                 double drag_coeff;//Tuning coefficient for the rudder drag
                 double rho;//Fluid density (in kg/m^3)
                 double nu;//Kinematic fluid viscosity (in m^2/s)
-                Eigen::Vector3d position_of_the_rudder_frame_in_the_body_frame;//!< Position of the rudder in the body frame
+                /// Position of the rudder in the body frame
+                Eigen::Vector3d position_of_the_rudder_frame_in_the_body_frame;
         };
     protected:
         void extra_observations(Observer& observer) const override;
@@ -165,11 +174,16 @@ class RudderForceModel : public ForceModel
         double w; //!< Wake fraction
         
         // The following variables are computed at each time step and stored only for outputting
-        std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P; //!< Propeller tensor in internal frame
-        std::unique_ptr<Wrench> m_propeller_wrench_body_frame_at_Ob; //!< Propeller tensor in body frame
-        std::unique_ptr<Wrench> m_propeller_wrench_NED_frame_at_G; //!< Propeller tensor in NED frame
-        std::unique_ptr<Wrench> m_rudder_wrench_body_frame_at_Ob;//!< Rudder tensor in internal frame
-        std::unique_ptr<Wrench> m_rudder_wrench_NED_frame_at_G;//!< Rudder tensor in NED frame
+        /// Propeller tensor in internal frame
+        std::unique_ptr<Wrench> m_propeller_wrench_internal_frame_at_P;
+        /// Propeller tensor in body frame
+        std::unique_ptr<Wrench> m_propeller_wrench_body_frame_at_Ob;
+        /// Propeller tensor in NED frame
+        std::unique_ptr<Wrench> m_propeller_wrench_NED_frame_at_G;
+        /// Rudder tensor in internal frame
+        std::unique_ptr<Wrench> m_rudder_wrench_body_frame_at_Ob;
+        /// Rudder tensor in NED frame
+        std::unique_ptr<Wrench> m_rudder_wrench_NED_frame_at_G;
 };
 
 

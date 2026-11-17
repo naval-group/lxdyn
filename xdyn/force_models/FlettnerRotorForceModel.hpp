@@ -39,8 +39,10 @@ class FlettnerRotorForceModel : public ForceModel
 
     private:
         const Eigen::Vector3d calculation_point;
-        const double radius; //!< Rotor radius (in m) for the computation of the spin ratio
-        const double reference_area; //!< Reference area (in square metres) of the wing, for lift and drag normalization
+        /// Rotor radius (in m) for the computation of the spin ratio
+        const double radius;
+        /// Reference area (in square metres) of the wing, for lift and drag normalization
+        const double reference_area;
 
         // The interpolators need to be behind pointers because interpolation is non-const
         std::unique_ptr<ssc::interpolation::SplineVariableStep> Cl;
@@ -48,7 +50,8 @@ class FlettnerRotorForceModel : public ForceModel
 
         std::pair<double, double> sr_bounds; //!< Interpolation bounds
 
-        const std::unique_ptr<double> spin_ratio; // Needs to be a pointer to be saved during get_force, which is const
+        // Needs to be a pointer to be saved during get_force, which is const
+        const std::unique_ptr<double> spin_ratio;
 };
 
 #endif /* FORCE_MODELS_INC_FLETTNERROTORFORCEMODEL_HPP_ */

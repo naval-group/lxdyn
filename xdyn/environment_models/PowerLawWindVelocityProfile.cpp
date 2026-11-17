@@ -33,6 +33,7 @@ PowerLawWindVelocityProfile::Input PowerLawWindVelocityProfile::parse(const std:
 
 double PowerLawWindVelocityProfile::get_wind_velocity(const double z) const
 {
-    if(z <= 0) return velocity * std::pow(-z / z_ref, alpha); // -z because the NED frame has negative z above sea level
+    // -z because the NED frame has negative z above sea level
+    if(z <= 0) return velocity * std::pow(-z / z_ref, alpha);
     else return 0.;
 }

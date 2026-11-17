@@ -25,7 +25,8 @@ namespace ssc
                                      Scheduler &scheduler, EventHandler &event_handler, const std::vector<DiscreteSystemPtr>& discrete_systems)
         {
             const double tstart = scheduler.get_time();
-            std::vector<double> dummy_dxdt(sys.state.size()); // When we don't need the results of sys.dx_dt
+            // When we don't need the results of sys.dx_dt
+            std::vector<double> dummy_dxdt(sys.state.size());
             sys.initialize_system_outputs_before_first_observation();
             // Dummy step to get the force values at t=tstart
             observer.collect_available_serializations(sys, tstart, discrete_systems);
@@ -70,7 +71,8 @@ namespace ssc
                                      Scheduler &scheduler, EventHandler &event_handler, const std::vector<DiscreteSystemPtr>& discrete_systems)
         {
             const double tstart = scheduler.get_time();
-            std::vector<double> dummy_dxdt(sys.state.size()); // When we don't need the results of sys.dx_dt
+            // When we don't need the results of sys.dx_dt
+            std::vector<double> dummy_dxdt(sys.state.size());
             sys.initialize_system_outputs_before_first_observation();
             // Dummy step to get the force values at t=tstart
             observer.collect_available_serializations(sys, tstart, discrete_systems);

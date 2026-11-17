@@ -18,7 +18,8 @@ namespace ssc
 {
     namespace websocket
     {
-        struct MessageHandler // What should we do when we receive a message?
+        // What should we do when we receive a message?
+        struct MessageHandler
         {
             virtual ~MessageHandler() = default;
             virtual void operator()(const Message&) = 0;

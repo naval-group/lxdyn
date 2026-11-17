@@ -40,17 +40,27 @@ class WageningenControlledForceModel : public AbstractWageningen
         size_t Z;
         double AE_A0;
 
-        const double ct[NB_COEFF_KT]; //!< Interpolation coefficient for Kt for the Wageningen B-series
-        const size_t st[NB_COEFF_KT]; //!< Exponents for the advance ratio for Kt for the Wageningen B-series
-        const size_t tt[NB_COEFF_KT]; //!< Exponents for P/D for Kt for the Wageningen B-series
-        const size_t ut[NB_COEFF_KT]; //!< Exponents for the blade area ratio for Kt for the Wageningen B-series
-        const size_t vt[NB_COEFF_KT]; //!< Exponents for number of blades for Kt for the Wageningen B-series
+        /// Interpolation coefficient for Kt for the Wageningen B-series
+        const double ct[NB_COEFF_KT];
+        /// Exponents for the advance ratio for Kt for the Wageningen B-series
+        const size_t st[NB_COEFF_KT];
+        /// Exponents for P/D for Kt for the Wageningen B-series
+        const size_t tt[NB_COEFF_KT];
+        /// Exponents for the blade area ratio for Kt for the Wageningen B-series
+        const size_t ut[NB_COEFF_KT];
+        /// Exponents for number of blades for Kt for the Wageningen B-series
+        const size_t vt[NB_COEFF_KT];
 
-        const double cq[NB_COEFF_KQ]; //!< Interpolation coefficient for Kq for the Wageningen B-series
-        const size_t sq[NB_COEFF_KQ]; //!< Exponents for the advance ratio for Kq for the Wageningen B-series
-        const size_t tq[NB_COEFF_KQ]; //!< Exponents for P/D for Kq for the Wageningen B-series
-        const size_t uq[NB_COEFF_KQ]; //!< Exponents for the blade area ratio for Kq for the Wageningen B-series
-        const size_t vq[NB_COEFF_KQ]; //!< Exponents for number of blades for Kq for the Wageningen B-series
+        /// Interpolation coefficient for Kq for the Wageningen B-series
+        const double cq[NB_COEFF_KQ];
+        /// Exponents for the advance ratio for Kq for the Wageningen B-series
+        const size_t sq[NB_COEFF_KQ];
+        /// Exponents for P/D for Kq for the Wageningen B-series
+        const size_t tq[NB_COEFF_KQ];
+        /// Exponents for the blade area ratio for Kq for the Wageningen B-series
+        const size_t uq[NB_COEFF_KQ];
+        /// Exponents for number of blades for Kq for the Wageningen B-series
+        const size_t vq[NB_COEFF_KQ];
 };
 
 #endif /* WAGENINGENCONTROLLEDFORCEMODEL_HPP_ */

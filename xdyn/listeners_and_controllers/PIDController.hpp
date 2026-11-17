@@ -25,12 +25,16 @@ class PIDController : public Controller
         struct Yaml
         {
             explicit Yaml(const std::string& yaml);
+            /// Proportional gain
             /* PID Controller gains */
-            double Kp{}; //!< Proportional gain
-            double Ki{}; //!< Integral gain
-            double Kd{}; //!< Derivative gain
+            double Kp{};
+            /// Integral gain
+            double Ki{};
+            /// Derivative gain
+            double Kd{};
+            /// Weights associated to each state, used to compute the controller's measured input,
             /* PID Controller input */
-            std::map<std::string, double> state_weights;  //!< Weights associated to each state, used to compute the controller's measured input,
+            std::map<std::string, double> state_weights;
                                                           //   with the convention that any missing state has weight 0.
                                                           //   For example "u - 2v" -> { {"u", 1}, {"v", -2} }
             std::string setpoint_name;
@@ -65,11 +69,15 @@ class PIDController : public Controller
          */
         double compute_command(const double setpoint, const double measured_value, const double t);
 
+        /// False if the controller has never been called and `t_start` and `previous_error` uninitialized.
         /* PID Controller "memory" */
-        bool initialized{false};       //!< False if the controller has never been called and `t_start` and `previous_error` uninitialized.
-        double previous_t{0};      //!< Previous time instant at which `compute_command` was called
-        double previous_error{0};  //!< Previous error (expected - measured)
-        double integral_term{0};   //!< Previous value of the integral term
+        bool initialized{false};
+        /// Previous time instant at which `compute_command` was called
+        double previous_t{0};
+        /// Previous error (expected - measured)
+        double previous_error{0};
+        /// Previous value of the integral term
+        double integral_term{0};
 };
 
 #endif /* PIDCONTROLLER_HPP_ */

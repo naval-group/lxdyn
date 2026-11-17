@@ -38,8 +38,9 @@ TEST_F(
     ON_CALL(mock, try_step(testing::_, testing::_, testing::_, testing::_)).WillByDefault(Return(ODEINT_FAIL)); // Step refused
     ON_CALL(mock, detected_state_events()).WillByDefault(Return(false));    // No event detected
 
+    // Name is irrelevant: all expectations in its scope are expected to occur in sequence
     InSequence
-        seq; // Name is irrelevant: all expectations in its scope are expected to occur in sequence
+        seq;
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
     EXPECT_CALL(mock, collect_available_serializations(testing::_, testing::_, testing::_)).RetiresOnSaturation();
@@ -112,8 +113,9 @@ TEST_F(
     ON_CALL(mock, try_step(testing::_, testing::_, testing::_, testing::_)).WillByDefault(Return(ODEINT_SUCCESS)); // Step refused
     ON_CALL(mock, detected_state_events()).WillByDefault(Return(true));        // Event detected
 
+    // Name is irrelevant: all expectations in its scope are expected to occur in sequence
     InSequence
-        seq; // Name is irrelevant: all expectations in its scope are expected to occur in sequence
+        seq;
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
     EXPECT_CALL(mock, collect_available_serializations(testing::_, testing::_, testing::_)).RetiresOnSaturation();
@@ -158,8 +160,9 @@ TEST_F(
     ON_CALL(mock, try_step(testing::_, testing::_, testing::_, testing::_)).WillByDefault(Return(ODEINT_SUCCESS)); // Step accepted
     ON_CALL(mock, detected_state_events()).WillByDefault(Return(false));       // No event detected
 
+    // Name is irrelevant: all expectations in its scope are expected to occur in sequence
     InSequence
-        seq; // Name is irrelevant: all expectations in its scope are expected to occur in sequence
+        seq;
     EXPECT_CALL(mock, get_time()).RetiresOnSaturation();
     EXPECT_CALL(mock, initialize_system_outputs_before_first_observation()).RetiresOnSaturation();
     EXPECT_CALL(mock, collect_available_serializations(testing::_, testing::_, testing::_)).RetiresOnSaturation();

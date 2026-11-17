@@ -237,27 +237,34 @@ TEST_F(MMGRudderForceModelTest, get_vr)
     ///////////////////////
     // TEST 1 : beta_R>0 //
     ///////////////////////
-    states.r.record(t, -0.023); // define yaw rate to have beta_R>0
+    // define yaw rate to have beta_R>0
+    states.r.record(t, -0.023);
     double vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.);
+    // gamma_R=0.64 because beta_R>0
     ASSERT_NEAR(10 * 0.64 * (PI / 6 - 0.71 * 0.023 * 320 / 10),
-                     vr,EPS); // gamma_R=0.64 because beta_R>0
+                     vr,EPS);
 
     ///////////////////////
     // TEST 2 : beta_R<0 //
     ///////////////////////
-    states.r.record(t, -0.025);  // define yaw rate to have beta_R<0
+    // define yaw rate to have beta_R<0
+    states.r.record(t, -0.025);
     vr = rudderModel.get_vr(states.u(), states.v(), states.r(),0.);
+    // gamma_R=0.395 because beta_R<0
     ASSERT_NEAR(10 * 0.395 * (PI / 6 - 0.71 * 0.025 * 320 / 10),
-                     vr,EPS); // gamma_R=0.395 because beta_R<0
+                     vr,EPS);
     
     ////////////////////////////
     // TEST 3 : beta_R>0 4dof //
     ////////////////////////////
-    states.r.record(t, -0.023); // define yaw rate to have beta_R>0
-    states.p.record(t, 0.03);  // define yaw rate to have beta_R<0
+    // define yaw rate to have beta_R>0
+    states.r.record(t, -0.023);
+    // define yaw rate to have beta_R<0
+    states.p.record(t, 0.03);
     vr = rudderModel.get_vr(states.u(), states.v(), states.r(),states.p());
+    // gamma_R=0.395 because beta_R<0
     ASSERT_NEAR(10 * 0.64 * (PI / 6 + (- 0.71 * 0.023 * 320 + 12.6 * 0.03) / 10),
-                     vr,EPS); // gamma_R=0.395 because beta_R<0
+                     vr,EPS);
 }
 
 TEST_F(MMGRudderForceModelTest, get_vs)

@@ -7,7 +7,8 @@
 
 #include "ssc/integrate/ClenshawCurtis.hpp"
 #include "ssc/macros/test_macros.hpp"
-constexpr int MAX_NB_OF_PARTITIONS = 2500; // Maximum number of subdivisions in the partition of (a,b)
+// Maximum number of subdivisions in the partition of (a,b)
+constexpr int MAX_NB_OF_PARTITIONS = 2500;
 constexpr int MAX_NB_OF_CHEBYCHEV_MOMENTS = 1000;
 
 ssc::integrate::ClenshawCurtis::~ClenshawCurtis()

@@ -221,7 +221,8 @@ xdyn_fmu::Model xdyn_fmu::read_model(const std::string& yaml, const std::string&
                 {
                     c.value = builder.sim.get_input_value(c.xdyn_name);
                 }
-                catch (const std::exception&) // NOLINT(bugprone-empty-catch): a command the YAML declares without a value is set by the master before the first step
+                // NOLINTNEXTLINE(bugprone-empty-catch): the master sets it before the first step
+                catch (const std::exception&)
                 {
                 }
                 model.commands.push_back(c);

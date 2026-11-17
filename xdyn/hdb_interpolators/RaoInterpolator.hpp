@@ -14,8 +14,8 @@ class RaoInterpolator
 {
     public:
         RaoInterpolator(
-            const HydroDBParser& data, //<! Data read from the HDB or Precal_R file
-            const YamlRAO& diffraction_yaml //<! Contents of the force model's parsed YAML data
+            const HydroDBParser& data, //!< Data read from the HDB or Precal_R file
+            const YamlRAO& diffraction_yaml //!< Contents of the force model's parsed YAML data
             );
         virtual ~RaoInterpolator() = default;
 
@@ -64,8 +64,10 @@ class RaoInterpolator
         };
 
     public:
-        std::array<Interpolator,6> module; //!< 2D spline interpolation function (omega,psi) for RAO's module
-        std::array<Interpolator,6> phase; //!< 2D spline interpolation function (omega,psi) for RAO's phase
+        /// 2D spline interpolation function (omega,psi) for RAO's module
+        std::array<Interpolator,6> module;
+        /// 2D spline interpolation function (omega,psi) for RAO's phase
+        std::array<Interpolator,6> phase;
         bool mirror;
         std::pair<double, double> period_bounds;
         RAO rao;

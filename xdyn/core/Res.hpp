@@ -26,9 +26,12 @@ struct Res
 {
     Res();
     Res(const double t_, const StateType& x_);
-    double t; //!< Instant at which the states correspond
-    StateType x; //!< Values of the states of the system
-    std::map<std::string, double> extra_observations; //!< extra outputs from force models. Corresponds to 'extra_observations' in code/grpc/force.proto#L99
+    /// Instant at which the states correspond
+    double t;
+    /// Values of the states of the system
+    StateType x;
+    /// extra outputs from force models. Corresponds to 'extra_observations' in code/grpc/force.proto#L99
+    std::map<std::string, double> extra_observations;
 };
 
 #endif /* RES_HPP_ */

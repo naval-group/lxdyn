@@ -153,8 +153,9 @@ size_t History::find_braketing_position(const double t) const
         {
             idx_greater = idx_middle;
         }
-        else // t > middle.first
+        else
         {
+            // t > middle.first
             idx_lower = idx_middle;
         }
     }

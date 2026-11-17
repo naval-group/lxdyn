@@ -103,7 +103,8 @@ std::vector<ParabolicCoefficients> Splines::get_parabolic_coefficients()
     return ret;
 }
 
-std::pair<double,double> Splines::find_position_and_value_of_minimum(const size_t i)//const ParabolicCoefficients& c, const double x0, const double x1)
+// const ParabolicCoefficients& c, const double x0, const double x1)
+std::pair<double,double> Splines::find_position_and_value_of_minimum(const size_t i)
 {
     const double l = xmin + double(i)*h;
     const double u = l + h;
