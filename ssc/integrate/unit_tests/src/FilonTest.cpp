@@ -9,14 +9,12 @@
 
 #include <cmath>
 
+#include "slatec.h"
 #include "ssc/integrate/Filon.hpp"
 #define PI M_PI
 constexpr double EPS = 1E-6;
 
 FilonTest::FilonTest() : a(ssc::random_data_generator::DataGenerator(1221)) {}
-
-extern "C" double dci(double* x);
-extern "C" double dsi(double* x);
 
 /*
 TEST_F(FilonTest, example2)

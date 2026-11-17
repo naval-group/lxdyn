@@ -1,8 +1,9 @@
 /* src/cubspl.f -- translated by f2c (version 20100827). */
 
+#include "ssc/interpolation/cubspl.h"
+
 #include "ssc/fortran.h"
 
-int cubspl_(doublereal* tau, doublereal* c__, integer* n, integer* ibcbeg, integer* ibcend);
 /* Subroutine */ int
 cubspl_(doublereal* tau, doublereal* c__, integer* n, integer* ibcbeg, integer* ibcend)
 {
@@ -59,7 +60,7 @@ cubspl_(doublereal* tau, doublereal* c__, integer* n, integer* ibcbeg, integer* 
     for (m = 2; m <= i__1; ++m) {
         c__[(m << 2) + 3] = tau[m] - tau[m - 1];
         /* L10: */
-        c__[(m << 2) + 4] = (c__[(m << 2) + 1] - c__[(m - 1 << 2) + 1]) / c__[(m << 2) + 3];
+        c__[(m << 2) + 4] = (c__[(m << 2) + 1] - c__[((m - 1) << 2) + 1]) / c__[(m << 2) + 3];
     }
     /* onstruct first equation from the boundary condition, of the form */
     /*             c(4,1)*s(1) + c(3,1)*s(2) = c(2,1) */
@@ -107,14 +108,14 @@ L18:
 L19:
     i__1 = l;
     for (m = 2; m <= i__1; ++m) {
-        g = -c__[(m + 1 << 2) + 3] / c__[(m - 1 << 2) + 4];
+        g = -c__[((m + 1) << 2) + 3] / c__[((m - 1) << 2) + 4];
         c__[(m << 2) + 2] =
-            g * c__[(m - 1 << 2) + 2] + (c__[(m << 2) + 3] * c__[(m + 1 << 2) + 4] +
-                                         c__[(m + 1 << 2) + 3] * c__[(m << 2) + 4]) *
-                                            3.f;
+            g * c__[((m - 1) << 2) + 2] + (c__[(m << 2) + 3] * c__[((m + 1) << 2) + 4] +
+                                           c__[((m + 1) << 2) + 3] * c__[(m << 2) + 4]) *
+                                              3.f;
         /* L20: */
         c__[(m << 2) + 4] =
-            g * c__[(m - 1 << 2) + 3] + (c__[(m << 2) + 3] + c__[(m + 1 << 2) + 3]) * 2.f;
+            g * c__[((m - 1) << 2) + 3] + (c__[(m << 2) + 3] + c__[((m + 1) << 2) + 3]) * 2.f;
     }
     /* onstruct last equation from the second boundary condition, of the form */
     /*           (-g*c(4,n-1))*s(n-1) + c(4,n)*s(n) = c(2,n) */
@@ -134,15 +135,16 @@ L21:
     }
     /*     not-a-knot and n .ge. 3, and either n.gt.3 or  also not-a-knot at */
     /*     left end point. */
-    g = c__[(*n - 1 << 2) + 3] + c__[(*n << 2) + 3];
+    g = c__[((*n - 1) << 2) + 3] + c__[(*n << 2) + 3];
     /* Computing 2nd power */
     d__1 = c__[(*n << 2) + 3];
     c__[(*n << 2) + 2] =
-        ((c__[(*n << 2) + 3] + g * 2.f) * c__[(*n << 2) + 4] * c__[(*n - 1 << 2) + 3] +
-         d__1 * d__1 * (c__[(*n - 1 << 2) + 1] - c__[(*n - 2 << 2) + 1]) / c__[(*n - 1 << 2) + 3]) /
+        ((c__[(*n << 2) + 3] + g * 2.f) * c__[(*n << 2) + 4] * c__[((*n - 1) << 2) + 3] +
+         d__1 * d__1 * (c__[((*n - 1) << 2) + 1] - c__[((*n - 2) << 2) + 1]) /
+             c__[((*n - 1) << 2) + 3]) /
         g;
-    g = -g / c__[(*n - 1 << 2) + 4];
-    c__[(*n << 2) + 4] = c__[(*n - 1 << 2) + 3];
+    g = -g / c__[((*n - 1) << 2) + 4];
+    c__[(*n << 2) + 4] = c__[((*n - 1) << 2) + 3];
     goto L29;
 /*     either (n=3 and not-a-knot also at left) or (n=2 and not not-a- */
 /*     knot at left end point). */
@@ -171,17 +173,17 @@ L26:
     c__[(*n << 2) + 2] = c__[(*n << 2) + 4];
     goto L30;
 L28:
-    g = -1.f / c__[(*n - 1 << 2) + 4];
+    g = -1.f / c__[((*n - 1) << 2) + 4];
 /* omplete forward pass of gauss elimination. */
 L29:
-    c__[(*n << 2) + 4] = g * c__[(*n - 1 << 2) + 3] + c__[(*n << 2) + 4];
-    c__[(*n << 2) + 2] = (g * c__[(*n - 1 << 2) + 2] + c__[(*n << 2) + 2]) / c__[(*n << 2) + 4];
+    c__[(*n << 2) + 4] = g * c__[((*n - 1) << 2) + 3] + c__[(*n << 2) + 4];
+    c__[(*n << 2) + 2] = (g * c__[((*n - 1) << 2) + 2] + c__[(*n << 2) + 2]) / c__[(*n << 2) + 4];
 /* arry out back substitution */
 L30:
     j = l;
 L40:
     c__[(j << 2) + 2] =
-        (c__[(j << 2) + 2] - c__[(j << 2) + 3] * c__[(j + 1 << 2) + 2]) / c__[(j << 2) + 4];
+        (c__[(j << 2) + 2] - c__[(j << 2) + 3] * c__[((j + 1) << 2) + 2]) / c__[(j << 2) + 4];
     --j;
     if (j > 0) {
         goto L40;
@@ -191,11 +193,11 @@ L40:
     i__1 = *n;
     for (i__ = 2; i__ <= i__1; ++i__) {
         dtau = c__[(i__ << 2) + 3];
-        divdf1 = (c__[(i__ << 2) + 1] - c__[(i__ - 1 << 2) + 1]) / dtau;
-        divdf3 = c__[(i__ - 1 << 2) + 2] + c__[(i__ << 2) + 2] - divdf1 * 2.f;
-        c__[(i__ - 1 << 2) + 3] = (divdf1 - c__[(i__ - 1 << 2) + 2] - divdf3) * 2.f / dtau;
+        divdf1 = (c__[(i__ << 2) + 1] - c__[((i__ - 1) << 2) + 1]) / dtau;
+        divdf3 = c__[((i__ - 1) << 2) + 2] + c__[(i__ << 2) + 2] - divdf1 * 2.f;
+        c__[((i__ - 1) << 2) + 3] = (divdf1 - c__[((i__ - 1) << 2) + 2] - divdf3) * 2.f / dtau;
         /* L50: */
-        c__[(i__ - 1 << 2) + 4] = divdf3 / dtau * (6.f / dtau);
+        c__[((i__ - 1) << 2) + 4] = divdf3 / dtau * (6.f / dtau);
     }
     return 0;
 } /* cubspl_ */

@@ -3,6 +3,7 @@
 #include <math.h>
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Table of constant values */
 
@@ -11,9 +12,15 @@ static integer c__1 = 1;
 static doublereal c_b7 = 1.5;
 
 /* Subroutine */ int dqk15w_(
-    D_fp f,
-    integer* obj,
-    D_fp w,
+    doublereal (*f)(void* obj, doublereal* x),
+    void* obj,
+    doublereal (*w)(
+        doublereal* x,
+        doublereal* omega,
+        doublereal* p2,
+        doublereal* p3,
+        doublereal* p4,
+        integer* integr),
     doublereal* p1,
     doublereal* p2,
     doublereal* p3,
@@ -62,7 +69,6 @@ static doublereal c_b7 = 1.5;
     static doublereal absc, resg, resk, fsum, absc1, absc2, fval1, fval2;
     static integer jtwm1;
     static doublereal hlgth, centr, reskh, uflow;
-    extern doublereal d1mach_(integer*);
     static doublereal epmach, dhlgth;
 
     /* ***begin prologue  dqk15w */
@@ -204,20 +210,20 @@ static doublereal c_b7 = 1.5;
         /* L15: */
     }
     reskh = resk * .5;
-    *resasc = wgk[7] * (d__1 = fc - reskh, abs(d__1));
+    *resasc = wgk[7] * abs(fc - reskh);
     for (j = 1; j <= 7; ++j) {
-        *resasc += wgk[j - 1] * ((d__1 = fv1[j - 1] - reskh, abs(d__1)) +
-                                 (d__2 = fv2[j - 1] - reskh, abs(d__2)));
+        *resasc += wgk[j - 1] * (abs(fv1[j - 1] - reskh) + abs(fv2[j - 1] - reskh));
         /* L20: */
     }
     *result = resk * hlgth;
     *resabs *= dhlgth;
     *resasc *= dhlgth;
-    *abserr = (d__1 = (resk - resg) * hlgth, abs(d__1));
+    *abserr = abs((resk - resg) * hlgth);
     if (*resasc != 0. && *abserr != 0.) {
         /* Computing MIN */
         d__3 = *abserr * 200. / *resasc;
-        d__1 = 1., d__2 = pow(d__3, c_b7);
+        d__1 = 1.;
+        d__2 = pow(d__3, c_b7);
         *abserr = *resasc * min(d__1, d__2);
     }
     if (*resabs > uflow / (epmach * 50.)) {

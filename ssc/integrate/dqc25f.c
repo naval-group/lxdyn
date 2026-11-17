@@ -1,14 +1,15 @@
 /* dqc25f.f -- translated by f2c (version 20100827). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Table of constant values */
 
 static integer c__2 = 2;
 
 /* Subroutine */ int dqc25f_(
-    D_fp f,
-    integer* obj,
+    doublereal (*f)(void* obj, doublereal* x),
+    void* obj,
     doublereal* a,
     doublereal* b,
     doublereal* omega,
@@ -41,7 +42,7 @@ static integer c__2 = 2;
 
     /* System generated locals */
     integer chebmo_dim1, chebmo_offset, i__1;
-    doublereal d__1, d__2;
+    doublereal d__1;
 
     /* Builtin functions */
     double cos(doublereal), sin(doublereal);
@@ -55,28 +56,9 @@ static integer c__2 = 2;
     static doublereal ests;
     static integer isym, noeq1;
     static doublereal cheb12[13], cheb24[25], resc12, resc24, hlgth, centr;
-    extern /* Subroutine */ int dqk15w_(
-        D_fp,
-        integer*,
-        D_fp,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        integer*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*),
-        dgtsl_(integer*, doublereal*, doublereal*, doublereal*, doublereal*, integer*);
     static doublereal ress12, ress24, oflow;
     static integer noequ;
-    extern doublereal d1mach_(integer*);
-    extern /* Subroutine */ int dqcheb_(doublereal*, doublereal*, doublereal*, doublereal*);
     static doublereal cospar;
-    extern doublereal dqwgtf_();
     static doublereal parint, sinpar;
 
     /* ***begin prologue  dqc25f */
@@ -225,21 +207,7 @@ static integer c__2 = 2;
     if (abs(parint) > 2.) {
         goto L10;
     }
-    dqk15w_(
-        (D_fp)f,
-        obj,
-        (D_fp)dqwgtf_,
-        omega,
-        &p2,
-        &p3,
-        &p4,
-        integr,
-        a,
-        b,
-        result,
-        abserr,
-        resabs,
-        resasc);
+    dqk15w_(f, obj, dqwgtf_, omega, &p2, &p3, &p4, integr, a, b, result, abserr, resabs, resasc);
     *neval = 15;
     goto L170;
 
@@ -447,22 +415,22 @@ L120:
     for (j = 1; j <= 12; ++j) {
         resc24 += cheb24[k - 1] * chebmo[m + k * chebmo_dim1];
         ress24 += cheb24[k] * chebmo[m + (k + 1) * chebmo_dim1];
-        *resabs = (d__1 = cheb24[k - 1], abs(d__1)) + (d__2 = cheb24[k], abs(d__2));
+        *resabs = abs(cheb24[k - 1]) + abs(cheb24[k]);
         k += -2;
         /* L150: */
     }
-    estc = (d__1 = resc24 - resc12, abs(d__1));
-    ests = (d__1 = ress24 - ress12, abs(d__1));
+    estc = abs(resc24 - resc12);
+    ests = abs(ress24 - ress12);
     *resabs *= abs(hlgth);
     if (*integr == 2) {
         goto L160;
     }
     *result = conc * resc24 - cons * ress24;
-    *abserr = (d__1 = conc * estc, abs(d__1)) + (d__2 = cons * ests, abs(d__2));
+    *abserr = abs(conc * estc) + abs(cons * ests);
     goto L170;
 L160:
     *result = conc * ress24 + cons * resc24;
-    *abserr = (d__1 = conc * ests, abs(d__1)) + (d__2 = cons * estc, abs(d__2));
+    *abserr = abs(conc * ests) + abs(cons * estc);
 L170:
     return 0;
 } /* dqc25f_ */

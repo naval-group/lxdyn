@@ -7,6 +7,7 @@
 
 #include "ssc/integrate/ClenshawCurtis.hpp"
 
+#include "ssc/integrate/quadrature.h"
 #include "ssc/macros/test_macros.hpp"
 // Maximum number of subdivisions in the partition of (a,b)
 constexpr int MAX_NB_OF_PARTITIONS = 2500;
@@ -148,32 +149,6 @@ ssc::integrate::ClenshawCurtis::ClenshawCurtis(const Function& f_, const double 
         nnlog[i] = 0;
     }
 }
-
-extern "C" int dqawoe_(
-    double f(void*, double*),
-    void*,
-    double* a,
-    double* b,
-    double* omega,
-    int* integr,
-    double* epsabs,
-    double* epsrel,
-    int* limit,
-    int* icall,
-    int* maxp1,
-    double* result,
-    double* abserr,
-    int* neval,
-    int* ier,
-    int* last,
-    double* alist,
-    double* blist,
-    double* rlist,
-    double* elist,
-    int* iord,
-    int* nnlog,
-    int* momcom,
-    double* chebmo);
 
 double
 ssc::integrate::ClenshawCurtis::integrate_impl(const Function& f_, double a, double b, double eps)

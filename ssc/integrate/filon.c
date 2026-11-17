@@ -6,14 +6,23 @@
 #define COUT(x) printf("in file %s, line %i: %s = %f\n", __FILE__, __LINE__, #x, (doublereal)x);
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Table of constant values */
 
 static integer c__2 = 2;
 
+static int endt2_(
+    doublereal* prevot,
+    doublereal* quant,
+    doublereal* eps,
+    doublereal* value,
+    integer* l,
+    integer* m);
+
 /* Subroutine */ int filon(
-    D_fp f,
-    int* obj,
+    doublereal (*f)(void* obj, doublereal* x),
+    void* obj,
     doublereal* a,
     doublereal* b,
     doublereal* fpa,
@@ -42,8 +51,6 @@ static integer c__2 = 2;
     static doublereal x, h2, t2, t3, w1, fa, fb, tc, fx, ts, wx;
     static integer llc, lls, mxn, nst;
     static doublereal alfa, beta, cosa, cosb, sina, sinb, teta, temp, tmax, pvtc[7], pvts[7];
-    extern /* Subroutine */ int
-    endt2_(doublereal*, doublereal*, doublereal*, doublereal*, integer*, integer*);
     static doublereal temp1, temp2, temp3, delta, tmaxb, epsil;
     static integer nstop;
     static doublereal sumcos, sumsin;
@@ -145,7 +152,8 @@ static integer c__2 = 2;
     /*  0.693 = alog(2.) rounded downwards. */
 
     /* Computing MAX */
-    i__1 = *maxh, i__2 = n + 1;
+    i__1 = *maxh;
+    i__2 = n + 1;
     mxn = max(i__1, i__2);
     fa = (*f)(obj, a);
     fb = (*f)(obj, b);
@@ -306,7 +314,7 @@ L10:
     return 0;
 } /* fspl2_ */
 
-/* Subroutine */ int endt2_(
+static int endt2_(
     doublereal* prevot,
     doublereal* quant,
     doublereal* eps,

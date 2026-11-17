@@ -1,13 +1,13 @@
 /* dgtsl.f -- translated by f2c (version 20100827). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Subroutine */ int
 dgtsl_(integer* n, doublereal* c__, doublereal* d__, doublereal* e, doublereal* b, integer* info)
 {
     /* System generated locals */
     integer i__1;
-    doublereal d__1, d__2;
 
     /* Local variables */
     static integer k;
@@ -82,7 +82,7 @@ dgtsl_(integer* n, doublereal* c__, doublereal* d__, doublereal* e, doublereal* 
 
         /*              find the largest of the two rows */
 
-        if ((d__1 = c__[kp1], abs(d__1)) < (d__2 = c__[k], abs(d__2))) {
+        if (abs(c__[kp1]) < abs(c__[k])) {
             goto L10;
         }
 

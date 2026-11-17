@@ -14,16 +14,9 @@
 
 #include "ssc/interpolation/PiecewiseConstantVariableStep.hpp"
 #include "ssc/interpolation/SplinesException.hpp"
+#include "ssc/interpolation/cubspl.h"
 
 using namespace ssc::interpolation;
-
-using integer = long int;
-using real = float;
-using doublereal = double;
-
-extern "C" {
-int cubspl_(doublereal* tau, doublereal* c, integer* n, integer* ibcbeg, integer* ibcend);
-}
 
 class VectorsAreTheRightSize {
 public:
@@ -54,11 +47,11 @@ std::vector<Coeff> get_coeffs(const std::vector<double>& x, const std::vector<do
 {
     (void)y;
     std::vector<Coeff> ret;
-    integer* n = new integer(integer(x.size()));
-    doublereal* tau = new doublereal[*n];
-    doublereal* c = new doublereal[4 * (*n)];
-    integer* ibcbeg = new integer(0);
-    integer* ibcend = new integer(0);
+    int* n = new int(int(x.size()));
+    double* tau = new double[*n];
+    double* c = new double[4 * (size_t)*n];
+    int* ibcbeg = new int(0);
+    int* ibcend = new int(0);
     for (int i = 0; i < *n; ++i) {
         tau[i] = x[(size_t)i];
         c[4 * i + 0] = y[(size_t)i];

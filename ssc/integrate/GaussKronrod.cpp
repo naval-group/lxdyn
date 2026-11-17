@@ -14,24 +14,7 @@ constexpr int LENW = 16010;
 #include <cstdlib>
 #include <iostream>
 
-extern "C" {
-void dqags_(
-    double f(void*, double*),
-    void*,
-    double*,
-    double*,
-    double*,
-    double*,
-    double*,
-    double*,
-    int*,
-    int*,
-    int*,
-    int*,
-    int* last,
-    int* iwork,
-    double* work);
-}
+#include "ssc/integrate/quadrature.h"
 
 ssc::integrate::GaussKronrod::GaussKronrod() : iwork(new int[LIMIT]), work(new double[LENW]) {}
 

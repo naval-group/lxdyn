@@ -9,14 +9,13 @@
 
 #include <cmath>
 
+#include "slatec.h"
 #include "ssc/integrate/ClenshawCurtisCosine.hpp"
 #include "ssc/integrate/ClenshawCurtisSine.hpp"
 #define PI M_PI
 constexpr double EPS = 1E-6;
 
 ClenshawCurtisTest::ClenshawCurtisTest() : a(ssc::random_data_generator::DataGenerator(54212)) {}
-
-extern "C" double dci(double* x);
 
 TEST_F(ClenshawCurtisTest, example)
 {

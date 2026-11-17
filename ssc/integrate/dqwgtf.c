@@ -1,6 +1,7 @@
 /* dqwgtf.f -- translated by f2c (version 20100827). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 doublereal dqwgtf_(
     doublereal* x,
@@ -18,6 +19,11 @@ doublereal dqwgtf_(
 
     /* Local variables */
     static doublereal omx;
+
+    /* The weight signature dqk15w calls; cos and sin weights use only omega. */
+    (void)p2;
+    (void)p3;
+    (void)p4;
 
     /* ***begin prologue  dqwgtf */
     /* ***refer to   dqk15w */

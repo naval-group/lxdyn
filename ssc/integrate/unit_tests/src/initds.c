@@ -1,18 +1,14 @@
 /* initds.f -- translated by f2c (version 20100827). */
 
+#include "slatec.h"
 #include "ssc/fortran.h"
-
-/* Table of constant values */
-
-static integer c__2 = 2;
-static integer c__1 = 1;
+#include "ssc/integrate/quadrature.h"
 
 /* DECK INITDS */
 integer initds_(doublereal* os, integer* nos, real* eta)
 {
     /* System generated locals */
     integer ret_val, i__1;
-    real r__1;
 
     /* Local variables */
     static integer i__, ii;
@@ -61,7 +57,7 @@ integer initds_(doublereal* os, integer* nos, real* eta)
     i__1 = *nos;
     for (ii = 1; ii <= i__1; ++ii) {
         i__ = *nos + 1 - ii;
-        err += (r__1 = (real)os[i__], dabs(r__1));
+        err += dabs((real)os[i__]);
         if (err > *eta) {
             goto L20;
         }
