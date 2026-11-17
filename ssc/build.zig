@@ -36,7 +36,7 @@ fn flags(ctx: *const root.Ctx) Flags {
         // SSC's 11 misleading-indentation sites are all in .cpp files, so suppressing them here stays out of xdyn's headers.
         .cpp = root.concat(b, ctx.cpp_flags, &.{"-Wno-misleading-indentation"}),
         // No -Werror: f2c's Fortran-to-C output is not ours to keep clean.
-        .f2c = ctx.withDebug(&.{ "-std=gnu11", "-Wall", "-Wextra", "-fno-common", "-fPIC", "-Issc/f2c" }),
+        .f2c = ctx.withDebug(&.{ "-std=gnu11", "-Wall", "-Wextra", "-fno-common", "-fPIC" }),
         .ws = ctx.withDebug(&([_][]const u8{ "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-fPIC" } ++ websocketpp_defines ++
             [_][]const u8{ "-Issc/websocket/inc", "-isystem", "external/websocketpp" })),
     };
@@ -53,7 +53,6 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
     // The f2c-derived C in these two.
     for ([_][]const u8{ "ssc/integrate", "ssc/interpolation" }) |dir|
         lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".c", &.{}), .flags = f.f2c });
-    lib.addCSourceFiles(.{ .root = b.path("ssc/f2c"), .files = root.sourcesIn(b, "ssc/f2c", ".c", &.{}), .flags = f.f2c });
     // C++ function-style casts in a .c file.
     lib.addCSourceFiles(.{
         .root = b.path("ssc/random_data_generator"),

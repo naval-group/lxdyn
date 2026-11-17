@@ -1,16 +1,8 @@
-/* dqk15w.f -- translated by f2c (version 20100827).
-   You must link the resulting object file with libf2c:
-        on Microsoft Windows system, link with libf2c.lib;
-        on Linux or Unix systems, link with .../path/to/libf2c.a -lm
-        or, if you install libf2c.a in a standard place, with -lf2c -lm
-        -- in that order, at the end of the command line, as in
-                cc *.o -lf2c -lm
-        Source for libf2c is in /netlib/f2c/libf2c.zip, e.g.,
+/* dqk15w.f -- translated by f2c (version 20100827). */
 
-                http://www.netlib.org/f2c/libf2c.zip
-*/
+#include <math.h>
 
-#include "ssc/f2c/f2c.h"
+#include "ssc/fortran.h"
 
 /* Table of constant values */
 
@@ -62,9 +54,6 @@ static doublereal c_b7 = 1.5;
 
     /* System generated locals */
     doublereal d__1, d__2, d__3;
-
-    /* Builtin functions */
-    double pow_dd(doublereal*, doublereal*);
 
     /* Local variables */
     static integer j;
@@ -228,7 +217,7 @@ static doublereal c_b7 = 1.5;
     if (*resasc != 0. && *abserr != 0.) {
         /* Computing MIN */
         d__3 = *abserr * 200. / *resasc;
-        d__1 = 1., d__2 = pow_dd(&d__3, &c_b7);
+        d__1 = 1., d__2 = pow(d__3, c_b7);
         *abserr = *resasc * min(d__1, d__2);
     }
     if (*resabs > uflow / (epmach * 50.)) {

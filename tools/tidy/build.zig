@@ -3,8 +3,8 @@ const std = @import("std");
 const root = @import("../../build.zig");
 const LazyPath = std.Build.LazyPath;
 
-// Vendored code and f2c's output, someone else's to lint.
-const excluded = [_][]const u8{ "external/", "ssc/f2c/", "ssc/json/rapidjson/", "xdyn_wrapper_fmi/fmi2/" };
+// Vendored code, someone else's to lint.
+const excluded = [_][]const u8{ "external/", "ssc/json/rapidjson/", "xdyn_wrapper_fmi/fmi2/" };
 
 const Entry = struct { directory: []const u8, file: []const u8, arguments: []const []const u8 };
 

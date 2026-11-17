@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h> /* exit */
 
-#include "ssc/f2c/f2c.h"
+#include "ssc/fortran.h"
 
 doublereal d1mach_(integer* i)
 {
