@@ -12,7 +12,7 @@ licensed under the EPL-2.0, in `LICENSE.md`; `Copyright.txt`, `copyright_notice.
 `844703f7eff4c533bb147931bffe914b3345ef4d` (`v1.0.0`), under the licence in `f2c/Notice`.
 
 Only what xdyn compiles or includes is here, and the tests SSC's CMake built for those modules:
-300 of SSC's 660 files and 157 of f2c's 183, each as upstream had it. `build.zig` is new: it
+264 of SSC's 660 files and 157 of f2c's 183, each as upstream had it. `build.zig` is new: it
 replaces SSC's CMake and `generate_module_header.sh`, whose umbrella headers it writes into the build
 cache.
 
