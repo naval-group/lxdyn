@@ -22,7 +22,7 @@ const tested = [_][]const u8{
     "numeric",         "random_data_generator", "solver",    "text_file_reader", "websocket",
 };
 
-const Flags = struct { cpp: []const []const u8, f2c: []const []const u8, ws: []const []const u8 };
+const Flags = struct { cpp: []const []const u8, ws: []const []const u8 };
 
 // Every file that includes websocketpp needs the same set: its templates otherwise get two layouts in one binary.
 const websocketpp_defines = [_][]const u8{
@@ -35,8 +35,6 @@ fn flags(ctx: *const root.Ctx) Flags {
     return .{
         // SSC's 11 misleading-indentation sites are all in .cpp files, so suppressing them here stays out of xdyn's headers.
         .cpp = root.concat(b, ctx.cpp_flags, &.{"-Wno-misleading-indentation"}),
-        // No -Werror: f2c's Fortran-to-C output is not ours to keep clean.
-        .f2c = ctx.withDebug(&.{ "-std=gnu11", "-Wall", "-Wextra", "-fno-common", "-fPIC" }),
         .ws = ctx.withDebug(&([_][]const u8{ "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-fPIC" } ++ websocketpp_defines ++
             [_][]const u8{ "-Issc/websocket/inc", "-isystem", "external/websocketpp" })),
     };
@@ -50,9 +48,9 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
         const dir = b.pathJoin(&.{ "ssc", name });
         lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".cpp", &.{}), .flags = f.cpp });
     }
-    // The f2c-derived C in these two.
+    // The Fortran-derived C in these two.
     for ([_][]const u8{ "ssc/integrate", "ssc/interpolation" }) |dir|
-        lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".c", &.{}), .flags = f.f2c });
+        lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".c", &.{}), .flags = ctx.c_flags });
     // C++ function-style casts in a .c file.
     lib.addCSourceFiles(.{
         .root = b.path("ssc/random_data_generator"),
@@ -107,7 +105,7 @@ pub fn addTests(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile, test_ste
         const src = b.pathJoin(&.{ dir, "src" });
         const cpp = if (std.mem.eql(u8, name, "websocket")) root.concat(b, f.cpp, &websocketpp_defines) else f.cpp;
         m.addCSourceFiles(.{ .root = b.path(src), .files = root.sourcesIn(b, src, ".cpp", &.{}), .flags = cpp });
-        m.addCSourceFiles(.{ .root = b.path(src), .files = root.sourcesIn(b, src, ".c", &.{}), .flags = f.f2c });
+        m.addCSourceFiles(.{ .root = b.path(src), .files = root.sourcesIn(b, src, ".c", &.{}), .flags = ctx.c_flags });
     }
     m.addCSourceFiles(.{ .root = b.path("xdyn/executables"), .files = &.{"run_all_tests.cpp"}, .flags = ctx.cpp_flags });
     m.linkLibrary(libxdyn);

@@ -6,7 +6,6 @@ typedef int integer;
 typedef float real;
 typedef double doublereal;
 typedef long int logical;
-typedef doublereal (*D_fp)();
 
 #define TRUE_ (1)
 #define FALSE_ (0)

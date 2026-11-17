@@ -1,6 +1,7 @@
 /* dqcheb.f -- translated by f2c (version 20100827). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Subroutine */ int
 dqcheb_(doublereal* x, doublereal* fval, doublereal* cheb12, doublereal* cheb24)

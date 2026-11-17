@@ -32,6 +32,7 @@ pub fn build(b: *std.Build) void {
         .codegen = codegen,
     };
     ctx.cpp_flags = xdyn.cppFlags(&ctx);
+    ctx.c_flags = xdyn.cFlags(&ctx);
 
     // libxdyn: one static archive of SSC, xdyn and the generated code.
     const lib = ctx.module(.{});
@@ -60,6 +61,7 @@ pub const Ctx = struct {
     debug: bool,
     codegen: Codegen,
     cpp_flags: []const []const u8 = &.{},
+    c_flags: []const []const u8 = &.{},
 
     pub fn isWindows(ctx: *const Ctx) bool {
         return ctx.target.result.os.tag == .windows;

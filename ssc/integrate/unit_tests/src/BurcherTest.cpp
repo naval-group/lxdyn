@@ -9,6 +9,7 @@
 
 #include <cmath>
 
+#include "slatec.h"
 #include "ssc/integrate/Burcher.hpp"
 #define PI M_PI
 
@@ -16,9 +17,6 @@ constexpr double EPS1 = 1E-6;
 constexpr double EPS2 = 1E-3;
 
 BurcherTest::BurcherTest() : a(ssc::random_data_generator::DataGenerator(212)) {}
-
-extern "C" double dci(double* x);
-extern "C" double dsi(double* x);
 
 TEST_F(BurcherTest, example1)
 {

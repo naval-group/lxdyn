@@ -1,6 +1,7 @@
 /* dqagse.f -- translated by f2c (version 20090411). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Table of constant values */
 
@@ -9,8 +10,8 @@ static integer c__1 = 1;
 static integer c__2 = 2;
 
 /* Subroutine */ int dqagse_(
-    D_fp f,
-    real* obj,
+    doublereal (*f)(void* obj, doublereal* x),
+    void* obj,
     doublereal* a,
     doublereal* b,
     doublereal* epsabs,
@@ -36,26 +37,14 @@ static integer c__2 = 2;
     static doublereal a1, a2, b1, b2;
     static integer id;
     static doublereal area;
-    extern /* Subroutine */ int dqk21_(
-        D_fp,
-        real*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*);
     static doublereal dres;
     static integer ksgn, nres;
     static doublereal area1, area2, area12;
-    extern /* Subroutine */ int
-    dqelg_(integer*, doublereal*, doublereal*, doublereal*, doublereal*, integer*);
     static doublereal small, erro12;
     static integer ierro;
     static doublereal defab1, defab2;
     static integer ktmin, nrmax;
     static doublereal oflow, uflow;
-    extern doublereal d1mach_(integer*);
     static logical noext;
     static integer iroff1, iroff2, iroff3;
     static doublereal res3la[3], error1, error2, rlist2[52];
@@ -67,8 +56,6 @@ static integer c__2 = 2;
     static doublereal reseps;
     static logical extrap;
     static doublereal ertest, errsum;
-    extern /* Subroutine */ int
-    dqpsrt_(integer*, integer*, integer*, doublereal*, doublereal*, integer*, integer*);
 
     /* ***begin prologue  dqagse */
     /* ***date written   800101   (yymmdd) */
@@ -306,13 +293,14 @@ static integer c__2 = 2;
     uflow = d1mach_(&c__1);
     oflow = d1mach_(&c__2);
     ierro = 0;
-    dqk21_((D_fp)f, obj, a, b, result, abserr, &defabs, &resabs);
+    dqk21_(f, obj, a, b, result, abserr, &defabs, &resabs);
 
     /*           test on accuracy. */
 
     dres = abs(*result);
     /* Computing MAX */
-    d__1 = *epsabs, d__2 = *epsrel * dres;
+    d__1 = *epsabs;
+    d__2 = *epsrel * dres;
     errbnd = max(d__1, d__2);
     *last = 1;
     rlist[1] = *result;
@@ -324,7 +312,7 @@ static integer c__2 = 2;
     if (*limit == 1) {
         *ier = 1;
     }
-    if (*ier != 0 || *abserr <= errbnd && *abserr != resabs || *abserr == 0.) {
+    if (*ier != 0 || (*abserr <= errbnd && *abserr != resabs) || *abserr == 0.) {
         goto L140;
     }
 
@@ -364,8 +352,8 @@ static integer c__2 = 2;
         a2 = b1;
         b2 = blist[maxerr];
         erlast = errmax;
-        dqk21_((D_fp)f, obj, &a1, &b1, &area1, &error1, &resabs, &defab1);
-        dqk21_((D_fp)f, obj, &a2, &b2, &area2, &error2, &resabs, &defab2);
+        dqk21_(f, obj, &a1, &b1, &area1, &error1, &resabs, &defab1);
+        dqk21_(f, obj, &a2, &b2, &area2, &error2, &resabs, &defab2);
 
         /*           improve previous approximations to integral */
         /*           and error and test for accuracy. */
@@ -377,8 +365,7 @@ static integer c__2 = 2;
         if (defab1 == error1 || defab2 == error2) {
             goto L15;
         }
-        if ((d__1 = rlist[maxerr] - area12, abs(d__1)) > abs(area12) * 1e-5 ||
-            erro12 < errmax * .99) {
+        if (abs(rlist[maxerr] - area12) > abs(area12) * 1e-5 || erro12 < errmax * .99) {
             goto L10;
         }
         if (extrap) {
@@ -395,7 +382,8 @@ static integer c__2 = 2;
         rlist[maxerr] = area1;
         rlist[*last] = area2;
         /* Computing MAX */
-        d__1 = *epsabs, d__2 = *epsrel * abs(area);
+        d__1 = *epsabs;
+        d__2 = *epsrel * abs(area);
         errbnd = max(d__1, d__2);
 
         /*           test for roundoff error and eventually set error flag. */
@@ -418,7 +406,8 @@ static integer c__2 = 2;
         /*           at a point of the integration range. */
 
         /* Computing MAX */
-        d__1 = abs(a1), d__2 = abs(b2);
+        d__1 = abs(a1);
+        d__2 = abs(b2);
         if (max(d__1, d__2) <= (epmach * 100. + 1.) * (abs(a2) + uflow * 1e3)) {
             *ier = 4;
         }
@@ -464,7 +453,7 @@ static integer c__2 = 2;
             goto L90;
         }
         erlarg -= erlast;
-        if ((d__1 = b1 - a1, abs(d__1)) > small) {
+        if (abs(b1 - a1) > small) {
             erlarg += erro12;
         }
         if (extrap) {
@@ -474,7 +463,7 @@ static integer c__2 = 2;
         /*           test whether the interval to be bisected next is the */
         /*           smallest interval. */
 
-        if ((d__1 = blist[maxerr] - alist__[maxerr], abs(d__1)) > small) {
+        if (abs(blist[maxerr] - alist__[maxerr]) > small) {
             goto L90;
         }
         extrap = TRUE_;
@@ -498,7 +487,7 @@ static integer c__2 = 2;
             maxerr = iord[nrmax];
             errmax = elist[maxerr];
             /* ***jump out of do-loop */
-            if ((d__1 = blist[maxerr] - alist__[maxerr], abs(d__1)) > small) {
+            if (abs(blist[maxerr] - alist__[maxerr]) > small) {
                 goto L90;
             }
             ++nrmax;
@@ -523,7 +512,8 @@ static integer c__2 = 2;
         *result = reseps;
         correc = erlarg;
         /* Computing MAX */
-        d__1 = *epsabs, d__2 = *epsrel * abs(reseps);
+        d__1 = *epsabs;
+        d__2 = *epsrel * abs(reseps);
         ertest = max(d__1, d__2);
         /* ***jump out of do-loop */
         if (*abserr <= ertest) {
@@ -547,7 +537,7 @@ static integer c__2 = 2;
         erlarg = errsum;
         goto L90;
     L80:
-        small = (d__1 = *b - *a, abs(d__1)) * .375;
+        small = abs(*b - *a) * .375;
         erlarg = errsum;
         ertest = errbnd;
         rlist2[1] = area;
@@ -589,7 +579,8 @@ L105:
 
 L110:
     /* Computing MAX */
-    d__1 = abs(*result), d__2 = abs(area);
+    d__1 = abs(*result);
+    d__2 = abs(area);
     if (ksgn == -1 && max(d__1, d__2) <= defabs * .01) {
         goto L130;
     }

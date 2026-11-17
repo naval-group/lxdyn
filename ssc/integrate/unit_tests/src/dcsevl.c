@@ -1,15 +1,8 @@
 /* dcsevl.f -- translated by f2c (version 20100827). */
 
+#include "slatec.h"
 #include "ssc/fortran.h"
-
-/* Table of constant values */
-
-static integer c__28 = 28;
-static integer c__2 = 2;
-static integer c__31 = 31;
-static integer c__3 = 3;
-static integer c__25 = 25;
-static integer c__1 = 1;
+#include "ssc/integrate/quadrature.h"
 
 doublereal dcsevl_(doublereal* x, doublereal* a, integer* n)
 {

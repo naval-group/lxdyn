@@ -1,10 +1,11 @@
 /* dqags.f -- translated by f2c (version 20090411). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Subroutine */ int dqags_(
-    D_fp f,
-    integer* obj,
+    doublereal (*f)(void* obj, doublereal* x),
+    void* obj,
     doublereal* a,
     doublereal* b,
     doublereal* epsabs,
@@ -19,25 +20,7 @@
     integer* iwork,
     doublereal* work)
 {
-    static integer l1, l2, l3, lvl;
-    extern /* Subroutine */ int dqagse_(
-        D_fp,
-        integer*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        integer*,
-        doublereal*,
-        doublereal*,
-        integer*,
-        integer*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        doublereal*,
-        integer*,
-        integer*);
+    static integer l1, l2, l3;
 
     /* ***begin prologue  dqags */
     /* ***date written   800101   (yymmdd) */
@@ -214,7 +197,7 @@
     l3 = *limit + l2;
 
     dqagse_(
-        (D_fp)f,
+        f,
         obj,
         a,
         b,
@@ -234,10 +217,6 @@
 
     /*         call error handler if necessary. */
 
-    lvl = 0;
 L10:
-    if (*ier == 6) {
-        lvl = 1;
-    }
     return 0;
 } /* dqags_ */

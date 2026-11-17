@@ -50,18 +50,22 @@ pub fn cppFlags(ctx: *const root.Ctx) []const []const u8 {
     return root.concat(ctx.b, ctx.withDebug(&.{ "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-fPIC" }), &warning_flags);
 }
 
+// The C counterpart, shared by xdyn's and SSC's C.
+pub fn cFlags(ctx: *const root.Ctx) []const []const u8 {
+    return root.concat(ctx.b, ctx.withDebug(&.{ "-std=gnu11", "-Wall", "-Wextra", "-Werror", "-fno-common", "-fPIC" }), &warning_flags);
+}
+
 pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
     const b = ctx.b;
     const cpp = ctx.cpp_flags;
-    const c_flags = ctx.withDebug(&.{ "-std=gnu11", "-Wall", "-Wextra", "-Werror", "-fno-common", "-fPIC" });
 
     // xdyn/<module>/*.cpp: depth 2 leaves xdyn/*/unit_tests/ to the test runner.
     lib.addCSourceFiles(.{ .root = b.path("xdyn"), .files = moduleSources(b), .flags = cpp });
-    lib.addCSourceFile(.{ .file = b.path("xdyn/version/version.c"), .flags = root.concat(b, c_flags, &.{
+    lib.addCSourceFile(.{ .file = b.path("xdyn/version/version.c"), .flags = root.concat(b, ctx.c_flags, &.{
         b.fmt("-DXDYN_VERSION=\"{s}\"", .{release()}),
         b.fmt("-DXDYN_COMMIT=\"{s}\"", .{b.option([]const u8, "commit", "Commit stamped into the binaries (default: dev; the flake passes its own)") orelse "dev"}),
     }) });
-    lib.addCSourceFiles(.{ .root = b.path("xdyn/interface_hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = c_flags });
+    lib.addCSourceFiles(.{ .root = b.path("xdyn/interface_hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = ctx.c_flags });
     lib.addCSourceFiles(.{ .root = b.path("xdyn/observers_and_api"), .files = &.{"demo_scripts.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-c23-extensions"}) });
     proto.addSources(ctx, lib, &.{ "wave_types", "wave_grpc", "force", "controller" });
 }

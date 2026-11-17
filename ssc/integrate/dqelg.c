@@ -1,6 +1,7 @@
 /* dqelg.f -- translated by f2c (version 20100827). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Table of constant values */
 
@@ -17,7 +18,7 @@ static integer c__2 = 2;
 {
     /* System generated locals */
     integer i__1;
-    doublereal d__1, d__2, d__3;
+    doublereal d__1, d__2;
 
     /* Local variables */
     static integer i__;
@@ -30,7 +31,6 @@ static integer c__2 = 2;
     static doublereal err1, err2, err3, tol1, tol2, tol3;
     static integer indx;
     static doublereal e1abs, oflow, error;
-    extern doublereal d1mach_(integer*);
     static doublereal delta1, delta2, delta3, epmach, epsinf;
     static integer newelm, limexp;
 
@@ -144,7 +144,8 @@ static integer c__2 = 2;
         delta3 = e1 - e0;
         err3 = abs(delta3);
         /* Computing MAX */
-        d__1 = e1abs, d__2 = abs(e0);
+        d__1 = e1abs;
+        d__2 = abs(e0);
         tol3 = max(d__1, d__2) * epmach;
         if (err2 > tol2 || err3 > tol3) {
             goto L10;
@@ -165,7 +166,8 @@ static integer c__2 = 2;
         delta1 = e1 - e3;
         err1 = abs(delta1);
         /* Computing MAX */
-        d__1 = e1abs, d__2 = abs(e3);
+        d__1 = e1abs;
+        d__2 = abs(e3);
         tol1 = max(d__1, d__2) * epmach;
 
         /*           if two elements are very close to each other, omit */
@@ -175,7 +177,7 @@ static integer c__2 = 2;
             goto L20;
         }
         ss = 1. / delta1 + 1. / delta2 - 1. / delta3;
-        epsinf = (d__1 = ss * e1, abs(d__1));
+        epsinf = abs(ss * e1);
 
         /*           test to detect irregular behaviour in the table, and */
         /*           eventually omit a part of the table adjusting the value */
@@ -196,7 +198,7 @@ static integer c__2 = 2;
         res = e1 + 1. / ss;
         epstab[k1] = res;
         k1 += -2;
-        error = err2 + (d__1 = res - e2, abs(d__1)) + err3;
+        error = err2 + abs(res - e2) + err3;
         if (error > *abserr) {
             goto L40;
         }
@@ -244,14 +246,14 @@ L80:
     /*           compute error estimate */
 
 L90:
-    *abserr = (d__1 = *result - res3la[3], abs(d__1)) + (d__2 = *result - res3la[2], abs(d__2)) +
-              (d__3 = *result - res3la[1], abs(d__3));
+    *abserr = abs(*result - res3la[3]) + abs(*result - res3la[2]) + abs(*result - res3la[1]);
     res3la[1] = res3la[2];
     res3la[2] = res3la[3];
     res3la[3] = *result;
 L100:
     /* Computing MAX */
-    d__1 = *abserr, d__2 = epmach * 5. * abs(*result);
+    d__1 = *abserr;
+    d__2 = epmach * 5. * abs(*result);
     *abserr = max(d__1, d__2);
     return 0;
 } /* dqelg_ */

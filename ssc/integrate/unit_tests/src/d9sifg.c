@@ -2,7 +2,9 @@
 
 #include <math.h>
 
+#include "slatec.h"
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Table of constant values */
 
@@ -15,7 +17,6 @@ static integer c__1 = 1;
 static integer c__2 = 2;
 static doublereal c_b13 = 50.;
 static doublereal c_b14 = 200.;
-static integer c__34 = 34;
 
 /* Subroutine */ int d9sifg_(doublereal* x, doublereal* f, doublereal* g)
 {
@@ -328,8 +329,6 @@ static integer c__34 = 34;
 
     /* Local variables */
     static real tol;
-    extern doublereal d1mach_(integer*), dcsevl_(doublereal*, doublereal*, integer*);
-    extern integer initds_(doublereal*, integer*, real*);
 
     /* december 1980 edition.  w. fullerton, bell labs. */
 
@@ -378,7 +377,8 @@ static integer c__34 = 34;
     /* Computing MIN */
     d__4 = d1mach_(&c__1);
     d__5 = d1mach_(&c__2);
-    d__2 = -log(d__4), d__3 = log(d__5);
+    d__2 = -log(d__4);
+    d__3 = log(d__5);
     d__1 = min(d__2, d__3) - .01;
     xmaxf = exp(d__1);
     d__1 = d1mach_(&c__1);

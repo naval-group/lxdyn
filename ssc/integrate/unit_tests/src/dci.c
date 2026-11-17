@@ -2,15 +2,14 @@
 
 #include <math.h>
 
+#include "slatec.h"
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Table of constant values */
 
 static integer c__3 = 3;
 static integer c__19 = 19;
-static integer c__17 = 17;
-static integer c__1 = 1;
-static integer c__2 = 2;
 
 doublereal dci(doublereal* x)
 {
@@ -46,10 +45,6 @@ doublereal dci(doublereal* x)
     /* Local variables */
     static doublereal f, g, y;
     static doublereal sinx;
-    extern doublereal d1mach_(integer*);
-    extern /* Subroutine */ int d9sifg_(doublereal*, doublereal*, doublereal*);
-    extern doublereal dcsevl_(doublereal*, doublereal*, integer*);
-    extern integer initds_(doublereal*, integer*, real*);
 
     /* december 1980 edition, w. fullerton, bell labs. */
 

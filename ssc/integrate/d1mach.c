@@ -5,6 +5,7 @@
 #include <stdlib.h> /* exit */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 doublereal d1mach_(integer* i)
 {

@@ -1,6 +1,7 @@
 /* dqpsrt.f -- translated by f2c (version 20100827). */
 
 #include "ssc/fortran.h"
+#include "ssc/integrate/quadrature.h"
 
 /* Subroutine */ int dqpsrt_(
     integer* limit,
