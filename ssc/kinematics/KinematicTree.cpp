@@ -91,9 +91,11 @@ class KinematicTree::Impl
         {
             std::vector<std::string> path;
             NameMap nameMap = boost::get(boost::vertex_name, g);
-            Vertex v = destination; // We want to start at the destination and work our way back to the source
+            // We want to start at the destination and work our way back to the source
+            Vertex v = destination;
             for(Vertex u = predecessor_map[v]; // Start by setting 'u' to the destination node's predecessor
-                u != v; // Keep tracking the path until we get to the source
+                // Keep tracking the path until we get to the source
+                u != v;
                 v = u, u = predecessor_map[v]) // Set the current vertex to the current predecessor, and the predecessor to one level up
             {
                 std::pair<Graph::edge_descriptor, bool> edgePair = boost::edge(u, v, g);

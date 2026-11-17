@@ -35,6 +35,7 @@ LogWindVelocityProfile::Input LogWindVelocityProfile::parse(const std::string& y
 
 double LogWindVelocityProfile::get_wind_velocity(const double z) const
 {
-    if(z <= 0) return velocity * std::log(-z / z0) / std::log(z_ref / z0); // -z because the NED frame has negative z above sea level
+    // -z because the NED frame has negative z above sea level
+    if(z <= 0) return velocity * std::log(-z / z0) / std::log(z_ref / z0);
     else return 0.;
 }

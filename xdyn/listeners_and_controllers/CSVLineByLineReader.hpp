@@ -59,8 +59,10 @@ class CSVLineByLineReader
         DateValues read_next_line();
 
         std::vector<std::string> get_headers();
-        void set_read_position(const double date); //!< Sets the position in the stream buffer so 'date' is between current_date and next_date
-        void fix_next_date_on_end_of_file(); //!< Make sure next.date==current.date when reaching then end of the CSV file
+        /// Sets the position in the stream buffer so 'date' is between current_date and next_date
+        void set_read_position(const double date);
+        /// Make sure next.date==current.date when reaching then end of the CSV file
+        void fix_next_date_on_end_of_file();
 
         const CSVYaml yaml;
         std::ifstream file;
@@ -69,9 +71,11 @@ class CSVLineByLineReader
         DateValues current;
         DateValues next;
         bool has_more_values;
-        std::map<double, std::streampos> date2position; //!< For each date, stores the position in the CSV file
+        /// For each date, stores the position in the CSV file
+        std::map<double, std::streampos> date2position;
         std::streampos position_of_first_line;
-        const DateValues zero; //!< Default values (everything at zero, date at infinity)
+        /// Default values (everything at zero, date at infinity)
+        const DateValues zero;
         double max_date_so_far;
 };
 

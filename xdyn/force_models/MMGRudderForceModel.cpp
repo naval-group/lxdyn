@@ -42,20 +42,28 @@ Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
                                       const EnvironmentAndFrames& env,
                                       const std::map<std::string, double>& commands) const
 {
+    // propeller tensor in propeller frame expressed at the propeller location
     const Wrench propeller_wrench_propeller_frame_at_P = m_propulsionModel.get_force(
         states, t, env,
-        commands); // propeller tensor in propeller frame expressed at the propeller location
-    const Wrench pure_thrust_wrench_propeller_frame_at_P = m_propulsionModel.get_pure_thrust_force(states, t, env, commands);// propeller pure thrust (no thrust deduction, no moment) tensor in propeller frame expressed at the propeller location
+        commands);
+    // propeller pure thrust (no thrust deduction, no moment) tensor in propeller frame expressed at the propeller location
+    const Wrench pure_thrust_wrench_propeller_frame_at_P = m_propulsionModel.get_pure_thrust_force(states, t, env, commands);
+    // get propeller frame
     const std::string propeller_frame
-        = propeller_wrench_propeller_frame_at_P.get_frame(); // get propeller frame
-    can_find_internal_frame(env.k); // Check if the internal frame is accessible
+        = propeller_wrench_propeller_frame_at_P.get_frame();
+    // Check if the internal frame is accessible
+    can_find_internal_frame(env.k);
+    // propeller tensor in body frame expressed at the propeller location
     const Wrench propeller_wrench_body_frame_at_P
         = propeller_wrench_propeller_frame_at_P.change_frame(
-            body_name, env.k); // propeller tensor in body frame expressed at the propeller location
+            body_name, env.k);
+    // propeller pure thrust (no thrust deduction, no moment) tensor in body frame expressed at the propeller location. 
     const Wrench pure_thrust_wrench_body_frame_at_P 
         = pure_thrust_wrench_propeller_frame_at_P.change_frame(
-            body_name,env.k);// propeller pure thrust (no thrust deduction, no moment) tensor in body frame expressed at the propeller location. 
-    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)std::max(pure_thrust_wrench_body_frame_at_P.X(),0.)); // rudder forces and moments in body frame expressed at the rudder location
+            body_name,env.k);
+    // rudder forces and moments in body frame expressed at the rudder location
+    const ssc::kinematics::Vector6d rudder_force = get_rudder_force(states, t, env, commands, (double)std::max(pure_thrust_wrench_body_frame_at_P.X(),0.));
+    // rudder tensor in body frame expressed at the rudder frame location
     /*
     Negative propeller thrust means that the propeller wake is forward and therefore there is no
     acceleration on the rudder. In that case we consider a 0 thrust because a negative thrust would
@@ -63,17 +71,20 @@ Wrench MMGRudderForceModel::get_force(const BodyStates& states, const double t,
     */
     const Wrench rudder_wrench_body_frame_at_R(
         ssc::kinematics::Point(body_name, m_rudderModel.get_rudder_frame_location()), body_name,
-        rudder_force); // rudder tensor in body frame expressed at the rudder frame location
+        rudder_force);
+    // rudder tensor in body frame expressed at the propeller location
     const Wrench rudder_wrench_body_frame_at_P = rudder_wrench_body_frame_at_R.transport_to(
         ssc::kinematics::Point(propeller_frame, 0, 0, 0),
-        env.k); // rudder tensor in body frame expressed at the propeller location
+        env.k);
+    // rudder+propeller wrench in body frame expressed at
     const Wrench rudderAndPropeller_wrench_body_frame_at_P
         = rudder_wrench_body_frame_at_P
-          + propeller_wrench_body_frame_at_P; // rudder+propeller wrench in body frame expressed at
+          + propeller_wrench_body_frame_at_P;
                                               // the propeller location
 
+    // Save propeller torser in internal frame
     *m_propeller_wrench_internal_frame_at_P
-        = propeller_wrench_propeller_frame_at_P; // Save propeller torser in internal frame
+        = propeller_wrench_propeller_frame_at_P;
 
     // Compute and save propeller torsers in body and NED frame
     const Wrench propeller_wrench_body_frame_at_Ob(propeller_wrench_body_frame_at_P.transport_to(
@@ -404,17 +415,25 @@ ssc::kinematics::Vector6d MMGRudderForceModel::get_rudder_force(
     const double CTh
         = std::abs(DVa) < 1e-10 ? 8e20 / PI * T / env.rho : 8 / PI * T / (env.rho * DVa * DVa);
 
+    // The MMG rudder angle orientation (positive to portside) is the opposite of the one used in xdyn (positive to starboard)
     const double rudder_angle
-        = -commands.at("beta"); // The MMG rudder angle orientation (positive to portside) is the opposite of the one used in xdyn (positive to starboard)
-    const double xG = m_propulsionModel.get_CoG_position_in_MMG_frame(states).x();// Longitudinal position of the CoG in MMG frame
-    const double zG = m_propulsionModel.get_CoG_position_in_MMG_frame(states).z();// Vertical position of the CoG in MMG frame
-    const double vm = states.v() - xG*states.r() + zG*states.p();// Lateral ship velocity at midship in body frame
-    const double phi = states.get_angles(env.rot).phi;// heel angle
+        = -commands.at("beta");
+    // Longitudinal position of the CoG in MMG frame
+    const double xG = m_propulsionModel.get_CoG_position_in_MMG_frame(states).x();
+    // Vertical position of the CoG in MMG frame
+    const double zG = m_propulsionModel.get_CoG_position_in_MMG_frame(states).z();
+    // Lateral ship velocity at midship in body frame
+    const double vm = states.v() - xG*states.r() + zG*states.p();
+    // heel angle
+    const double phi = states.get_angles(env.rot).phi;
     
-    const double vR = m_rudderModel.get_vr(states.u(), vm, states.r(),states.p());// Lateral inflow velocity at rudder location
+    // Lateral inflow velocity at rudder location
+    const double vR = m_rudderModel.get_vr(states.u(), vm, states.r(),states.p());
+    // mean inflow velocity at rudder location
     ssc::kinematics::Point Vrud = m_rudderModel.get_vs(
-        CTh, Va, vR); // mean inflow velocity at rudder location
-    return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar())*cos(phi);// The heel angle is applied here
+        CTh, Va, vR);
+    // The heel angle is applied here
+    return m_rudderModel.get_wrench(rudder_angle, Vrud, m_rudderModel.get_Ar())*cos(phi);
 }
 
 MMGRudderForceModel::Yaml MMGRudderForceModel::parse(const std::string& yaml)

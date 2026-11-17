@@ -93,21 +93,26 @@ ssc::kinematics::Vector6d PhaseModuleRAOEvaluator::evaluate(const BodyStates& st
     ssc::kinematics::Vector6d w = ssc::kinematics::Vector6d::Zero();
     auto T = env.k->get("NED", states.name);
     T.swap();
-    const Eigen::Vector2d x = (T*ssc::kinematics::Point(states.name,H0)).v.head(2); // Position on horizontal plane of calculation point
+    // Position on horizontal plane of calculation point
+    const Eigen::Vector2d x = (T*ssc::kinematics::Point(states.name,H0)).v.head(2);
     const double psi = states.get_angles().psi;
-    const Eigen::Vector2d Vs_NED = (T.get_rot()*Eigen::Vector3d(states.u(), states.v(), states.w())).head(2); // Ship velocity in NED frame
+    // Ship velocity in NED frame
+    const Eigen::Vector2d Vs_NED = (T.get_rot()*Eigen::Vector3d(states.u(), states.v(), states.w())).head(2);
     if (env.w.use_count()>0)
     {
         try
         {
             const auto directional_spectra = env.w->get_flat_directional_spectra(x(0), x(1), t);
             check_spectra_periods_are_in_rao_period_bounds(directional_spectra);
-            for (size_t degree_of_freedom_idx = 0 ; degree_of_freedom_idx < 6 ; ++degree_of_freedom_idx) // For each degree of freedom (X, Y, Z, K, M, N)
+            // For each degree of freedom (X, Y, Z, K, M, N)
+            for (size_t degree_of_freedom_idx = 0 ; degree_of_freedom_idx < 6 ; ++degree_of_freedom_idx)
             {
-                for (const auto& spectrum:directional_spectra) // For each directional spectrum
+                // For each directional spectrum
+                for (const auto& spectrum:directional_spectra)
                 {
                     const size_t nb_of_period_incidence_pairs = spectrum.omega.size();
-                    for (size_t omega_beta_idx = 0 ; omega_beta_idx < nb_of_period_incidence_pairs ; ++omega_beta_idx) // For each incidence and each period (omega[i[omega_beta_idx]], beta[j[omega_beta_idx]])
+                    // For each incidence and each period (omega[i[omega_beta_idx]], beta[j[omega_beta_idx]])
+                    for (size_t omega_beta_idx = 0 ; omega_beta_idx < nb_of_period_incidence_pairs ; ++omega_beta_idx)
                     {
                         // Wave vector, i.e. angular wave number k as a vector along the direction of propagation
                         const Eigen::Vector2d k(spectrum.k[omega_beta_idx]*spectrum.cos_psi[omega_beta_idx], spectrum.k[omega_beta_idx]*spectrum.sin_psi[omega_beta_idx]);

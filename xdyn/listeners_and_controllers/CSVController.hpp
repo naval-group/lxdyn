@@ -27,14 +27,16 @@ class CSVController : public Controller
     struct Yaml
     {
         explicit Yaml(const std::string& yaml);
-        std::string path; //!< Path to CSV file containing the commands
-        std::string time_column; //!< Title of the time column
-        char separator{','}; //!< Column separator (either ',' or ';')
-        bool shift_time_column{}; //!< If set to true, the time values are shifted so the first time
-                                //!< value in the CSV matches the beginning of the simulation.
-                                //!< Otherwise, the time values read from the CSV file are left
-                                //!< unchanged.
-        std::map<std::string,std::string> commands; //!< Command name to column name mapping
+        /// Path to CSV file containing the commands
+        std::string path;
+        /// Title of the time column
+        std::string time_column;
+        /// Column separator (either ',' or ';')
+        char separator{','};
+        /// If set to true, the time values are shifted so the first time value in the CSV matches the beginning of the simulation. Otherwise, the time values read from the CSV file are left unchanged.
+        bool shift_time_column{};
+        /// Command name to column name mapping
+        std::map<std::string,std::string> commands;
     };
 
     CSVController(const double tstart //!< Date of beginning of simulation (usually 0): this is needed by the parent class, but the date of the first call can only be known after reading the first line of the CSV file (or if shift_time_column is true)
@@ -82,7 +84,8 @@ class CSVController : public Controller
     double shift_time_if_necessary(const double time) const;
 
     CSVLineByLineReader csv;
-    double tstart; //!< Date of the first simulation step (used to shift the time column if necessary)
+    /// Date of the first simulation step (used to shift the time column if necessary)
+    double tstart;
     bool got_tstart{false};
 };
 

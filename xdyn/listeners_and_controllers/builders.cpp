@@ -172,7 +172,8 @@ WaveModelPtr SurfaceElevationBuilder<SurfaceElevationFromWaves>::parse_wave_mode
 std::optional<SurfaceElevationInterfacePtr> SurfaceElevationBuilder<SurfaceElevationFromWaves>::try_to_parse(const std::string& model, const std::string& yaml) const
 {
     std::optional<SurfaceElevationInterfacePtr> ret;
-    if (model == "waves") // The "model" key is always "waves" for xdyn's internal wave models, except for the default wave model "no waves"
+    // The "model" key is always "waves" for xdyn's internal wave models, except for the default wave model "no waves"
+    if (model == "waves")
     {
         const YamlWaveModel input = parse_waves(yaml);
         const auto output_mesh = make_wave_mesh(input.output);

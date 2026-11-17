@@ -133,7 +133,8 @@ TEST_F(LinearStiffnessForceModelTest, example)
         x = a.random<double>().between(-10.0,+10.0);
         y = a.random<double>().between(-10.0,+10.0);
         z = a.random<double>().between(-10.0,+10.0);
-        phi = a.random<double>().between(-M_PI/3,M_PI/3); // Restricting the range of angles to avoid gimbal lock
+        // Restricting the range of angles to avoid gimbal lock
+        phi = a.random<double>().between(-M_PI/3,M_PI/3);
         theta = a.random<double>().between(-M_PI/3,M_PI/3);
         psi = a.random<double>().between(-M_PI/3,M_PI/3);
         states = get_position_states(x,y,z,phi,theta,psi);
@@ -177,7 +178,8 @@ TEST_F(LinearStiffnessForceModelTest, example_with_equilibrium_input)
         x = a.random<double>().between(-10.0,+10.0);
         y = a.random<double>().between(-10.0,+10.0);
         z = a.random<double>().between(-10.0,+10.0);
-        phi = a.random<double>().between(-M_PI/3,M_PI/3); // Restricting the range of angles to avoid gimbal lock
+        // Restricting the range of angles to avoid gimbal lock
+        phi = a.random<double>().between(-M_PI/3,M_PI/3);
         theta = a.random<double>().between(-M_PI/3,M_PI/3);
         psi = a.random<double>().between(-M_PI/3,M_PI/3);
         states = get_position_states(x,y,z,phi,theta,psi);

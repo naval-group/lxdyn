@@ -130,8 +130,10 @@ void Body::force_states(StateType& x, const double t) const
     {
         // Without forcing
         // Velocities
-        Eigen::Vector3d uvw=get_uvw(x); // initial [u, v, w]
-        Eigen::Vector3d pqr=get_pqr(x); // initial [p, q, r]
+        // initial [u, v, w]
+        Eigen::Vector3d uvw=get_uvw(x);
+        // initial [p, q, r]
+        Eigen::Vector3d pqr=get_pqr(x);
         Eigen::Matrix<double,6,1> Vu;
         Vu.block<3,1>(0,0) = uvw;
         Vu.block<3,1>(3,0) = pqr;
@@ -139,8 +141,10 @@ void Body::force_states(StateType& x, const double t) const
         ssc::kinematics::EulerAngles rot(get_angles(x, states.convention));
         // Vector of forced motions
         Eigen::Matrix<double,6,1> x_f;
-        x_f << s.x(), s.y(), s.z(), rot.phi, rot.theta, rot.psi ; // Initialize forced rotations vector
-        blocked_states.get_forced_x_k(t, x_f, 0); // Get the forced motions
+        // Initialize forced rotations vector
+        x_f << s.x(), s.y(), s.z(), rot.phi, rot.theta, rot.psi ;
+        // Get the forced motions
+        blocked_states.get_forced_x_k(t, x_f, 0);
         if (delta_x(0,0) == 1) {s.x() = x_f(0);} // Update x if forced
         if (delta_x(1,1) == 1) {s.y() = x_f(1);} // Update y if forced
         if (delta_x(2,2) == 1) {s.z() = x_f(2);} // Update z if forced
@@ -341,10 +345,12 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
     // 1. First, calculate the state derivatives without forcing
     // du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt
     Eigen::Map<Eigen::Matrix<double,6,1> > dXdt(ds.ptr(state::U));
-    dXdt = states.inverse_of_the_total_inertia * sum_of_forces.to_vector(); // As &dXdt = &dx_dt[13*idx+3], the components of dx_dt corresponding to [du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt] are updated after that.
+    // As &dXdt = &dx_dt[13*idx+3], the components of dx_dt corresponding to [du/dt, dv/dt, dw/dt, dp/dt, dq/dt, dr/dt] are updated after that.
+    dXdt = states.inverse_of_the_total_inertia * sum_of_forces.to_vector();
 
     // dx/dt, dy/dt, dz/dt
-    const ssc::kinematics::RotationMatrix& R = env.k->get("NED", states.name).get_rot(); // R_{NED,body}
+    // R_{NED,body}
+    const ssc::kinematics::RotationMatrix& R = env.k->get("NED", states.name).get_rot();
     const Eigen::Map<const Eigen::Vector3d> uvw(s.ptr(state::U));
     const Eigen::Map<const Eigen::Vector3d> pqr(s.ptr(state::P));
     const Eigen::Vector3d XpYpZp(R*uvw);
@@ -356,12 +362,15 @@ void Body::calculate_state_derivatives(const ssc::kinematics::Wrench& sum_of_for
     ds.z() = XpYpZp(2) + current_in_ned(2);
 
     // dqr/dt, dqi/dt, dqj/dt, dqk/dt
+    // q1 = [qr, qi, qj, qk]
     const Eigen::Quaternion<double> q1(s.qr(),
                                        s.qi(),
                                        s.qj(),
-                                       s.qk()); // q1 = [qr, qi, qj, qk]
-    const Eigen::Quaternion<double> q2(0,s.p(),s.q(),s.r()); // q12= [0, p, q, r]
-    const Eigen::Quaternion<double>& dq_dt = q1*q2; //
+                                       s.qk());
+    // q12= [0, p, q, r]
+    const Eigen::Quaternion<double> q2(0,s.p(),s.q(),s.r());
+    // 
+    const Eigen::Quaternion<double>& dq_dt = q1*q2;
     ds.qr() = 0.5*(double)dq_dt.w();
     ds.qi() = 0.5*(double)dq_dt.x();
     ds.qj() = 0.5*(double)dq_dt.y();

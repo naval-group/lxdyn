@@ -277,7 +277,8 @@ TEST_F(PIDControllerTest, can_initialize_controllers)
     ASSERT_EQ(tstart, scheduler.get_time());
     ASSERT_NEAR(4.2 * (rpm_co - u * 0.5 ), sys.get_input_value("propeller(rpm)"), 1e-6);
     ASSERT_NEAR(pd_co, sys.get_input_value("controller(P/D)"), 1e-6);
-    ASSERT_EQ(0, scheduler.get_discrete_state_updaters_to_run().size()); // no controller callback should be called anymore at t=tstart
+    // no controller callback should be called anymore at t=tstart
+    ASSERT_EQ(0, scheduler.get_discrete_state_updaters_to_run().size());
 
     // Check 'propeller' callback has been added to the scheduler.
     scheduler.advance_to_next_time_event();

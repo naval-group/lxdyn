@@ -22,9 +22,12 @@
 class Airy : public WaveModel
 {
     public:
-        explicit Airy(const FlatDiscreteDirectionalWaveSpectrum& spectrum);  // Phases will be provided by input spectrum
-        explicit Airy(const DiscreteDirectionalWaveSpectrum& spectrum); // Phases will be provided by input spectrum
-        Airy(const DiscreteDirectionalWaveSpectrum& spectrum, const double constant_random_phase); // For tests
+        // Phases will be provided by input spectrum
+        explicit Airy(const FlatDiscreteDirectionalWaveSpectrum& spectrum);
+        // Phases will be provided by input spectrum
+        explicit Airy(const DiscreteDirectionalWaveSpectrum& spectrum);
+        // For tests
+        Airy(const DiscreteDirectionalWaveSpectrum& spectrum, const double constant_random_phase);
         Airy(const DiscreteDirectionalWaveSpectrum& spectrum, const int random_number_generator_seed);
 
         /**  \brief Calculate radiation forces using first order force RAO

@@ -128,7 +128,8 @@ namespace ssc
                     {
                         throw;
                     }
-                    catch(...) // NOLINT(bugprone-empty-catch): m->update() may throw here, as only its dependencies are wanted
+                    // NOLINTNEXTLINE(bugprone-empty-catch): update can throw; only its dependencies matter
+                    catch(...)
                     {
                     }
                     modules.push_back(typify<T>(module.get_name()));
@@ -345,8 +346,8 @@ namespace ssc
                  *  \snippet data_source/unit_tests/src/DataSourceTest.cpp DataSourceTest set_example
                  */
                 template<typename T>
-                void set(std::string signal_name, //<! Name of the signal to create or update
-                         const T& t               //<! Value to set
+                void set(std::string signal_name, //!< Name of the signal to create or update
+                         const T& t               //!< Value to set
                          )
                 {
                     std::map<TypedSignalName, TypedSignalName>::const_iterator that_alias = aliases.find(typify<T>(signal_name));
@@ -381,7 +382,7 @@ namespace ssc
                  *  \snippet data_source/unit_tests/src/DataSourceTest.cpp DataSourceTest enclosing_method_example
                 */
                 template<typename T>
-                        void unset(const std::string& signal_name //<! Name of the signal to remove
+                        void unset(const std::string& signal_name //!< Name of the signal to remove
                                    )
                 {
                     std::map<TypedSignalName, TypedSignalName>::iterator that_alias = aliases.find(typify<T>(signal_name));
@@ -576,7 +577,8 @@ namespace ssc
                   */
                 void check_out();
 
-                static constexpr const char* default_setter = "Unregistered DataSource user"; //!< Default name of the DataSource user
+                /// Default name of the DataSource user
+                static constexpr const char* default_setter = "Unregistered DataSource user";
 
                 /**  \returns A map containing all signals of a given type
                   *  \snippet data_source/unit_tests/src/DataSourceTest.cpp DataSourceTest get_all_example
@@ -599,22 +601,37 @@ namespace ssc
                 bool a_module_depends_on_itself();
                 void update_dependencies();
                 void add_dependencies_and_dependent_modules(const std::set<TypedSignalName>& required_signals, const TypedModuleName& module_using_required_signals);
-                FromName2Module name2module; //!< Map giving, for each module name, a (smart) pointer to the corresponding module
-                bool readonly{false}; //!< If this flag is set to true, DataSource::set will not modify the state of the DataSource. This is used so that the first call to DataSourceModule::update (by DataSource::add) can track dependencies between modules
-                SignalContainer signals_; //!< All signals currently in the DataSource
-                TypedModuleName module_setting_signals; //!< Module currently adding signals to the DataSource (used to track if two different modules set the same signal)
-                FromSignal2Module signal2module; //!< Tracks which module sets which signal
-                DependantModules module2dependantmodules; //!< For each module, stores the set of the names of the modules depending on it
-                DependantModules module2requiredmodules; //!< For each module, stores the set of the names of the modules it depends on
-                DependantModules module2requiredsignals; //!< For each module, stores the signals it depends on
-                DependantModules signal2dependantmodules; //!< For each signal, stores the modules that depend on it
-                UpdateState is_up_to_date; //!< For each module, whether it is up-to-date or not
+                /// Map giving, for each module name, a (smart) pointer to the corresponding module
+                FromName2Module name2module;
+                /// If this flag is set to true, DataSource::set will not modify the state of the DataSource. This is used so that the first call to DataSourceModule::update (by DataSource::add) can track dependencies between modules
+                bool readonly{false};
+                /// All signals currently in the DataSource
+                SignalContainer signals_;
+                /// Module currently adding signals to the DataSource (used to track if two different modules set the same signal)
+                TypedModuleName module_setting_signals;
+                /// Tracks which module sets which signal
+                FromSignal2Module signal2module;
+                /// For each module, stores the set of the names of the modules depending on it
+                DependantModules module2dependantmodules;
+                /// For each module, stores the set of the names of the modules it depends on
+                DependantModules module2requiredmodules;
+                /// For each module, stores the signals it depends on
+                DependantModules module2requiredsignals;
+                /// For each signal, stores the modules that depend on it
+                DependantModules signal2dependantmodules;
+                /// For each module, whether it is up-to-date or not
+                UpdateState is_up_to_date;
                 std::vector<std::pair<std::string,std::string> > state_names;
-                std::map<TypedSignalName,TypedSignalName> aliases; //!< Correspondence between an alias & the name of the original signal
-                SignalContainer forced_values; //!< All signals that have been forced
-                std::vector<TypedModuleName> modules; //!< All modules in DataSource
-                std::stack<TypedSignalName> call_stack; //!< Names of modules in call stack (M1 called M2 called...)
-                bool in_module{false}; //!< True if the current setter is a DataSourceModule
+                /// Correspondence between an alias & the name of the original signal
+                std::map<TypedSignalName,TypedSignalName> aliases;
+                /// All signals that have been forced
+                SignalContainer forced_values;
+                /// All modules in DataSource
+                std::vector<TypedModuleName> modules;
+                /// Names of modules in call stack (M1 called M2 called...)
+                std::stack<TypedSignalName> call_stack;
+                /// True if the current setter is a DataSourceModule
+                bool in_module{false};
         };
     }
 }

@@ -39,27 +39,45 @@ class MMGPropellerForceModel : public AbstractWageningen
         MMGPropellerForceModel(const Yaml& input, const std::string& body_name, const EnvironmentAndFrames& env);
         static Yaml parse(const std::string& yaml);
 
-        double get_Kt(const std::map<std::string,double>& commands, const double J) const override;//!< inherited function to compute K_T given J
-        double get_Kq(const std::map<std::string,double>& commands, const double J) const override;//!< inherited function to compute K_Q which is always null here
-        double get_wake_factor(const BodyStates& states) const override;//!< inherited function to compute the wake factor
+        /// inherited function to compute K_T given J
+        double get_Kt(const std::map<std::string,double>& commands, const double J) const override;
+        /// inherited function to compute K_Q which is always null here
+        double get_Kq(const std::map<std::string,double>& commands, const double J) const override;
+        /// inherited function to compute the wake factor
+        double get_wake_factor(const BodyStates& states) const override;
         static std::string model_name();
-        void check(const double J) const;//!< Throw an error message if J is outside its domain of validity
-        double saturate(const double J) const;//!< Correct J if it is outside its domain of validity
-        Eigen::Vector3d get_propeller_position_in_MMG_frame() const;//!< Returns the coordinates of the propeller location in MMG frame
-        Eigen::Vector3d get_MMG_frame_position_in_body_frame() const;//!< Returns the coordinates of the MMG frame in body frame
-        Eigen::Vector3d get_CoG_position_in_MMG_frame(const BodyStates &states) const;//!< Returns coordinates of the CoG in MMG frame
-        static double wrapToPi(double x);//!< Wrap an angle into]-PI,PI]
+        /// Throw an error message if J is outside its domain of validity
+        void check(const double J) const;
+        /// Correct J if it is outside its domain of validity
+        double saturate(const double J) const;
+        /// Returns the coordinates of the propeller location in MMG frame
+        Eigen::Vector3d get_propeller_position_in_MMG_frame() const;
+        /// Returns the coordinates of the MMG frame in body frame
+        Eigen::Vector3d get_MMG_frame_position_in_body_frame() const;
+        /// Returns coordinates of the CoG in MMG frame
+        Eigen::Vector3d get_CoG_position_in_MMG_frame(const BodyStates &states) const;
+        /// Wrap an angle into]-PI,PI]
+        static double wrapToPi(double x);
 
     private:
-        double m_k0;//!< constant term in the second-order polynomial MMG propeller model
-        double m_k1;//!< linear term in the second-order polynomial MMG propeller model
-        double m_k2;//!< quadratic term in the second-order polynomial MMG propeller model
-        double m_C0;//!< Experimental constants for wake factor tuning with leeway
-        double m_C1;//!< Experimental constants for wake factor tuning with leeway
-        std::vector<double> m_C2;//!< Experimental constants for wake factor tuning with leeway. First value for $\beta_P<0$, second value for $\beta_P>0$
-        Eigen::Vector3d m_position_of_propeller_in_MMG_frame;//!< propeller location in MMG frame
-        Eigen::Vector3d m_position_of_MMG_frame_in_body_frame;//!< coordinates of the MMG origin in body frame
-        double m_Jmax;//!< maximum J value to have K_T>=0
+        /// constant term in the second-order polynomial MMG propeller model
+        double m_k0;
+        /// linear term in the second-order polynomial MMG propeller model
+        double m_k1;
+        /// quadratic term in the second-order polynomial MMG propeller model
+        double m_k2;
+        /// Experimental constants for wake factor tuning with leeway
+        double m_C0;
+        /// Experimental constants for wake factor tuning with leeway
+        double m_C1;
+        /// Experimental constants for wake factor tuning with leeway. First value for $\beta_P<0$, second value for $\beta_P>0$
+        std::vector<double> m_C2;
+        /// propeller location in MMG frame
+        Eigen::Vector3d m_position_of_propeller_in_MMG_frame;
+        /// coordinates of the MMG origin in body frame
+        Eigen::Vector3d m_position_of_MMG_frame_in_body_frame;
+        /// maximum J value to have K_T>=0
+        double m_Jmax;
 
 };
 #endif /* MMGPROPELLERFORCEMODEL_HPP */

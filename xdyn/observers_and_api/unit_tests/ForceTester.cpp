@@ -24,7 +24,8 @@ Sim ForceTester::make_sim(const std::string& yaml, const std::string& stl) const
     YamlBody body = input.bodies.front();
     body.external_forces.clear();
     YamlModel waves, hydrostatic;
-    hydrostatic.model = "non-linear hydrostatic (exact)"; // So the builder creates a BodyWithSurfaceForces object
+    // So the builder creates a BodyWithSurfaceForces object
+    hydrostatic.model = "non-linear hydrostatic (exact)";
     body.external_forces.push_back(hydrostatic);
 
     input.bodies[0] = body;
@@ -42,7 +43,8 @@ Sim ForceTester::make_sim(const std::string& yaml, const VectorOfVectorOfPoints&
     YamlBody body = input.bodies.front();
     body.external_forces.clear();
     YamlModel waves, hydrostatic;
-    hydrostatic.model = "non-linear hydrostatic (exact)"; // So the builder creates a BodyWithSurfaceForces object
+    // So the builder creates a BodyWithSurfaceForces object
+    hydrostatic.model = "non-linear hydrostatic (exact)";
     body.external_forces.push_back(hydrostatic);
 
     input.bodies[0] = body;

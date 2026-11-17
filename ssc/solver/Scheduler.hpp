@@ -59,12 +59,14 @@ namespace ssc
                 remaining_updaters.reserve(discrete_state_updaters.size());
                 for (const auto& t_updater : discrete_state_updaters)
                 {
-                    if (t_updater.first <= current_time) // Need to run updater
+                    if (t_updater.first <= current_time)
                     {
+                        // Need to run updater
                         updaters_to_run.push_back(t_updater.second);
                     }
-                    else // Add updater to the list of updaters to keep
+                    else
                     {
+                        // Add updater to the list of updaters to keep
                         remaining_updaters.push_back(t_updater);
                     }
                 }

@@ -73,17 +73,24 @@ double MMGPropellerForceModel::wrapToPi(double x)
 
 double MMGPropellerForceModel::get_wake_factor(const BodyStates& states) const
 {
+    // Longitudinal position of the CoG in MMG frame
     /*
     Accounts for the wake factor dependency on the leeway angle
     */
-    const double xG = get_CoG_position_in_MMG_frame(states).x();// Longitudinal position of the CoG in MMG frame
-    const double zG = get_CoG_position_in_MMG_frame(states).z();// Vertical position of the CoG in MMG frame
-    const double xP = get_propeller_position_in_MMG_frame().x();// Longitudinal position of the propeller in MMG frame
-    const double zP = get_propeller_position_in_MMG_frame().z();// Vertical position of the propeller in MMG frame
+    const double xG = get_CoG_position_in_MMG_frame(states).x();
+    // Vertical position of the CoG in MMG frame
+    const double zG = get_CoG_position_in_MMG_frame(states).z();
+    // Longitudinal position of the propeller in MMG frame
+    const double xP = get_propeller_position_in_MMG_frame().x();
+    // Vertical position of the propeller in MMG frame
+    const double zP = get_propeller_position_in_MMG_frame().z();
 
-    const double vm = states.v() - xG*states.r() + zG*states.p();// Lateral ship velocity at midship in body frame
-    double beta=atan2(-vm,states.u());//leeway angle at midship
-    double U=sqrt(states.u()*states.u()+vm*vm);//ship velocity
+    // Lateral ship velocity at midship in body frame
+    const double vm = states.v() - xG*states.r() + zG*states.p();
+    // leeway angle at midship
+    double beta=atan2(-vm,states.u());
+    // ship velocity
+    double U=sqrt(states.u()*states.u()+vm*vm);
 
     double C2;
     double beta_P=wrapToPi(beta-xP*states.r()/U + zP*states.p()/U);

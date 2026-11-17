@@ -182,7 +182,8 @@ TEST_F(HoltropMennenForceModelTest, numerical_example_1982)
     EXPECT_NEAR(7381.45,derived_data.S,0.01);
     EXPECT_NEAR(-1.9412639420954685,derived_data.m3,0.0001);
     EXPECT_NEAR(12.08,derived_data.iE,0.01);
-    EXPECT_NEAR(-1.69385,derived_data.c15,0.00001); // Note: there is a sign error for the value of c15 in the original 1982 paper
+    // Note: there is a sign error for the value of c15 in the original 1982 paper
+    EXPECT_NEAR(-1.69385,derived_data.c15,0.00001);
     EXPECT_NEAR(0.6261,derived_data.Pb,0.0001);
     EXPECT_NEAR(0.02119,derived_data.c3,0.00001);
     EXPECT_NEAR(0.7595,derived_data.c2,0.0001);
@@ -199,15 +200,20 @@ TEST_F(HoltropMennenForceModelTest, numerical_example_1982)
     auto force_model = HoltropMennenForceModel(input, "body", env);
     BodyStates states = get_steady_forward_speed_states(25. * 1852./3600., "body");
     // Constant intermediate values
-    EXPECT_NEAR(1.156,derived_data.hull_form_coeff,0.05); // Large margin because the formulae were revised in 1984
+    // Large margin because the formulae were revised in 1984
+    EXPECT_NEAR(1.156,derived_data.hull_form_coeff,0.05);
     // Resulting forces
-    EXPECT_NEAR(869630,force_model.Rf(states, env),200000); // Large margin because the formulae were revised in 1984
+    // Large margin because the formulae were revised in 1984
+    EXPECT_NEAR(869630,force_model.Rf(states, env),200000);
     EXPECT_NEAR(8830,force_model.Rapp(states, env),10);
-    EXPECT_NEAR(557110,force_model.Rw(states, env),5000); // Large margin because the formulae were revised in 1984
+    // Large margin because the formulae were revised in 1984
+    EXPECT_NEAR(557110,force_model.Rw(states, env),5000);
     EXPECT_NEAR(49,force_model.Rb(states, env),1);
     EXPECT_NEAR(0.,force_model.Rtr(states, env),1);
-    EXPECT_NEAR(220572,force_model.Ra(states, env),1); // Note: there seems to be a rounding error in the original paper (Ra = 221980 N)
-    EXPECT_NEAR(1793260,-force_model(states, 0, env).X(),200000); // large margin to account for all the margins
+    // Note: there seems to be a rounding error in the original paper (Ra = 221980 N)
+    EXPECT_NEAR(220572,force_model.Ra(states, env),1);
+    // large margin to account for all the margins
+    EXPECT_NEAR(1793260,-force_model(states, 0, env).X(),200000);
 }
 
 TEST_F(HoltropMennenForceModelTest, numerical_example_1984)

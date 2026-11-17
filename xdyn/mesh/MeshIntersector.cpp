@@ -112,8 +112,10 @@ void MeshIntersector::update_intersection_with_free_surface(const std::vector<do
     all_absolute_wave_elevations = absolute_wave_elevations;
     reset_dynamic_members();
     std::vector<bool> facet_crosses_free_surface(mesh->nb_of_static_facets,false);
-    std::vector<int> edges_immersion_status(mesh->nb_of_static_edges,0); // the immersion status of each edge
-    std::vector<size_t > split_edges(mesh->nb_of_static_edges,0);  //!< a table indicating the index of replacing edge for each edge that is split (there are two consecutive edges per split edge, the table only gives the first one)
+    // the immersion status of each edge
+    std::vector<int> edges_immersion_status(mesh->nb_of_static_edges,0);
+    /// a table indicating the index of replacing edge for each edge that is split (there are two consecutive edges per split edge, the table only gives the first one)
+    std::vector<size_t > split_edges(mesh->nb_of_static_edges,0);
     find_intersection_with_free_surface(split_edges, edges_immersion_status, facet_crosses_free_surface);
     classify_or_split(split_edges, facet_crosses_free_surface, edges_immersion_status);
     all_absolute_immersions.resize(all_absolute_wave_elevations.size());
@@ -499,7 +501,8 @@ double MeshIntersector::immersed_volume()
 {
     if (need_to_update_closing_facet) build_closing_edge();
     double V = volume(begin_immersed(), end_immersed());
-    if (V == 0) return 0; // Because it means that the closing facet is equal to the immersed facets
+    // Because it means that the closing facet is equal to the immersed facets
+    if (V == 0) return 0;
     for (auto closing_facet=begin_surface();closing_facet!=end_surface();++closing_facet)
     {
         if (not(has(*closing_facet, begin_immersed(), end_immersed())))
@@ -515,7 +518,8 @@ double MeshIntersector::emerged_volume()
 {
     if (need_to_update_closing_facet) build_closing_edge();
     double V = volume(begin_emerged(), end_emerged());
-    if (V == 0) return 0; // Because it means that the closing facet is equal to the emerged facets
+    // Because it means that the closing facet is equal to the emerged facets
+    if (V == 0) return 0;
     for (auto closing_facet=begin_surface();closing_facet!=end_surface();++closing_facet)
     {
         const auto facet = flip(*closing_facet);

@@ -21,7 +21,8 @@ struct YamlModel
         {}
     std::string model;
     std::string yaml;
-    size_t      index_of_first_line_in_global_yaml; //!< Because the force parsers will treat the yaml as a new document so we provide an offset to help diagnosis
+    /// Because the force parsers will treat the yaml as a new document so we provide an offset to help diagnosis
+    size_t      index_of_first_line_in_global_yaml;
 };
 
 #endif /* YAMLMODEL_HPP_ */

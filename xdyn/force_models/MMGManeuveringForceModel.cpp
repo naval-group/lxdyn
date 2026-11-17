@@ -106,21 +106,26 @@ Wrench MMGManeuveringForceModel::get_force(const BodyStates& states, const doubl
     const double dphi_dt = states.p();
 
     // Get CoG location
-    const Eigen::Vector3d G_mmg_frame = states.G - env.k->get(body_name, name).get_point();// G position in MMG frame
+    // G position in MMG frame
+    const Eigen::Vector3d G_mmg_frame = states.G - env.k->get(body_name, name).get_point();
 
     // Get inertia and added mass
-    const double body_mass = states.solid_body_inertia(2,2);//body mass
-    const double Ix = states.solid_body_inertia(3,3);// roll moment of solid inertia in G
+    // body mass
+    const double body_mass = states.solid_body_inertia(2,2);
+    // roll moment of solid inertia in G
+    const double Ix = states.solid_body_inertia(3,3);
     const double mx = states.added_mass_matrix(0,0);
     const double my = states.added_mass_matrix(1,1);
-    const double Jx = get_inertia_matrix_in_Ob(states.added_mass_matrix,G_mmg_frame)(3,3);//roll moment of added mass in Ob 
+    // roll moment of added mass in Ob 
+    const double Jx = get_inertia_matrix_in_Ob(states.added_mass_matrix,G_mmg_frame)(3,3);
 
     // Compute roll damping coefficients
     // Warning : the solid inertia is in G while the added mass inertia is in Ob ! This is strange but it is the way it is done in the reference article.
     const double K_phidot=-2*input.a/PI*sqrt(body_mass*env.g*input.GM*(Jx+Ix)) ;
     const double K_phidot2=-0.75*input.b*180/PI*(Jx+Ix);
 
-    const double zH_mmg_frame = input.zH - env.k->get(body_name, name).get_point().z();// vertical position of the hull force point of application in MMG frame
+    // vertical position of the hull force point of application in MMG frame
+    const double zH_mmg_frame = input.zH - env.k->get(body_name, name).get_point().z();
 
     // Compute the hull tensor
     const double vm = v - G_mmg_frame(0)*r+G_mmg_frame(2)*dphi_dt;

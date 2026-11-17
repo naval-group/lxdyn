@@ -55,7 +55,8 @@ class BodyBuilder
          */
         void change_mesh_ref_frame(BodyStates& states, const VectorOfVectorOfPoints& mesh) const;
 
-        YamlRotation rotations; //!< Rotation convention (describes how we can build a rotation matrix from three angles)
+        /// Rotation convention (describes how we can build a rotation matrix from three angles)
+        YamlRotation rotations;
 };
 
 bool is_symmetric(const Eigen::MatrixXd& m);

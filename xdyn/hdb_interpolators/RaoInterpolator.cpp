@@ -60,7 +60,7 @@ RaoInterpolator::RAO RaoInterpolator::RAO::get(const YamlRAO::TypeOfRao& type_of
 
 RaoInterpolator::RaoInterpolator(
     const HydroDBParser& parser, //!< Data read from the HDB or Precal_R file
-    const YamlRAO& yaml_rao //<! Contents of the force model's parsed YAML data
+    const YamlRAO& yaml_rao //!< Contents of the force model's parsed YAML data
     )
     : module()
     , phase()

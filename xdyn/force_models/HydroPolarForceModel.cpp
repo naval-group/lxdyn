@@ -43,21 +43,25 @@ HydroPolarForceModel::HydroPolarForceModel(const Input& input, const std::string
     {
         std::cerr << "WARNING: In hydrodynamic polar force model '" << name << "', you provided a maximum angle of attack higher than 180deg. All values over 180deg will be ignored." << std::endl;
     }
-    if (min_alpha > -eps) // min_alpha is close to 0
+    if (min_alpha > -eps)
     {
+        // min_alpha is close to 0
         symmetry = true;
     }
-    else if (min_alpha > -M_PI+eps) // min_alpha is between -pi and 0 (but not close enough to either)
+    else if (min_alpha > -M_PI+eps)
     {
+        // min_alpha is between -pi and 0 (but not close enough to either)
         std::cerr << "WARNING: In hydrodynamic polar force model '" << name << "', you provided a minimum angle of attack between -180deg and 0deg. Symmetry will be assumed and values under 0deg will be ignored." << std::endl;
         symmetry = true;
     }
-    else if (min_alpha > -M_PI-eps) // min_alpha is close to -pi
+    else if (min_alpha > -M_PI-eps)
     {
+        // min_alpha is close to -pi
         symmetry = false;
     }
-    else // min_alpha is under -pi (but not close enough)
+    else
     {
+        // min_alpha is under -pi (but not close enough)
         std::cerr << "WARNING: In hydrodynamic polar force model '" << name << "', you provided a minimum angle of attack lower than -180deg. All values under -180deg will be ignored." << std::endl;
         symmetry = false;
     }
@@ -125,14 +129,18 @@ Wrench HydroPolarForceModel::get_force(const BodyStates& states, const double t,
         water_surface_height = wave_height.at(0);
     }
     flow_in_foil -= ctm_body_to_foil*ctm_body_to_ned.transpose()*env.get_UWCurrent(foil_position_in_ned, t);
-    const double beta = -std::atan2(flow_in_foil(1), flow_in_foil(0)); // Incident angle of the flow, in [-pi,pi]
-    const double U = std::hypot(flow_in_foil(0), flow_in_foil(1)); // Apparent flow velocity in the foil's (x,y) plane
-    double alpha = beta; // Angle of attack
+    // Incident angle of the flow, in [-pi,pi]
+    const double beta = -std::atan2(flow_in_foil(1), flow_in_foil(0));
+    // Apparent flow velocity in the foil's (x,y) plane
+    const double U = std::hypot(flow_in_foil(0), flow_in_foil(1));
+    // Angle of attack
+    double alpha = beta;
     if (angle_command)
     {
         alpha += commands.at(angle_command.value());
     }
-    alpha = std::remainder(alpha, 2*M_PI); // Putting alpha in [-pi,pi]
+    // Putting alpha in [-pi,pi]
+    alpha = std::remainder(alpha, 2*M_PI);
     *angle_of_attack = alpha;
     *relative_velocity = U;
     Wrench ret(ssc::kinematics::Point(name,0,0,0), name);

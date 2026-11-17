@@ -28,7 +28,8 @@ class CsvObserver : public Observer
         bool flush_during_write;
         bool output_to_file;
         std::ostream& os;
-        std::unordered_map<std::string, double> cache; //!< As observations are made out-of-order, cache them & use requested_serializations to put them back in order
+        /// As observations are made out-of-order, cache them & use requested_serializations to put them back in order
+        std::unordered_map<std::string, double> cache;
 
         using Observer::get_serializer;
         using Observer::get_initializer;

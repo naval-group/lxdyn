@@ -30,7 +30,8 @@ class HDBParser : public HydroDBParser
         ~HDBParser() override;
         HDBParser(HDBParser&&) noexcept;
         HDBParser& operator=(HDBParser&&) noexcept;
-        double get_forward_speed() const override; //!< Speed at which the radiation damping matrices were calculated. Used to determine if we can apply a forward-speed correction
+        /// Speed at which the radiation damping matrices were calculated. Used to determine if we can apply a forward-speed correction
+        double get_forward_speed() const override;
         TimestampedMatrices get_added_mass_array() const;
         TimestampedMatrices get_radiation_damping_array() const;
         RAOData get_diffraction_module() const;

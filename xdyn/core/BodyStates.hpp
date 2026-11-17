@@ -40,21 +40,35 @@ struct BodyStates : AbstractStates<History>
         const StatesFilter& states_filter, const double Tmax=0 //!< Defines how much history we store
         );
     using AbstractStates<History>::operator=;
-    std::string name;                                              //!< Body's name
-    ssc::kinematics::Point G;                                      //!< Position of the ship's centre of gravity
-    MeshPtr mesh;                                                  //!< Vertices & edges of the body's mesh
-    Matrix66 total_inertia{Matrix66::Zero()};                      //!< 6x6 matrix corresponding to the sum of the rigid body inertia + added mass expressed in the body frame
-    Matrix66 solid_body_inertia{Matrix66::Zero()};                 //!< 6x6 rigid body inertia matrix (i.e. without added mass) in the body frame
-    Matrix66 added_mass_matrix{Matrix66::Zero()};                  //!< 6x6 added mass matrix in the body frame
+    /// Body's name
+    std::string name;
+    /// Position of the ship's centre of gravity
+    ssc::kinematics::Point G;
+    /// Vertices & edges of the body's mesh
+    MeshPtr mesh;
+    /// 6x6 matrix corresponding to the sum of the rigid body inertia + added mass expressed in the body frame
+    Matrix66 total_inertia{Matrix66::Zero()};
+    /// 6x6 rigid body inertia matrix (i.e. without added mass) in the body frame
+    Matrix66 solid_body_inertia{Matrix66::Zero()};
+    /// 6x6 added mass matrix in the body frame
+    Matrix66 added_mass_matrix{Matrix66::Zero()};
     Matrix66 inverse_of_the_total_inertia{Matrix66::Zero()};
-    double x_relative_to_mesh;                                     //!< Position of the body frame relative to the mesh frame, along the x-axis, in meters
-    double y_relative_to_mesh;                                     //!< Position of the body frame relative to the mesh frame, along the y-axis, in meters
-    double z_relative_to_mesh;                                     //!< Position of the body frame relative to the mesh frame, along the z-axis, in meters
-    ssc::kinematics::RotationMatrix mesh_to_body;                  //!< Rotation matrix from mesh to body
-    ssc::kinematics::PointMatrixPtr M;                             //!< For the wave model (just the points in the mesh)
-    MeshIntersectorPtr intersector;                                //!< Allows us to iterate on all emerged or immersed facets
-    EPoint g_in_mesh_frame;                                        //!< Unit vertical vector, expressed in the body's mesh frame
-    ssc::kinematics::Point hydrodynamic_forces_calculation_point;  //!< Point of expression of hydrodynamic forces (except Froude-Krylov & hydrostatic)
+    /// Position of the body frame relative to the mesh frame, along the x-axis, in meters
+    double x_relative_to_mesh;
+    /// Position of the body frame relative to the mesh frame, along the y-axis, in meters
+    double y_relative_to_mesh;
+    /// Position of the body frame relative to the mesh frame, along the z-axis, in meters
+    double z_relative_to_mesh;
+    /// Rotation matrix from mesh to body
+    ssc::kinematics::RotationMatrix mesh_to_body;
+    /// For the wave model (just the points in the mesh)
+    ssc::kinematics::PointMatrixPtr M;
+    /// Allows us to iterate on all emerged or immersed facets
+    MeshIntersectorPtr intersector;
+    /// Unit vertical vector, expressed in the body's mesh frame
+    EPoint g_in_mesh_frame;
+    /// Point of expression of hydrodynamic forces (except Froude-Krylov & hydrostatic)
+    ssc::kinematics::Point hydrodynamic_forces_calculation_point;
 
     ssc::kinematics::EulerAngles get_angles() const;
     ssc::kinematics::EulerAngles get_angles(const YamlRotation& c) const;

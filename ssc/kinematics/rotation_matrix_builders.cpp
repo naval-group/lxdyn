@@ -55,8 +55,9 @@ namespace ssc
 
             ret.theta = atan2(-ctm[2],hyp);
 
-            if(hyp > eps) // Not degenerated
+            if(hyp > eps)
             {
+                // Not degenerated
                 ret.phi = atan2(ctm[5],ctm[8]);
                 ret.psi = atan2(ctm[1],ctm[0]);
             }

@@ -230,7 +230,7 @@ void ssc::data_source::DataSource::define_derivative(const std::string& state_na
  *  \returns A vector of doubles containing all the values of the state variables
  *  \snippet data_source/unit_tests/src/DataSourceTest.cpp DataSourceTest get_derivatives_example
 */
-void ssc::data_source::DataSource::get_derivatives(std::vector<double>& dx_dt //<! Vector storing the calculated derivatives (must be the right size)
+void ssc::data_source::DataSource::get_derivatives(std::vector<double>& dx_dt //!< Vector storing the calculated derivatives (must be the right size)
                                  )
 {
     const size_t n = state_names.size();
