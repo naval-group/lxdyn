@@ -13,6 +13,7 @@
 #include <ssc/solver/Scheduler.hpp>
 
 #include "xdyn/core/unit_tests/test_data.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/listeners_and_controllers/CSVController.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 #include "xdyn/yaml_parser/parse_controllers.hpp"

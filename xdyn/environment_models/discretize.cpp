@@ -6,6 +6,8 @@
  */
 #include "discretize.hpp"
 
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_real_distribution.hpp>
 #include <cmath>
 
 #include "Stretching.hpp"
@@ -153,6 +155,41 @@ bool comparator(const ValIdx& l, const ValIdx& r);
 bool comparator(const ValIdx& l, const ValIdx& r)
 {
     return l.first > r.first;
+}
+
+DiscreteDirectionalWaveSpectrum add_constant_phases(
+    DiscreteDirectionalWaveSpectrum spectrum,
+    const double constant_phase)
+{
+    const size_t n = spectrum.Si.size();
+    const size_t p = spectrum.Dj.size();
+    if (n * p > 0) {
+        spectrum.phase.resize(n);
+        for (size_t i = 0; i < n; ++i) {
+            spectrum.phase[i] = std::vector<double>(n, constant_phase);
+        }
+    }
+    return spectrum;
+}
+
+DiscreteDirectionalWaveSpectrum add_random_phases(
+    DiscreteDirectionalWaveSpectrum spectrum,
+    const int random_number_generator_seed)
+{
+    const size_t n = spectrum.Si.size();
+    const size_t p = spectrum.Dj.size();
+    if (n * p > 0) {
+        spectrum.phase.resize(n);
+        boost::mt19937 rng((unsigned int)random_number_generator_seed);
+        boost::random::uniform_real_distribution<double> generate_random_phase(0, 2 * PI);
+        for (size_t i = 0; i < n; ++i) {
+            spectrum.phase[i].resize(p);
+            for (size_t j = 0; j < p; ++j) {
+                spectrum.phase[i][j] = generate_random_phase(rng);
+            }
+        }
+    }
+    return spectrum;
 }
 
 /**

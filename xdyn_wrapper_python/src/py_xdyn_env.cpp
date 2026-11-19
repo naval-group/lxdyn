@@ -894,10 +894,7 @@ void py_add_module_xdyn_env_wind(py::module& m_env)
     py::module m_env_io = m_env.def_submodule("io");
     py_add_module_xdyn_env_wind_io(m_env_io);
 
-    py::class_<WindModel>(m_env, "WindModel")
-        // .def(py::init<>())
-        // .def_static("build_parser", &WindModel::build_parser)
-        ;
+    py::class_<WindModel>(m_env, "WindModel");
 
     py::class_<DefaultWindModel, WindModel>(m_env, "DefaultWindModel")
         .def(

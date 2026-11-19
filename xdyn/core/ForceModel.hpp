@@ -8,17 +8,13 @@
 #ifndef FORCEMODEL_HPP_
 #define FORCEMODEL_HPP_
 
-#include <boost/utility/enable_if.hpp>
 #include <map>
-#include <optional>
 #include <ssc/kinematics.hpp>
 
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/Wrench.hpp"
-#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_data_structures/YamlBody.hpp"
 #include "xdyn/external_data_structures/YamlPosition.hpp"
-#include "yaml-cpp/exceptions.h"
 
 namespace ssc {
 namespace data_source {
@@ -31,22 +27,8 @@ struct YamlRotation;
 class ForceModel;
 using ForcePtr = std::shared_ptr<ForceModel>;
 using ListOfForces = std::vector<ForcePtr>;
-using ForceParser = std::function<
-    std::optional<ForcePtr>(const YamlModel&, const std::string&, const EnvironmentAndFrames&)>;
 
 class Observer;
-
-// SFINAE test for 'parse' method
-template <typename T>
-struct HasParse {
-    using yes = char[1];
-    using no = char[2];
-    template <typename U>
-    static yes& check(decltype(&U::parse));
-    template <typename U>
-    static no& check(...);
-    static constexpr bool value = sizeof(check<T>(nullptr)) == sizeof(yes);
-};
 
 /**
  * @brief This allows us to observe the force before integration without calculating the model
@@ -125,58 +107,6 @@ public:
     std::string get_body_name() const;
     virtual bool is_a_surface_force_model() const;
     std::vector<std::string> get_command_names() const;
-
-    template <typename ForceType>
-    static typename boost::enable_if<HasParse<ForceType>, ForceParser>::type build_parser()
-    {
-        auto parser = [](const YamlModel& yaml,
-                         const std::string& body_name,
-                         const EnvironmentAndFrames& env) -> std::optional<ForcePtr> {
-            std::optional<ForcePtr> ret;
-            if (yaml.model == ForceType::model_name()) {
-                std::string context =
-                    "Invalid input data for model '" + ForceType::model_name() + "'.";
-                try {
-                    ret = ForcePtr(new ForceType(ForceType::parse(yaml.yaml), body_name, env));
-                } catch (const InvalidInputException& exception) {
-                    THROW(
-                        __PRETTY_FUNCTION__,
-                        InvalidInputException,
-                        context << std::endl
-                                << exception.get_message() << std::endl
-                                << "Model containing error is defined line "
-                                << yaml.index_of_first_line_in_global_yaml << " of the YAML file."
-                                << std::endl);
-                } catch (const YAML::Exception& exception) {
-                    const size_t line_number = yaml.index_of_first_line_in_global_yaml;
-                    THROW(
-                        __PRETTY_FUNCTION__,
-                        InvalidInputException,
-                        context << std::endl
-                                << "Model containing error is defined line " << line_number
-                                << " of the YAML file." << std::endl
-                                << "The error was: " << exception.msg);
-                }
-            }
-            return ret;
-        };
-        return parser;
-    }
-
-    template <typename ForceType>
-    static typename boost::disable_if<HasParse<ForceType>, ForceParser>::type build_parser()
-    {
-        auto parser = [](const YamlModel& yaml,
-                         const std::string& body,
-                         const EnvironmentAndFrames& env) -> std::optional<ForcePtr> {
-            std::optional<ForcePtr> ret;
-            if (yaml.model == ForceType::model_name()) {
-                ret = ForcePtr(new ForceType(body, env));
-            }
-            return ret;
-        };
-        return parser;
-    }
 
     void feed(
         Observer& observer,

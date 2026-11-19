@@ -6,20 +6,18 @@
  */
 
 #include "SimulatorBuilderTest.hpp"
-// Specializations (e.g. SurfaceElevationBuilder<DefaultSurfaceElevation>) must be visible
-// before can_parse<T>() instantiates them — see the note in simulator_api.cpp.
+
 #include <cmath>
 #include <memory>
 #include <ssc/kinematics.hpp>
 
-#include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
-#include "xdyn/environment_models/DefaultWindModel.hpp"
+#include "xdyn/environment_models/environment_model_table.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
-#include "xdyn/force_models/GravityForceModel.hpp"
-#include "xdyn/listeners_and_controllers/builders.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/force_models/force_model_table.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
@@ -33,7 +31,7 @@ static const YamlSimulatorInput& shared_input()
 SimulatorBuilderTest::SimulatorBuilderTest()
     : a(ssc::random_data_generator::DataGenerator(1212))
     , input(shared_input())
-    , builder(SimulatorBuilder(input, 0))
+    , builder(SimulatorBuilder(input, make_force_model, add_environment_model, 0))
 {
 }
 
@@ -63,8 +61,6 @@ TEST_F(SimulatorBuilderTest, can_get_bodies)
 
 TEST_F(SimulatorBuilderTest, can_get_rho_and_g)
 {
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
     const auto env = builder.build_environment_and_frames();
     ASSERT_DOUBLE_EQ(9.81, env.g);
     ASSERT_DOUBLE_EQ(1000, env.rho);
@@ -84,8 +80,6 @@ std::vector<BodyPtr> SimulatorBuilderTest::get_body_vector(const std::string& na
 
 TEST_F(SimulatorBuilderTest, kinematics_contains_body_to_mesh_transform)
 {
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
     const auto bodies = get_body_vector(a.random<std::string>());
 
     ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
@@ -99,8 +93,6 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_body_to_mesh_transform)
 
 TEST_F(SimulatorBuilderTest, kinematics_contains_ned_to_body_transform)
 {
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
     const auto bodies = get_body_vector(a.random<std::string>());
     ssc::kinematics::KinematicsPtr k = std::make_shared<ssc::kinematics::Kinematics>();
     builder.add_initial_transforms(bodies, k);
@@ -110,18 +102,6 @@ TEST_F(SimulatorBuilderTest, kinematics_contains_ned_to_body_transform)
     }
 }
 
-TEST_F(SimulatorBuilderTest, should_throw_if_no_wave_parser_defined)
-{
-    builder.can_parse<DefaultWindModel>();
-    ASSERT_THROW(builder.build_environment_and_frames(), InternalErrorException);
-}
-
-TEST_F(SimulatorBuilderTest, should_throw_if_no_wind_parser_defined)
-{
-    builder.can_parse<DefaultSurfaceElevation>();
-    ASSERT_THROW(builder.build_environment_and_frames(), InternalErrorException);
-}
-
 TEST_F(SimulatorBuilderTest, should_throw_if_attempting_to_define_wave_model_twice)
 {
     YamlModel model;
@@ -129,10 +109,8 @@ TEST_F(SimulatorBuilderTest, should_throw_if_attempting_to_define_wave_model_twi
     model.yaml = "constant sea elevation in NED frame:\n   unit: m\n   value: 12";
     auto input2 = input;
     input2.environment.push_back(model);
-    SimulatorBuilder builder2(input2, 0);
-    builder2.can_parse<DefaultSurfaceElevation>();
-    builder2.can_parse<DefaultWindModel>();
-    ASSERT_THROW(builder2.build_environment_and_frames(), InternalErrorException);
+    SimulatorBuilder builder2(input2, make_force_model, add_environment_model, 0);
+    ASSERT_THROW(builder2.build_environment_and_frames(), InvalidInputException);
 }
 
 TEST_F(SimulatorBuilderTest, should_throw_if_attempting_to_define_wind_model_twice)
@@ -142,44 +120,21 @@ TEST_F(SimulatorBuilderTest, should_throw_if_attempting_to_define_wind_model_twi
     model.yaml = "";
     auto input2 = input;
     input2.environment.push_back(model);
-    SimulatorBuilder builder2(input2, 0);
-    builder2.can_parse<DefaultSurfaceElevation>();
-    builder2.can_parse<DefaultWindModel>();
-    ASSERT_THROW(builder2.build_environment_and_frames(), InternalErrorException);
+    SimulatorBuilder builder2(input2, make_force_model, add_environment_model, 0);
+    ASSERT_THROW(builder2.build_environment_and_frames(), InvalidInputException);
 }
 
 TEST_F(SimulatorBuilderTest, get_forces_should_throw_if_there_is_anything_it_cannot_parse)
 {
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
-    MeshMap m;
-    const std::string name = input.bodies.front().name;
-    m[name] = two_triangles();
-    const auto bodies =
-        builder.get_bodies(m, std::vector<bool>(1, false), std::map<std::string, double>());
-    const auto env = builder.build_environment_and_frames();
-    ASSERT_THROW(builder.get_forces(env), InvalidInputException);
-}
-
-TEST_F(SimulatorBuilderTest, get_forces_should_throw_if_two_force_models_share_a_name)
-{
-    YamlModel gravity;
-    gravity.model = "gravity";
     auto input2 = input;
-    input2.bodies.front().external_forces = {gravity};
-    SimulatorBuilder builder2(input2, 0);
-    builder2.can_parse<DefaultSurfaceElevation>()
-        .can_parse<DefaultWindModel>()
-        .can_parse<GravityForceModel>()
-        .can_parse<GravityForceModel>();
+    input2.bodies.front().external_forces = {YamlModel("no such force model", "")};
+    SimulatorBuilder builder2(input2, make_force_model, add_environment_model, 0);
     const auto env = builder2.build_environment_and_frames();
     ASSERT_THROW(builder2.get_forces(env), InvalidInputException);
 }
 
 TEST_F(SimulatorBuilderTest, wind_model_is_available_from_env)
 {
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
     const auto env = builder.build_environment_and_frames();
     Eigen::Vector3d position;
     position << a.random<double>(), a.random<double>(), -std::abs(a.random<double>());
@@ -189,8 +144,6 @@ TEST_F(SimulatorBuilderTest, wind_model_is_available_from_env)
 
 TEST_F(SimulatorBuilderTest, can_get_rho_air)
 {
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
     const auto env = builder.build_environment_and_frames();
     ASSERT_DOUBLE_EQ(1.225, env.get_rho_air());
 }

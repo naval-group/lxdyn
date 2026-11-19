@@ -10,6 +10,7 @@
 #include "calculate_gz.hpp"
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/Observer.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/mesh/mesh_manipulations.hpp"
 
 std::string FastHydrostaticForceModel::model_name()

@@ -15,6 +15,15 @@ class Stretching;
 class WaveSpectralDensity;
 class WaveDirectionalSpreading;
 
+DiscreteDirectionalWaveSpectrum add_constant_phases(
+    DiscreteDirectionalWaveSpectrum spectrum,
+    const double constant_phase);
+
+/** \brief Phases uniform in [0, 2π), reproducible from the seed */
+DiscreteDirectionalWaveSpectrum add_random_phases(
+    DiscreteDirectionalWaveSpectrum spectrum,
+    const int random_number_generator_seed);
+
 FlatDiscreteDirectionalWaveSpectrum flatten(const DiscreteDirectionalWaveSpectrum& spectrum);
 
 /**  \brief Only select the most important spectrum components & create single vector

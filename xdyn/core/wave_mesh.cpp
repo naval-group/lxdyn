@@ -1,26 +1,23 @@
 /*
- * SurfaceElevationBuilder.cpp
- *
- *  Created on: Jul 1, 2014
- *      Author: cady
+ * wave_mesh.cpp
  */
 
-#include "SurfaceElevationBuilder.hpp"
+#include "wave_mesh.hpp"
 
 #include <memory>
 
 #include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 
-std::pair<double, double> get_wave_mesh_step_size(const YamlWaveOutput& output);
+namespace {
 std::pair<double, double> get_wave_mesh_step_size(const YamlWaveOutput& output)
 {
     const double dx = (output.xmax - output.xmin) / (double)(output.nx > 1 ? output.nx - 1 : 1);
     const double dy = (output.ymax - output.ymin) / (double)(output.ny > 1 ? output.ny - 1 : 1);
     return std::make_pair(dx, dy);
 }
+}  // namespace
 
-std::pair<std::size_t, std::size_t> SurfaceElevationBuilderInterface::get_wave_mesh_size(
-    const YamlWaveOutput& output) const
+std::pair<std::size_t, std::size_t> wave_mesh_size(const YamlWaveOutput& output)
 {
     const std::pair<double, double> dxdy = get_wave_mesh_step_size(output);
     const size_t nx = (dxdy.first == 0 and output.nx) ? 1 : output.nx;
@@ -28,15 +25,15 @@ std::pair<std::size_t, std::size_t> SurfaceElevationBuilderInterface::get_wave_m
     return std::make_pair(nx, ny);
 }
 
-ssc::kinematics::PointMatrixPtr SurfaceElevationBuilderInterface::make_wave_mesh(
-    const YamlWaveOutput& output)
+ssc::kinematics::PointMatrixPtr make_wave_mesh(const YamlWaveOutput& output)
 {
     using namespace ssc::kinematics;
     const std::pair<double, double> dxdy = get_wave_mesh_step_size(output);
     const double dx = dxdy.first;
     const double dy = dxdy.second;
-    const size_t nx = (dx == 0 and output.nx) ? 1 : output.nx;
-    const size_t ny = (dy == 0 and output.ny) ? 1 : output.ny;
+    const std::pair<std::size_t, std::size_t> size = wave_mesh_size(output);
+    const size_t nx = size.first;
+    const size_t ny = size.second;
     PointMatrixPtr M = std::make_shared<PointMatrix>(output.frame_of_reference, nx * ny);
     int k = 0;
     for (size_t j = 0; j < ny; ++j) {

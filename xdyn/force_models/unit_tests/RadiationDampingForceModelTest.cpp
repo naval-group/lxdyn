@@ -13,6 +13,7 @@
 #include "xdyn/core/BodyStates.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/force_models/RadiationDampingForceModel.hpp"
 #include "xdyn/hdb_interpolators/RadiationDampingBuilder.hpp"
 #include "xdyn/hdb_interpolators/unit_tests/analytical_radiation_damping.hpp"

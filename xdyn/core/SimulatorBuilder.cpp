@@ -18,13 +18,17 @@
 
 SimulatorBuilder::SimulatorBuilder(
     const YamlSimulatorInput& input_,
+    ForcePtr (*make_force_model_)(
+        const YamlModel& yaml,
+        const std::string& body_name,
+        const EnvironmentAndFrames& env),
+    void (*add_environment_model_)(const YamlModel& yaml, EnvironmentAndFrames& env),
     const double t0_,
     const ssc::data_source::DataSource& command_listener_)
     : input(input_)
     , builder(std::make_shared<BodyBuilder>(input.rotations))
-    , wave_parsers(std::make_shared<std::vector<WaveModelBuilderPtr>>())
-    , directional_spreading_parsers(std::make_shared<std::vector<DirectionalSpreadingBuilderPtr>>())
-    , spectrum_parsers(std::make_shared<std::vector<SpectrumBuilderPtr>>())
+    , make_force_model(make_force_model_)
+    , add_environment_model(add_environment_model_)
     , command_listener(command_listener_)
     , t0(t0_)
 {
@@ -81,69 +85,8 @@ EnvironmentAndFrames SimulatorBuilder::build_environment_and_frames() const
     env.rot = input.rotations;
     env.k = std::make_shared<ssc::kinematics::Kinematics>();
 
-    if (surface_elevation_parsers.empty()) {
-        THROW(
-            __PRETTY_FUNCTION__,
-            InternalErrorException,
-            "No wave parser defined. Need to call SimulatorBuilder::can_parse<T> with e.g. T=DefaultWaveModel");
-    }
-    if (wind_model_parsers.empty()) {
-        THROW(
-            __PRETTY_FUNCTION__,
-            InternalErrorException,
-            "No wind parser defined. Need to call SimulatorBuilder::can_parse<T> with e.g. T=DefaultWindModel");
-    }
-    for (auto that_model = input.environment.begin(); that_model != input.environment.end();
-         ++that_model) {
-        bool env_model_successfully_parsed = false;
-        for (auto that_parser = surface_elevation_parsers.begin();
-             that_parser != surface_elevation_parsers.end();
-             ++that_parser) {
-            std::optional<SurfaceElevationPtr> w =
-                (*that_parser)->try_to_parse(that_model->model, that_model->yaml);
-            if (w) {
-                if (env.w) {
-                    THROW(
-                        __PRETTY_FUNCTION__,
-                        InternalErrorException,
-                        "More than one wave model was defined.");
-                }
-                env.w = w.value();
-                env_model_successfully_parsed = true;
-            }
-        }
-        for (const auto& parser : wind_model_parsers) {
-            std::optional<WindModelPtr> w = parser(*that_model);
-            if (w) {
-                if (env.wind) {
-                    THROW(
-                        __PRETTY_FUNCTION__,
-                        InternalErrorException,
-                        "More than one wind model was defined.");
-                }
-                env.wind = w.value();
-                env_model_successfully_parsed = true;
-            }
-        }
-        for (const auto& parser : UWCurrent_model_parsers) {
-            std::optional<UWCurrentModelPtr> c = parser(*that_model);
-            if (c) {
-                if (env.UWCurrent) {
-                    THROW(
-                        __PRETTY_FUNCTION__,
-                        InternalErrorException,
-                        "More than one underwater current model was defined.");
-                }
-                env.UWCurrent = c.value();
-                env_model_successfully_parsed = true;
-            }
-        }
-        if (not(env_model_successfully_parsed)) {
-            THROW(
-                __PRETTY_FUNCTION__,
-                InvalidInputException,
-                "Simulator does not understand environment model '" << that_model->model << "'");
-        }
+    for (const auto& model : input.environment) {
+        add_environment_model(model, env);
     }
     return env;
 }
@@ -176,42 +119,10 @@ ListOfForces SimulatorBuilder::forces_from(const YamlBody& body, const Environme
     const
 {
     ListOfForces ret;
-    for (auto that_force_model = body.external_forces.begin();
-         that_force_model != body.external_forces.end();
-         ++that_force_model) {
-        add(*that_force_model, ret, body.name, env);
+    for (const auto& model : body.external_forces) {
+        ret.push_back(make_force_model(model, body.name, env));
     }
     return ret;
-}
-
-void SimulatorBuilder::add(
-    const YamlModel& model,
-    ListOfForces& L,
-    const std::string& name,
-    const EnvironmentAndFrames& env) const
-{
-    bool parsed = false;
-    for (const auto& try_to_parse : force_parsers) {
-        std::optional<ForcePtr> f = try_to_parse(model, name, env);
-        if (f) {
-            if (parsed) {
-                THROW(
-                    __PRETTY_FUNCTION__,
-                    InvalidInputException,
-                    "Two force models are both registered as '" << model.model << "'.");
-            }
-            L.push_back(f.value());
-            parsed = true;
-        }
-    }
-    if (not(parsed)) {
-        THROW(
-            __PRETTY_FUNCTION__,
-            InvalidInputException,
-            "Simulator does not know model '"
-                << model.model
-                << "': maybe the name is misspelt or you are using an outdated version of this simulator.");
-    }
 }
 
 std::vector<bool> SimulatorBuilder::are_there_surface_forces_acting_on_body(
