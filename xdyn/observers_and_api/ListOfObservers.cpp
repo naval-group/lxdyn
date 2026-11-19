@@ -7,6 +7,7 @@
 
 #include "ListOfObservers.hpp"
 
+#include <array>
 #include <memory>
 
 #include "CsvObserver.hpp"
@@ -15,43 +16,59 @@
 #include "MapObserver.hpp"
 #include "TsvObserver.hpp"
 #include "WebSocketObserver.hpp"
+#include "xdyn/core/ModelTable.hpp"
 #include "xdyn/external_data_structures/YamlOutput.hpp"
+
+namespace {
+using ObserverFactory = ObserverPtr (*)(const YamlOutput& output);
+
+template <typename T>
+ObserverPtr file_observer(const YamlOutput& output)
+{
+    if (output.full_output) {
+        return std::make_shared<T>(output.filename);
+    }
+    return std::make_shared<T>(output.filename, output.data);
+}
+
+ObserverPtr map_observer(const YamlOutput& output)
+{
+    if (output.full_output) {
+        return std::make_shared<MapObserver>();
+    }
+    return std::make_shared<MapObserver>(output.data);
+}
+
+ObserverPtr websocket_observer(const YamlOutput& output)
+{
+    if (output.full_output) {
+        return std::make_shared<WebSocketObserver>(output.address, output.port);
+    }
+    return std::make_shared<WebSocketObserver>(output.address, output.port, output.data);
+}
+
+const auto& observers_by_format()
+{
+    static const std::array table{
+        ModelEntry<ObserverFactory>{"csv", file_observer<CsvObserver>},
+        ModelEntry<ObserverFactory>{"h5", file_observer<Hdf5Observer>},
+        ModelEntry<ObserverFactory>{"hdf5", file_observer<Hdf5Observer>},
+        ModelEntry<ObserverFactory>{"json", file_observer<JsonObserver>},
+        ModelEntry<ObserverFactory>{"map", map_observer},
+        ModelEntry<ObserverFactory>{"tsv", file_observer<TsvObserver>},
+        ModelEntry<ObserverFactory>{"ws", websocket_observer},
+    };
+    return table;
+}
+}  // namespace
 
 ObserverPtr ListOfObservers::parse_observer(const YamlOutput& output)
 {
-    ObserverPtr obs;
-    if (output.full_output) {
-        if (output.format == "csv")
-            obs = std::make_shared<CsvObserver>(output.filename);
-        if (output.format == "h5")
-            obs = std::make_shared<Hdf5Observer>(output.filename);
-        if (output.format == "hdf5")
-            obs = std::make_shared<Hdf5Observer>(output.filename);
-        if (output.format == "tsv")
-            obs = std::make_shared<TsvObserver>(output.filename);
-        if (output.format == "map")
-            obs = std::make_shared<MapObserver>();
-        if (output.format == "json")
-            obs = std::make_shared<JsonObserver>(output.filename);
-        if (output.format == "ws")
-            obs = std::make_shared<WebSocketObserver>(output.address, output.port);
-    } else {
-        if (output.format == "csv")
-            obs = std::make_shared<CsvObserver>(output.filename, output.data);
-        if (output.format == "h5")
-            obs = std::make_shared<Hdf5Observer>(output.filename, output.data);
-        if (output.format == "hdf5")
-            obs = std::make_shared<Hdf5Observer>(output.filename, output.data);
-        if (output.format == "tsv")
-            obs = std::make_shared<TsvObserver>(output.filename, output.data);
-        if (output.format == "map")
-            obs = std::make_shared<MapObserver>(output.data);
-        if (output.format == "json")
-            obs = std::make_shared<JsonObserver>(output.filename, output.data);
-        if (output.format == "ws")
-            obs = std::make_shared<WebSocketObserver>(output.address, output.port, output.data);
+    const ObserverFactory factory = find_model(observers_by_format(), output.format);
+    if (factory == nullptr) {
+        throw_unknown_name("output format", output.format, model_names(observers_by_format()));
     }
-    return obs;
+    return factory(output);
 }
 
 ListOfObservers::ListOfObservers(const std::vector<YamlOutput>& yaml)
