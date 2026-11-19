@@ -5,6 +5,7 @@
 #include "HydroPolarForceModel.hpp"
 #include "gmock/gmock.h"
 #include "xdyn/core/yaml2eigen.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 
 std::string get_yaml_input();
 std::string get_yaml_input()

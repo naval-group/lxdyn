@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "EkmanUWCurrentModel.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 
 namespace {
 // Written here rather than reused from SeabedTest: depending on another fixture's side effect makes

@@ -11,8 +11,8 @@
 #include <memory>
 #include <ssc/kinematics.hpp>
 
-#include "xdyn/core/SurfaceElevationBuilder.hpp"
 #include "xdyn/core/SurfaceElevationFromWaves.hpp"
+#include "xdyn/core/wave_mesh.hpp"
 #include "xdyn/environment_models/Airy.hpp"
 #include "xdyn/environment_models/DiracDirectionalSpreading.hpp"
 #include "xdyn/environment_models/DiracSpectralDensity.hpp"
@@ -205,7 +205,7 @@ TEST_F(SurfaceElevationFromWavesTest, bug_detected_by_FS)
     out.ymin = -100;
     out.ymax = 100;
     out.ny = 20;
-    const auto output_mesh = SurfaceElevationBuilderInterface::make_wave_mesh(out);
+    const auto output_mesh = make_wave_mesh(out);
     SurfaceElevationFromWaves wave(get_model(5, 5), std::make_pair(50, 20), output_mesh);
     SurfaceElevationGrid grid = wave.get_waves_on_mesh_as_a_grid(k, 0);
     ASSERT_EQ(50, grid.x.count());

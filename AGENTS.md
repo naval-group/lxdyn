@@ -29,7 +29,8 @@ Run one test with `mise run test -- --gtest_filter='Gravity*'`, or skip the long
 | `xdyn/force_models/` | one class per force model, with a static `model_name()` that is its YAML key |
 | `xdyn/environment_models/` | waves, spectra, current, wind |
 | `xdyn/yaml_parser/` | input parsing |
-| `xdyn/observers_and_api/simulator_api.cpp` | `can_parse<...>()` registers every model; a new model goes here |
+| `xdyn/force_models/force_model_table.cpp` | every force model a YAML file can name; a new force model is one line here |
+| `xdyn/environment_models/environment_model_table.cpp` | every wave, wind and current model a YAML file can name, and the wave spectra and spreadings; a new one is one line here |
 | `xdyn/<module>/unit_tests/` | that module's GoogleTest suite |
 | `xdyn/executables/` | `xdyn`, the gRPC/websocket servers and the example generators |
 | `ssc/` | SSC: units, interpolation, kinematics, solvers, websocket |

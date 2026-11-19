@@ -11,13 +11,12 @@
 #include "xdyn/core/BlockedDOF.hpp"
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/BodyBuilder.hpp"
-#include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
-#include "xdyn/environment_models/DefaultWindModel.hpp"
+#include "xdyn/environment_models/environment_model_table.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
-#include "xdyn/listeners_and_controllers/builders.hpp"
+#include "xdyn/force_models/force_model_table.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
@@ -317,9 +316,7 @@ TEST_F(BlockedDOFTest, force_acceleration)
         SimulatorYamlParser(
             test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_OTT.yml"))
             .parse();
-    SimulatorBuilder builder(input);
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
+    SimulatorBuilder builder(input, make_force_model, add_environment_model);
     EnvironmentAndFrames env = builder.build_environment_and_frames();
     MeshMap dummyMesh;
     dummyMesh[input.bodies.front().name] = two_triangles();
@@ -395,9 +392,7 @@ TEST_F(BlockedDOFTest, force_acceleration_w_idealRudder)
         SimulatorYamlParser(
             test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_idealRudder.yml"))
             .parse();
-    SimulatorBuilder builder(input);
-    builder.can_parse<DefaultSurfaceElevation>();
-    builder.can_parse<DefaultWindModel>();
+    SimulatorBuilder builder(input, make_force_model, add_environment_model);
     EnvironmentAndFrames env = builder.build_environment_and_frames();
     MeshMap dummyMesh;
     dummyMesh[input.bodies.front().name] = two_triangles();

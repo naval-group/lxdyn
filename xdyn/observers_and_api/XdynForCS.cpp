@@ -6,6 +6,7 @@
 #include "CoSimulationObserver.hpp"
 #include "JSONSerializer.hpp"
 #include "SimServerInputs.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/observers_and_api/simulator_api.hpp"
 
 XdynForCS::XdynForCS(const std::string& yaml_model, const std::string& solver, const double dt)

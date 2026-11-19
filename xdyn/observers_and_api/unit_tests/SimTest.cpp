@@ -18,6 +18,7 @@
 #include "xdyn/core/Sim.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/external_file_formats/stl_reader.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/observers_and_api/ListOfObservers.hpp"

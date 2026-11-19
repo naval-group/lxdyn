@@ -10,6 +10,7 @@
 #include <ssc/exception_handling.hpp>
 
 #include "xdyn/core/Body.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 
 std::string FroudeKrylovForceModel::model_name()
 {

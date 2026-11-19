@@ -8,6 +8,7 @@
 #include "ExactHydrostaticForceModel.hpp"
 
 #include "xdyn/core/Body.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/mesh/mesh_manipulations.hpp"
 
 std::string ExactHydrostaticForceModel::model_name()

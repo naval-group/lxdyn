@@ -6,6 +6,7 @@
 #include "AeroPolarForceModel.hpp"
 #include "gmock/gmock.h"
 #include "xdyn/environment_models/UniformWindVelocityProfile.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 
 TEST_F(AeroPolarForceModelTest, can_parse)
 {

@@ -3,7 +3,6 @@
 
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/external_data_structures/YamlCoordinates.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
 
 /** \details This class was created to define the maneuvering model used in the MMG model
  *

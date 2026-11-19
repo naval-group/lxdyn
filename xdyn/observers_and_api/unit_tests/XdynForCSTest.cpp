@@ -5,6 +5,7 @@
 #include "JSONSerializer.hpp"
 #include "XdynForCS.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 constexpr double EPS = 1E-8;
 
