@@ -18,6 +18,28 @@
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
+namespace {
+ForcePtr make_hydrostatic_force_model(
+    const std::string& name,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
+{
+    if (name == ExactHydrostaticForceModel::model_name()) {
+        return std::make_shared<ExactHydrostaticForceModel>(body_name, env);
+    }
+    if (name == FastHydrostaticForceModel::model_name()) {
+        return std::make_shared<FastHydrostaticForceModel>(body_name, env);
+    }
+    THROW(
+        __PRETTY_FUNCTION__,
+        InvalidInputException,
+        "Couldn't find any suitable hydrostatic force model: "
+            << "received '" << name << "', expected one of '"
+            << ExactHydrostaticForceModel::model_name() << "' or '"
+            << FastHydrostaticForceModel::model_name() << "'");
+}
+}  // namespace
+
 std::string GMForceModel::model_name()
 {
     return "GM";
@@ -39,19 +61,8 @@ GMForceModel::GMForceModel(
             InvalidInputException,
             "Force model '" << model_name() << "' needs a wave model, even if it's 'no waves'");
     }
-    YamlModel data_for_hs;
-    data_for_hs.index_of_first_line_in_global_yaml = data.index_of_first_line_in_global_yaml;
-    data_for_hs.model = data.name_of_hydrostatic_force_model;
-    std::optional<ForcePtr> f = data.try_to_parse(data_for_hs, get_body_name(), env);
-    if (f) {
-        underlying_hs_force_model = f.value();
-    } else {
-        THROW(
-            __PRETTY_FUNCTION__,
-            InvalidInputException,
-            "Unable to find a parser to parse model '" << data.name_of_hydrostatic_force_model
-                                                       << "'");
-    }
+    underlying_hs_force_model =
+        make_hydrostatic_force_model(data.name_of_hydrostatic_force_model, get_body_name(), env);
 }
 
 double GMForceModel::get_GM() const
@@ -65,20 +76,6 @@ GMForceModel::Yaml GMForceModel::parse(const std::string& yaml)
     Yaml ret;
     node["name of hydrostatic force model"] >> ret.name_of_hydrostatic_force_model;
     xdyn::yaml_parser::parse_uv(node["roll step"], ret.roll_step);
-    if (ret.name_of_hydrostatic_force_model == "non-linear hydrostatic (exact)") {
-        ret.try_to_parse = ForceModel::build_parser<ExactHydrostaticForceModel>();
-        return ret;
-    }
-    if (ret.name_of_hydrostatic_force_model == "non-linear hydrostatic (fast)") {
-        ret.try_to_parse = ForceModel::build_parser<FastHydrostaticForceModel>();
-        return ret;
-    }
-    THROW(
-        __PRETTY_FUNCTION__,
-        InvalidInputException,
-        "Couldn't find any suitable hydrostatic force model: "
-            << "received '" << ret.name_of_hydrostatic_force_model
-            << "', expected one of 'non-linear hydrostatic (exact)' or 'non-linear hydrostatic (fast)'");
     return ret;
 }
 
