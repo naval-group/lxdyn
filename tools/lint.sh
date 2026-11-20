@@ -1,5 +1,5 @@
 #!/bin/sh
-# `mise run lint` and the flake's `lint` check: tabs and clang-format in the C and C++, zig fmt on the build files.
+# `mise run lint` and the flake's `lint` check: tabs, core/'s includes and clang-format in the C and C++, zig fmt on the build files.
 set -eu
 cd "$(dirname "$0")/.."
 
@@ -10,6 +10,15 @@ if grep --recursive --include='*.cpp' --include='*.c' --include='*.hpp' --includ
     exit 1
 fi
 echo "Repo passed no-tabs check."
+
+# core/ builds a simulation from models it is handed, so it names their interfaces only.
+if grep --recursive --include='*.cpp' --include='*.hpp' --exclude-dir=unit_tests -nE \
+        '#include "xdyn/(force_models|simulator_api|observers|servers|wind_models|current_models|wave_models)/' xdyn/core \
+    | grep -vE '"xdyn/(wind_models/WindModel|current_models/UWCurrentModel|wave_models/(SurfaceElevationInterface|SurfaceElevationGrid|DiscreteDirectionalWaveSpectrum))\.hpp"'; then
+    echo "core/ includes the models above; it may include only their interfaces."
+    exit 1
+fi
+echo "core/ includes only the model interfaces."
 
 sh tools/format.sh --dry-run --Werror
 echo "C and C++ passed clang-format."
