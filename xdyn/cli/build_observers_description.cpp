@@ -57,8 +57,6 @@ void add_observer_from_cli_dash_o_option(
     YamlOutput description = build_YamlOutput_from_filename(input_data.output_filename);
     description.full_output = true;
     description.data.push_back("waves");
-    description.data.push_back("matlab scripts");
-    description.data.push_back("python scripts");
     description.data.push_back("spectra");
     description.data.push_back("mesh");
     description.data.push_back("yaml");

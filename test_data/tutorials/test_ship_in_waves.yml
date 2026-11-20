@@ -108,4 +108,4 @@ bodies: # All bodies have NED as parent frame
 output:
 - format: hdf5
   filename: test.h5
-  data: [mesh, command line, yaml, python scripts, matlab scripts, spectra, waves]
+  data: [mesh, command line, yaml, spectra, waves]

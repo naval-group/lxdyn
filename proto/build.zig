@@ -29,7 +29,7 @@ pub fn addStubs(b: *std.Build) Stubs {
     const messages = gen.addPrefixedOutputDirectoryArg("--cpp_out=", "proto");
     const services = gen.addPrefixedOutputDirectoryArg("--grpc_out=", "proto-grpc");
     gen.addPrefixedDirectoryArg("-I", b.path("proto"));
-    for (root.sourcesIn(b, "proto", ".proto", &.{})) |file|
+    for (root.sourcesIn(b, "proto", ".proto")) |file|
         gen.addFileArg(b.path(b.fmt("proto/{s}", .{file})));
     return .{ .step = &gen.step, .messages = messages, .services = services };
 }

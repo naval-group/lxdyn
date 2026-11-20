@@ -238,13 +238,3 @@ void Observer::write_yaml_before_simulation(const std::string&)
 {
     remove_variable("yaml");
 }
-
-void Observer::write_matlab_script_before_simulation()
-{
-    remove_variable("matlab scripts");
-}
-
-void Observer::write_python_script_before_simulation()
-{
-    remove_variable("python scripts");
-}

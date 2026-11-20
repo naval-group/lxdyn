@@ -192,8 +192,8 @@ pub fn concat(b: *std.Build, base: []const []const u8, extra: []const []const u8
     return out;
 }
 
-// Every `ext` file directly in `dir`, minus `excluded`, sorted.
-pub fn sourcesIn(b: *std.Build, dir: []const u8, ext: []const u8, excluded: []const []const u8) []const []const u8 {
+// Every `ext` file directly in `dir`, sorted.
+pub fn sourcesIn(b: *std.Build, dir: []const u8, ext: []const u8) []const []const u8 {
     var handle = b.root.openDir(b.graph.io, dir, .{ .iterate = true }) catch
         std.debug.panic("cannot open {s} to collect sources", .{dir});
     defer handle.close(b.graph.io);
@@ -203,9 +203,7 @@ pub fn sourcesIn(b: *std.Build, dir: []const u8, ext: []const u8, excluded: []co
     while (it.next(b.graph.io) catch std.debug.panic("cannot read {s}", .{dir})) |entry| {
         if (entry.kind != .file) continue;
         if (!std.mem.endsWith(u8, entry.name, ext)) continue;
-        for (excluded) |skip| {
-            if (std.mem.eql(u8, entry.name, skip)) break;
-        } else found.append(b.allocator, b.dupe(entry.name)) catch @panic("OOM");
+        found.append(b.allocator, b.dupe(entry.name)) catch @panic("OOM");
     }
     return sorted(b, &found);
 }

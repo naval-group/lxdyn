@@ -6,7 +6,7 @@ function simu = xdyn_postProcess(filename, plotResult)
 % 3) Animate wave if present
 %
 % Inputs:
-%   - filename    [Optional] : HDF5 result filename.
+%   - filename               : HDF5 result filename.
 %                              Name of the group containg results
 %   - plotResult  [Optional] : Boolean used to plot the results
 %
@@ -20,14 +20,8 @@ function simu = xdyn_postProcess(filename, plotResult)
 %   - simu = xdyn_postProcess({'simu.hdf5', '/outputs', '/inputs'}), true);
 %
 %   - simu = xdyn_postProcess(simu, true);
-%
-% This function does not rely on any other functions. This single file
-% contains all the code necessary to postprocess a HDF5 file.
 if nargin < 2
     plotResult = true;
-    if nargin == 0
-        filename = 'hdf5Filename_.h5';
-    end
 end
 if isstruct(filename)
     simu = filename;

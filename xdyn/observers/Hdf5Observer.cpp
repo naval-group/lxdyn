@@ -4,7 +4,6 @@
 
 #include "Hdf5WaveObserver.hpp"
 #include "Hdf5WaveSpectrumObserver.hpp"
-#include "demo_scripts.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/hdf5/h5_tools.hpp"
 #include "xdyn/hdf5/h5_version.hpp"
@@ -18,16 +17,13 @@ Hdf5Addressing::Hdf5Addressing(const DataAddressing& addressing, const std::stri
 }
 
 Hdf5Observer::Hdf5Observer(const std::string& filename_)
-    : h5File(H5_Tools::openEmptyHdf5File(filename_)), basename("outputs"), filename(filename_)
+    : h5File(H5_Tools::openEmptyHdf5File(filename_)), basename("outputs")
 {
     h5_writeFileDescription(h5File);
 }
 
 Hdf5Observer::Hdf5Observer(const std::string& filename_, const std::vector<std::string>& d)
-    : Observer(d)
-    , h5File(H5_Tools::openEmptyHdf5File(filename_))
-    , basename("outputs")
-    , filename(filename_)
+    : Observer(d), h5File(H5_Tools::openEmptyHdf5File(filename_)), basename("outputs")
 {
     h5_writeFileDescription(h5File);
 }
@@ -128,26 +124,6 @@ void Hdf5Observer::write_yaml_before_simulation(const std::string& yaml)
         // Should only be serialized at the beginning of the simulation, otherwise xdyn
         // will attempt to serialize it at each timestep & will fail
         remove_variable("yaml");
-    }
-}
-
-void Hdf5Observer::write_matlab_script_before_simulation()
-{
-    if (should_serialize("matlab scripts")) {
-        exportMatLabScripts(h5File, filename, basename, "/scripts/MatLab");
-        // Should only be serialized at the beginning of the simulation, otherwise xdyn
-        // will attempt to serialize it at each timestep & will fail
-        remove_variable("matlab scripts");
-    }
-}
-
-void Hdf5Observer::write_python_script_before_simulation()
-{
-    if (should_serialize("python scripts")) {
-        exportPythonScripts(h5File, filename, basename, "/scripts/Python");
-        // Should only be serialized at the beginning of the simulation, otherwise xdyn
-        // will attempt to serialize it at each timestep & will fail
-        remove_variable("python scripts");
     }
 }
 

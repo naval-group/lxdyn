@@ -15,14 +15,6 @@ std::string ensureStringStartsAndEndsWithAPattern(const std::string& str, const 
 
 std::string ensureStringStartsWithAPattern(const std::string& str, const std::string& delim);
 
-std::string getBasename(const std::string& path, const std::string& delims = "/\\");
-
-std::string
-replaceString(const std::string& subject, const std::string& search, const std::string& replace);
-
-std::string&
-replaceStringInPlace(std::string& subject, const std::string& search, const std::string& replace);
-
 std::string join(const std::vector<std::string>& v, const std::string& delim);
 
 H5::DataSpace createDataSpace1DEmptyUnlimited();

@@ -23,8 +23,6 @@ public:
         const DataAddressing& address) override;
     void write_command_line_before_simulation(const std::string& command_line) override;
     void write_yaml_before_simulation(const std::string& yaml) override;
-    void write_matlab_script_before_simulation() override;
-    void write_python_script_before_simulation() override;
 
 private:
     void flush_after_initialization() override;
@@ -51,7 +49,6 @@ private:
     std::map<std::string, H5::DataType> name2datatype;
     std::map<std::string, H5::DataSpace> name2dataspace;
     Hdf5WaveObserverPtr wave_serializer;
-    std::string filename;
 };
 
 #endif

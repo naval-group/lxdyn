@@ -42,9 +42,6 @@ const warning_flags = [_][]const u8{
     "-Wformat=2",
 };
 
-// Globbed out of their module and added back by addSources, each with a flag of its own.
-const compiled_separately = [_][]const u8{"demo_scripts.cpp"};
-
 // The hand-written C++ flag set, shared by every component.
 pub fn cppFlags(ctx: *const root.Ctx) []const []const u8 {
     return root.concat(ctx.b, ctx.withDebug(&.{ "-std=gnu++17", "-Wall", "-Wextra", "-Werror", "-fPIC" }), &warning_flags);
@@ -66,7 +63,6 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
         b.fmt("-DXDYN_COMMIT=\"{s}\"", .{b.option([]const u8, "commit", "Commit stamped into the binaries (default: dev; the flake passes its own)") orelse "dev"}),
     }) });
     lib.addCSourceFiles(.{ .root = b.path("xdyn/hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = ctx.c_flags });
-    lib.addCSourceFiles(.{ .root = b.path("xdyn/observers"), .files = &.{"demo_scripts.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-c23-extensions"}) });
     proto.addSources(ctx, lib, &.{ "wave_types", "wave_grpc", "force", "controller" });
 }
 
@@ -141,7 +137,7 @@ fn moduleSources(b: *std.Build) []const []const u8 {
     var found: std.ArrayList([]const u8) = .empty;
     for (moduleDirs(b)) |dir| {
         if (std.mem.eql(u8, dir, "executables")) continue;
-        for (root.sourcesIn(b, b.pathJoin(&.{ "xdyn", dir }), ".cpp", &compiled_separately)) |name|
+        for (root.sourcesIn(b, b.pathJoin(&.{ "xdyn", dir }), ".cpp")) |name|
             found.append(b.allocator, b.pathJoin(&.{ dir, name })) catch @panic("OOM");
     }
     return root.sorted(b, &found);

@@ -46,12 +46,12 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
     // Non-recursive, which skips each module's unit_tests/.
     for (modules) |name| {
         const dir = b.pathJoin(&.{ "ssc", name });
-        lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".cpp", &.{}), .flags = f.cpp });
+        lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".cpp"), .flags = f.cpp });
     }
     // The Fortran-derived C in these two.
     for ([_][]const u8{ "ssc/integrate", "ssc/interpolation" }) |dir|
-        lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".c", &.{}), .flags = ctx.c_flags });
-    lib.addCSourceFiles(.{ .root = b.path("ssc/websocket/src"), .files = root.sourcesIn(b, "ssc/websocket/src", ".cpp", &.{}), .flags = f.ws });
+        lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".c"), .flags = ctx.c_flags });
+    lib.addCSourceFiles(.{ .root = b.path("ssc/websocket/src"), .files = root.sourcesIn(b, "ssc/websocket/src", ".cpp"), .flags = f.ws });
 }
 
 // Into the cache rather than the source tree, so concurrent builds share nothing they write.
@@ -97,8 +97,8 @@ pub fn addTests(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile, test_ste
         m.addIncludePath(b.path(b.pathJoin(&.{ dir, "inc" })));
         const src = b.pathJoin(&.{ dir, "src" });
         const cpp = if (std.mem.eql(u8, name, "websocket")) root.concat(b, f.cpp, &websocketpp_defines) else f.cpp;
-        m.addCSourceFiles(.{ .root = b.path(src), .files = root.sourcesIn(b, src, ".cpp", &.{}), .flags = cpp });
-        m.addCSourceFiles(.{ .root = b.path(src), .files = root.sourcesIn(b, src, ".c", &.{}), .flags = ctx.c_flags });
+        m.addCSourceFiles(.{ .root = b.path(src), .files = root.sourcesIn(b, src, ".cpp"), .flags = cpp });
+        m.addCSourceFiles(.{ .root = b.path(src), .files = root.sourcesIn(b, src, ".c"), .flags = ctx.c_flags });
     }
     m.addCSourceFiles(.{ .root = b.path("xdyn/executables"), .files = &.{"run_all_tests.cpp"}, .flags = ctx.cpp_flags });
     m.linkLibrary(libxdyn);
