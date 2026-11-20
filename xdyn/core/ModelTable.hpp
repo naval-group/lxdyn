@@ -8,6 +8,7 @@
 #define MODELTABLE_HPP_
 
 #include <array>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -40,6 +41,15 @@ std::vector<std::string> model_names(const std::array<ModelEntry<Factory>, N>& t
         names.push_back(entry.name);
     }
     return names;
+}
+
+/** \brief The entry that builds `T` from `T::parse` of its YAML, under `T::model_name()` */
+template <typename Ptr, typename T>
+ModelEntry<Ptr (*)(const std::string&)> parsed_model()
+{
+    return {T::model_name(), [](const std::string& yaml) -> Ptr {
+                return std::make_shared<T>(T::parse(yaml));
+            }};
 }
 
 /** \brief Suggests the closest of `known_names` */
