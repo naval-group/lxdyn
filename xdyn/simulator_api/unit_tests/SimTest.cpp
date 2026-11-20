@@ -25,6 +25,7 @@
 #include "xdyn/observers/ListOfObservers.hpp"
 #include "xdyn/observers/unit_tests/MapObserverTest.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
+#include "xdyn/simulator_api/unit_tests/sim_with_mesh.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/check_input_yaml.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
@@ -63,7 +64,7 @@ simulate(const std::string& yaml, const std::string& mesh, ssc::solver::Schedule
 {
     const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml).parse());
     const double tstart = scheduler.get_time();
-    Sim sys = get_system(yaml, mesh, tstart);
+    Sim sys = sim_with_mesh(yaml, mesh, tstart);
     return simulate<StepperType>(sys, input, scheduler);
 }
 
@@ -76,7 +77,7 @@ std::vector<Res> simulate(
 {
     const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml).parse());
     const double tstart = scheduler.get_time();
-    Sim sys = get_system(yaml, mesh, tstart, commands);
+    Sim sys = sim_with_mesh(yaml, mesh, tstart, commands);
     return simulate<StepperType>(sys, input, scheduler);
 }
 
@@ -88,7 +89,7 @@ std::vector<Res> simulate(
 {
     const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml).parse());
     const double tstart = scheduler.get_time();
-    Sim sys = get_system(yaml, meshes, tstart);
+    Sim sys = get_system(SimulatorYamlParser(yaml).parse(), meshes, tstart);
     return simulate<StepperType>(sys, input, scheduler);
 }
 
@@ -130,7 +131,7 @@ std::vector<Res> simulate(
     ssc::data_source::DataSource& commands)
 {
     const double tstart = scheduler.get_time();
-    Sim sys = get_system(input, mesh, tstart, commands);
+    Sim sys = sim_with_mesh(input, mesh, tstart, commands);
     SimObserver observer;
     const auto controllers =
         get_initialized_controllers(tstart, input.controllers, input.commands, scheduler, sys);
@@ -378,10 +379,9 @@ TEST_F(SimTest, can_generate_wave_height_on_mesh)
 
 TEST_F(SimTest, can_generate_wave_height_on_mesh_for_default_wave_model)
 {
-    const Sim sys = get_system(
+    const Sim sys = sim_with_mesh(
         test_data::read("tutorials/stable_rolling_cube_test.yml"),
-        test_data::read("tutorials/cube.stl"),
-        0);
+        test_data::read("tutorials/cube.stl"));
     ssc::kinematics::PointMatrix w = sys.get_waves(a.random<double>());
     ASSERT_EQ(200, w.m.cols());
     for (long i = 0; i < 200; ++i) {
@@ -568,7 +568,7 @@ TEST_F(SimTest, DISABLED_LONG_bug_2732)
     command_listener.set<double>("Prop. & rudder(rpm)", 50);
     command_listener.set<double>("Prop. & rudder(P/D)", 1);
     command_listener.set<double>("Prop. & rudder(beta)", 0);
-    auto sys = get_system(yaml, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(yaml, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(0, 0.1, 0.4);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer);
     ASSERT_NO_THROW(ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer));
@@ -582,7 +582,7 @@ TEST_F(SimTest, LONG_bug_2838)
     command_listener.set<double>("PropRudd(rpm)", 50);
     command_listener.set<double>("PropRudd(P/D)", 1);
     command_listener.set<double>("PropRudd(beta)", 0);
-    auto sys = get_system(yaml, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(yaml, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(0, 0.4, 0.1);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer);
     const auto m = get_map(observer);
@@ -601,7 +601,7 @@ TEST_F(SimTest, LONG_bug_2845)
     command_listener.set<double>("PropRudd(rpm)", 50);
     command_listener.set<double>("PropRudd(P/D)", 1);
     command_listener.set<double>("PropRudd(beta)", 0.8);
-    auto sys = get_system(yaml, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(yaml, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(0, 0.1, 0.1);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer);
     const auto m = get_map(observer);
@@ -661,7 +661,7 @@ TEST_F(SimTest, LONG_can_retrieve_maneuvering_force)
     command_listener.set<double>("PropRudd(rpm)", 50);
     command_listener.set<double>("PropRudd(P/D)", 1);
     command_listener.set<double>("PropRudd(beta)", 0.8);
-    auto sys = get_system(yaml, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(yaml, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(0, 0.4, 0.1);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer);
     const auto m = get_map(observer);
@@ -680,7 +680,7 @@ TEST_F(SimTest, LONG_can_use_commands_in_maneuvering_model)
     command_listener.set<double>("PropRudd(rpm)", 50);
     command_listener.set<double>("PropRudd(P/D)", 1);
     command_listener.set<double>("PropRudd(beta)", 0.8);
-    auto sys = get_system(yaml, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(yaml, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(0, 0.4, 0.1);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer);
     command_listener.check_out();
@@ -878,7 +878,7 @@ TEST_F(SimTest, bug_2984)
     command_listener.set<double>("propeller(P/D)", 1);
     command_listener.set<double>("propeller(beta)", 0);
 
-    auto sys = get_system(input, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(input, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(0, 0.1, 0.1);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observer);
     const auto m = get_map(observer);
@@ -916,7 +916,7 @@ TEST_F(SimTest, bug_3217_hdb_interpolation_in_direction_incorrect_LONG)
     const auto original_yaml = input.environment.at(0).yaml;
 
     // Results for 0.001 deg
-    auto sys = get_system(input, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(input, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     auto m = get_map(observers);
@@ -931,7 +931,7 @@ TEST_F(SimTest, bug_3217_hdb_interpolation_in_direction_incorrect_LONG)
 
     // Results for 0 deg
     boost::replace_all(input.environment.at(0).yaml, "value: 0.001", "value: 0");
-    sys = get_system(input, test_ship_stl, 0, command_listener);
+    sys = sim_with_mesh(input, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler2(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler2, observers);
     m = get_map(observers);
@@ -948,7 +948,7 @@ TEST_F(SimTest, bug_3217_hdb_interpolation_in_direction_incorrect_LONG)
     // Results for 30 deg
     input.environment.at(0).yaml = original_yaml;
     boost::replace_all(input.environment.at(0).yaml, "value: 0.001", "value: 30");
-    sys = get_system(input, test_ship_stl, 0, command_listener);
+    sys = sim_with_mesh(input, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler3(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler3, observers);
     m = get_map(observers);
@@ -987,7 +987,7 @@ TEST_F(SimTest, bug_3227_wave_angle_mirroing_problem_for_diffraction_LONG)
     auto input = SimulatorYamlParser(yaml).parse();
 
     // Results for 30 deg
-    auto sys = get_system(input, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(input, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     auto m = get_map(observers);
@@ -1008,7 +1008,7 @@ TEST_F(SimTest, bug_3227_wave_angle_mirroing_problem_for_diffraction_LONG)
 
     // Results for -30 deg
     boost::replace_all(input.environment.at(0).yaml, "value: 30", "value: -30");
-    sys = get_system(input, test_ship_stl, 0, command_listener);
+    sys = sim_with_mesh(input, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler2(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler2, observers);
     m = get_map(observers);
@@ -1059,7 +1059,7 @@ TEST_F(SimTest, bug_3230_advance_speed_not_taken_into_account_properly_for_diffr
     ssc::data_source::DataSource command_listener;
     auto input = SimulatorYamlParser(yaml).parse();
 
-    auto sys = get_system(input, test_ship_stl, 0, command_listener);
+    auto sys = sim_with_mesh(input, test_ship_stl, 0, command_listener);
     ssc::solver::Scheduler scheduler(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     auto m = get_map(observers);
@@ -1090,7 +1090,7 @@ TEST_F(SimTest, bug_3241_blocked_dof_interpolation_problem_LONG)
     ListOfObservers observers(parse_output(yaml));
     auto input = SimulatorYamlParser(yaml).parse();
 
-    auto sys = get_system(input, test_ship_stl, 0);
+    auto sys = sim_with_mesh(input, test_ship_stl);
     ssc::solver::Scheduler scheduler(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
     auto m = get_map(observers);
@@ -1112,7 +1112,7 @@ TEST_F(SimTest, issue_20_constant_force)
     ListOfObservers observers(parse_output(yaml));
     auto input = SimulatorYamlParser(yaml).parse();
 
-    auto sys = get_system(input, test_ship_stl, 0);
+    auto sys = sim_with_mesh(input, test_ship_stl);
     ssc::solver::Scheduler scheduler(t0, T, dt);
     ssc::solver::quicksolve<ssc::solver::EulerStepper>(sys, scheduler, observers);
 }

@@ -20,6 +20,7 @@
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
+#include "xdyn/simulator_api/unit_tests/sim_with_mesh.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 
 #define ADDRESS "127.0.0.1"
@@ -46,7 +47,7 @@ TEST_F(ObserverTests, can_observe_using_a_websocket)
     {
         const auto yaml = test_data::read("tutorials/oscillating_cube_test.yml");
         const auto mesh = test_data::read("tutorials/cube.stl");
-        Sim sys = get_system(yaml, mesh, 0);
+        Sim sys = sim_with_mesh(yaml, mesh);
         YamlOutput out;
         out.address = WEBSOCKET_ADDRESS;
         out.port = WEBSOCKET_PORT;
@@ -70,7 +71,7 @@ TEST_F(ObserverTests, can_output_all_results)
     // This is to test Observer
     const auto yaml = test_data::read("tutorials/oscillating_cube_test.yml");
     const auto mesh = test_data::read("tutorials/cube.stl");
-    Sim sys = get_system(yaml, mesh, 0);
+    Sim sys = sim_with_mesh(yaml, mesh);
     // Should output all results when using default constructor
     MapObserver observer = MapObserver();
     ssc::solver::Scheduler scheduler(0, 1, 0.1);

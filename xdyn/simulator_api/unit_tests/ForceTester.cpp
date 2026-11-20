@@ -12,8 +12,8 @@
 #include "xdyn/force_models/ExactHydrostaticForceModel.hpp"
 #include "xdyn/force_models/GMForceModel.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
+#include "xdyn/simulator_api/unit_tests/sim_with_mesh.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 Sim ForceTester::make_sim(const std::string& yaml, const std::string& stl) const
 {
@@ -31,7 +31,7 @@ Sim ForceTester::make_sim(const std::string& yaml, const std::string& stl) const
     waves.yaml = "constant sea elevation in NED frame: {value: 0, unit: m}";
     input.environment.push_back(waves);
 
-    return get_system(check_input_yaml(input), stl, 0);
+    return sim_with_mesh(input, read_stl(stl));
 }
 
 Sim ForceTester::make_sim(const std::string& yaml, const VectorOfVectorOfPoints& stl) const
@@ -50,7 +50,7 @@ Sim ForceTester::make_sim(const std::string& yaml, const VectorOfVectorOfPoints&
     waves.yaml = "constant sea elevation in NED frame: {value: 0, unit: m}";
     input.environment.push_back(waves);
 
-    return get_system(check_input_yaml(input), stl, 0);
+    return sim_with_mesh(input, stl);
 }
 
 ForceTester::ForceTester(const std::string& yaml, const VectorOfVectorOfPoints& stl)
