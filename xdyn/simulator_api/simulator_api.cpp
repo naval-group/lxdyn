@@ -120,11 +120,3 @@ EnvironmentAndFrames get_environment_for_wave_queries(const std::string& yaml_da
     }
     return env;
 }
-
-MeshMap make_mesh_map(const YamlSimulatorInput& input, const std::string& mesh)
-{
-    const auto name = input.bodies.front().name;
-    MeshMap meshes;
-    meshes[name] = read_stl(mesh);
-    return meshes;
-}

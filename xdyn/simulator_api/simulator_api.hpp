@@ -80,8 +80,6 @@ std::vector<Res> simulate(const std::string& yaml, ssc::solver::Scheduler& sched
     return simulate<StepperType>(sys, input, scheduler);
 }
 
-MeshMap make_mesh_map(const YamlSimulatorInput& yaml, const std::string& mesh);
-
 template <typename StepperType>
 std::vector<Res>
 simulate(const std::string& yaml, const std::string& mesh, ssc::solver::Scheduler& scheduler)
