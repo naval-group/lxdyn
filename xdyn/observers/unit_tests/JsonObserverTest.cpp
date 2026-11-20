@@ -1,5 +1,6 @@
 #include "JsonObserverTest.hpp"
 
+#include <ssc/solver/solve.hpp>
 #include <ssc/solver/steppers.hpp>
 
 #include "JsonObserver.hpp"

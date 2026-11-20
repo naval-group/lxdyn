@@ -6,6 +6,7 @@
  */
 #include "MapObserverTest.hpp"
 
+#include <ssc/solver/solve.hpp>
 #include <ssc/solver/steppers.hpp>
 
 #include "ListOfObservers.hpp"

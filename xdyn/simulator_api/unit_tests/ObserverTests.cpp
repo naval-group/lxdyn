@@ -10,6 +10,7 @@
 #include <unistd.h>  // usleep
 
 #include <memory>
+#include <ssc/solver/solve.hpp>
 #include <ssc/solver/steppers.hpp>
 #include <ssc/websocket.hpp>
 

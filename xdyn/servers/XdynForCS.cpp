@@ -1,6 +1,7 @@
 #include "XdynForCS.hpp"
 
 #include <functional>
+#include <ssc/solver/solve.hpp>
 #include <ssc/solver/steppers.hpp>
 
 #include "CoSimulationObserver.hpp"
@@ -58,11 +59,11 @@ std::vector<YamlState> XdynForCS::handle(const SimServerInputs& request)
     CoSimulationObserver observer(request.requested_output, sim.get_bodies().at(0)->get_name());
     ssc::solver::Scheduler scheduler(tstart, tstart + Dt, dt);
     if (solver == "euler") {
-        simulate<ssc::solver::EulerStepper>(sim, scheduler, observer);
+        ssc::solver::quicksolve<ssc::solver::EulerStepper>(sim, scheduler, observer);
     } else if (solver == "rk4") {
-        simulate<ssc::solver::RK4Stepper>(sim, scheduler, observer);
+        ssc::solver::quicksolve<ssc::solver::RK4Stepper>(sim, scheduler, observer);
     } else if (solver == "rkck") {
-        simulate<ssc::solver::RKCK>(sim, scheduler, observer);
+        ssc::solver::quicksolve<ssc::solver::RKCK>(sim, scheduler, observer);
     } else {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "unknown solver");
     }

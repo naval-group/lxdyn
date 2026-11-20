@@ -1,5 +1,8 @@
 #include "SimulationServerObserverTest.hpp"
 
+#include <ssc/solver/solve.hpp>
+#include <ssc/solver/steppers.hpp>
+
 #include "SimulationServerObserver.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"

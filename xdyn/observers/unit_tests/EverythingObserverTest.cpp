@@ -8,6 +8,7 @@
 #include "EverythingObserverTest.hpp"
 
 #include <cmath>
+#include <ssc/solver/solve.hpp>
 #include <ssc/solver/steppers.hpp>
 
 #include "EverythingObserver.hpp"
