@@ -52,7 +52,7 @@ Please follow this process to propose changes:
 3. Fork and Clone the Repository
 
     - Fork lxdyn and clone it locally.
-    - Implement your changes.
+    - Implement your changes; [Development](#development) explains how to build and test them.
 
 4. Push to a Dedicated Branch
 
@@ -70,3 +70,58 @@ All pull requests are reviewed by maintainers and, if relevant, by the lxdyn Gov
 Feedback may include requests for clarification, documentation, or code improvements.
 
 Once approved, your contribution will be merged into the main branch and included in the next release according to the project roadmap.
+
+## Development
+
+You need [Nix](https://nixos.org/download/) with flakes enabled (`experimental-features = nix-command flakes` in `~/.config/nix/nix.conf`). The devShell provides zig, mise, uv and the rest of the tools, and no host compiler is used. With [direnv](https://direnv.net/), `direnv allow` replaces `nix develop`. Every `mise run` stops outside the devShell, so no host tool stands in for a pinned one.
+
+```bash
+git clone https://github.com/naval-group/lxdyn.git && cd lxdyn
+nix develop
+mise run bootstrap             # protoc + the prebuilt C++ dependencies, ~35 MB
+mise run zig:build             # binaries in build/x86_64-linux-gnu/bin
+```
+
+`mise run zig:build` also writes `compile_commands.json` at the root, which clangd reads; the devShell's clangd matches zig's clang.
+
+The C++ dependencies (Boost, gRPC, HDF5, yaml-cpp, GoogleTest) are prebuilt against zig's libc++ rather than taken from the host. `nix develop .#deps` builds them from source instead, which takes a few hours.
+
+Run a tutorial from the build tree:
+
+```bash
+mise run demos && cd demos
+mise run xdyn -- tutorial_01_falling_ball.yml --dt 0.1 --tend 10 -o out.csv
+```
+
+### Tests
+
+```bash
+zig build test                 # unit tests
+mise run integration           # CLI scenarios
+mise run integration:grpc      # gRPC and JSON protocol scenarios
+mise run python:test           # Python bindings
+mise run tidy                  # clang-tidy, with the checks .clang-tidy lists
+mise run cross                 # cross targets under qemu and wine, in `nix develop .#cross`
+nix flake check                # everything CI runs
+```
+
+### Cross-compiling
+
+lxdyn cross-compiles to Linux (x86_64, aarch64) and Windows (x86_64) from a single host:
+
+```bash
+mise run deps:fetch aarch64-linux-musl
+zig build -Dtarget=aarch64-linux-musl --prefix build/aarch64-linux-musl
+```
+
+### Debugging
+
+```bash
+mise run zig:debug             # -O0 -g for lxdyn's code, dependencies stay optimized
+mise run gdb -- run_all_tests --gtest_filter='Gravity*'
+valgrind $(sh tools/build-dir.sh)-debug/bin/run_all_tests --gtest_filter='Gravity*'
+```
+
+### Container image
+
+`mise run deploy:image` packages already-built and tested binaries without recompiling them. `mise run deploy:test` smoke-tests the result.

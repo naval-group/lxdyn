@@ -2,19 +2,23 @@
 
 lxdyn is the LOTUSim fork of xdyn, a lightweight time-domain ship simulator. It models the dynamic behaviour of a ship at sea with its actuators, including some non-linear effects, by solving Newton's second law for a solid body under hydrodynamic forces.
 
-Only the project is renamed: the executables, the Python module and the C++ library are still called `xdyn`, as the input files and the upstream documentation expect.
+A simulation is a YAML file: the bodies, their meshes and hydrodynamic databases, the force models acting on them, the wave, wind and current models, and the outputs. The [user documentation](https://sirehna_naval_group.gitlab.io/sirehna/xdyn/) describes the format; it is in French and incomplete in places.
 
-It was developed by SIREHNA through self-funded and collaborative projects, including the IRT Jules Verne's ["Bassin Numérique" project](https://www.irt-jules-verne.fr/wp-content/uploads/bassin-numerique.pdf).
+## What it ships
 
-(c) 2014-2015, [IRT Jules Verne](https://www.irt-jules-verne.fr/), [SIREHNA](https://www.sirehna.com/), [Naval Group](https://www.naval-group.com/en/), [Bureau Veritas](https://www.bureauveritas.fr/), [Hydrocean](https://marine-offshore.bureauveritas.com/bvsolutions), [STX France](https://chantiers-atlantique.com/en/), [LHEEA](https://lheea.ec-nantes.fr/) for the initial version.
+The project, the PyPI package and the image are called lxdyn; everything they hold keeps the name xdyn.
 
-(c) 2015-2022 [SIREHNA](https://www.sirehna.com/) & [Naval Group](https://www.naval-group.com/en/) for all subsequent versions.
+| | What | Where |
+|---|---|---|
+| `xdyn` | the simulator: a YAML file in, CSV, TSV, JSON or HDF5 out | the container image, `ghcr.io/naval-group/lxdyn` |
+| `xdyn-for-cs`, `xdyn-for-me` | xdyn as a co-simulation or model-exchange server, over gRPC or websocket | the container image |
+| `import xdyn` | the Python bindings, CPython 3.11 to 3.15 on Linux x86_64 | the [`lxdyn`](https://pypi.org/project/lxdyn/) wheel on PyPI |
+| `xdyn_fmu` | xdyn as an FMI 2.0 FMU, Linux and Windows, and the script that packs a YAML into a `.fmu` | the zip attached to each [release](https://github.com/naval-group/lxdyn/releases) |
+| `xdyngrpc` | the Python package for writing force models, wave models and controllers that xdyn calls over gRPC | [`xdyn_grpc/`](xdyn_grpc/) |
 
-The [user documentation](https://sirehna_naval_group.gitlab.io/sirehna/xdyn/) is in French, hosted upstream, and incomplete in places.
+## Running a simulation
 
-## Usage
-
-All you need is [podman](https://podman.io/):
+With [podman](https://podman.io/):
 
 ```bash
 alias lxdyn='podman run --rm --userns=keep-id -v "$PWD:/data" ghcr.io/naval-group/lxdyn'
@@ -22,11 +26,7 @@ lxdyn --help
 lxdyn my_simulation.yml --dt 0.1 --tend 10
 ```
 
-The mount is where the results get written, and `--userns=keep-id` makes you the owner of them. Use `:26.8` instead of `:latest` to pin a release. The [command-line options](https://sirehna_naval_group.gitlab.io/sirehna/xdyn/#ligne-de-commande) are documented upstream.
-
-With docker, replace `--userns=keep-id` with `-u $(id -u):$(id -g)`.
-
-### Tutorials
+The mount is where the results get written, and `--userns=keep-id` makes you the owner of them. Use `:26.8` instead of `:latest` to pin a release. With docker, replace `--userns=keep-id` with `-u $(id -u):$(id -g)`. The [command-line options](https://sirehna_naval_group.gitlab.io/sirehna/xdyn/#ligne-de-commande) are documented upstream.
 
 The tutorial inputs, with the meshes and HDB files they reference, are in [`test_data/tutorials/`](test_data/tutorials/):
 
@@ -36,81 +36,42 @@ cd lxdyn/test_data/tutorials
 lxdyn tutorial_01_falling_ball.yml --dt 0.1 --tend 1 -o tsv
 ```
 
-These are documented upstream: [falling ball](https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/blob/master/doc/user_fr/tutorial_01.md), [hydrostatic](https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/blob/master/doc/user_fr/tutorial_02.md), [waves](https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/blob/master/doc/user_fr/tutorial_03.md), [propulsion](https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/blob/master/doc/user_fr/tutorial_06.md) and [gRPC wave model](https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/blob/master/doc/user_fr/tutorial_09.md). So are the [environment models](https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/blob/master/doc/user_fr/modeles_environnementaux.md) and the [force models](https://gitlab.com/sirehna_naval_group/sirehna/xdyn/-/blob/master/doc/user_fr/modeles_efforts.md).
+## What lxdyn changes from xdyn
 
-## Development
+- One toolchain: [Zig](https://ziglang.org/)'s `zig cc`, clang with libc++, compiles xdyn and every C++ dependency, and `build.zig` replaces CMake.
+- Four targets from one Linux machine: `x86_64-linux-gnu` (glibc 2.28 and newer), `x86_64-linux-musl`, `aarch64-linux-musl` and `x86_64-windows-gnu`.
+- The dependencies are built here: Boost, gRPC, HDF5, yaml-cpp and GoogleTest are rebuilt against libc++ from recipes in [`tools/deps/`](tools/deps/), and published prebuilt as release assets.
+- SSC and the gRPC interfaces are part of the project: they were separate repositories upstream, and live in [`ssc/`](ssc/), [`proto/`](proto/) and [`xdyn_grpc/`](xdyn_grpc/).
 
-You need [Nix](https://nixos.org/download/) with flakes enabled (`experimental-features = nix-command flakes` in `~/.config/nix/nix.conf`). The devShell provides zig, mise, uv and the rest of the tools, and no host compiler is used. With [direnv](https://direnv.net/), `direnv allow` replaces `nix develop`. Every `mise run` stops outside the devShell, so no host tool stands in for a pinned one.
+## The repository
 
-```bash
-git clone https://github.com/naval-group/lxdyn.git && cd lxdyn
-nix develop
-mise run bootstrap             # protoc + the prebuilt C++ dependencies, ~35 MB
-mise run zig:build             # binaries in build/x86_64-linux-gnu/bin
-```
-
-`mise run zig:build` also writes `compile_commands.json` at the root, which clangd reads; the devShell's clangd matches zig's clang.
-
-The C++ dependencies (Boost, gRPC, HDF5, yaml-cpp, GoogleTest) are prebuilt against zig's libc++ rather than taken from the host. `nix develop .#deps` builds them from source instead, which takes a few hours.
-
-Run a tutorial from the build tree:
-
-```bash
-mise run demos && cd demos
-mise run xdyn -- tutorial_01_falling_ball.yml --dt 0.1 --tend 10 -o out.csv
-```
-
-### Tests
-
-```bash
-zig build test                 # unit tests
-mise run integration           # CLI scenarios
-mise run integration:grpc      # gRPC and JSON protocol scenarios
-mise run python:test           # Python bindings
-mise run tidy                  # clang-tidy, with the checks .clang-tidy lists
-mise run cross                 # cross targets under qemu and wine, in `nix develop .#cross`
-nix flake check                # everything CI runs
-```
-
-### Cross-compiling
-
-lxdyn cross-compiles to Linux (x86_64, aarch64) and Windows (x86_64) from a single host:
-
-```bash
-mise run deps:fetch aarch64-linux-musl
-zig build -Dtarget=aarch64-linux-musl --prefix build/aarch64-linux-musl
-```
-
-### Debugging
-
-```bash
-mise run zig:debug             # -O0 -g for lxdyn's code, dependencies stay optimized
-mise run gdb -- run_all_tests --gtest_filter='Gravity*'
-valgrind $(sh tools/build-dir.sh)-debug/bin/run_all_tests --gtest_filter='Gravity*'
-```
-
-### Container image
-
-`mise run deploy:image` packages already-built and tested binaries without recompiling them. `mise run deploy:test` smoke-tests the result.
-
-## Built with
-
-* [Zig](https://ziglang.org/) — `zig cc` (clang + libc++) as the compiler, `build.zig` as the build system
-* [Boost](https://www.boost.org/), [yaml-cpp](https://github.com/jbeder/yaml-cpp), [HDF5](https://www.hdfgroup.org/solutions/hdf5/), [Eigen](https://eigen.tuxfamily.org/), [gRPC](https://grpc.io/)
-* SSC, in `ssc/` — units, interpolation, kinematics, websockets and exception handling
+| Folder | What |
+|---|---|
+| [`xdyn/`](xdyn/) | the simulator, one folder per module; [`xdyn/README.md`](xdyn/README.md) says what each holds |
+| [`ssc/`](ssc/) | units, interpolation, kinematics, solvers, websockets and exception handling |
+| [`proto/`](proto/) | xdyn's gRPC API |
+| [`xdyn_grpc/`](xdyn_grpc/) | the Python package for external models over gRPC |
+| [`xdyn_wrapper_python/`](xdyn_wrapper_python/) | the Python bindings and the wheel |
+| [`xdyn_wrapper_fmi/`](xdyn_wrapper_fmi/) | the FMU |
+| [`external/`](external/) | vendored third-party sources: stb, websocketpp and others |
+| [`test_data/`](test_data/) | every input the tests read, and the tutorials |
+| [`integration_tests/`](integration_tests/) | the CLI, gRPC, JSON and deploy scenarios |
+| [`validation/`](validation/) | a test ship and model-test data to compare xdyn against: turning circles, roll and pitch decay |
+| [`postprocessing/`](postprocessing/) | MATLAB and Python scripts for xdyn's outputs |
+| [`tools/`](tools/) | the dependency recipes, the lint and format scripts |
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [GOVERNANCE.md](GOVERNANCE.md) and the [code of conduct](CODE_OF_CONDUCT.md).
-
-## Versioning
+[CONTRIBUTING.md](CONTRIBUTING.md) explains how to propose a change and how to build and test lxdyn. See also [GOVERNANCE.md](GOVERNANCE.md), the [code of conduct](CODE_OF_CONDUCT.md) and the [contributors](https://github.com/naval-group/lxdyn/graphs/contributors).
 
 lxdyn follows [CalVer](https://calver.org/), `YY.MM.MICRO`: `26.8` is the August 2026 release. See the [tags](https://github.com/naval-group/lxdyn/tags).
 
-## Authors
+## History and license
 
-The main contributors to the original project are Charles-Edouard Cady, Guillaume Jacquenot, Léa Lincker and Moran Charlou. See the [contributor graph](https://github.com/naval-group/lxdyn/graphs/contributors) for everyone else.
+xdyn was developed through self-funded and collaborative projects, including the IRT Jules Verne's ["Bassin Numérique" project](https://www.irt-jules-verne.fr/wp-content/uploads/bassin-numerique.pdf).
 
-## License
+(c) 2014-2015, [IRT Jules Verne](https://www.irt-jules-verne.fr/), [SIREHNA](https://www.sirehna.com/), [Naval Group](https://www.naval-group.com/en/), [Bureau Veritas](https://www.bureauveritas.fr/), [Hydrocean](https://marine-offshore.bureauveritas.com/bvsolutions), [STX France](https://chantiers-atlantique.com/en/), [LHEEA](https://lheea.ec-nantes.fr/) for the initial version.
+
+(c) 2015-2022 [SIREHNA](https://www.sirehna.com/) & [Naval Group](https://www.naval-group.com/en/) for all subsequent versions.
 
 Eclipse Public License 2.0, see [LICENSE.md](LICENSE.md).
