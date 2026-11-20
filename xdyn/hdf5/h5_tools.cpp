@@ -57,38 +57,6 @@ std::vector<std::string> H5_Tools::split(const std::string& str, const std::stri
     return tokens;
 }
 
-std::string H5_Tools::replaceString(
-    const std::string& subject,
-    const std::string& search,
-    const std::string& replace)
-{
-    std::string result(subject);
-    size_t pos = 0;
-    while ((pos = result.find(search, pos)) != std::string::npos) {
-        result.replace(pos, search.length(), replace);
-        pos += replace.length();
-    }
-    return result;
-}
-
-std::string& H5_Tools::replaceStringInPlace(
-    std::string& subject,
-    const std::string& search,
-    const std::string& replace)
-{
-    size_t pos = 0;
-    while ((pos = subject.find(search, pos)) != std::string::npos) {
-        subject.replace(pos, search.length(), replace);
-        pos += replace.length();
-    }
-    return subject;
-}
-
-std::string H5_Tools::getBasename(std::string const& path, std::string const& delims)
-{
-    return path.substr(path.find_last_of(delims) + 1);
-}
-
 H5::Group H5_Tools::createMissingGroups(const H5::H5File& file, const std::string& datasetName)
 {
     const std::vector<std::string> tokens = split(datasetName, "/");

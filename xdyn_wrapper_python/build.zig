@@ -24,7 +24,7 @@ pub fn add(ctx: *const root.Ctx, libxdyn: *std.Build.Step.Compile) void {
     m.addSystemIncludePath(.{ .cwd_relative = pybind11 });
     m.addCSourceFiles(.{
         .root = b.path("xdyn_wrapper_python/src"),
-        .files = root.sourcesIn(b, "xdyn_wrapper_python/src", ".cpp", &.{}),
+        .files = root.sourcesIn(b, "xdyn_wrapper_python/src", ".cpp"),
         .flags = flags,
     });
     m.linkLibrary(libxdyn);

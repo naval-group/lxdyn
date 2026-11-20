@@ -10,8 +10,6 @@
 
 # Every dataset that must be present when the YAML asks for the extra outputs.
 EXPORTED_DATASETS = /inputs/meshes/TestShip/faces \
-                    /scripts/MatLab/demoMatLab.m \
-                    /scripts/Python/demoPython.py \
                     /inputs/yaml/input \
                     /outputs/waves/t /outputs/waves/x /outputs/waves/y /outputs/waves/z \
                     /outputs/spectra/00/a /outputs/spectra/00/gamma /outputs/spectra/00/k \
@@ -31,7 +29,7 @@ test_output_size: demos
 	@echo Success
 
 extra_hdf5_output_when_required: demos
-	@echo "Checking if we can output scripts, meshes, command line, waves, spectra & YAML"
+	@echo "Checking if we can output meshes, command line, waves, spectra & YAML"
 	@cd $(WORK) && rm -f test.h5 && $(XDYN) --dt 1 --tend 1 test_ship_in_waves.yml
 	@cd $(WORK) && for d in $(EXPORTED_DATASETS); do \
 		if ! $(H5DUMP) -d "$$d" -c 1 test.h5 > /dev/null 2>&1; then \
@@ -41,7 +39,7 @@ extra_hdf5_output_when_required: demos
 	@echo "Found everything in the HDF5 file: test passed!"
 
 no_extra_hdf5_output_when_not_required: demos
-	@echo "Checking scripts, meshes, command line, waves, spectra & YAML are *not* outputted by default"
+	@echo "Checking meshes, command line, waves, spectra & YAML are *not* outputted by default"
 	@cd $(WORK) && sed 's/data:.*/data: []/g' test_ship_in_waves.yml > test_ship_in_waves.yml.new
 	@cd $(WORK) && rm -f test.h5 && $(XDYN) --dt 1 --tend 1 test_ship_in_waves.yml.new
 	@cd $(WORK) && for d in $(EXPORTED_DATASETS); do \

@@ -87,8 +87,6 @@ public:
     virtual void write_before_simulation(const std::string& data, const DataAddressing& address);
     virtual void write_command_line_before_simulation(const std::string& command_line);
     virtual void write_yaml_before_simulation(const std::string& yaml);
-    virtual void write_matlab_script_before_simulation();
-    virtual void write_python_script_before_simulation();
 
 protected:
     virtual std::function<void()> get_serializer(

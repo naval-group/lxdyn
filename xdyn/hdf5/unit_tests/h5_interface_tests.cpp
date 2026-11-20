@@ -297,20 +297,6 @@ TEST_F(H5InterfaceTest, should_handle_correctly_root_group_name)
     ASSERT_EQ("/a/b/c/", H5_Tools::ensureStringStartsWithAPattern("/a/b/c/", delim));
 }
 
-TEST_F(H5InterfaceTest, should_be_able_to_perform_string_replacement)
-{
-    const std::string input = "abc abc def";
-    const std::string res = H5_Tools::replaceString(input, "bc", "!!");
-    ASSERT_EQ("a!! a!! def", res);
-}
-
-TEST_F(H5InterfaceTest, should_be_able_to_perform_inplace_string_replacement)
-{
-    std::string input = "abc abc def";
-    ASSERT_EQ("a?? a?? def", H5_Tools::replaceStringInPlace(input, "bc", "??"));
-    ASSERT_EQ("a?? a?? def", input);
-}
-
 TEST_F(H5InterfaceTest, should_be_able_to_join_group_names)
 {
     std::vector<std::string> gg;
