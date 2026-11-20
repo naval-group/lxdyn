@@ -21,8 +21,8 @@
 #include "xdyn/mesh/stl_writer.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
+#include "xdyn/simulator_api/unit_tests/sim_with_mesh.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 constexpr double EPS = 1E-8;
 
@@ -432,7 +432,7 @@ EnvironmentAndFrames ForceTests::get_env(const YamlModel& waves, const std::stri
     input.environment.clear();
     input.environment.push_back(waves);
 
-    const auto sys = get_system(check_input_yaml(input), stl, 0);
+    const auto sys = sim_with_mesh(input, read_stl(stl));
     const auto env = sys.get_env();
     const ssc::kinematics::Transform T(ssc::kinematics::Point("NED", 0, 0, 0), body_name);
     env.k->add(T);

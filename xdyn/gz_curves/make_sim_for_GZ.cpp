@@ -7,9 +7,9 @@
 
 #include "make_sim_for_GZ.hpp"
 
+#include "xdyn/mesh/stl_reader.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 Sim GZ::make_sim(const std::string& yaml, const std::string& stl)
 {
@@ -29,5 +29,5 @@ Sim GZ::make_sim(const std::string& yaml, const std::string& stl)
     waves.yaml = "constant sea elevation in NED frame: {value: 0, unit: m}";
     input.environment.push_back(waves);
 
-    return get_system(check_input_yaml(input), stl, 0);
+    return get_system(input, {{input.bodies.front().name, read_stl(stl)}}, 0);
 }
