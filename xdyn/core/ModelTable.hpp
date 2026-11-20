@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include "xdyn/external_data_structures/YamlModel.hpp"
+#include "xdyn/input/YamlModel.hpp"
 
 template <typename Factory>
 struct ModelEntry {

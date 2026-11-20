@@ -1,13 +1,13 @@
 #include <ssc/text_file_reader.hpp>
 
 #include "ErrorReporter.hpp"
-#include "JSONWebSocketServer.hpp"
-#include "ModelExchangeServiceImpl.hpp"
 #include "XdynForMECommandLineArguments.hpp"
 #include "parse_XdynForMECommandLineArguments.hpp"
 #include "xdyn/core/AssetPath.hpp"
-#include "xdyn/observers_and_api/XdynForME.hpp"
-#include "xdyn/observers_and_api/gRPCProtoBufServer.hpp"
+#include "xdyn/servers/JSONWebSocketServer.hpp"
+#include "xdyn/servers/ModelExchangeServiceImpl.hpp"
+#include "xdyn/servers/XdynForME.hpp"
+#include "xdyn/servers/gRPCProtoBufServer.hpp"
 
 void start_ws_server(const XdynForMECommandLineArguments& input_data);
 void start_ws_server(const XdynForMECommandLineArguments& input_data)

@@ -10,7 +10,7 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include "xdyn/external_data_structures/YamlController.hpp"
+#include "xdyn/input/YamlController.hpp"
 
 /**  \brief Parses the controllers for use by controlled forces.
  *  \snippet yaml_parser/unit_tests/parse_controllersTest.cpp parse_controllersTest example

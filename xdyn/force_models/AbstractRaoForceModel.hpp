@@ -11,7 +11,7 @@
 #include "PhaseModuleRAOEvaluator.hpp"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/ForceModel.hpp"
-#include "xdyn/external_data_structures/YamlRAO.hpp"
+#include "xdyn/input/YamlRAO.hpp"
 
 /** \brief Abstracts the commonalities between linear Froude-Krylov & diffraction force models
  */

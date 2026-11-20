@@ -13,10 +13,10 @@
 
 #include "xdyn/core/Body.hpp"
 #include "xdyn/core/StateLayout.hpp"
-#include "xdyn/core/SurfaceElevationInterface.hpp"
-#include "xdyn/environment_models/UWCurrentModel.hpp"
-#include "xdyn/environment_models/WindModel.hpp"
-#include "xdyn/external_data_structures/YamlRotation.hpp"
+#include "xdyn/current_models/UWCurrentModel.hpp"
+#include "xdyn/input/YamlRotation.hpp"
+#include "xdyn/wave_models/SurfaceElevationInterface.hpp"
+#include "xdyn/wind_models/WindModel.hpp"
 
 class Observer;
 

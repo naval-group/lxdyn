@@ -14,7 +14,7 @@
 #include "BodyBuilder.hpp"
 #include "update_kinematics.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
-#include "xdyn/external_file_formats/stl_reader.hpp"
+#include "xdyn/mesh/stl_reader.hpp"
 
 SimulatorBuilder::SimulatorBuilder(
     const YamlSimulatorInput& input_,

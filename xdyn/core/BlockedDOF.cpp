@@ -17,7 +17,7 @@
 
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/exceptions/NumericalErrorException.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 
 using Table = YamlDOF<std::vector<double>>;
 

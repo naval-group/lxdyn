@@ -8,7 +8,7 @@
 #ifndef CHECK_INPUT_YAML_HPP_
 #define CHECK_INPUT_YAML_HPP_
 
-#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
+#include "xdyn/input/YamlSimulatorInput.hpp"
 
 YamlSimulatorInput check_input_yaml(const YamlSimulatorInput& input);
 

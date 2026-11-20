@@ -12,7 +12,7 @@
 
 #include "gtest/gtest.h"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
-#include "xdyn/environment_models/WaveModel.hpp"
+#include "xdyn/wave_models/WaveModel.hpp"
 
 class DiffractionForceModelTest : public ::testing::Test {
 public:

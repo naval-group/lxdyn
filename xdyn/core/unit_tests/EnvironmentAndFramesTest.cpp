@@ -8,7 +8,7 @@
 #include "EnvironmentAndFramesTest.hpp"
 
 #include "EnvironmentAndFrames.hpp"
-#include "xdyn/environment_models/ConstantUWCurrentModel.hpp"
+#include "xdyn/current_models/ConstantUWCurrentModel.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
 TEST_F(EnvironmentAndFramesTest, can_get_rho_air_when_initialized)

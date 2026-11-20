@@ -1,10 +1,10 @@
 #include "StatesFilter.hpp"
 
 #include "BodyStates.hpp"
+#include "xdyn/core/History.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/external_data_structures/YamlBody.hpp"
-#include "xdyn/hdb_interpolators/History.hpp"
+#include "xdyn/input/YamlBody.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
 FilteredStates::FilteredStates(

@@ -1,0 +1,29 @@
+#ifndef SURFACEELEVATIONFROMWAVESTEST_HPP_
+#define SURFACEELEVATIONFROMWAVESTEST_HPP_
+
+#include <ssc/random_data_generator.hpp>
+
+#include "gtest/gtest.h"
+#include "xdyn/wave_models/WaveModel.hpp"
+
+class SurfaceElevationFromWavesTest : public ::testing::Test {
+protected:
+    SurfaceElevationFromWavesTest();
+    WaveModelPtr get_model() const;
+    WaveModelPtr get_model(const size_t nfreq, const size_t ndir) const;
+    WaveModelPtr
+    get_model(const double Hs, const double Tp, const double phase, const double water_depth) const;
+    WaveModelPtr get_model(
+        const double psi0,
+        const double Hs,
+        const double Tp,
+        const double phase,
+        const double water_depth,
+        const double omega_min,
+        const double omega_max,
+        const size_t nfreq,
+        const size_t ndir) const;
+    ssc::random_data_generator::DataGenerator a;
+};
+
+#endif /* SURFACEELEVATIONFROMWAVESTEST_HPP_ */

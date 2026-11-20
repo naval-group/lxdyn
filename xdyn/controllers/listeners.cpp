@@ -1,0 +1,203 @@
+/*
+ * listeners.cpp
+ *
+ *  Created on: Oct 21, 2014
+ *      Author: cady
+ */
+
+#include "listeners.hpp"
+
+#include <boost/algorithm/string.hpp>  // For boost::to_upper
+#include <memory>
+#include <ssc/macros.hpp>
+
+#include "CSVController.hpp"
+#include "GrpcController.hpp"
+#include "InterpolationModule.hpp"
+#include "PIDController.hpp"
+#include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/input/YamlController.hpp"
+#include "xdyn/input/YamlTimeSeries.hpp"
+#include "xdyn/yaml_parser/check_input_yaml.hpp"
+
+void add_interpolation_table(
+    const std::string& x_name,
+    const std::vector<double>& x,
+    const std::string& y_name,
+    const std::vector<double>& y,
+    ssc::data_source::DataSource& ds);
+void add_interpolation_table(
+    const std::string& x_name,
+    const std::vector<double>& x,
+    const std::string& y_name,
+    const std::vector<double>& y,
+    ssc::data_source::DataSource& ds)
+{
+    ds.check_in(__PRETTY_FUNCTION__);
+    std::shared_ptr<ssc::interpolation::LinearInterpolationVariableStep> I =
+        std::make_shared<ssc::interpolation::LinearInterpolationVariableStep>(x, y);
+
+    const std::string module_name = x_name + "->" + y_name;
+    InterpolationModule module(&ds, module_name, x_name, y_name, I);
+    ds.add(module);
+    ds.check_out();
+}
+
+std::string namify(const std::string& command_name, const std::string& model_name);
+std::string namify(const std::string& command_name, const std::string& model_name)
+{
+    if (model_name == "") {
+        return command_name;
+    }
+    return model_name + "(" + command_name + ")";
+}
+
+void add(
+    std::vector<YamlTimeSeries>::const_iterator& that_command,
+    ssc::data_source::DataSource& ds);
+void add(
+    std::vector<YamlTimeSeries>::const_iterator& that_command,
+    ssc::data_source::DataSource& ds)
+{
+    ds.check_in(__PRETTY_FUNCTION__);
+    const auto t = that_command->t;
+    if (t.size() == 1) {
+        for (auto it = that_command->values.begin(); it != that_command->values.end(); ++it) {
+            ds.set<double>(namify(it->first, that_command->name), it->second.front());
+        }
+    } else {
+        for (auto it = that_command->values.begin(); it != that_command->values.end(); ++it) {
+            try {
+                add_interpolation_table(
+                    "t",
+                    t,
+                    namify(it->first, that_command->name),
+                    it->second,
+                    ds);
+            } catch (const ssc::interpolation::PiecewiseConstantVariableStepException& e) {
+                THROW(
+                    __PRETTY_FUNCTION__,
+                    InvalidInputException,
+                    "Unable to build interpolation table between 't' and '"
+                        << it->first << "' for force model '" << that_command->name
+                        << "': " << e.get_message());
+            }
+        }
+    }
+    ds.check_out();
+}
+
+ssc::data_source::DataSource make_command_listener(
+    const std::vector<YamlTimeSeries>& commands  //!< Parsed YAML commands
+)
+{
+    check_command_names(commands);
+    ssc::data_source::DataSource ds;
+    ds.check_in(__PRETTY_FUNCTION__);
+    for (auto that_command = commands.begin(); that_command != commands.end(); ++that_command) {
+        add(that_command, ds);
+    }
+    ds.check_out();
+    return ds;
+}
+
+void add_setpoints_listener(
+    ssc::data_source::DataSource& ds,
+    const std::vector<YamlTimeSeries>& setpoints  //!< Parsed YAML setpoints
+)
+{
+    ds.check_in(__PRETTY_FUNCTION__);
+    for (auto that_setpoint = setpoints.begin(); that_setpoint != setpoints.end();
+         ++that_setpoint) {
+        add(that_setpoint, ds);
+    }
+    ds.check_out();
+}
+
+Controller* build_controller(const double tstart, const YamlController& yaml_controller, Sim& sys)
+{
+    if (yaml_controller.type == "PID") {
+        return new PIDController(
+            tstart,
+            yaml_controller.dt,
+            yaml_controller.name,
+            yaml_controller.rest_of_the_yaml);
+    }
+    if (yaml_controller.type == "GRPC") {
+        return GrpcController::build(
+            tstart,
+            yaml_controller.name,
+            yaml_controller.rest_of_the_yaml,
+            sys);
+    }
+    if (yaml_controller.type == "CSV") {
+        return new CSVController(tstart, yaml_controller.name, yaml_controller.rest_of_the_yaml);
+    }
+    THROW(
+        __PRETTY_FUNCTION__,
+        InvalidInputException,
+        "Controller type '" << yaml_controller.type
+                            << "' is unknown. Known controller types are: PID, GRPC, CSV");
+    return nullptr;
+}
+
+void check_no_controller_outputs_are_defined_in_a_command(
+    const Controller* controller,
+    const std::vector<YamlTimeSeries>& yaml_commands)
+{
+    const auto command_names = controller->get_command_names();
+    for (const auto& command_name : command_names) {
+        check_controller_output_is_not_defined_in_a_command(command_name, yaml_commands);
+    }
+}
+
+/**  \brief Initializes the given controllers commands in Sim datasource and
+ * adds their callbacks to the scheduler.
+ *  \snippet controllers/unit_tests/PIDControllerTest.cpp controllersTest
+ * initialize_controllers
+ */
+void initialize_controllers(
+    const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>& controllers,
+    ssc::solver::Scheduler& scheduler,
+    Sim& system);
+
+std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>> build_controllers(
+    const double tstart,
+    const std::vector<YamlController>& yaml_controllers,
+    const std::vector<YamlTimeSeries>& yaml_commands,
+    Sim& sys)
+{
+    std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>> controllers;
+    for (YamlController yaml_controller : yaml_controllers) {
+        boost::to_upper(yaml_controller.type);
+        const auto controller = build_controller(tstart, yaml_controller, sys);
+        if (controller) {
+            check_no_controller_outputs_are_defined_in_a_command(controller, yaml_commands);
+            controllers.push_back(std::shared_ptr<ssc::solver::DiscreteSystem>(controller));
+        }
+    }
+    return controllers;
+}
+
+std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>> get_initialized_controllers(
+    const double tstart,
+    const std::vector<YamlController>& yaml_controllers,  //!< Parsed YAML controllers
+    const std::vector<YamlTimeSeries>& yaml_commands,     //!< Parsed YAML commands
+    ssc::solver::Scheduler& scheduler,
+    Sim& sys)
+{
+    const auto controllers = build_controllers(tstart, yaml_controllers, yaml_commands, sys);
+    initialize_controllers(controllers, scheduler, sys);
+    return controllers;
+}
+
+void initialize_controllers(
+    const std::vector<std::shared_ptr<ssc::solver::DiscreteSystem>>& controllers,
+    ssc::solver::Scheduler& scheduler,
+    Sim& system)
+{
+    system.set_discrete_state("t", scheduler.get_time());
+    for (const auto& controller : controllers) {
+        controller->initialize(scheduler, system);
+    }
+}

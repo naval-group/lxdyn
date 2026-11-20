@@ -11,12 +11,12 @@
 #include <ssc/random_data_generator.hpp>
 #include <vector>  // Needs to be declared before ssc/macros.hpp to overload <<
 
-#include "xdyn/environment_models/Airy.hpp"
-#include "xdyn/environment_models/DiracDirectionalSpreading.hpp"
-#include "xdyn/environment_models/DiracSpectralDensity.hpp"
-#include "xdyn/environment_models/Stretching.hpp"
-#include "xdyn/environment_models/discretize.hpp"
-#include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
+#include "xdyn/input/YamlWaveModelInput.hpp"
+#include "xdyn/wave_models/Airy.hpp"
+#include "xdyn/wave_models/DiracDirectionalSpreading.hpp"
+#include "xdyn/wave_models/DiracSpectralDensity.hpp"
+#include "xdyn/wave_models/Stretching.hpp"
+#include "xdyn/wave_models/discretize.hpp"
 #define PI M_PI
 
 int main(int, char**)  // NOLINT(bugprone-exception-escape): a developer tool, where std::terminate

@@ -1,13 +1,13 @@
 #include "py_xdyn_hdb.hpp"
 
 #include "py_pybind_additions.hpp"
-#include "xdyn/hdb_interpolators/HDBParser.hpp"
-#include "xdyn/hdb_interpolators/History.hpp"
-#include "xdyn/hdb_interpolators/HydroDBParser.hpp"
-#include "xdyn/hdb_interpolators/PrecalParser.hpp"
-#include "xdyn/hdb_interpolators/RadiationDampingBuilder.hpp"
-#include "xdyn/hdb_interpolators/RaoInterpolator.hpp"
-#include "xdyn/hdb_interpolators/TimestampedMatrix.hpp"
+#include "xdyn/core/History.hpp"
+#include "xdyn/hydro_db/HDBParser.hpp"
+#include "xdyn/hydro_db/HydroDBParser.hpp"
+#include "xdyn/hydro_db/PrecalParser.hpp"
+#include "xdyn/hydro_db/RadiationDampingBuilder.hpp"
+#include "xdyn/hydro_db/RaoInterpolator.hpp"
+#include "xdyn/hydro_db/TimestampedMatrix.hpp"
 
 namespace py = pybind11;
 

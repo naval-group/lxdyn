@@ -11,7 +11,7 @@
 
 #include "mesh_manipulations.hpp"
 #include "xdyn/exceptions/MeshException.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 #include "xdyn/mesh/MeshBuilder.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 

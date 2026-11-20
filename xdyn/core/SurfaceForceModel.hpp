@@ -10,7 +10,7 @@
 
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/ForceModel.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
 
 class ZGCalculator {

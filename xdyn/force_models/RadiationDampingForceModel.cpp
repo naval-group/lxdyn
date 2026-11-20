@@ -16,14 +16,14 @@
 #include <ssc/macros.hpp>
 
 #include "xdyn/core/Body.hpp"
+#include "xdyn/core/History.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/hdb_interpolators/HDBParser.hpp"
-#include "xdyn/hdb_interpolators/History.hpp"
-#include "xdyn/hdb_interpolators/HydroDBParser.hpp"
-#include "xdyn/hdb_interpolators/PrecalParser.hpp"
-#include "xdyn/hdb_interpolators/RadiationDampingBuilder.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/hydro_db/HDBParser.hpp"
+#include "xdyn/hydro_db/HydroDBParser.hpp"
+#include "xdyn/hydro_db/PrecalParser.hpp"
+#include "xdyn/hydro_db/RadiationDampingBuilder.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 #define PI M_PI

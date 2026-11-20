@@ -11,7 +11,7 @@
 #include <ssc/random_data_generator.hpp>
 
 #include "gtest/gtest.h"
-#include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
+#include "xdyn/input/YamlWaveModelInput.hpp"
 
 class environment_parsersTest : public ::testing::Test {
 protected:

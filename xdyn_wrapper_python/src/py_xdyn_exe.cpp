@@ -14,7 +14,7 @@
 #include "xdyn/cli/XdynCommandLineArguments.hpp"
 #include "xdyn/cli/build_observers_description.hpp"
 #include "xdyn/cli/parse_XdynCommandLineArguments.hpp"
-#include "xdyn/observers_and_api/simulator_api.hpp"
+#include "xdyn/simulator_api/simulator_api.hpp"
 
 namespace py = pybind11;
 

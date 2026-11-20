@@ -8,7 +8,7 @@
 #ifndef HDBPARSERFORTESTS_HPP_
 #define HDBPARSERFORTESTS_HPP_
 
-#include "xdyn/hdb_interpolators/HDBParser.hpp"
+#include "xdyn/hydro_db/HDBParser.hpp"
 
 class HDBParserForTests : public HDBParser {
 public:

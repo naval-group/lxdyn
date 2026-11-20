@@ -11,8 +11,8 @@
 #include <ssc/kinematics.hpp>
 
 #include "Observer.hpp"
-#include "SurfaceElevationInterface.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/wave_models/SurfaceElevationInterface.hpp"
 using namespace ssc::kinematics;
 
 EnvironmentAndFrames::EnvironmentAndFrames() : k(std::make_shared<Kinematics>())

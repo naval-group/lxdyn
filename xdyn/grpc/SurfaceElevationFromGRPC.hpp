@@ -8,7 +8,7 @@
 #ifndef SURFACE_ELEVATION_FROM_GRPC_HPP
 #define SURFACE_ELEVATION_FROM_GRPC_HPP
 
-#include "xdyn/core/SurfaceElevationInterface.hpp"
+#include "xdyn/wave_models/SurfaceElevationInterface.hpp"
 
 struct YamlGRPC;
 
@@ -69,7 +69,7 @@ public:
      *  \see "Seakeeping: ship behaviour in rough weather", 1989, A. R. J. M. Lloyd, Ellis Horwood
      * Series in Marine Technology, page 68
      *  \see "The dynamic of marine craft", 2004, Lewandoski, page 148
-     *  \snippet environment_models/unit_tests/AiryTest.cpp AiryTest elevation_example
+     *  \snippet wave_models/unit_tests/AiryTest.cpp AiryTest elevation_example
      */
     std::vector<double> dynamic_pressure(
         const double rho,                //!< water density (in kg/m^3)

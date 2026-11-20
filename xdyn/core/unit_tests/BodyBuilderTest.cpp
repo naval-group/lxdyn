@@ -10,11 +10,11 @@
 #include "BodyBuilder.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/external_data_structures/YamlDynamics6x6Matrix.hpp"
-#include "xdyn/external_file_formats/stl_reader.hpp"
+#include "xdyn/input/YamlDynamics6x6Matrix.hpp"
 #include "xdyn/mesh/Mesh.hpp"
+#include "xdyn/mesh/stl_reader.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
 static const BodyPtr& shared_body()

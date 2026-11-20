@@ -15,7 +15,7 @@
 #include "HDBParserForTests.hpp"
 #include "gtest/gtest.h"
 #include "xdyn/core/Body.hpp"
-#include "xdyn/external_data_structures/YamlRadiationDamping.hpp"
+#include "xdyn/input/YamlRadiationDamping.hpp"
 
 class RadiationDampingForceModelTest : public ::testing::Test {
 protected:

@@ -7,7 +7,7 @@
 
 #include "make_sim_for_GZ.hpp"
 
-#include "xdyn/observers_and_api/simulator_api.hpp"
+#include "xdyn/simulator_api/simulator_api.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/check_input_yaml.hpp"
 

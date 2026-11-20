@@ -9,7 +9,7 @@
 
 #include "fmi2Functions.h"
 #include "model.hpp"
-#include "xdyn/observers_and_api/ConfBuilder.hpp"
+#include "xdyn/servers/ConfBuilder.hpp"
 
 namespace xdyn_fmu {
 struct Instance {

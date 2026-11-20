@@ -10,7 +10,7 @@
 
 #include <boost/version.hpp>
 
-#include "xdyn/external_file_formats/boost_spirit_includes.hpp"
+#include "xdyn/hydro_db/boost_spirit_includes.hpp"
 
 // Explicitly disabled efficient C++ flag so that the following line compiles
 // ArithmeticGrammar() : ArithmeticGrammar::base_type(expr) is not compliant with effc++

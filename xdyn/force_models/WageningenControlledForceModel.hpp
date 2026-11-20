@@ -13,7 +13,7 @@
 constexpr int NB_COEFF_KT = 39;
 constexpr int NB_COEFF_KQ = 47;
 
-#include "xdyn/external_data_structures/YamlPosition.hpp"
+#include "xdyn/input/YamlPosition.hpp"
 
 /** \brief Wageningen Controlled Force Model
  */

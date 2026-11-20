@@ -13,10 +13,10 @@
 #include "ExactHydrostaticForceModel.hpp"
 #include "FastHydrostaticForceModel.hpp"
 #include "xdyn/core/BodyWithSurfaceForces.hpp"
-#include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
+#include "xdyn/wave_models/DefaultSurfaceElevation.hpp"
 
 #define BODY "body 1"
 

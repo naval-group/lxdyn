@@ -10,7 +10,7 @@
 #include "EnvironmentAndFrames.hpp"
 #include "StateLayout.hpp"
 #include "StatesFilter.hpp"
-#include "xdyn/external_data_structures/YamlBody.hpp"
+#include "xdyn/input/YamlBody.hpp"
 #include "yaml2eigen.hpp"
 
 BodyStates::BodyStates(const double Tmax)

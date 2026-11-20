@@ -10,9 +10,9 @@
 #include <algorithm>
 
 #include "Sim.hpp"
-#include "SurfaceElevationGrid.hpp"
 #include "closest_string.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/wave_models/SurfaceElevationGrid.hpp"
 
 Observer::Observer() : initialized(false), output_everything(true) {}
 

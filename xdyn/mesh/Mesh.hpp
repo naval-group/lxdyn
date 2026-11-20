@@ -5,7 +5,7 @@
 #include <ssc/macros.hpp>
 #include <vector>
 
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 /**
  * \author gj

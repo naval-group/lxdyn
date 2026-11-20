@@ -11,7 +11,7 @@
 #include <ssc/random_data_generator.hpp>
 
 #include "gtest/gtest.h"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 class mesh_manipulationsTest : public ::testing::Test {
 protected:

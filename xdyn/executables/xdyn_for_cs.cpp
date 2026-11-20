@@ -1,13 +1,13 @@
 #include <ssc/text_file_reader.hpp>
 
-#include "CosimulationServiceImpl.hpp"
 #include "ErrorReporter.hpp"
-#include "JSONWebSocketServer.hpp"
 #include "XdynForCSCommandLineArguments.hpp"
 #include "parse_XdynForCSCommandLineArguments.hpp"
 #include "xdyn/core/AssetPath.hpp"
-#include "xdyn/observers_and_api/XdynForCS.hpp"
-#include "xdyn/observers_and_api/gRPCProtoBufServer.hpp"
+#include "xdyn/servers/CosimulationServiceImpl.hpp"
+#include "xdyn/servers/JSONWebSocketServer.hpp"
+#include "xdyn/servers/XdynForCS.hpp"
+#include "xdyn/servers/gRPCProtoBufServer.hpp"
 
 XdynForCS get_SimServer(const XdynForCSCommandLineArguments& input_data, const std::string& yaml);
 XdynForCS get_SimServer(const XdynForCSCommandLineArguments& input_data, const std::string& yaml)

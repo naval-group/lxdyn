@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "xdyn/hdb_interpolators/RaoInterpolator.hpp"
+#include "xdyn/hydro_db/RaoInterpolator.hpp"
 
 struct BodyStates;
 struct EnvironmentAndFrames;

@@ -12,9 +12,9 @@
 #include "GZCurve.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/external_file_formats/stl_reader.hpp"
-#include "xdyn/external_file_formats/stl_writer.hpp"
 #include "xdyn/gz_curves/make_sim_for_GZ.hpp"
+#include "xdyn/mesh/stl_reader.hpp"
+#include "xdyn/mesh/stl_writer.hpp"
 #define PI M_PI
 
 static Sim& shared_sim()

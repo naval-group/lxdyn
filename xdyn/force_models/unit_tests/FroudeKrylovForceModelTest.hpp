@@ -14,8 +14,8 @@
 
 #include "gtest/gtest.h"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
-#include "xdyn/environment_models/WaveModel.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
+#include "xdyn/wave_models/WaveModel.hpp"
 
 class FroudeKrylovForceModelTest : public ::testing::Test {
 protected:

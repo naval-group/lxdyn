@@ -10,7 +10,7 @@
 #include <memory>
 #include <ssc/kinematics.hpp>
 
-#include "xdyn/core/DefaultSurfaceElevation.hpp"
+#include "xdyn/wave_models/DefaultSurfaceElevation.hpp"
 
 DefaultSurfaceElevationTest::DefaultSurfaceElevationTest()
     : a(ssc::random_data_generator::DataGenerator(5466123))
