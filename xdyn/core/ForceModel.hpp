@@ -13,8 +13,8 @@
 
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/Wrench.hpp"
-#include "xdyn/external_data_structures/YamlBody.hpp"
-#include "xdyn/external_data_structures/YamlPosition.hpp"
+#include "xdyn/input/YamlBody.hpp"
+#include "xdyn/input/YamlPosition.hpp"
 
 namespace ssc {
 namespace data_source {

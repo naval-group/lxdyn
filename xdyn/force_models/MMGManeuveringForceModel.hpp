@@ -2,7 +2,7 @@
 #define FORCE_MODELS_INC_MMGMANOEUVRINGFORCEMODEL_HPP_
 
 #include "xdyn/core/ForceModel.hpp"
-#include "xdyn/external_data_structures/YamlCoordinates.hpp"
+#include "xdyn/input/YamlCoordinates.hpp"
 
 /** \details This class was created to define the maneuvering model used in the MMG model
  *

@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "wave_types.pb.h"
-#include "xdyn/environment_models/DiscreteDirectionalWaveSpectrum.hpp"  // xdyn/code/environment_models/DiscreteDirectionalWaveSpectrum.hpp
+#include "xdyn/wave_models/DiscreteDirectionalWaveSpectrum.hpp"
 
 void flat_spectrum_response_from_vector_of_flat_discrete_directional_wave_spectra(
     const std::vector<FlatDiscreteDirectionalWaveSpectrum>& spectra,

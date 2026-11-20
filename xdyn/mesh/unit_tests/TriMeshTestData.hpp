@@ -1,7 +1,7 @@
 #ifndef TRIMESHTESTDATA_HPP
 #define TRIMESHTESTDATA_HPP
 
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 VectorOfPoints one_triangle();
 VectorOfPoints degenerated_triangle();

@@ -33,7 +33,7 @@
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/core/State.hpp"
 #include "xdyn/core/StateLayout.hpp"
-#include "xdyn/core/SurfaceElevationGrid.hpp"
+#include "xdyn/wave_models/SurfaceElevationGrid.hpp"
 
 using OuputtedForces = std::map<std::string, std::map<std::string, ssc::kinematics::Vector6d>>;
 using VectorOfStringModelForEachBody =

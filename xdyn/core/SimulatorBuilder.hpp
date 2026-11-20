@@ -14,8 +14,8 @@
 
 #include "xdyn/core/EnvironmentAndFrames.hpp"
 #include "xdyn/core/Sim.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
-#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
+#include "xdyn/input/YamlSimulatorInput.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 class BodyBuilder;
 using MeshMap = std::map<std::string, VectorOfVectorOfPoints>;

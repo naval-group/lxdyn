@@ -11,9 +11,9 @@
 #include <ssc/solver/steppers.hpp>
 
 #include "instance.hpp"
-#include "xdyn/external_data_structures/YamlState.hpp"
-#include "xdyn/observers_and_api/CoSimulationObserver.hpp"
-#include "xdyn/observers_and_api/simulator_api.hpp"
+#include "xdyn/input/YamlState.hpp"
+#include "xdyn/servers/CoSimulationObserver.hpp"
+#include "xdyn/simulator_api/simulator_api.hpp"
 
 using namespace xdyn_fmu;
 

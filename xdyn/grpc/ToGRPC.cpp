@@ -8,7 +8,7 @@
 #include "ToGRPC.hpp"
 
 #include "ToGRPCCommon.hpp"
-#include "xdyn/hdb_interpolators/HydroDBParser.hpp"
+#include "xdyn/hydro_db/HydroDBParser.hpp"
 
 ToGRPC::ToGRPC(const GRPCForceModel::Input& input_) : input(input_) {}
 

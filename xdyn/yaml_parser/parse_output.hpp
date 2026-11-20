@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include "xdyn/external_data_structures/YamlOutput.hpp"
+#include "xdyn/input/YamlOutput.hpp"
 
 std::string get_format(const std::string& filename);
 std::string get_format_for_wave_observer(const std::string& filename);

@@ -9,11 +9,11 @@
 #include <cmath>
 
 #include "StatesFilter.hpp"
+#include "xdyn/core/History.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/external_data_structures/AbstractStates.hpp"
-#include "xdyn/external_data_structures/YamlBody.hpp"
-#include "xdyn/external_data_structures/YamlRotation.hpp"
-#include "xdyn/hdb_interpolators/History.hpp"
+#include "xdyn/input/AbstractStates.hpp"
+#include "xdyn/input/YamlBody.hpp"
+#include "xdyn/input/YamlRotation.hpp"
 #define PI M_PI
 
 StatesFilterTest::StatesFilterTest() : a(ssc::random_data_generator::DataGenerator(556677)) {}

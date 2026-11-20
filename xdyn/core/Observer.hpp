@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include "xdyn/environment_models/DiscreteDirectionalWaveSpectrum.hpp"
 #include "xdyn/mesh/Mesh.hpp"
+#include "xdyn/wave_models/DiscreteDirectionalWaveSpectrum.hpp"
 
 class Sim;
 struct SurfaceElevationGrid;

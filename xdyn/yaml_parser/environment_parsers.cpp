@@ -10,10 +10,10 @@
 #include <ssc/csv_file_reader.hpp>
 #include <sstream>
 
-#include "external_data_structures_parsers.hpp"
+#include "input_parsers.hpp"
 #include "parse_output.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/external_data_structures/YamlGRPC.hpp"
+#include "xdyn/input/YamlGRPC.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "yaml_compat.h"
 

@@ -8,7 +8,7 @@
 #ifndef CENTEROFMASS_HPP_
 #define CENTEROFMASS_HPP_
 
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 struct CenterOfMass {
     CenterOfMass(const EPoint& G_, const double v_);

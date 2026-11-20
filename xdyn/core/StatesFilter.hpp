@@ -11,8 +11,8 @@
 #include <memory>
 #include <string>
 
-#include "xdyn/external_data_structures/AbstractStates.hpp"
-#include "xdyn/external_data_structures/YamlRotation.hpp"
+#include "xdyn/input/AbstractStates.hpp"
+#include "xdyn/input/YamlRotation.hpp"
 
 class History;
 

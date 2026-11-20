@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "xdyn/external_data_structures/YamlOutput.hpp"
+#include "xdyn/input/YamlOutput.hpp"
 
 struct WebsocketURLElements {
     explicit WebsocketURLElements(const std::string& url);

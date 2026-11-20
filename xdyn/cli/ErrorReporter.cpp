@@ -13,13 +13,13 @@
 #include <ssc/websocket.hpp>
 #include <sstream>
 
+#include "xdyn/controllers/listeners.hpp"
 #include "xdyn/exceptions/ConnexionError.hpp"
 #include "xdyn/exceptions/GRPCError.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/exceptions/MeshException.hpp"
 #include "xdyn/exceptions/NumericalErrorException.hpp"
-#include "xdyn/listeners_and_controllers/listeners.hpp"
 
 std::string replace_whitespace(std::string str);
 std::string replace_whitespace(std::string str)

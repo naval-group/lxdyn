@@ -10,12 +10,12 @@
 #include <ssc/exception_handling.hpp>
 
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/external_data_structures/YamlAngle.hpp"
-#include "xdyn/external_data_structures/YamlCoordinates.hpp"
-#include "xdyn/external_data_structures/YamlDynamics6x6Matrix.hpp"
-#include "xdyn/external_data_structures/YamlPoint.hpp"
-#include "xdyn/external_data_structures/YamlPosition.hpp"
-#include "xdyn/external_data_structures/YamlRotation.hpp"
+#include "xdyn/input/YamlAngle.hpp"
+#include "xdyn/input/YamlCoordinates.hpp"
+#include "xdyn/input/YamlDynamics6x6Matrix.hpp"
+#include "xdyn/input/YamlPoint.hpp"
+#include "xdyn/input/YamlPosition.hpp"
+#include "xdyn/input/YamlRotation.hpp"
 
 ssc::kinematics::RotationMatrix angle2matrix(const YamlAngle& a, const YamlRotation& rotations)
 {

@@ -15,10 +15,10 @@
 #include "parse_time_series.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
-#include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
+#include "xdyn/input/YamlSimulatorInput.hpp"
+#include "xdyn/input/YamlWaveModelInput.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 
 using namespace testing;  // So we can use 'ElementsAre' unqualified
 

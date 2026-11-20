@@ -17,7 +17,7 @@
 
 #include "ManeuveringInternal.hpp"
 #include "xdyn/core/ForceModel.hpp"
-#include "xdyn/external_data_structures/YamlPosition.hpp"
+#include "xdyn/input/YamlPosition.hpp"
 
 class ManeuveringForceModel : public ForceModel {
 public:

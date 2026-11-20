@@ -16,10 +16,10 @@
 
 #include "StateLayout.hpp"
 #include "StatesFilter.hpp"
-#include "xdyn/external_data_structures/AbstractStates.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
-#include "xdyn/external_data_structures/YamlRotation.hpp"
-#include "xdyn/hdb_interpolators/History.hpp"
+#include "xdyn/core/History.hpp"
+#include "xdyn/input/AbstractStates.hpp"
+#include "xdyn/input/YamlRotation.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
 
 class Mesh;

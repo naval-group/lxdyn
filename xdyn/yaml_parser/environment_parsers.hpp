@@ -11,9 +11,9 @@
 #include <optional>
 #include <string>
 
-#include "xdyn/external_data_structures/YamlGRPC.hpp"
-#include "xdyn/external_data_structures/YamlSpectraInput.hpp"
-#include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
+#include "xdyn/input/YamlGRPC.hpp"
+#include "xdyn/input/YamlSpectraInput.hpp"
+#include "xdyn/input/YamlWaveModelInput.hpp"
 
 YamlDefaultWaveModel parse_default_wave_model(const std::string& yaml);
 YamlWaveModel parse_waves(const std::string& yaml);

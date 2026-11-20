@@ -9,7 +9,7 @@
 #include <cmath>
 
 #include "ssc/kinematics/RotationMatrix.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 #include "xdyn/yaml_parser/parse_unit_value.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 #define PI M_PI

@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "FlettnerRotorForceModel.hpp"
-#include "xdyn/environment_models/UniformWindVelocityProfile.hpp"
+#include "xdyn/wind_models/UniformWindVelocityProfile.hpp"
 
 namespace {
 BodyStates get_states(const double forward_speed)

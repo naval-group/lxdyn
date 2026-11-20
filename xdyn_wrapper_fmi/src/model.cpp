@@ -11,8 +11,8 @@
 #include <set>
 #include <sstream>
 
-#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
-#include "xdyn/observers_and_api/ConfBuilder.hpp"
+#include "xdyn/input/YamlSimulatorInput.hpp"
+#include "xdyn/servers/ConfBuilder.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 namespace {

@@ -13,16 +13,16 @@
 #include "FroudeKrylovForceModel.hpp"
 #include "env_for_tests.hpp"
 #include "xdyn/core/BodyWithSurfaceForces.hpp"
-#include "xdyn/core/DefaultSurfaceElevation.hpp"
 #include "xdyn/core/unit_tests/generate_body_for_tests.hpp"
-#include "xdyn/environment_models/Airy.hpp"
-#include "xdyn/environment_models/DiracDirectionalSpreading.hpp"
-#include "xdyn/environment_models/DiracSpectralDensity.hpp"
-#include "xdyn/environment_models/Stretching.hpp"
-#include "xdyn/environment_models/discretize.hpp"
-#include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
+#include "xdyn/input/YamlWaveModelInput.hpp"
 #include "xdyn/mesh/MeshIntersector.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
+#include "xdyn/wave_models/Airy.hpp"
+#include "xdyn/wave_models/DefaultSurfaceElevation.hpp"
+#include "xdyn/wave_models/DiracDirectionalSpreading.hpp"
+#include "xdyn/wave_models/DiracSpectralDensity.hpp"
+#include "xdyn/wave_models/Stretching.hpp"
+#include "xdyn/wave_models/discretize.hpp"
 #define PI M_PI
 
 constexpr double EPS = 1E-8;

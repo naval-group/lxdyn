@@ -28,7 +28,7 @@
     #include <vector>
 
     #include "xdyn/core/StateLayout.hpp"
-    #include "xdyn/external_data_structures/YamlBody.hpp"
+    #include "xdyn/input/YamlBody.hpp"
 
 std::ostream& operator<<(std::ostream& os, const BlockableState& s);
 

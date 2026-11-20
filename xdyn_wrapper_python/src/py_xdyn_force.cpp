@@ -9,7 +9,6 @@
 #include "ssc/kinematics/Wrench.hpp"
 #include "xdyn/core/ForceModel.hpp"
 #include "xdyn/core/ImmersedSurfaceForceModel.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
 #include "xdyn/force_models/AbstractRaoForceModel.hpp"
 #include "xdyn/force_models/AbstractWageningen.hpp"
 #include "xdyn/force_models/AeroPolarForceModel.hpp"
@@ -37,7 +36,8 @@
 #include "xdyn/force_models/SimpleHeadingKeepingController.hpp"
 #include "xdyn/force_models/SimpleStationKeepingController.hpp"
 #include "xdyn/force_models/WageningenControlledForceModel.hpp"
-#include "xdyn/hdb_interpolators/HDBParser.hpp"
+#include "xdyn/hydro_db/HDBParser.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 namespace py = pybind11;
 

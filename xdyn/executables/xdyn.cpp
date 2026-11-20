@@ -20,7 +20,7 @@
 #include "build_observers_description.hpp"
 #include "parse_XdynCommandLineArguments.hpp"
 #include "xdyn/core/AssetPath.hpp"
-#include "xdyn/observers_and_api/simulator_api.hpp"
+#include "xdyn/simulator_api/simulator_api.hpp"
 
 void solve(
     const std::string& solver_name,

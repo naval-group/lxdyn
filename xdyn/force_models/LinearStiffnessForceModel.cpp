@@ -4,7 +4,7 @@
 
 #include "xdyn/core/yaml2eigen.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/yaml_parser/external_data_structures_parsers.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 #include "xdyn/yaml_parser/yaml_compat.h"
 
 std::string LinearStiffnessForceModel::model_name()

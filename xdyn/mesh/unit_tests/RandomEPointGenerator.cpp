@@ -7,7 +7,7 @@
 
 #include <ssc/random_data_generator.hpp>
 
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 namespace ssc {
 namespace random_data_generator {

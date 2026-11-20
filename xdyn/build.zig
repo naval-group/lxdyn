@@ -65,8 +65,8 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
         b.fmt("-DXDYN_VERSION=\"{s}\"", .{release()}),
         b.fmt("-DXDYN_COMMIT=\"{s}\"", .{b.option([]const u8, "commit", "Commit stamped into the binaries (default: dev; the flake passes its own)") orelse "dev"}),
     }) });
-    lib.addCSourceFiles(.{ .root = b.path("xdyn/interface_hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = ctx.c_flags });
-    lib.addCSourceFiles(.{ .root = b.path("xdyn/observers_and_api"), .files = &.{"demo_scripts.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-c23-extensions"}) });
+    lib.addCSourceFiles(.{ .root = b.path("xdyn/hdf5"), .files = &.{ "h5_tools.c", "h5_version.c" }, .flags = ctx.c_flags });
+    lib.addCSourceFiles(.{ .root = b.path("xdyn/observers"), .files = &.{"demo_scripts.cpp"}, .flags = root.concat(b, cpp, &.{"-Wno-c23-extensions"}) });
     proto.addSources(ctx, lib, &.{ "wave_types", "wave_grpc", "force", "controller" });
 }
 

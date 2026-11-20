@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include "xdyn/external_data_structures/YamlOutput.hpp"
-#include "xdyn/observers_and_api/ListOfObservers.hpp"
+#include "xdyn/input/YamlOutput.hpp"
+#include "xdyn/observers/ListOfObservers.hpp"
 
 struct XdynCommandLineArguments;
 

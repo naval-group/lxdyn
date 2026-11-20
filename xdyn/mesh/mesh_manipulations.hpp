@@ -9,7 +9,7 @@
 #define MESH_MANIPULATIONS_HPP_
 
 #include "MeshIntersector.hpp"
-#include "xdyn/external_data_structures/GeometricTypes3d.hpp"
+#include "xdyn/mesh/GeometricTypes3d.hpp"
 
 /**  \author cady
  *  \date May 20, 2014, 8:47:20 AM

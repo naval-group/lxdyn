@@ -9,15 +9,15 @@
 
 #include <memory>
 
-#include "xdyn/core/SurfaceElevationFromWaves.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
-#include "xdyn/environment_models/Airy.hpp"
-#include "xdyn/environment_models/DiracDirectionalSpreading.hpp"
-#include "xdyn/environment_models/DiracSpectralDensity.hpp"
-#include "xdyn/environment_models/Stretching.hpp"
-#include "xdyn/environment_models/discretize.hpp"
-#include "xdyn/external_data_structures/YamlWaveModelInput.hpp"
 #include "xdyn/force_models/DiffractionForceModel.hpp"
+#include "xdyn/input/YamlWaveModelInput.hpp"
+#include "xdyn/wave_models/Airy.hpp"
+#include "xdyn/wave_models/DiracDirectionalSpreading.hpp"
+#include "xdyn/wave_models/DiracSpectralDensity.hpp"
+#include "xdyn/wave_models/Stretching.hpp"
+#include "xdyn/wave_models/SurfaceElevationFromWaves.hpp"
+#include "xdyn/wave_models/discretize.hpp"
 
 #define BODY_NAME "TestShip"
 

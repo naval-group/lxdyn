@@ -14,7 +14,7 @@
 #include "gRPCChecks.hpp"
 #include "parse_XdynCommandLineArguments.hpp"
 #include "xdyn/grpc/AiryGRPC.hpp"
-#include "xdyn/observers_and_api/simulator_api.hpp"  // xdyn/code/observers_and_api/simulator_api.hpp
+#include "xdyn/simulator_api/simulator_api.hpp"
 
 constexpr const char* xdyn_grpc_airy_description =
     "This is the Airy wave gRPC server, based on xdyn";

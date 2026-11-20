@@ -17,10 +17,10 @@
 
 #include "wave_grpc.grpc.pb.h"
 #include "wave_types.grpc.pb.h"
-#include "xdyn/environment_models/discretize.hpp"
 #include "xdyn/exceptions/GRPCError.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
-#include "xdyn/external_data_structures/YamlGRPC.hpp"
+#include "xdyn/input/YamlGRPC.hpp"
+#include "xdyn/wave_models/discretize.hpp"
 
 class SurfaceElevationFromGRPC::Impl {
 public:
@@ -526,7 +526,7 @@ std::vector<double> SurfaceElevationFromGRPC::wave_height(
  *  \see "Seakeeping: ship behaviour in rough weather", 1989, A. R. J. M. Lloyd, Ellis Horwood
  * Series in Marine Technology, page 68
  *  \see "The dynamic of marine craft", 2004, Lewandoski, page 148
- *  \snippet environment_models/unit_tests/AiryTest.cpp AiryTest elevation_example
+ *  \snippet wave_models/unit_tests/AiryTest.cpp AiryTest elevation_example
  */
 std::vector<double> SurfaceElevationFromGRPC::dynamic_pressure(
     const double,                  //!< water density (in kg/m^3) (not used for gRPC)

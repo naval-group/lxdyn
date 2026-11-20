@@ -11,8 +11,8 @@
 #include "Body.hpp"
 #include "BodyBuilder.hpp"
 #include "StateLayout.hpp"
-#include "xdyn/external_data_structures/YamlAngle.hpp"
-#include "xdyn/external_data_structures/YamlBody.hpp"
+#include "xdyn/input/YamlAngle.hpp"
+#include "xdyn/input/YamlBody.hpp"
 #include "yaml2eigen.hpp"
 
 #define SQUARE(x) ((x) * (x))

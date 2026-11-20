@@ -12,7 +12,7 @@
 
 #include "gtest/gtest.h"
 #include "xdyn/core/SimulatorBuilder.hpp"
-#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
+#include "xdyn/input/YamlSimulatorInput.hpp"
 
 class SimulatorBuilderTest : public ::testing::Test {
 protected:

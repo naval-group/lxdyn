@@ -1,0 +1,108 @@
+/*
+ * YamlBody.hpp
+ *
+ *  Created on: 16 avr. 2014
+ *      Author: cady
+ */
+/** \addtogroup Body
+ *  \brief Input data for body initialization
+ @{ */
+#ifndef YAMLBODY_HPP_
+    #define YAMLBODY_HPP_
+
+    #include <string>
+    #include <vector>
+
+    #include "xdyn/input/YamlDynamics.hpp"
+    #include "xdyn/input/YamlModel.hpp"
+    #include "xdyn/input/YamlPosition.hpp"
+    #include "xdyn/input/YamlSpeed.hpp"
+
+enum class InterpolationType
+{
+    PIECEWISE_CONSTANT,
+    LINEAR,
+    SPLINE
+};
+enum class BlockableState
+{
+    X,
+    Y,
+    Z,
+    U,
+    V,
+    W,
+    P,
+    Q,
+    R,
+    PHI,
+    THETA,
+    PSI
+};
+enum class FilterableState
+{
+    X,
+    Y,
+    Z,
+    U,
+    V,
+    W,
+    P,
+    Q,
+    R,
+    PHI,
+    THETA,
+    PSI
+};
+
+template <typename T>
+struct YamlDOF {
+    YamlDOF() : t(), value(), howApplied({0., 0., 0., 0., 0., 0.}) {}
+    virtual ~YamlDOF() = default;
+    BlockableState state{BlockableState::U};
+    T t;
+    T value;
+    InterpolationType interpolation{InterpolationType::PIECEWISE_CONSTANT};
+    std::vector<double> howApplied;
+};
+
+struct YamlCSVDOF : public YamlDOF<std::string> {
+    std::string filename;
+};
+
+struct YamlBlockedDOF {
+    std::vector<YamlDOF<std::vector<double>>> from_yaml;
+    std::vector<YamlCSVDOF> from_csv;
+};
+
+struct YamlFilteredStates {
+    YamlFilteredStates();
+    std::string x;
+    std::string y;
+    std::string z;
+    std::string u;
+    std::string v;
+    std::string w;
+    std::string p;
+    std::string q;
+    std::string r;
+    std::string phi;
+    std::string theta;
+    std::string psi;
+};
+
+struct YamlBody {
+    std::string name;
+    std::string mesh;
+    YamlPosition position_of_body_frame_relative_to_mesh;
+    YamlPosition initial_position_of_body_frame_relative_to_NED_projected_in_NED;
+    YamlSpeed initial_velocity_of_body_frame_relative_to_NED_projected_in_body;
+    YamlDynamics dynamics;
+    std::vector<YamlModel> external_forces;
+    YamlBlockedDOF blocked_dof;
+    YamlFilteredStates filtered_states;
+};
+
+#endif /* YAMLBODY_HPP_ */
+
+/** @} */

@@ -18,7 +18,7 @@
 #include "force.grpc.pb.h"
 #include "force.pb.h"
 #include "xdyn/core/EnvironmentAndFrames.hpp"
-#include "xdyn/environment_models/DiscreteDirectionalWaveSpectrum.hpp"
+#include "xdyn/wave_models/DiscreteDirectionalWaveSpectrum.hpp"
 
 class HydroDBParser;
 class ToGRPC {

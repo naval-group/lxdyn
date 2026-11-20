@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include "xdyn/external_data_structures/YamlSimulatorInput.hpp"
+#include "xdyn/input/YamlSimulatorInput.hpp"
 
 class SimulatorYamlParser {
 public:

@@ -9,7 +9,7 @@
 
 #include <memory>
 
-#include "xdyn/core/SurfaceElevationFromWaves.hpp"
+#include "xdyn/wave_models/SurfaceElevationFromWaves.hpp"
 
 EnvironmentAndFrames get_environment_and_frames(const std::shared_ptr<WaveModel>& wave_model)
 {

@@ -15,9 +15,9 @@
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/force_models/RadiationDampingForceModel.hpp"
-#include "xdyn/hdb_interpolators/RadiationDampingBuilder.hpp"
-#include "xdyn/hdb_interpolators/unit_tests/analytical_radiation_damping.hpp"
-#include "xdyn/hdb_interpolators/unit_tests/hdb_test.hpp"
+#include "xdyn/hydro_db/RadiationDampingBuilder.hpp"
+#include "xdyn/hydro_db/unit_tests/analytical_radiation_damping.hpp"
+#include "xdyn/hydro_db/unit_tests/hdb_test.hpp"
 #define PI M_PI
 
 constexpr double EPS = 5E-2;

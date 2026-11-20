@@ -12,7 +12,7 @@
 #include <ssc/macros.hpp>
 
 #include "xdyn/core/ForceModel.hpp"
-#include "xdyn/external_data_structures/YamlRadiationDamping.hpp"
+#include "xdyn/input/YamlRadiationDamping.hpp"
 
 class HydroDBParser;
 
