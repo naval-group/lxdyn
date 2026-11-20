@@ -23,7 +23,7 @@
       depsRecipes = pkgs.lib.fileset.toSource {
         root = ./tools/deps;
         fileset = pkgs.lib.fileset.difference ./tools/deps (pkgs.lib.fileset.unions [
-          ./tools/deps/assets.sha256 ./tools/deps/fetch.sh ./tools/deps/pack.sh
+          ./tools/deps/assets.sha256 ./tools/deps/pack.sh
         ]);
       };
       sandboxPrelude = ''
@@ -44,7 +44,7 @@
       '';
 
       # Static protoc and grpc_cpp_plugin: a closure's own are dynamic, which a sandbox can't run.
-      # Built here only to build the closures and to be packed; xdyn builds with the fetched asset.
+      # Built here to build the closures, to be packed, and for `.#built`; xdyn builds with the fetched asset.
       hostTools = pkgs.stdenvNoCC.mkDerivation {
         pname = "lxdyn-deps-host-tools";
         version = "1.85.1";
@@ -109,7 +109,7 @@
         };
       };
 
-      # The published closures, by the tag and hashes fetch.sh also reads from assets.sha256.
+      # The published closures, by the tag and hashes in assets.sha256.
       assetLines = pkgs.lib.splitString "\n" (builtins.readFile ./tools/deps/assets.sha256);
       assetTag = pkgs.lib.removePrefix "# tag: " (pkgs.lib.findFirst (pkgs.lib.hasPrefix "# tag: ")
         (throw "tools/deps/assets.sha256 has no '# tag:' line") assetLines);
@@ -125,11 +125,9 @@
             sha256 = builtins.head (pkgs.lib.splitString " " line);
           };
           nativeBuildInputs = [ pkgs.zstd ];
-          # The stamp fetch.sh writes, which build.zig checks.
           buildCommand = ''
             mkdir $out
             zstd -d -q -c $src | tar -C $out -xf -
-            echo '${line}' > $out/asset.sha256
           '';
         };
 
@@ -441,11 +439,12 @@
         // pkgs.lib.mapAttrs' (triple: drv: pkgs.lib.nameValuePair "deps-${triple}" drv) fetched;
       checks.${system} = checks;
 
-      # ⛔ Tools only. No pkgs.boost/grpc/hdf5/yaml-cpp/gtest: they are libstdc++ builds, the ABI
-      # wall. No pkgs.binutils: its wrapped ld breaks uv's host cc. See decisions.md.
-      devShells.${system} = rec {
+      # ⛔ No nixpkgs C++ library: pkgs.boost/grpc/hdf5/yaml-cpp/gtest are libstdc++ builds, the ABI
+      # wall. xdyn's own closures reach zig build by path only, never on a compiler search path.
+      # No pkgs.binutils: its wrapped ld breaks uv's host cc. See decisions.md.
+      devShells.${system} = let
         # mkShellNoCC: mkShell's cc-wrapper exports CPATH, which zig cc honours.
-        default = pkgs.mkShellNoCC {
+        toolsShell = pkgs.mkShellNoCC {
           packages = [
             pkgs.zig
             pkgs.mise
@@ -473,16 +472,36 @@
         };
 
         # qemu and wine only run the cross suites; wine alone is bigger than everything above.
-        cross = default.overrideAttrs (old: {
+        withRunners = shell: shell.overrideAttrs (old: {
           nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.qemu pkgs.wine64 ];
           shellHook = old.shellHook + ''
             echo "  cross runners: $(qemu-aarch64 --version | head -1), $(wine --version)"
           '';
         });
 
-        # cmake, ninja and nasm exist only to build a closure. gRPC turns BoringSSL's assembly off
-        # under Ninja when it finds no nasm, on every target, though only Windows' is NASM syntax.
-        deps = cross.overrideAttrs (old: {
+        # build.zig and pack.sh read $XDYN_CLOSURES/<triple> and $XDYN_CLOSURES/host-tools.
+        withClosures = { host, closure, triples }: shell: shell.overrideAttrs (old: {
+          XDYN_CLOSURES = pkgs.linkFarm "xdyn-closures" (pkgs.lib.genAttrs triples closure // { host-tools = host; });
+          shellHook = old.shellHook + ''
+            echo "  closures: ${pkgs.lib.concatStringsSep ", " triples}"
+          '';
+        });
+
+        native = [ "x86_64-linux-gnu" ];
+        crossTriples = [ "x86_64-linux-gnu" "x86_64-linux-musl" "aarch64-linux-musl" "x86_64-windows-gnu" ];
+        published = triples: withClosures { host = fetched.host-tools; closure = t: fetched.${t}; inherit triples; };
+        # From this commit's recipes and pins, to prepare a closure set before it is published.
+        fromRecipes = triples: withClosures { host = hostTools; closure = t: closures."libcxx-deps-${t}"; inherit triples; };
+      in {
+        default = published native toolsShell;
+        cross = published crossTriples (withRunners toolsShell);
+        built = fromRecipes native toolsShell;
+        built-cross = fromRecipes crossTriples (withRunners toolsShell);
+
+        # cmake, ninja and nasm exist only to build a closure on the host, so no closure is set.
+        # gRPC turns BoringSSL's assembly off under Ninja when it finds no nasm, on every target,
+        # though only Windows' is NASM syntax.
+        deps = (withRunners toolsShell).overrideAttrs (old: {
           nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake pkgs.ninja pkgs.nasm ];
           shellHook = old.shellHook + ''
             echo "  closure toolchain: $(cmake --version | head -1), ninja $(ninja --version)"

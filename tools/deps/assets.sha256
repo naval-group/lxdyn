@@ -1,23 +1,15 @@
-# Prebuilt dependency closures published as GitHub release assets, and the tag they live
-# under. fetch.sh reads both from this file, so the tag and the hashes cannot drift apart.
-#
-# The asset is not content-addressed by its name: a moved tag or a re-uploaded file is the
-# same URL. These hashes are what identify it, and fetch.sh will not unpack without them.
+# The release tag and hashes flake.nix fetches the dependency closures by. A moved tag or a
+# re-uploaded file keeps its URL, so the hash, not the name, identifies an asset.
 #
 # To publish a new set:
-#   1. nix build .#libcxx-deps-<triple> .#host-tools   -- or tools/deps/build-all.sh <triple>
-#   2. XDYN_DEPS=<result> tools/deps/pack.sh <triple>, and the same for host-tools
+#   1. nix develop .#built-cross, and test against the closures it builds from this commit
+#   2. tools/deps/pack.sh <triple> in that shell, for each triple and for host-tools
 #   3. bump the tag, paste the lines below
 #   4. gh release create <tag> build/scratch/deps-assets/lxdyn-deps-*.tar.zst
 #
 # Bump the tag whenever the recipes, the source pins, the zig version or the glibc floor
 # change. Never re-upload under an existing tag: anyone who already fetched it keeps a
 # closure these hashes no longer describe.
-#
-# These came out of `nix build`, so each is the output of a derivation whose inputs are
-# the recipes at this commit, the five sources pinned in flake.lock, and nothing else -- no
-# network, no /usr, no host archiver. The closures-v0 assets predated that and predated the rename
-# to target triples; both are why this is a new tag rather than an upload onto the old one.
 #
 # tag: closures-v2
 2297956388e3a6d511699b2f05229f7bc50a1bdae024444ab7096e90f4351c62  lxdyn-deps-host-tools-x86_64-linux.tar.zst

@@ -2,38 +2,6 @@
 [env]
 LXDYN_DEVSHELL = { required = "enter the lxdyn devShell first: `nix develop`, or `direnv allow` once" }
 
-[tasks.bootstrap]
-description = "First-time setup for a fresh clone: the host tools and a closure"
-run = '''
-for dir in host-tools libcxx-x86_64-linux-gnu; do
-    if [ -e $dir ]; then
-        echo "bootstrap: $dir is already here -- leaving it alone"
-    else
-        mise run deps:fetch ${dir#libcxx-}
-    fi
-done
-'''
-
-[tasks."deps:x86_64-linux-gnu"]
-description = "Build the x86_64-linux-gnu closure (glibc 2.28 floor) into libcxx-x86_64-linux-gnu/ (hours)"
-run = "tools/deps/build-all.sh x86_64-linux-gnu"
-
-[tasks."deps:x86_64-linux-musl"]
-description = "Build the x86_64-linux-musl closure (static) into libcxx-x86_64-linux-musl/ (hours)"
-run = "tools/deps/build-all.sh x86_64-linux-musl"
-
-[tasks."deps:aarch64-linux-musl"]
-description = "Build the aarch64-linux-musl closure (needs deps:x86_64-linux-gnu)"
-run = "tools/deps/build-all.sh aarch64-linux-musl"
-
-[tasks."deps:x86_64-windows-gnu"]
-description = "Build the x86_64-windows-gnu closure (needs deps:x86_64-linux-gnu)"
-run = "tools/deps/build-all.sh x86_64-windows-gnu"
-
-[tasks."deps:fetch"]
-description = "Download a prebuilt closure, or the host tools: mise run deps:fetch x86_64-linux-gnu | host-tools"
-run = "sh tools/deps/fetch.sh"
-
 [tasks."deps:pack"]
 description = "Pack a built closure, or the host tools, into a release asset: mise run deps:pack x86_64-linux-gnu | host-tools"
 run = "sh tools/deps/pack.sh"

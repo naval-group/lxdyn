@@ -50,13 +50,7 @@ jobs:
         run: "! git ls-files --eol | grep -E '^i/(crlf|mixed)'"
       - uses: cachix/install-nix-action@v31
 
-      # ~34 MB against the hours build-all.sh takes. Hash-verified against
-      # tools/deps/assets.sha256, which also names the release tag.
-      - name: Host tools and dependency closure
-        run: |
-          nix develop --command mise run deps:fetch host-tools
-          nix develop --command mise run deps:fetch x86_64-linux-gnu
-
+      # `nix develop` brings the closures, hash-verified against tools/deps/assets.sha256.
       # A step of its own so a compile failure is attributable.
       - name: Build
         run: nix develop --command mise run zig:build
@@ -87,12 +81,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: cachix/install-nix-action@v31
-
-      - name: Host tools and dependency closures
-        run: |
-          nix develop --command mise run deps:fetch host-tools
-          nix develop --command mise run deps:fetch x86_64-linux-gnu
-          nix develop --command mise run deps:fetch x86_64-windows-gnu
 
       - name: FMU tests
         run: nix develop --command mise run fmu:test
