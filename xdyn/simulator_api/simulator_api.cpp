@@ -110,7 +110,8 @@ Sim get_system(const std::string& yaml, const MeshMap& meshes, const double t0)
 
 EnvironmentAndFrames get_environment_for_wave_queries(const std::string& yaml_data)
 {
-    EnvironmentAndFrames env(get_system(yaml_data, 0.0).get_env());
+    const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml_data).parse());
+    EnvironmentAndFrames env = get_builder(input, 0.0).build_environment_and_frames();
     if (env.w == nullptr) {
         THROW(__PRETTY_FUNCTION__, InvalidInputException, "No wave environment model is defined");
     }
