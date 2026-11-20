@@ -3,7 +3,7 @@
 ## Rules
 
 - No AI-generated prose in issues or pull requests. A human explains the problem and the fix; generated code is fine if a human can defend it.
-- Never add `pkgs.boost`, `pkgs.grpc`, `pkgs.hdf5` or `pkgs.binutils` to the devShell. They are libstdc++ builds, and mixing them with libc++ causes link failures far from the cause. The C++ libraries come only from the dependency closure.
+- Never add `pkgs.boost`, `pkgs.grpc`, `pkgs.hdf5` or `pkgs.binutils` to the devShell. They are libstdc++ builds, and mixing them with libc++ causes link failures far from the cause. The C++ libraries come only from the closures, which reach `zig build` by path.
 - `ssc/`, `proto/` and `xdyn_grpc/` are lxdyn's own code: fix defects there directly. `external/` is vendored third-party code: list any edit in that tree's `PROVENANCE.md`.
 - Comments explain why, never what. No dates or changelog notes in comments.
 
@@ -49,18 +49,19 @@ Run one test with `mise run test -- --gtest_filter='Gravity*'`, or skip the long
 - **Debug builds use `-Ddebug` (`mise run zig:debug`), never `-Doptimize=Debug`.** `mise run gdb` and `.gdbinit` expect the former.
 - **Never check a cross target with `zig build test -Dtarget=...`.** On a host with `binfmt_misc` handlers it passes without qemu or wine. Use `mise run cross` in `nix develop .#cross`.
 - **`integration_tests/xdyn/Makefile` has a hardcoded `all:` list.** A new scenario does not run until it has a target.
-- **`build.zig` stops on a fetched closure that `tools/deps/assets.sha256` no longer names.** Re-fetch with `mise run deps:fetch <triple>`.
 - **The deploy image is `FROM scratch` with static musl binaries.** It has no shell, so `--entrypoint sh` fails, and no CA certificates.
 - **A release bumps `build.zig.zon` to the tag first** (`26.11` is `26.11.0` there), because Nix cannot see tags. The release workflows refuse a mismatch.
 
 ## The dependency closure
 
-C++ dependencies are prebuilt per target triple into `./libcxx-<triple>` (`-Ddeps=` or `$XDYN_DEPS_<TRIPLE>`). protoc and grpc_cpp_plugin go in `./host-tools` (`-Ddeps-host=` or `$XDYN_DEPS_HOST`). `build.zig` locates a closure and never builds one.
+C++ dependencies are prebuilt per target triple and published as release assets that `tools/deps/assets.sha256` names. The devShell sets `$XDYN_CLOSURES` to a folder holding one closure per triple and `host-tools/` (protoc, grpc_cpp_plugin); `-Ddeps=` and `-Ddeps-host=` override it. `zig build` never builds a closure: `.#built` and `.#built-cross` do, from the recipes in `tools/deps/`.
 
 ```sh
-mise run bootstrap                       # host tools + the native closure
-mise run deps:fetch aarch64-linux-musl   # another target
-nix build .#libcxx-deps-x86_64-linux-gnu # build one hermetically, ~20 min
+nix develop               # the native closure, published
+nix develop .#cross       # + the three cross closures, qemu and wine
+nix develop .#built       # the native closure built from this commit's recipes, ~20 min once
+nix develop .#built-cross # every closure built, hours once
+nix develop .#deps        # cmake, ninja and nasm, no closure: debug a recipe on the host
 ```
 
 Triples: `x86_64-linux-gnu`, `x86_64-linux-musl`, `aarch64-linux-musl`, `x86_64-windows-gnu`. `mise tasks` lists everything else.

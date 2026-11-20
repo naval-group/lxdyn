@@ -73,18 +73,17 @@ Once approved, your contribution will be merged into the main branch and include
 
 ## Development
 
-You need [Nix](https://nixos.org/download/) with flakes enabled (`experimental-features = nix-command flakes` in `~/.config/nix/nix.conf`). The devShell provides zig, mise, uv and the rest of the tools, and no host compiler is used. With [direnv](https://direnv.net/), `direnv allow` replaces `nix develop`. Every `mise run` stops outside the devShell, so no host tool stands in for a pinned one.
+You need [Nix](https://nixos.org/download/) with flakes enabled (`experimental-features = nix-command flakes` in `~/.config/nix/nix.conf`). The devShell provides zig, mise, uv and the rest of the tools, and the prebuilt C++ dependencies; no host compiler is used. With [direnv](https://direnv.net/), `direnv allow` replaces `nix develop`. Every `mise run` stops outside the devShell, so no host tool stands in for a pinned one.
 
 ```bash
 git clone https://github.com/naval-group/lxdyn.git && cd lxdyn
-nix develop
-mise run bootstrap             # protoc + the prebuilt C++ dependencies, ~35 MB
+nix develop                    # the tools, protoc and the prebuilt C++ dependencies, ~35 MB once
 mise run zig:build             # binaries in build/x86_64-linux-gnu/bin
 ```
 
 `mise run zig:build` also writes `compile_commands.json` at the root, which clangd reads; the devShell's clangd matches zig's clang.
 
-The C++ dependencies (Boost, gRPC, HDF5, yaml-cpp, GoogleTest) are prebuilt against zig's libc++ rather than taken from the host. `nix develop .#deps` builds them from source instead, which takes a few hours.
+The C++ dependencies (Boost, gRPC, HDF5, yaml-cpp, GoogleTest) are prebuilt against zig's libc++ rather than taken from the host.
 
 Run a tutorial from the build tree:
 
@@ -110,7 +109,7 @@ nix flake check                # everything CI runs
 lxdyn cross-compiles to Linux (x86_64, aarch64) and Windows (x86_64) from a single host:
 
 ```bash
-mise run deps:fetch aarch64-linux-musl
+nix develop .#cross            # + the cross closures, qemu and wine
 zig build -Dtarget=aarch64-linux-musl --prefix build/aarch64-linux-musl
 ```
 

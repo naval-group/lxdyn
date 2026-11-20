@@ -1,5 +1,5 @@
 #!/bin/sh
-# Pack a built closure into the release asset fetch.sh downloads, and print the line to
+# Pack a built closure into the release asset the flake fetches, and print the line to
 # paste into assets.sha256.
 #
 #   tools/deps/pack.sh x86_64-linux-gnu  ->  build/scratch/deps-assets/lxdyn-deps-x86_64-linux-gnu.tar.zst
@@ -18,12 +18,14 @@
 # archives into the two above, and they are most of the 11 GB build tree. install/bin is too:
 # a closure's own protoc is dynamic, and the host tools replace it.
 #
-# Debug info is stripped. The asset exists to bootstrap a fresh clone and to feed CI, neither
+# Debug info is stripped. The asset feeds every `nix develop` and CI, neither
 # of which steps into boost, and it is a ~9x difference on every download. XDYN_PACK_STRIP=0
 # keeps it, for anyone who does want to debug into the closure.
 set -e
 FLAVOR=${1:-x86_64-linux-gnu}
-if [ "$FLAVOR" = host-tools ]; then
+if [ -n "${XDYN_CLOSURES:-}" ]; then
+    XDYN_DEPS=${XDYN_DEPS:-$XDYN_CLOSURES/$FLAVOR}
+elif [ "$FLAVOR" = host-tools ]; then
     _here=$(cd "$(dirname "$0")" && pwd)
     XDYN_DEPS=${XDYN_DEPS:-${XDYN_DEPS_HOST:-$(cd "$_here/../.." && pwd)/host-tools}}
 fi
@@ -78,7 +80,7 @@ if [ "$FLAVOR" = x86_64-linux-gnu ]; then
     stale=$(printf '%s\n' "$syms" | grep -c __isoc23_ || true)
     [ "$stale" -eq 0 ] || {
         echo "pack: $DEPS was built against a glibc newer than the 2.28 floor" >&2
-        echo "      ($stale undefined __isoc23_* symbols; rebuild with 'mise run deps:x86_64-linux-gnu')" >&2
+        echo "      ($stale undefined __isoc23_* symbols; rebuild with 'nix develop .#built')" >&2
         exit 1
     }
 fi

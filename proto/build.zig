@@ -11,17 +11,14 @@ pub const Stubs = struct {
 
 pub fn addStubs(b: *std.Build) Stubs {
     // A host protoc even when cross-compiling: the generated C++ is arch-independent.
-    const host = b.option([]const u8, "deps-host", "Host tools providing protoc (default: ./host-tools)") orelse
-        b.graph.environ_map.get("XDYN_DEPS_HOST") orelse
-        root.fromRoot(b, "host-tools");
-    const bin = b.pathJoin(&.{ host, "install", "bin" });
+    const host = deps.resolveHost(b);
+    const bin = b.pathJoin(&.{ host orelse "", "install", "bin" });
     const protoc = b.pathJoin(&.{ bin, "protoc" });
     const gen = b.addSystemCommand(&.{protoc});
-    if (std.Io.Dir.cwd().access(b.graph.io, protoc, .{})) |_|
-        deps.checkStamp(b, &gen.step, host, "host-tools", null)
-    else |_|
-        std.log.warn("no protoc under '{s}': codegen will fail. Fetch it with `mise run deps:fetch " ++
-            "host-tools`, or name one with -Ddeps-host=<path> or $XDYN_DEPS_HOST.", .{bin});
+    if (host == null) {
+        deps.fail(b, &gen.step, "no host tools: enter `nix develop`, or pass -Ddeps-host=<path>");
+    } else std.Io.Dir.cwd().access(b.graph.io, protoc, .{}) catch
+        deps.fail(b, &gen.step, b.fmt("no protoc under '{s}'", .{bin}));
 
     gen.setCwd(b.path("."));
     gen.addFileInput(.{ .cwd_relative = protoc });
