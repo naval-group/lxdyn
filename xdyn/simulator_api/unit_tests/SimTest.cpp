@@ -14,16 +14,19 @@
 #include <ssc/solver/steppers.hpp>
 
 #include "SimObserver.hpp"
+#include "xdyn/controllers/listeners.hpp"
 #include "xdyn/core/Sim.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/mesh/stl_reader.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
+#include "xdyn/observers/EverythingObserver.hpp"
 #include "xdyn/observers/ListOfObservers.hpp"
 #include "xdyn/observers/unit_tests/MapObserverTest.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/yaml_parser/check_input_yaml.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
 #define PI M_PI
 #include <math.h>  // isnan
@@ -31,6 +34,109 @@
 constexpr double EPS = 1E-10;
 #define SQUARE(x) ((x) * (x))
 const double DEG = atan(1.) / 45.;
+
+template <typename StepperType>
+std::vector<Res>
+simulate(Sim& sys, const YamlSimulatorInput& input, ssc::solver::Scheduler& scheduler)
+{
+    EverythingObserver observer;
+    const double tstart = scheduler.get_time();
+    const auto controllers =
+        get_initialized_controllers(tstart, input.controllers, input.commands, scheduler, sys);
+    ssc::solver::quicksolve<StepperType>(sys, scheduler, observer, controllers);
+    auto ret = observer.get_res();
+    return ret;
+}
+
+template <typename StepperType>
+std::vector<Res> simulate(const std::string& yaml, ssc::solver::Scheduler& scheduler)
+{
+    const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml).parse());
+    const double tstart = scheduler.get_time();
+    Sim sys = get_system(yaml, tstart);
+    return simulate<StepperType>(sys, input, scheduler);
+}
+
+template <typename StepperType>
+std::vector<Res>
+simulate(const std::string& yaml, const std::string& mesh, ssc::solver::Scheduler& scheduler)
+{
+    const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml).parse());
+    const double tstart = scheduler.get_time();
+    Sim sys = get_system(yaml, mesh, tstart);
+    return simulate<StepperType>(sys, input, scheduler);
+}
+
+template <typename StepperType>
+std::vector<Res> simulate(
+    const std::string& yaml,
+    const std::string& mesh,
+    ssc::solver::Scheduler& scheduler,
+    ssc::data_source::DataSource& commands)
+{
+    const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml).parse());
+    const double tstart = scheduler.get_time();
+    Sim sys = get_system(yaml, mesh, tstart, commands);
+    return simulate<StepperType>(sys, input, scheduler);
+}
+
+template <typename StepperType>
+std::vector<Res> simulate(
+    const std::string& yaml,
+    const std::map<std::string, VectorOfVectorOfPoints>& meshes,
+    ssc::solver::Scheduler& scheduler)
+{
+    const YamlSimulatorInput input = check_input_yaml(SimulatorYamlParser(yaml).parse());
+    const double tstart = scheduler.get_time();
+    Sim sys = get_system(yaml, meshes, tstart);
+    return simulate<StepperType>(sys, input, scheduler);
+}
+
+template <typename StepperType>
+std::vector<Res> simulate(const YamlSimulatorInput& input, ssc::solver::Scheduler& scheduler)
+{
+    const double tstart = scheduler.get_time();
+    Sim sys = get_system(input, tstart);
+    return simulate<StepperType>(sys, input, scheduler);
+}
+
+template <typename StepperType>
+std::vector<Res> simulate(
+    const YamlSimulatorInput& input,
+    const std::map<std::string, VectorOfVectorOfPoints>& meshes,
+    ssc::solver::Scheduler& scheduler)
+{
+    const double tstart = scheduler.get_time();
+    Sim sys = get_system(input, meshes, tstart);
+    return simulate<StepperType>(sys, input, scheduler);
+}
+
+template <typename StepperType>
+std::vector<Res> simulate(
+    const YamlSimulatorInput& input,
+    const VectorOfVectorOfPoints& mesh,
+    ssc::solver::Scheduler& scheduler)
+{
+    std::map<std::string, VectorOfVectorOfPoints> meshes;
+    meshes[input.bodies.front().name] = mesh;
+    return simulate<StepperType>(input, meshes, scheduler);
+}
+
+template <typename StepperType>
+std::vector<Res> simulate(
+    const YamlSimulatorInput& input,
+    const VectorOfVectorOfPoints& mesh,
+    ssc::solver::Scheduler& scheduler,
+    ssc::data_source::DataSource& commands)
+{
+    const double tstart = scheduler.get_time();
+    Sim sys = get_system(input, mesh, tstart, commands);
+    SimObserver observer;
+    const auto controllers =
+        get_initialized_controllers(tstart, input.controllers, input.commands, scheduler, sys);
+    ssc::solver::quicksolve<StepperType>(sys, scheduler, observer, controllers);
+    return observer.get();
+}
 
 static const VectorOfVectorOfPoints& shared_test_ship_stl()
 {

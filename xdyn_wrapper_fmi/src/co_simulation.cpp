@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <ssc/solver/solve.hpp>
 #include <ssc/solver/steppers.hpp>
 
 #include "instance.hpp"
@@ -31,11 +32,11 @@ void xdyn_fmu::Instance::step(const double t, const double h)
     CoSimulationObserver observer({}, s.get_bodies().at(0)->get_name());
     ssc::solver::Scheduler scheduler(t, t + h, dt);
     if (solver == "euler")
-        simulate<ssc::solver::EulerStepper>(s, scheduler, observer);
+        ssc::solver::quicksolve<ssc::solver::EulerStepper>(s, scheduler, observer);
     else if (solver == "rk4")
-        simulate<ssc::solver::RK4Stepper>(s, scheduler, observer);
+        ssc::solver::quicksolve<ssc::solver::RK4Stepper>(s, scheduler, observer);
     else
-        simulate<ssc::solver::RKCK>(s, scheduler, observer);
+        ssc::solver::quicksolve<ssc::solver::RKCK>(s, scheduler, observer);
     const std::vector<YamlState> out = observer.get();
     if (out.empty())
         throw std::runtime_error("xdyn returned no state");

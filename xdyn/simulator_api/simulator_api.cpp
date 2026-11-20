@@ -5,6 +5,8 @@
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/mesh/stl_reader.hpp"
 #include "xdyn/simulator_api/model_tables.hpp"
+#include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 SimulatorBuilder get_builder(
     const YamlSimulatorInput& input,

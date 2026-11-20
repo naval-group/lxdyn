@@ -19,8 +19,10 @@
 #include "XdynCommandLineArguments.hpp"
 #include "build_observers_description.hpp"
 #include "parse_XdynCommandLineArguments.hpp"
+#include "xdyn/controllers/listeners.hpp"
 #include "xdyn/core/AssetPath.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
+#include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 void solve(
     const std::string& solver_name,
