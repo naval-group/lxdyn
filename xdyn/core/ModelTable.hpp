@@ -63,7 +63,4 @@ ModelEntry<Ptr (*)(const std::string&)> parsed_model()
     const std::string& name,
     const std::vector<std::string>& known_names);
 
-/** \brief Call from a catch (...): rethrows an input error with the model's name and YAML line */
-[[noreturn]] void rethrow_with_yaml_context(const YamlModel& yaml);
-
 #endif /* MODELTABLE_HPP_ */

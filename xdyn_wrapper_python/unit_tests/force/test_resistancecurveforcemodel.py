@@ -140,7 +140,8 @@ class ResistanceCurveForceModelTest(unittest.TestCase):
             ResistanceCurveForceModel.parse(read("yaml/resistance_curve.yml")), "", env
         )
         filters = YamlFilteredStates()
-        filters.u = "type of filter: moving average\n" "duration in seconds : 9"
+        filters.u.type_of_filter = "moving average"
+        filters.u.duration_in_seconds = 9
         states = BodyStates(filters, 9)
         states.convention = YamlRotation("angle", ["z", "y'", "x''"])
         knot = 1852.0 / 3600.0

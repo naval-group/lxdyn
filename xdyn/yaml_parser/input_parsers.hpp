@@ -25,6 +25,7 @@ void operator>>(const YAML::Node& node, YamlBody& b);
 void operator>>(const YAML::Node& node, YamlCoordinates& c);
 void operator>>(const YAML::Node& node, YamlDynamics& d);
 void operator>>(const YAML::Node& node, YamlEnvironmentalConstants& f);
+void operator>>(const YAML::Node& node, YamlStateFilter& f);
 void operator>>(const YAML::Node& node, YamlFilteredStates& p);
 void operator>>(const YAML::Node& node, YamlModel& m);
 void operator>>(const YAML::Node& node, YamlPoint& p);

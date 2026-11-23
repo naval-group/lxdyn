@@ -5,7 +5,6 @@
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/input/YamlBody.hpp"
-#include "xdyn/yaml_parser/yaml_compat.h"
 
 FilteredStates::FilteredStates(
     const StatesFilter& filters,
@@ -52,25 +51,20 @@ private:
     const double duration_in_seconds;
 };
 
-std::shared_ptr<StateFilter> StateFilter::build(const std::string& yaml)
+std::shared_ptr<StateFilter> StateFilter::build(const YamlStateFilter& input)
 {
-    if (yaml.empty()) {
-        return std::shared_ptr<StateFilter>(new MovingAverage(0));
+    if (input.type_of_filter.empty()) {
+        return std::make_shared<MovingAverage>(0);
     }
-    YAML::Node node = YAML::Load(yaml);
-    std::string type_of_filter;
-    node["type of filter"] >> type_of_filter;
-
-    if (type_of_filter == "moving average") {
-        double duration_in_seconds = 0;
-        node["duration in seconds"] >> duration_in_seconds;
-        return std::shared_ptr<StateFilter>(new MovingAverage(duration_in_seconds));
+    if (input.type_of_filter == "moving average") {
+        return std::make_shared<MovingAverage>(input.duration_in_seconds);
     }
     THROW(
         __PRETTY_FUNCTION__,
         InvalidInputException,
-        "Unknown filter '" << type_of_filter << "': known state filters are: 'moving average'.");
-    return std::shared_ptr<StateFilter>(new MovingAverage(0));
+        "Unknown filter '" << input.type_of_filter
+                           << "': known state filters are: 'moving average'.");
+    return nullptr;
 }
 
 StatesFilter::StatesFilter(const YamlFilteredStates& input)

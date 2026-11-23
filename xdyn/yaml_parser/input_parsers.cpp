@@ -482,17 +482,15 @@ YamlBlockedDOF parse(const std::string& yaml)
     return ret;
 }
 
-std::string node_to_string(const YAML::Node& node);
-std::string node_to_string(const YAML::Node& node)
+void operator>>(const YAML::Node& node, YamlStateFilter& f)
 {
-    YAML::Emitter out;
-    out << node;
-    return out.c_str();
+    node["type of filter"] >> f.type_of_filter;
+    node["duration in seconds"] >> f.duration_in_seconds;
 }
 
-#define PARSE_FILTERED_STATE(state)             \
-    if (node[#state]) {                         \
-        p.state = node_to_string(node[#state]); \
+#define PARSE_FILTERED_STATE(state) \
+    if (node[#state]) {             \
+        node[#state] >> p.state;    \
     }
 
 void operator>>(const YAML::Node& node, YamlFilteredStates& p)
