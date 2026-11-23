@@ -86,7 +86,7 @@ TEST_F(BodyTest, can_get_transform_from_NED_to_body_from_states)
     BodyStates states;
     states.name = "body 1";
     YamlFilteredStates y;
-    BodyWithSurfaceForces b(states, 1, BlockedDOF(""), y);
+    BodyWithSurfaceForces b(states, 1, BlockedDOF(YamlBlockedDOF()), y);
     const StateType x = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
                          1, 2, 3, 4, 5, 6, 7, 8, 9, 3,  5,  7,  13};
     const ssc::kinematics::Transform T = b.get_transform_from_ned_to_body(x);
