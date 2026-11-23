@@ -1,10 +1,10 @@
 # xdyn
 
-One folder per module, each named after what it holds. A module's tests are in its `unit_tests/`.
+One folder per module, each named after what it holds. A module's tests are in its `unit_tests/`. `mise run lint` holds each module to the includes the table in `tools/lint.sh` allows.
 
 | Module | What it holds |
 |---|---|
-| `core/` | the engine: `Sim`, `Body`, `SimulatorBuilder`, `EnvironmentAndFrames`, the model interfaces, `History`. `mise run lint` holds it to the model interfaces |
+| `core/` | the engine: `Sim`, `Body`, `SimulatorBuilder`, `EnvironmentAndFrames`, the model interfaces, `History`. It names the model interfaces only, and works on parsed input |
 | `simulator_api/` | YAML and meshes to a `Sim` and its controllers: the one module that depends on every model, and `model_tables.cpp`, which adds the gRPC models to the folder tables |
 | `force_models/` | one class per force model, and `force_model_table.cpp`, the force models a YAML file can name but `grpc` |
 | `wind_models/` | `WindModel`, its implementations, and `wind_model_table.cpp` |

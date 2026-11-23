@@ -26,12 +26,12 @@ Run one test with `mise run test -- --gtest_filter='Gravity*'`, or skip the long
 
 | Path | What |
 |---|---|
-| `xdyn/` | one folder per module; [`xdyn/README.md`](xdyn/README.md) says what each holds |
+| `xdyn/` | one folder per module; [`xdyn/README.md`](xdyn/README.md) says what each holds, and the table in `tools/lint.sh` what each may include |
 | `xdyn/force_models/` | one class per force model, with a static `model_name()` that is its YAML key |
 | `xdyn/force_models/force_model_table.cpp` | every force model a YAML file can name but `grpc`; a new force model is one line here |
 | `xdyn/{wind,current,wave}_models/*_model_table.cpp` | every wind, current and wave model a YAML file can name but `grpc`, and the wave spectra and spreadings; a new one is one line in its folder's table |
 | `xdyn/simulator_api/` | YAML and meshes to a `Sim` and its controllers, the one module that depends on every model; `model_tables.cpp` asks the folder tables, then the gRPC models, which only it registers |
-| `xdyn/core/` | the engine; `mise run lint` fails when it includes a model rather than its interface |
+| `xdyn/core/` | the engine; it includes the model interfaces only, and no parser or file reader |
 | `xdyn/<module>/unit_tests/` | that module's GoogleTest suite |
 | `xdyn/executables/` | `xdyn`, the gRPC/websocket servers and the example generators |
 | `ssc/` | SSC: units, interpolation, kinematics, solvers, websocket |
