@@ -7,5 +7,5 @@
 
 #include "GrpcControllerTest.hpp"
 
-#include "GrpcController.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/grpc/GrpcController.hpp"
