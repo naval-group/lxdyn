@@ -7,11 +7,13 @@
 #include <array>
 #include <memory>
 
+#include "xdyn/controllers/controller_table.hpp"
 #include "xdyn/core/ModelTable.hpp"
 #include "xdyn/current_models/current_model_table.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/force_models/force_model_table.hpp"
 #include "xdyn/grpc/GRPCForceModel.hpp"
+#include "xdyn/grpc/GrpcController.hpp"
 #include "xdyn/grpc/SurfaceElevationFromGRPC.hpp"
 #include "xdyn/input/YamlGRPC.hpp"
 #include "xdyn/wave_models/wave_mesh.hpp"
@@ -34,6 +36,13 @@ SurfaceElevationPtr surface_elevation_from_grpc(const std::string& yaml)
     return std::make_shared<SurfaceElevationFromGRPC>(input, make_wave_mesh(input.output));
 }
 
+std::shared_ptr<Controller>
+grpc_controller(const double tstart, const YamlController& yaml, Sim& sys)
+{
+    return std::shared_ptr<Controller>(
+        GrpcController::build(tstart, yaml.name, yaml.rest_of_the_yaml, sys));
+}
+
 // grpc/ builds on the model folders, so their tables cannot name the gRPC models
 const auto& grpc_force_models()
 {
@@ -47,6 +56,14 @@ const auto& grpc_surface_elevations()
 {
     static const std::array table{
         ModelEntry<SurfaceElevationFactory>{"grpc", surface_elevation_from_grpc},
+    };
+    return table;
+}
+
+const auto& grpc_controllers()
+{
+    static const std::array table{
+        ModelEntry<ControllerFactory>{"GRPC", grpc_controller},
     };
     return table;
 }
@@ -139,4 +156,20 @@ std::vector<std::string> environment_model_names()
         names.insert(names.end(), more.begin(), more.end());
     }
     return names;
+}
+
+std::shared_ptr<Controller>
+make_controller(const double tstart, const YamlController& yaml, Sim& sys)
+{
+    auto factory = find_controller(yaml.type);
+    if (factory == nullptr) {
+        factory = find_model(grpc_controllers(), yaml.type);
+    }
+    if (factory == nullptr) {
+        std::vector<std::string> names = controller_names();
+        const auto grpc = model_names(grpc_controllers());
+        names.insert(names.end(), grpc.begin(), grpc.end());
+        throw_unknown_name("controller type", yaml.type, names);
+    }
+    return factory(tstart, yaml, sys);
 }

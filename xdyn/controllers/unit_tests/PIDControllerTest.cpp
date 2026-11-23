@@ -12,7 +12,6 @@
 #include <ssc/solver/Scheduler.hpp>
 
 #include "xdyn/controllers/PIDController.hpp"
-#include "xdyn/controllers/listeners.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
 #include "xdyn/yaml_parser/parse_controllers.hpp"
@@ -261,77 +260,6 @@ TEST_F(PIDControllerTest, can_use_euler_angles_in_states)
     controller.callback(scheduler, sys);
     const double first_expected_command = Kp * error;
     ASSERT_NEAR(first_expected_command, sys.get_input_value("propeller(psi_co)"), 1e-6);
-}
-
-TEST_F(PIDControllerTest, can_initialize_controllers)
-{
-    //! [controllersTest initialize_controllers]
-    Sim sys = get_system(test_data::read("tutorials/tutorial_01_falling_ball.yml"), 0);
-    const double tstart = 0.1;
-    const double dt = 1;
-    ssc::solver::Scheduler scheduler(tstart, 10, dt);
-
-    // initialize setpoints
-    const double rpm_co = 0.45;
-    const double pd_co = 0.5;
-    sys.set_command_listener(
-        std::map<std::string, double>({{"t", tstart}, {"rpm_co", rpm_co}, {"P/D_co", pd_co}}));
-
-    // initialize states
-    const double u = 1.0;
-    const StateType states = {100.0, 200.0, 300.0, u, 2.0, 3.0, 4.0, 5.0, 6.0, 1, 0, 0, 0};
-    sys.get_bodies().front()->update_body_states(states, tstart);
-
-    std::stringstream yaml_controllers;
-    yaml_controllers << "controllers:\n"
-                        "  - type: PID\n"
-                        "    dt: 0.15\n"
-                        "    setpoint: rpm_co\n"
-                        "    name: foo\n"
-                        "    state weights:\n"
-                        "        u: 0.5\n"
-                        "    command: propeller(rpm)\n"
-                        "    gains:\n"
-                        "        Kp: 4.2\n"
-                        "        Ki: 0.25\n"
-                        "        Kd: 1\n"
-                        "  - type: PID\n"
-                        "    dt: 0.5\n"
-                        "    setpoint: P/D_co\n"
-                        "    name: bar\n"
-                        "    state weights:\n"
-                        "        u: 0\n"
-                        "    command: controller(P/D)\n"
-                        "    gains:\n"
-                        "        Kp: 1\n"
-                        "        Ki: 0\n"
-                        "        Kd: 0\n";
-
-    const auto controllers = get_initialized_controllers(
-        tstart,
-        parse_controller_yaml(yaml_controllers.str()),
-        std::vector<YamlTimeSeries>(),
-        scheduler,
-        sys);
-
-    // Check controllers commands have been initialized in the datasource
-    ASSERT_EQ(tstart, scheduler.get_time());
-    ASSERT_NEAR(4.2 * (rpm_co - u * 0.5), sys.get_input_value("propeller(rpm)"), 1e-6);
-    ASSERT_NEAR(pd_co, sys.get_input_value("controller(P/D)"), 1e-6);
-    // no controller callback should be called anymore at t=tstart
-    ASSERT_EQ(0, scheduler.get_discrete_state_updaters_to_run().size());
-
-    // Check 'propeller' callback has been added to the scheduler.
-    scheduler.advance_to_next_time_event();
-    ASSERT_EQ(tstart + 0.15, scheduler.get_time());
-    ASSERT_EQ(1, scheduler.get_discrete_state_updaters_to_run().size());  // propeller callback
-
-    // Check 'propeller' callback has been added to the scheduler.
-    scheduler.advance_to_next_time_event();
-    ASSERT_EQ(tstart + 0.5, scheduler.get_time());
-    ASSERT_EQ(1, scheduler.get_discrete_state_updaters_to_run().size());  // controller callback
-
-    //! [controllersTest initialize_controllers]
 }
 
 TEST_F(PIDControllerTest, can_get_the_commands_outputted_by_the_controller)

@@ -14,7 +14,6 @@
 #include <ssc/solver/steppers.hpp>
 
 #include "SimObserver.hpp"
-#include "xdyn/controllers/listeners.hpp"
 #include "xdyn/core/Sim.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
@@ -24,6 +23,7 @@
 #include "xdyn/observers/EverythingObserver.hpp"
 #include "xdyn/observers/ListOfObservers.hpp"
 #include "xdyn/observers/unit_tests/MapObserverTest.hpp"
+#include "xdyn/simulator_api/build_controllers.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
 #include "xdyn/simulator_api/unit_tests/sim_with_mesh.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"

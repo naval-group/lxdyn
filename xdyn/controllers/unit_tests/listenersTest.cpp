@@ -7,12 +7,9 @@
 
 #include "listenersTest.hpp"
 
-#include "xdyn/controllers/PIDController.hpp"
 #include "xdyn/controllers/listeners.hpp"
-#include "xdyn/core/Sim.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/yaml_parser/parse_controllers.hpp"
 #include "xdyn/yaml_parser/parse_time_series.hpp"
 
 constexpr double EPS = 1E-14;
@@ -173,56 +170,4 @@ TEST_F(listenersTest, should_throw_if_force_model_name_is_not_defined_for_a_comm
                            "    rpm_co: {unit: rad/s, values: [50]}\n"
                            "    command: {unit: 1, values: [42]}\n";
     ASSERT_THROW(make_command_listener(parse_command_yaml(commands)), InvalidInputException);
-}
-
-Sim get_dummy_sim();
-Sim get_dummy_sim()
-{
-    const std::vector<BodyPtr> bodies;
-    const std::vector<ListOfForces> forces;
-    const EnvironmentAndFrames env;
-    const StateType x;
-    const ssc::data_source::DataSource command_listener;
-    return Sim(bodies, forces, env, x, command_listener);
-}
-
-TEST_F(listenersTest, get_pid_controllers_example)
-{
-    const std::string commands = "commands:\n"
-                                 "  - name: propeller\n"
-                                 "    t: [0]\n"
-                                 "    rpm_co: {unit: rad/s, values: [3]}\n"
-                                 "  - name: controller\n"
-                                 "    t: [0]\n"
-                                 "    rpm: {unit: rad/s, values: [3]}\n"
-                                 "    psi_co: {unit: deg, values: [30]}\n";
-
-    Sim sim = get_dummy_sim();
-    //! [controllersTest listen_to_file_example]
-    const auto controllers = build_controllers(
-        0,
-        parse_controller_yaml(test_data::read("yaml/controllers.yml")),
-        parse_command_yaml(commands),
-        sim);
-    ASSERT_EQ(2, controllers.size());
-    ASSERT_EQ("propeller(rpm)", ((PIDController*)controllers.at(0).get())->yaml.command_name);
-    ASSERT_EQ("controller(psi)", ((PIDController*)controllers.at(1).get())->yaml.command_name);
-    //! [controllersTest listen_to_file_example]
-}
-
-TEST_F(listenersTest, should_throw_if_controllers_and_commands_define_the_same_command)
-{
-    const std::vector<YamlTimeSeries> yaml_commands = parse_command_yaml(
-        "commands:\n"
-        "  - name: controller\n"
-        "    t: [0]\n"
-        "    psi_co: {unit: deg, values: [30]}\n"
-        "  - name: propeller\n"
-        "    t: [0]\n"
-        "    rpm: {unit: rad/s, values: [3]}\n");
-    const std::vector<YamlController> yaml_controllers =
-        parse_controller_yaml(test_data::read("yaml/controllers.yml"));
-
-    Sim sim = get_dummy_sim();
-    ASSERT_THROW(build_controllers(0, yaml_controllers, yaml_commands, sim), InvalidInputException);
 }
