@@ -45,6 +45,18 @@ BodyPtr BodyBuilderTest::build_body_with_filtered_states()
     return builder.build(yaml.bodies.front(), mesh, 0, 0, yaml.rotations, 100);
 }
 
+TEST_F(BodyBuilderTest, an_added_mass_that_names_a_file_must_be_read_first)
+{
+    auto yaml = SimulatorYamlParser(test_data::read("yaml/full_example.yml")).parse();
+    yaml.bodies.front().dynamics.added_mass.read_from_file = true;
+    yaml.bodies.front().dynamics.added_mass.hdb_filename = "test_ship.hdb";
+    const auto mesh = read_stl(test_data::read("tutorials/cube.stl"));
+    const BodyBuilder builder(yaml.rotations);
+    ASSERT_THROW(
+        builder.build(yaml.bodies.front(), mesh, 0, 0, yaml.rotations, 0),
+        InvalidInputException);
+}
+
 TEST_F(BodyBuilderTest, name_should_be_correct)
 {
     ASSERT_EQ("body 1", body->get_name());

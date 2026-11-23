@@ -3,11 +3,20 @@
 #include "xdyn/controllers/listeners.hpp"
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/hydro_db/read_added_mass.hpp"
 #include "xdyn/simulator_api/model_tables.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 #include "xdyn/yaml_parser/check_input_yaml.hpp"
 
 namespace {
+YamlSimulatorInput with_added_mass_resolved(YamlSimulatorInput input)
+{
+    for (auto& body : input.bodies) {
+        body.dynamics.added_mass = read_added_mass(body.dynamics.added_mass);
+    }
+    return input;
+}
+
 SimulatorBuilder get_builder(
     const YamlSimulatorInput& input,
     const double t0,
@@ -27,7 +36,7 @@ ssc::data_source::DataSource commands_and_setpoints(const YamlSimulatorInput& in
 Sim get_system(const YamlSimulatorInput& input, const double t0)
 {
     check_input_yaml(input);
-    return get_builder(input, t0, commands_and_setpoints(input)).build();
+    return get_builder(with_added_mass_resolved(input), t0, commands_and_setpoints(input)).build();
 }
 
 Sim get_system(
@@ -37,7 +46,10 @@ Sim get_system(
     const std::optional<ssc::data_source::DataSource>& commands)
 {
     check_input_yaml(input);
-    return get_builder(input, t0, commands ? *commands : commands_and_setpoints(input))
+    return get_builder(
+               with_added_mass_resolved(input),
+               t0,
+               commands ? *commands : commands_and_setpoints(input))
         .build(meshes);
 }
 

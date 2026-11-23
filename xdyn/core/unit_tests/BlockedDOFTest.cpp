@@ -14,6 +14,7 @@
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/hydro_db/read_added_mass.hpp"
 #include "xdyn/input/YamlSimulatorInput.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/simulator_api/model_tables.hpp"
@@ -316,6 +317,8 @@ TEST_F(BlockedDOFTest, force_acceleration)
         SimulatorYamlParser(
             test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_OTT.yml"))
             .parse();
+    input.bodies.front().dynamics.added_mass =
+        read_added_mass(input.bodies.front().dynamics.added_mass);
     SimulatorBuilder builder(input, make_force_model, add_environment_model);
     EnvironmentAndFrames env = builder.build_environment_and_frames();
     MeshMap dummyMesh;
@@ -392,6 +395,8 @@ TEST_F(BlockedDOFTest, force_acceleration_w_idealRudder)
         SimulatorYamlParser(
             test_data::read("yaml/kvlcc2.yml") + test_data::read("yaml/blockedDoF_idealRudder.yml"))
             .parse();
+    input.bodies.front().dynamics.added_mass =
+        read_added_mass(input.bodies.front().dynamics.added_mass);
     SimulatorBuilder builder(input, make_force_model, add_environment_model);
     EnvironmentAndFrames env = builder.build_environment_and_frames();
     MeshMap dummyMesh;

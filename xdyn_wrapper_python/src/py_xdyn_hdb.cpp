@@ -8,6 +8,7 @@
 #include "xdyn/hydro_db/RadiationDampingBuilder.hpp"
 #include "xdyn/hydro_db/RaoInterpolator.hpp"
 #include "xdyn/hydro_db/TimestampedMatrix.hpp"
+#include "xdyn/hydro_db/read_added_mass.hpp"
 
 namespace py = pybind11;
 
@@ -20,6 +21,13 @@ void py_add_module_xdyn_hdb(py::module& m)
         .def_readwrite("periods", &RAOData::periods)
         .def_readwrite("psi", &RAOData::psi)
         .def_readwrite("values", &RAOData::values);
+
+    m_hdb_interpolators.def(
+        "read_added_mass",
+        &read_added_mass,
+        py::arg("added_mass"),
+        "The added mass as six rows, read from the HDB or Precal file it names if it names one. "
+        "BodyBuilder.build takes the rows only.");
 
     py::class_<HydroDBParser>(m_hdb_interpolators, "HydroDBParser");
 
