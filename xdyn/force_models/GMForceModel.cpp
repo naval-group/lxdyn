@@ -99,7 +99,7 @@ double GMForceModel::get_gz_for_shifted_states(
 {
     BodyStates new_states = get_shifted_states(states, t);
     YamlFilteredStates y;
-    BodyWithSurfaceForces body_for_gm(new_states, 0, BlockedDOF(""), y);
+    BodyWithSurfaceForces body_for_gm(new_states, 0, BlockedDOF(YamlBlockedDOF()), y);
     body_for_gm.reset_history();
     body_for_gm.update(env, new_states.get_current_state_values(), t);
     const auto hs_force =
@@ -131,7 +131,7 @@ Wrench GMForceModel::get_force(
     // Make sure to call get_force again to restore the cache: otherwise calculating GZ & GM will
     // have modified latest_force_in_body_frame (and then Kinematics object)
     // but won't be detected by ForceModel::operator()
-    BodyWithSurfaceForces body(states, 0, BlockedDOF(""), YamlFilteredStates());
+    BodyWithSurfaceForces body(states, 0, BlockedDOF(YamlBlockedDOF()), YamlFilteredStates());
     body.update_kinematics(states.get_current_state_values(), env.k);
     underlying_hs_force_model->get_force(states, t, env, {});
     return ret;

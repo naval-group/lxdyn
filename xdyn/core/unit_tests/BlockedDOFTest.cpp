@@ -18,6 +18,7 @@
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
 #include "xdyn/simulator_api/model_tables.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 
 // STL
 #include <filesystem>
@@ -63,9 +64,9 @@ TEST_F(BlockedDOFTest, should_throw_if_forcing_same_state_twice)
                               "       value: [5]\n"
                               "       interpolation: piecewise constant\n";
 
-    ASSERT_THROW(BlockedDOF b(yaml1), InvalidInputException);
-    ASSERT_THROW(BlockedDOF b(yaml2), InvalidInputException);
-    ASSERT_THROW(BlockedDOF b(yaml3), InvalidInputException);
+    ASSERT_THROW(BlockedDOF b(parse(yaml1)), InvalidInputException);
+    ASSERT_THROW(BlockedDOF b(parse(yaml2)), InvalidInputException);
+    ASSERT_THROW(BlockedDOF b(parse(yaml3)), InvalidInputException);
 }
 
 TEST_F(BlockedDOFTest, should_throw_if_not_as_many_values_as_instants)
@@ -76,7 +77,7 @@ TEST_F(BlockedDOFTest, should_throw_if_not_as_many_values_as_instants)
                                      "       t: [4.2,5]\n"
                                      "       value: [5]\n"
                                      "       interpolation: piecewise constant\n";
-    ASSERT_THROW(BlockedDOF b(invalid_yaml), InvalidInputException);
+    ASSERT_THROW(BlockedDOF b(parse(invalid_yaml)), InvalidInputException);
 }
 
 TEST_F(BlockedDOFTest, should_throw_if_t_not_strictly_increasing)
@@ -87,7 +88,7 @@ TEST_F(BlockedDOFTest, should_throw_if_t_not_strictly_increasing)
                                      "       t: [5,4.2]\n"
                                      "       value: [5,6]\n"
                                      "       interpolation: piecewise constant\n";
-    ASSERT_THROW(BlockedDOF b(invalid_yaml), InvalidInputException);
+    ASSERT_THROW(BlockedDOF b(parse(invalid_yaml)), InvalidInputException);
 }
 
 TEST_F(BlockedDOFTest, should_throw_if_CSV_file_does_not_exist)
@@ -99,7 +100,7 @@ TEST_F(BlockedDOFTest, should_throw_if_CSV_file_does_not_exist)
                              "       value: PS\n"
                              "       interpolation: spline\n"
                              "       filename: test.csv\n";
-    ASSERT_THROW(BlockedDOF b(yaml), InvalidInputException);
+    ASSERT_THROW(BlockedDOF b(parse(yaml)), InvalidInputException);
 }
 
 struct TmpFile {
@@ -149,7 +150,7 @@ TEST_F(BlockedDOFTest, should_not_throw_if_CSV_file_exists)
     const std::string csv = "T,PS\n"
                             "1,2\n";
     csv_file << csv;
-    ASSERT_NO_THROW(BlockedDOF b(yaml));
+    ASSERT_NO_THROW(BlockedDOF b(parse(yaml)));
 }
 
 TEST_F(BlockedDOFTest, piecewise_constant_should_work)
@@ -161,7 +162,7 @@ TEST_F(BlockedDOFTest, piecewise_constant_should_work)
                              "       value: [1,2,3]\n"
                              "       interpolation: piecewise constant\n";
     StateType x(13);
-    const BlockedDOF blocker(yaml);
+    const BlockedDOF blocker(parse(yaml));
     blocker.force_states(x, 1);
     ASSERT_DOUBLE_EQ(1, x[state::index(0, state::P)]);
     blocker.force_states(x, 2.6);
@@ -183,7 +184,7 @@ TEST_F(BlockedDOFTest, linear_should_work)
                              "       value: [1,2,3]\n"
                              "       interpolation: linear\n";
     StateType x(13);
-    const BlockedDOF blocker(yaml);
+    const BlockedDOF blocker(parse(yaml));
     blocker.force_states(x, 1);
     ASSERT_DOUBLE_EQ(1, x[state::index(0, state::U)]);
     blocker.force_states(x, 2.6);
@@ -205,7 +206,7 @@ TEST_F(BlockedDOFTest, spline_should_work)
                              "       value: [1,2,3]\n"
                              "       interpolation: spline\n";
     StateType x(13);
-    const BlockedDOF blocker(yaml);
+    const BlockedDOF blocker(parse(yaml));
     blocker.force_states(x, 1);
     ASSERT_DOUBLE_EQ(1, x[state::index(0, state::Q)]);
     blocker.force_states(x, 2.6);
@@ -227,7 +228,7 @@ TEST_F(BlockedDOFTest, blocked_derivative_should_work)
                              "       value: [1,2,3]\n"
                              "       interpolation: linear\n";
     StateType dx_dt(13);
-    const BlockedDOF blocker(yaml);
+    const BlockedDOF blocker(parse(yaml));
     blocker.force_state_derivatives(dx_dt, 1);
     ASSERT_DOUBLE_EQ(1. / 3.2, dx_dt[state::index(0, state::U)]);
     blocker.force_state_derivatives(dx_dt, 2.6);
@@ -249,7 +250,7 @@ TEST_F(BlockedDOFTest, force_delta)
                              "       value: [1,2,3]\n"
                              "       interpolation: linear\n";
     const StateType dx_dt = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23};
-    const BlockedDOF blocker(yaml);
+    const BlockedDOF blocker(parse(yaml));
     Eigen::Matrix<double, 6, 6> total_inertia;
     total_inertia << 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6,
         7, 8, 9, 0, 1, 2, 3, 4, 5, 6;

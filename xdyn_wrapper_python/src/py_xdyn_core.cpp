@@ -40,6 +40,7 @@
 #include "xdyn/wave_models/SurfaceElevationFromWaves.hpp"
 #include "xdyn/wave_models/SurfaceElevationInterface.hpp"
 #include "xdyn/wind_models/UniformWindVelocityProfile.hpp"
+#include "xdyn/yaml_parser/input_parsers.hpp"
 
 namespace py = pybind11;
 
@@ -346,7 +347,9 @@ void py_add_module_xdyn_core(py::module& m0)
             py::arg("input"),
             py::arg("body_idx") = 0)
         .def(
-            py::init<const std::string& /*input*/, const size_t /*body_idx=0*/>(),
+            py::init([](const std::string& input, const size_t body_idx) {
+                return BlockedDOF(parse(input), body_idx);
+            }),
             py::arg("input"),
             py::arg("body_idx") = 0)
         .def("force_states", &BlockedDOF::force_states)
@@ -434,7 +437,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const BlockedDOF& /*blocked_states*/,
                 const YamlFilteredStates& /*filtered_states*/>(),
             py::arg("idx") = 0,
-            py::arg("blocked_states") = BlockedDOF(""),
+            py::arg("blocked_states") = BlockedDOF(YamlBlockedDOF()),
             py::arg("filtered_states") = YamlFilteredStates())
         .def(
             py::init<
@@ -444,7 +447,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const YamlFilteredStates& /*filtered_states*/>(),
             py::arg("states"),
             py::arg("idx") = 0,
-            py::arg("blocked_states") = BlockedDOF(""),
+            py::arg("blocked_states") = BlockedDOF(YamlBlockedDOF()),
             py::arg("filtered_states") = YamlFilteredStates())
         .def(
             py::init<
@@ -452,7 +455,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const BlockedDOF& /*blocked_states*/,
                 const StatesFilter& /*filtered_states*/>(),
             py::arg("idx") = 0,
-            py::arg("blocked_states") /*= BlockedDOF("")*/,
+            py::arg("blocked_states") /*= BlockedDOF(YamlBlockedDOF())*/,
             py::arg("filtered_states") /*= StatesFilter(YamlFilteredStates())*/)
         .def(
             py::init<
@@ -462,7 +465,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const StatesFilter& /*filtered_states*/>(),
             py::arg("states"),
             py::arg("idx") = 0,
-            py::arg("blocked_states") /*= BlockedDOF("")*/,
+            py::arg("blocked_states") /*= BlockedDOF(YamlBlockedDOF())*/,
             py::arg("filtered_states") /*= StatesFilter(YamlFilteredStates())*/)
         .def(
             "update_intersection_with_free_surface",
@@ -479,7 +482,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const BlockedDOF& /*blocked_states*/,
                 const YamlFilteredStates& /*filtered_states*/>(),
             py::arg("idx") = 0,
-            py::arg("blocked_states") = BlockedDOF(""),
+            py::arg("blocked_states") = BlockedDOF(YamlBlockedDOF()),
             py::arg("filtered_states") = YamlFilteredStates())
         .def(
             py::init<
@@ -489,7 +492,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const YamlFilteredStates& /*filtered_states*/>(),
             py::arg("states"),
             py::arg("idx") = 0,
-            py::arg("blocked_states") = BlockedDOF(""),
+            py::arg("blocked_states") = BlockedDOF(YamlBlockedDOF()),
             py::arg("filtered_states") = YamlFilteredStates())
         .def(
             py::init<
@@ -497,7 +500,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const BlockedDOF& /*blocked_states*/,
                 const StatesFilter& /*filtered_states*/>(),
             py::arg("idx") = 0,
-            py::arg("blocked_states") /*= BlockedDOF("")*/,
+            py::arg("blocked_states") /*= BlockedDOF(YamlBlockedDOF())*/,
             py::arg(
                 "filtered_states") /*= StatesFilter(YamlFilteredStates())*/)  // Does not work with
                                                                               // runtiem error
@@ -515,7 +518,7 @@ void py_add_module_xdyn_core(py::module& m0)
                 const StatesFilter& /*filtered_states*/>(),
             py::arg("states"),
             py::arg("idx") = 0,
-            py::arg("blocked_states") /*= BlockedDOF("")*/,
+            py::arg("blocked_states") /*= BlockedDOF(YamlBlockedDOF())*/,
             py::arg("filtered_states") /*= StatesFilter(YamlFilteredStates())*/)
         .def(
             "update_intersection_with_free_surface",

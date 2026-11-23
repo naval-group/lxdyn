@@ -17,7 +17,6 @@
 
 #include "xdyn/exceptions/InvalidInputException.hpp"
 #include "xdyn/exceptions/NumericalErrorException.hpp"
-#include "xdyn/yaml_parser/input_parsers.hpp"
 
 using Table = YamlDOF<std::vector<double>>;
 
@@ -428,11 +427,6 @@ private:
 
 BlockedDOF::BlockedDOF(const YamlBlockedDOF& input, const size_t body_idx)
     : pimpl(new Impl(Builder(input), body_idx))
-{
-}
-
-BlockedDOF::BlockedDOF(const std::string& input, const size_t body_idx)
-    : pimpl(new Impl(Builder(parse(input)), body_idx))
 {
 }
 

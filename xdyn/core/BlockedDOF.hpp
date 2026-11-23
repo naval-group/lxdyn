@@ -45,7 +45,6 @@ public:
      * That information is contained in the 'input' data
      * */
     explicit BlockedDOF(const YamlBlockedDOF& input, const size_t body_idx = 0);
-    explicit BlockedDOF(const std::string& input, const size_t body_idx = 0);
 
     /** \brief Update states taking into accoung forcing
      *  \details This method replaces forced states in x by forced values. The forced values are
