@@ -15,8 +15,6 @@
 #include "BodyWithoutSurfaceForces.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/hydro_db/HDBParser.hpp"
-#include "xdyn/hydro_db/PrecalParser.hpp"
 #include "xdyn/input/YamlBody.hpp"
 #include "xdyn/input/YamlRotation.hpp"
 #include "xdyn/mesh/MeshBuilder.hpp"
@@ -124,23 +122,15 @@ Eigen::Matrix<double, 6, 6> build_added_matrix(
     const std::string& states_name,
     const YamlDynamics6x6Matrix& added_mass)
 {
-    Eigen::Matrix<double, 6, 6> Ma;
     if (added_mass.read_from_file) {
-        if (added_mass.hdb_filename.empty()) {
-            if (added_mass.precal_filename.empty()) {
-                THROW(
-                    __PRETTY_FUNCTION__,
-                    InternalErrorException,
-                    "Error reading the added mass matrix: xdyn was expecting a filename (as value for key 'from PRECAL_R' or 'from HDB') but an empty string was found.");
-            } else {
-                Ma = PrecalParser::from_file(added_mass.precal_filename).get_added_mass();
-            }
-        } else {
-            Ma = HDBParser::from_file(added_mass.hdb_filename).get_added_mass();
-        }
-    } else {
-        Ma = make_matrix6x6(added_mass);
+        THROW(
+            __PRETTY_FUNCTION__,
+            InvalidInputException,
+            "The added mass of body '"
+                << states_name
+                << "' names an HDB or Precal file: read it with read_added_mass before building the body.");
     }
+    const Eigen::Matrix<double, 6, 6> Ma = make_matrix6x6(added_mass);
     if (!is_symmetric(Ma)) {
         std::cerr << "Warning! The input added mass is not symmetric"
                   << " for body '" << states_name << "': " << std::endl
