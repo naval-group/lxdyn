@@ -16,20 +16,25 @@
 #include "xdyn/input/YamlRotation.hpp"
 #define PI M_PI
 
+namespace {
+YamlStateFilter moving_average(const double duration_in_seconds)
+{
+    return YamlStateFilter{"moving average", duration_in_seconds};
+}
+}  // namespace
+
 StatesFilterTest::StatesFilterTest() : a(ssc::random_data_generator::DataGenerator(556677)) {}
 
 TEST_F(StatesFilterTest, should_throw_if_type_of_filter_is_unknown)
 {
-    const std::string yaml = "type of filter: some unknown filter\n"
-                             "duration in seconds : 3";
-    ASSERT_THROW(StateFilter::build(yaml), InvalidInputException);
+    const YamlStateFilter state_filter = YamlStateFilter{"some unknown filter", 3};
+    ASSERT_THROW(StateFilter::build(state_filter), InvalidInputException);
 }
 
-TEST_F(StatesFilterTest, should_not_throw_if_yaml_is_valid)
+TEST_F(StatesFilterTest, should_not_throw_if_the_filter_is_known)
 {
-    const std::string yaml = "type of filter: moving average\n"
-                             "duration in seconds : 3";
-    ASSERT_NO_THROW(StateFilter::build(yaml));
+    const YamlStateFilter state_filter = moving_average(3);
+    ASSERT_NO_THROW(StateFilter::build(state_filter));
 }
 
 TEST_F(StatesFilterTest, if_duration_is_zero_no_filtering_should_take_place)
@@ -39,9 +44,8 @@ TEST_F(StatesFilterTest, if_duration_is_zero_no_filtering_should_take_place)
     h.record(0, 1);
     h.record(1, 2);
     h.record(2, last_value);
-    const std::string yaml = "type of filter: moving average\n"
-                             "duration in seconds : 0";
-    const auto filter = StateFilter::build(yaml);
+    const YamlStateFilter state_filter = moving_average(0);
+    const auto filter = StateFilter::build(state_filter);
     ASSERT_DOUBLE_EQ(last_value, filter->filter(h));
 }
 
@@ -51,39 +55,26 @@ TEST_F(StatesFilterTest, should_be_able_to_filter)
     h.record(0, 1);
     h.record(1, 2);
     h.record(2, 3);
-    const std::string yaml = "type of filter: moving average\n"
-                             "duration in seconds : 1";
-    const auto filter = StateFilter::build(yaml);
+    const YamlStateFilter state_filter = moving_average(1);
+    const auto filter = StateFilter::build(state_filter);
     ASSERT_DOUBLE_EQ(2.5, filter->filter(h));
 }
 
 TEST_F(StatesFilterTest, should_be_able_to_filter_all_states)
 {
     YamlFilteredStates input;
-    input.x = "type of filter: moving average\n"
-              "duration in seconds : 1";
-    input.y = "type of filter: moving average\n"
-              "duration in seconds : 2";
-    input.z = "type of filter: moving average\n"
-              "duration in seconds : 3";
-    input.u = "type of filter: moving average\n"
-              "duration in seconds : 4";
-    input.v = "type of filter: moving average\n"
-              "duration in seconds : 5";
-    input.w = "type of filter: moving average\n"
-              "duration in seconds : 6";
-    input.p = "type of filter: moving average\n"
-              "duration in seconds : 7";
-    input.q = "type of filter: moving average\n"
-              "duration in seconds : 8";
-    input.r = "type of filter: moving average\n"
-              "duration in seconds : 9";
-    input.phi = "type of filter: moving average\n"
-                "duration in seconds : 1";
-    input.theta = "type of filter: moving average\n"
-                  "duration in seconds : 1";
-    input.psi = "type of filter: moving average\n"
-                "duration in seconds : 1";
+    input.x = moving_average(1);
+    input.y = moving_average(2);
+    input.z = moving_average(3);
+    input.u = moving_average(4);
+    input.v = moving_average(5);
+    input.w = moving_average(6);
+    input.p = moving_average(7);
+    input.q = moving_average(8);
+    input.r = moving_average(9);
+    input.phi = moving_average(1);
+    input.theta = moving_average(1);
+    input.psi = moving_average(1);
     const StatesFilter filters(input);
     AbstractStates<History> states(10);
     states.x.record(0, 1);
@@ -142,46 +133,33 @@ TEST_F(StatesFilterTest, should_be_able_to_filter_all_states)
     ASSERT_NEAR(PI / 2, filters.get_filtered_psi(states, rot), eps);
 }
 
-TEST_F(StatesFilterTest, no_yaml_means_no_filter)
+TEST_F(StatesFilterTest, no_type_means_no_filter)
 {
     History h(3);
     const double last_value = a.random<double>();
     h.record(0, 1);
     h.record(1, 2);
     h.record(2, last_value);
-    const auto filter = StateFilter::build("");
+    const auto filter = StateFilter::build(YamlStateFilter());
     ASSERT_DOUBLE_EQ(last_value, filter->filter(h));
 }
 
 TEST_F(StatesFilterTest, can_get_Tmax)
 {
-    const std::string yaml = "type of filter: moving average\n"
-                             "duration in seconds : 3456.654";
-    ASSERT_DOUBLE_EQ(3456.654, StateFilter::build(yaml)->get_Tmax());
+    const YamlStateFilter state_filter = moving_average(3456.654);
+    ASSERT_DOUBLE_EQ(3456.654, StateFilter::build(state_filter)->get_Tmax());
     YamlFilteredStates input;
-    input.x = "type of filter: moving average\n"
-              "duration in seconds : 1";
-    input.y = "type of filter: moving average\n"
-              "duration in seconds : 2";
-    input.z = "type of filter: moving average\n"
-              "duration in seconds : 3";
-    input.u = "type of filter: moving average\n"
-              "duration in seconds : 4";
-    input.v = "type of filter: moving average\n"
-              "duration in seconds : 5";
-    input.w = "type of filter: moving average\n"
-              "duration in seconds : 6";
-    input.p = "type of filter: moving average\n"
-              "duration in seconds : 7";
-    input.q = "type of filter: moving average\n"
-              "duration in seconds : 8";
-    input.r = "type of filter: moving average\n"
-              "duration in seconds : 9";
-    input.phi = "type of filter: moving average\n"
-                "duration in seconds : 1";
-    input.theta = "type of filter: moving average\n"
-                  "duration in seconds : 1";
-    input.psi = "type of filter: moving average\n"
-                "duration in seconds : 1";
+    input.x = moving_average(1);
+    input.y = moving_average(2);
+    input.z = moving_average(3);
+    input.u = moving_average(4);
+    input.v = moving_average(5);
+    input.w = moving_average(6);
+    input.p = moving_average(7);
+    input.q = moving_average(8);
+    input.r = moving_average(9);
+    input.phi = moving_average(1);
+    input.theta = moving_average(1);
+    input.psi = moving_average(1);
     ASSERT_DOUBLE_EQ(9, StatesFilter(input).get_Tmax());
 }

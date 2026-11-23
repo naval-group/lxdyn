@@ -15,10 +15,11 @@
 #include "xdyn/input/YamlRotation.hpp"
 
 class History;
+struct YamlStateFilter;
 
 class StateFilter {
 public:
-    static std::shared_ptr<StateFilter> build(const std::string& yaml);
+    static std::shared_ptr<StateFilter> build(const YamlStateFilter& input);
     virtual double filter(const History& h) const = 0;
     virtual ~StateFilter() = default;
     virtual double get_Tmax() const = 0;

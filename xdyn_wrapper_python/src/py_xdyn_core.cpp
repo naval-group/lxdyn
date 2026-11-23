@@ -177,6 +177,11 @@ void py_add_module_xdyn_core_io(py::module& m)
         .def_readwrite("blocked_dof", &YamlBody::blocked_dof)
         .def_readwrite("filtered_states", &YamlBody::filtered_states);
 
+    py::class_<YamlStateFilter>(m, "YamlStateFilter")
+        .def(py::init<>())
+        .def_readwrite("type_of_filter", &YamlStateFilter::type_of_filter)
+        .def_readwrite("duration_in_seconds", &YamlStateFilter::duration_in_seconds);
+
     py::class_<YamlFilteredStates>(m, "YamlFilteredStates")
         .def(py::init<>())
         .def_readwrite("x", &YamlFilteredStates::x)

@@ -602,22 +602,20 @@ TEST_F(SimulatorYamlParserTest, can_parse_filtered_states)
 {
     const YamlSimulatorInput yaml =
         SimulatorYamlParser(test_data::read("tutorials/tutorial_10_gRPC_force_model.yml")).parse();
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.x.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.y.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.z.empty());
-    ASSERT_EQ(
-        "type of filter: moving average\nduration in seconds: 2.3",
-        yaml.bodies.front().filtered_states.u);
-    ASSERT_EQ(
-        "type of filter: moving average\nduration in seconds: 3",
-        yaml.bodies.front().filtered_states.v);
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.w.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.p.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.q.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.r.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.phi.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.theta.empty());
-    ASSERT_TRUE(yaml.bodies.front().filtered_states.psi.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.x.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.y.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.z.type_of_filter.empty());
+    ASSERT_EQ("moving average", yaml.bodies.front().filtered_states.u.type_of_filter);
+    ASSERT_DOUBLE_EQ(2.3, yaml.bodies.front().filtered_states.u.duration_in_seconds);
+    ASSERT_EQ("moving average", yaml.bodies.front().filtered_states.v.type_of_filter);
+    ASSERT_DOUBLE_EQ(3, yaml.bodies.front().filtered_states.v.duration_in_seconds);
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.w.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.p.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.q.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.r.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.phi.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.theta.type_of_filter.empty());
+    ASSERT_TRUE(yaml.bodies.front().filtered_states.psi.type_of_filter.empty());
 }
 
 TEST_F(SimulatorYamlParserTest, missing_environment_model_yaml_node_should_throw_an_error)

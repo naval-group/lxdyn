@@ -75,20 +75,25 @@ struct YamlBlockedDOF {
     std::vector<YamlCSVDOF> from_csv;
 };
 
+/** \brief One state's filter: an empty `type_of_filter` leaves the state as it is */
+struct YamlStateFilter {
+    std::string type_of_filter;
+    double duration_in_seconds{};
+};
+
 struct YamlFilteredStates {
-    YamlFilteredStates();
-    std::string x;
-    std::string y;
-    std::string z;
-    std::string u;
-    std::string v;
-    std::string w;
-    std::string p;
-    std::string q;
-    std::string r;
-    std::string phi;
-    std::string theta;
-    std::string psi;
+    YamlStateFilter x;
+    YamlStateFilter y;
+    YamlStateFilter z;
+    YamlStateFilter u;
+    YamlStateFilter v;
+    YamlStateFilter w;
+    YamlStateFilter p;
+    YamlStateFilter q;
+    YamlStateFilter r;
+    YamlStateFilter phi;
+    YamlStateFilter theta;
+    YamlStateFilter psi;
 };
 
 struct YamlBody {

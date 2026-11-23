@@ -144,8 +144,7 @@ TEST_F(ResistanceCurveForceModelTest, with_filtered_states)
         "",
         env);
     YamlFilteredStates filters;
-    filters.u = "type of filter: moving average\n"
-                "duration in seconds : 9";
+    filters.u = YamlStateFilter{"moving average", 9};
     BodyStates states(filters, 9);
     states.convention.convention = {"z", "y'", "x''"};
     states.convention.order_by = "angle";

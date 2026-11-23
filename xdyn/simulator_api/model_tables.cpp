@@ -20,6 +20,7 @@
 #include "xdyn/wave_models/wave_model_table.hpp"
 #include "xdyn/wind_models/wind_model_table.hpp"
 #include "xdyn/yaml_parser/environment_parsers.hpp"
+#include "xdyn/yaml_parser/rethrow_with_yaml_context.hpp"
 
 namespace {
 ForcePtr grpc_force_model(
