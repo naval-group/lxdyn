@@ -51,13 +51,6 @@ pub fn addSources(ctx: *const root.Ctx, lib: *std.Build.Module) void {
     // The Fortran-derived C in these two.
     for ([_][]const u8{ "ssc/integrate", "ssc/interpolation" }) |dir|
         lib.addCSourceFiles(.{ .root = b.path(dir), .files = root.sourcesIn(b, dir, ".c", &.{}), .flags = ctx.c_flags });
-    // C++ function-style casts in a .c file.
-    lib.addCSourceFiles(.{
-        .root = b.path("ssc/random_data_generator"),
-        .files = &.{"sir_rand.c"},
-        .flags = ctx.withDebug(&.{ "-std=gnu++17", "-Wall", "-Werror", "-fPIC" }),
-        .language = .cpp,
-    });
     lib.addCSourceFiles(.{ .root = b.path("ssc/websocket/src"), .files = root.sourcesIn(b, "ssc/websocket/src", ".cpp", &.{}), .flags = f.ws });
 }
 
