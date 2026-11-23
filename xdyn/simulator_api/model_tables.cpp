@@ -1,8 +1,8 @@
 /*
- * environment_model_table.cpp
+ * model_tables.cpp
  */
 
-#include "environment_model_table.hpp"
+#include "model_tables.hpp"
 
 #include <array>
 #include <memory>
@@ -10,6 +10,8 @@
 #include "xdyn/core/ModelTable.hpp"
 #include "xdyn/current_models/current_model_table.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/force_models/force_model_table.hpp"
+#include "xdyn/grpc/GRPCForceModel.hpp"
 #include "xdyn/grpc/SurfaceElevationFromGRPC.hpp"
 #include "xdyn/input/YamlGRPC.hpp"
 #include "xdyn/wave_models/wave_mesh.hpp"
@@ -18,19 +20,51 @@
 #include "xdyn/yaml_parser/environment_parsers.hpp"
 
 namespace {
+ForcePtr grpc_force_model(
+    const std::string& yaml,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
+{
+    return std::make_shared<GRPCForceModel>(GRPCForceModel::parse(yaml), body_name, env);
+}
+
 SurfaceElevationPtr surface_elevation_from_grpc(const std::string& yaml)
 {
     const YamlGRPC input = parse_grpc(yaml);
     return std::make_shared<SurfaceElevationFromGRPC>(input, make_wave_mesh(input.output));
 }
 
-// grpc/ builds on wave_models/, so wave_models/' table cannot name the gRPC free surface
+// grpc/ builds on the model folders, so their tables cannot name the gRPC models
+const auto& grpc_force_models()
+{
+    static const std::array table{
+        ModelEntry<ForceModelFactory>{GRPCForceModel::model_name(), grpc_force_model},
+    };
+    return table;
+}
+
 const auto& grpc_surface_elevations()
 {
     static const std::array table{
         ModelEntry<SurfaceElevationFactory>{"grpc", surface_elevation_from_grpc},
     };
     return table;
+}
+
+ForceModelFactory find_force(const std::string& name)
+{
+    if (const auto factory = find_force_model(name)) {
+        return factory;
+    }
+    return find_model(grpc_force_models(), name);
+}
+
+std::vector<std::string> all_force_model_names()
+{
+    std::vector<std::string> names = force_model_names();
+    const auto grpc = model_names(grpc_force_models());
+    names.insert(names.end(), grpc.begin(), grpc.end());
+    return names;
 }
 
 SurfaceElevationFactory find_waves(const std::string& name)
@@ -63,6 +97,22 @@ void fill(
     }
 }
 }  // namespace
+
+ForcePtr make_force_model(
+    const YamlModel& yaml,
+    const std::string& body_name,
+    const EnvironmentAndFrames& env)
+{
+    const ForceModelFactory factory = find_force(yaml.model);
+    if (factory == nullptr) {
+        throw_unknown_model(yaml, all_force_model_names());
+    }
+    try {
+        return factory(yaml.yaml, body_name, env);
+    } catch (...) {
+        rethrow_with_yaml_context(yaml);
+    }
+}
 
 void add_environment_model(const YamlModel& yaml, EnvironmentAndFrames& env)
 {

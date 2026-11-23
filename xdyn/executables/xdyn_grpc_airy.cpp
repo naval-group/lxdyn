@@ -11,9 +11,9 @@
 
 #include "ErrorReporter.hpp"
 #include "display_command_line_arguments.hpp"
-#include "gRPCChecks.hpp"
 #include "parse_XdynCommandLineArguments.hpp"
 #include "xdyn/grpc/AiryGRPC.hpp"
+#include "xdyn/servers/gRPCChecks.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
 
 constexpr const char* xdyn_grpc_airy_description =

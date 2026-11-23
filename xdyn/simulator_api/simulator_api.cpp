@@ -3,9 +3,8 @@
 #include "xdyn/controllers/listeners.hpp"
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/force_models/force_model_table.hpp"
 #include "xdyn/mesh/stl_reader.hpp"
-#include "xdyn/simulator_api/environment_model_table.hpp"
+#include "xdyn/simulator_api/model_tables.hpp"
 
 SimulatorBuilder get_builder(
     const YamlSimulatorInput& input,
