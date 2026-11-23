@@ -7,6 +7,7 @@ constexpr int GET_A_MAX_STRING_LENGTH = 17;
 #include <math.h>    // For floor
 #include <stdlib.h>  // For size_t
 
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -75,6 +76,10 @@ protected:
 private:
     DataGenerator();
     int get_random_number() const;
+    double random_u01() const;
+    struct Engine;
+    // Shared, because every random<T>() draws through a copy of this generator
+    std::shared_ptr<Engine> engine;
 };
 
 template <class T>

@@ -4,8 +4,7 @@
 
 #include <cstddef>  // size_t
 #include <iostream>
-
-#include "ssc/random_data_generator/sir_rand.h"
+#include <random>
 
 constexpr int MAX_RAND_INT = 2147483647;
 
@@ -48,9 +47,20 @@ bool outside_forbidden_zone(const T& forbidden_min, const T& value_to_test, cons
     return not((value_to_test >= forbidden_min) && (value_to_test <= forbidden_max));
 }
 
-DataGenerator::DataGenerator(const size_t& seed) : negated(false)
+// std::mt19937_64's output is set by the standard, so a seed draws the same data on every target
+struct DataGenerator::Engine {
+    explicit Engine(const size_t seed) : generator(seed) {}
+    std::mt19937_64 generator;
+};
+
+DataGenerator::DataGenerator(const size_t& seed)
+    : negated(false), engine(std::make_shared<Engine>(seed))
 {
-    srand((unsigned int)(seed));
+}
+
+double DataGenerator::random_u01() const
+{
+    return static_cast<double>(engine->generator() >> 11) * 0x1.0p-53;
 }
 
 DataGenerator& DataGenerator::no()
@@ -61,7 +71,7 @@ DataGenerator& DataGenerator::no()
 
 double DataGenerator::random_double(const double& a, const double& b) const
 {
-    const double r = sir_rand_u01();
+    const double r = random_u01();
     return (b - a) * r + a;
 }
 /*
@@ -90,32 +100,32 @@ double& t)
 
 int DataGenerator::random_int(const int& a, const int& b) const
 {
-    return a + static_cast<int>(sir_rand_u01() * (b - a));
+    return a + static_cast<int>(random_u01() * (b - a));
 }
 
 size_t DataGenerator::random_size_t(const size_t& a, const size_t& b) const
 {
-    return a + static_cast<size_t>(floor(sir_rand_u01() * double(b - a) + 0.5));
+    return a + static_cast<size_t>(floor(random_u01() * double(b - a) + 0.5));
 }
 
 float DataGenerator::random_float(const float& a, const float& b) const
 {
-    return a + static_cast<float>(sir_rand_u01() * (b - a));
+    return a + static_cast<float>(random_u01() * (b - a));
 }
 
 long DataGenerator::random_long(const long& a, const long& b) const
 {
-    return a + static_cast<long>(floor(sir_rand_u01() * double(b - a) + 0.5));
+    return a + static_cast<long>(floor(random_u01() * double(b - a) + 0.5));
 }
 
 short DataGenerator::random_short(const short& a, const short& b) const
 {
-    return (short)(a + floor(sir_rand_u01() * (double(b) - double(a)) + 0.5));
+    return (short)(a + floor(random_u01() * (double(b) - double(a)) + 0.5));
 }
 
 bool DataGenerator::random_bool() const
 {
-    return (sir_rand_u01() > 0.5);
+    return (random_u01() > 0.5);
 }
 
 char DataGenerator::random_char() const
@@ -174,7 +184,7 @@ DataGenerator::vector_of_random_doubles(const size_t& n, const double& a, const 
 
 int DataGenerator::get_random_number() const
 {
-    return static_cast<int>(sir_rand_u01() * MAX_RAND_INT);
+    return static_cast<int>(random_u01() * MAX_RAND_INT);
 }
 
 namespace ssc {
