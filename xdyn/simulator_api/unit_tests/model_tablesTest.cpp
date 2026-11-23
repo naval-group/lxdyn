@@ -1,13 +1,49 @@
 /*
- * environment_model_tableTest.cpp
+ * model_tablesTest.cpp
  */
 
 #include <algorithm>
 #include <string>
 
-#include "environment_model_table.hpp"
 #include "gtest/gtest.h"
+#include "model_tables.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
+#include "xdyn/force_models/ConstantForceModel.hpp"
+#include "xdyn/force_models/force_model_table.hpp"
+#include "xdyn/grpc/GRPCForceModel.hpp"
+
+namespace {
+std::string error_from(const YamlModel& yaml)
+{
+    try {
+        make_force_model(yaml, "body", EnvironmentAndFrames());
+    } catch (const InvalidInputException& e) {
+        return e.get_message();
+    }
+    return "";
+}
+}  // namespace
+
+// force_models/' table is asked first, so a model of its own named like the gRPC one would hide it
+TEST(make_force_model, the_grpc_name_is_free_in_the_force_table)
+{
+    EXPECT_EQ(nullptr, find_force_model(GRPCForceModel::model_name()));
+}
+
+TEST(make_force_model, an_unknown_name_suggests_the_closest_known_one)
+{
+    const auto message = error_from(YamlModel("gravit", "", 7));
+    EXPECT_NE(std::string::npos, message.find("'gravit', defined line 7")) << message;
+    EXPECT_NE(std::string::npos, message.find("Did you mean 'gravity'?")) << message;
+}
+
+TEST(make_force_model, a_yaml_error_names_the_model_and_its_line)
+{
+    const auto message = error_from(YamlModel(ConstantForceModel::model_name(), "[", 12));
+    EXPECT_NE(std::string::npos, message.find("Invalid input data for model 'constant force'."))
+        << message;
+    EXPECT_NE(std::string::npos, message.find("defined line 12 of the YAML file")) << message;
+}
 
 // A name accepted by two of the wave, wind and current tables would fill only the first one's slot
 TEST(add_environment_model, every_name_is_unique)

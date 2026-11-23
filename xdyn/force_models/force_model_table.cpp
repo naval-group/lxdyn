@@ -33,14 +33,8 @@
 #include "SimpleStationKeepingController.hpp"
 #include "WageningenControlledForceModel.hpp"
 #include "xdyn/core/ModelTable.hpp"
-#include "xdyn/grpc/GRPCForceModel.hpp"
 
 namespace {
-using ForceModelFactory = ForcePtr (*)(
-    const std::string& yaml,
-    const std::string& body_name,
-    const EnvironmentAndFrames& env);
-
 template <typename T>
 ModelEntry<ForceModelFactory> parsed()
 {
@@ -71,7 +65,6 @@ const auto& force_models()
         parsed<FlettnerRotorForceModel>(),
         parameterless<FroudeKrylovForceModel>(),
         parsed<GMForceModel>(),
-        parsed<GRPCForceModel>(),
         parameterless<GravityForceModel>(),
         parsed<HoltropMennenForceModel>(),
         parsed<HydroPolarForceModel>(),
@@ -96,20 +89,9 @@ const auto& force_models()
 }
 }  // namespace
 
-ForcePtr make_force_model(
-    const YamlModel& yaml,
-    const std::string& body_name,
-    const EnvironmentAndFrames& env)
+ForceModelFactory find_force_model(const std::string& name)
 {
-    const ForceModelFactory factory = find_model(force_models(), yaml.model);
-    if (factory == nullptr) {
-        throw_unknown_model(yaml, force_model_names());
-    }
-    try {
-        return factory(yaml.yaml, body_name, env);
-    } catch (...) {
-        rethrow_with_yaml_context(yaml);
-    }
+    return find_model(force_models(), name);
 }
 
 std::vector<std::string> force_model_names()

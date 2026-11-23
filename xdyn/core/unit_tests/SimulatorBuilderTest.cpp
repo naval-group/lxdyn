@@ -16,9 +16,8 @@
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/force_models/force_model_table.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
-#include "xdyn/simulator_api/environment_model_table.hpp"
+#include "xdyn/simulator_api/model_tables.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 static const YamlSimulatorInput& shared_input()

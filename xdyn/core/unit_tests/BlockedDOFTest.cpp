@@ -14,10 +14,9 @@
 #include "xdyn/core/SimulatorBuilder.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
-#include "xdyn/force_models/force_model_table.hpp"
 #include "xdyn/input/YamlSimulatorInput.hpp"
 #include "xdyn/mesh/unit_tests/TriMeshTestData.hpp"
-#include "xdyn/simulator_api/environment_model_table.hpp"
+#include "xdyn/simulator_api/model_tables.hpp"
 #include "xdyn/yaml_parser/SimulatorYamlParser.hpp"
 
 // STL

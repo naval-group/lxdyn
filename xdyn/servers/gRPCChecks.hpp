@@ -5,7 +5,7 @@
 
 #include <functional>
 
-#include "ErrorReporter.hpp"
+#include "xdyn/cli/ErrorReporter.hpp"
 #include "xdyn/exceptions/InternalErrorException.hpp"
 #include "xdyn/exceptions/InvalidInputException.hpp"
 
