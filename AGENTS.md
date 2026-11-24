@@ -32,7 +32,7 @@ Run one test with `mise run test -- --gtest_filter='Gravity*'`, or skip the long
 | `xdyn/{wind,current,wave}_models/*_model_table.cpp` | every wind, current and wave model a YAML file can name but `grpc`, and the wave spectra and spreadings; a new one is one line in its folder's table |
 | `xdyn/simulator_api/` | YAML and meshes to a `Sim` and its controllers, the one module that depends on every model; `model_tables.cpp` asks the folder tables, then the gRPC models, which only it registers |
 | `xdyn/core/` | the engine; it includes the model interfaces only, and no parser or file reader |
-| `xdyn/<module>/unit_tests/` | that module's GoogleTest suite |
+| `xdyn/<module>/unit_tests/` | the GoogleTest suite of the module whose code it exercises; a test that builds a `Sim` goes in `simulator_api/unit_tests/` |
 | `xdyn/executables/` | `xdyn`, the gRPC/websocket servers and the example generators |
 | `ssc/` | SSC: units, interpolation, kinematics, solvers, websocket |
 | `proto/`, `xdyn_grpc/` | the gRPC API and the Python package for writing models against it |

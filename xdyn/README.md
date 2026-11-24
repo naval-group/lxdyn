@@ -1,6 +1,6 @@
 # xdyn
 
-One folder per module, each named after what it holds. A module's tests are in its `unit_tests/`. `mise run lint` holds each module to the includes the table in `tools/lint.sh` allows.
+One folder per module, each named after what it holds. A module's tests are in its `unit_tests/`, and a test that builds a `Sim` is in `simulator_api/unit_tests/`. `mise run lint` holds each module to the includes the table in `tools/lint.sh` allows.
 
 | Module | What it holds |
 |---|---|

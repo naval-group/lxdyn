@@ -9,9 +9,9 @@
 #include <ssc/solver/solve.hpp>
 #include <ssc/solver/steppers.hpp>
 
-#include "ListOfObservers.hpp"
-#include "MapObserver.hpp"
 #include "xdyn/core/unit_tests/test_data.hpp"
+#include "xdyn/observers/ListOfObservers.hpp"
+#include "xdyn/observers/MapObserver.hpp"
 #include "xdyn/simulator_api/simulator_api.hpp"
 #include "xdyn/simulator_api/unit_tests/sim_with_mesh.hpp"
 #include "xdyn/yaml_parser/parse_output.hpp"
