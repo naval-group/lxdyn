@@ -1,3 +1,87 @@
+# 26.11.2 (2026-11-24)
+
+- Python API: the fields of `YamlFilteredStates` are `YamlStateFilter` objects, a `type_of_filter` and a `duration_in_seconds`, instead of YAML text
+- Python API: `BodyBuilder.build` takes the added mass as rows only, and `xdyn.hdb.read_added_mass` reads a matrix that names an HDB or Precal file
+- Every `get_system` checks its input, so `xdyn-for-cs` given a mesh rejects inputs it used to accept
+- #54 Make `simulator_api/` the only way from input to a `Sim`
+- #53 Move xdyn/ into one folder per module, each with its own model table
+- #52 Build every model from a fixed name→factory table
+- #51 Drop libf2c and build SSC's Fortran-derived C with xdyn's warning flags
+- #50 Keep the test fixtures as files under test_data/
+- #49 Format the C++ with clang-format and build the deploy image with Nix
+- #45 Apply the rule of zero to the special members
+
+
+# 26.11.1 (2026-11-12)
+
+- #44 Bump version to 26.11.1
+- #43 Modernize C++ code and turn on more clang-tidy checks
+- #42 Lint the C++ with clang-tidy
+- #41 Consolidate state access and the gRPC path
+- #40 Build the wheels and the deploy image with Nix and lint Python folders
+- #39 Add xdyn.environment, a String parameter replacing the model's environment models
+- #38 Fix 4 backlog issues
+- #36 Build with zig 0.17 against closures-v2, and absorb SSC, interfaces, websocketpp and stb
+
+
+# 26.11 (2026-11-02)
+
+- #34 Replace xdyn/fmi with an FMI 2.0 Co-Simulation FMU (xdyn_wrapper_fmi)
+- #31 `Sim::initialize_system_outputs_before_first_observation()` writes past the end with several bodies
+- #30 Fix get_mesh() ignoring an existing lxdyn mesh file
+- #29 Make every warning an error
+- #28 Enforce the warning flags the tree already satisfies
+- #17 Align the governance and contribution docs with LOTUSim
+- `packages.xdyn`: the static musl binaries as a Nix flake output, built in CI and pushed to the naval-group cache
+
+
+# 26.8.1 (2026-08-12)
+
+- #7 Cut Python classifiers to 3.10, add PyPI release workflow
+- #6 MMG: 4-DOF maneuvering, propeller and rudder models (ports GitLab MR 51)
+- #5 Rudder: fix C_Th and the propeller advance velocity (ports GitLab MR 49)
+- #4 DoF blocking: force positions and attitudes (ports GitLab MR 45)
+- #3 Holtrop & Mennen: honour "apply on ship speed direction" (ports GitLab !44)
+
+
+# 26.8 (2026-08-07)
+
+- First release of lxdyn, the LOTUSim fork of xdyn: the executables, the Python module and the C++ library are still called `xdyn`, and the Python distribution is `lxdyn`
+- Seabed bathymetry read from a grey-level height map image
+- Underwater current models, felt by the hull and by the force models
+- A basic buoyancy force model
+- Space-periodic wave directions and frequencies, for renderers that tile the sea surface
+- `LOTUSIM_MODELS_PATH`, to resolve relative mesh paths
+- `--address` on the websocket servers
+- One `zig cc` and libc++ toolchain builds for `x86_64-linux-gnu`, `x86_64-linux-musl`, `aarch64-linux-musl` and `x86_64-windows-gnu` against a prebuilt dependency closure, with no CMake and no docker, and the container image is `FROM scratch`
+- Python bindings built with pybind11 3 against the stable ABI
+- Calendar-based versions, `YY.M`
+
+
+# v6.1.0 (2022-10-05)
+
+- #236 No error when there is no mesh defined non linear hydrostatics
+- #254 Issues with csv controller
+- #213 Json output is invalid
+- #242 Check tsv output generation
+- #279 Add description for optional new yaml key convention z down for matrix x
+- #278 Different results obtained when using added mass from hdb and added mass matrix
+- #275 Tranq controller outputs are not written properly in hdf5 files
+- #276 Make doxygen documentation great again
+- #239 No explicit error when the environment models section is not present
+- #266 Gm can not be output in hdf5
+- #274 Reorder code to have a xdyn src directory
+- #251 Improve compatibility to edit xdyn on windows
+- !188 Add functionalities to read external spectrum as a list of rays
+- #263 Refactor airy and wavemodel to have only one protected member
+- #271 Code clean up before dealing issue about spectrum refactoring
+- !186 Merge src and inc directories to prepare nice absolute include
+- !184 Update code to compile clang
+- #270 Refactor rao usage so that we do not rely on a cartesian spectrum description
+- #264 Update interfaces submodule
+- #96 Update hdb parser to increment in keywords
+
+
 # v6.0.3 (2022-07-12)
 
 - #262 Create a wavemodel instance from discretedirectionalwavespectrum with imposed phase
