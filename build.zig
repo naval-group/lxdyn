@@ -18,7 +18,7 @@ else
     .{};
 
 pub fn build(b: *std.Build) void {
-    // Configuration reads $XDYN_*, runs pkg-config and python: none of it is visible to the configure cache.
+    // Configuration reads $XDYN_* and runs python: neither is visible to the configure cache.
     b.graph.poisonCache();
     const target = b.standardTargetOptions(.{ .default_target = native_default });
     const codegen = addCodegen(b);
@@ -27,7 +27,7 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = .ReleaseFast,
         .deps_root = deps.resolveRoot(b, target, codegen.step),
-        .eigen_include = resolveEigen(b),
+        .eigen_include = resolveEigen(b, codegen.step),
         .debug = b.option(bool, "debug", "Build xdyn -O0 -g for gdb (deps stay optimized)") orelse false,
         .codegen = codegen,
     };
@@ -57,7 +57,7 @@ pub const Ctx = struct {
     target: std.Build.ResolvedTarget,
     optimize: std.builtin.OptimizeMode,
     deps_root: []const u8,
-    eigen_include: ?[]const u8,
+    eigen_include: []const u8,
     debug: bool,
     codegen: Codegen,
     cpp_flags: []const []const u8 = &.{},
@@ -97,7 +97,7 @@ pub const Ctx = struct {
         m.addSystemIncludePath(b.path("external/thirdparty/eigen3-hdf5"));
         m.addSystemIncludePath(b.path("external/thirdparty"));
         m.addSystemIncludePath(b.path("external/stb"));
-        if (ctx.eigen_include) |eigen| m.addSystemIncludePath(.{ .cwd_relative = eigen });
+        m.addSystemIncludePath(.{ .cwd_relative = ctx.eigen_include });
         return m;
     }
 
@@ -138,43 +138,13 @@ fn addCodegen(b: *std.Build) Codegen {
     };
 }
 
-// =============================================================================
-// Locating Eigen: nothing absolute is baked into the build
-// =============================================================================
-
-// Header-only and target-independent, so the host's copy serves cross builds too. Order:
-// -Deigen, $XDYN_EIGEN, pkg-config (the devShell's route), then the usual system prefixes.
-fn resolveEigen(b: *std.Build) ?[]const u8 {
-    if (b.option([]const u8, "eigen", "Eigen 3 include directory (default: probe the host)") orelse
-        b.graph.environ_map.get("XDYN_EIGEN")) |explicit| return explicit;
-
-    if (probeEigenPkgConfig(b)) |probed| return probed;
-
-    for ([_][]const u8{ "/usr/include/eigen3", "/usr/local/include/eigen3", "/opt/homebrew/include/eigen3" }) |candidate|
-        if (hasEigen(b, candidate)) return candidate;
-
-    std.log.warn("Eigen not found (tried pkg-config and the usual prefixes). " ++
-        "Point at it with -Deigen=<dir> or $XDYN_EIGEN — the dir that contains Eigen/Core.", .{});
-    return null;
-}
-
-fn probeEigenPkgConfig(b: *std.Build) ?[]const u8 {
-    var code: u8 = 0;
-    const out = b.runAllowFail(&.{ "pkg-config", "--cflags-only-I", "eigen3" }, &code, .ignore) catch return null;
-    if (code != 0) return null;
-    var it = std.mem.tokenizeAny(u8, out, " \t\r\n");
-    while (it.next()) |token| {
-        if (!std.mem.startsWith(u8, token, "-I")) continue;
-        if (hasEigen(b, token[2..])) return b.dupe(token[2..]);
-    }
-    return null;
-}
-
-fn hasEigen(b: *std.Build, dir: []const u8) bool {
-    var buf: [std.fs.max_path_bytes]u8 = undefined;
-    const probe = std.fmt.bufPrint(&buf, "{s}/Eigen/Core", .{dir}) catch return false;
-    std.Io.Dir.cwd().access(b.graph.io, probe, .{}) catch return false;
-    return true;
+// Header-only and target-independent, so the host's copy serves cross builds too.
+fn resolveEigen(b: *std.Build, codegen: *std.Build.Step) []const u8 {
+    return b.option([]const u8, "eigen", "Eigen 3 include directory (default: $XDYN_EIGEN, set by `nix develop`)") orelse
+        b.graph.environ_map.get("XDYN_EIGEN") orelse {
+        deps.fail(b, codegen, "no Eigen: enter `nix develop`, or pass -Deigen=<dir>");
+        return "";
+    };
 }
 
 // =============================================================================
