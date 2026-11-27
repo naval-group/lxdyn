@@ -169,11 +169,14 @@
         in if m == null then version else builtins.head m;
       revision = self.rev or self.dirtyRev or "unknown";
 
-      # The sandbox has no pkg-config hook for the eigen probe.
+      # eigen_5 clears a -Werror=uninitialized.
+      eigenInclude = "${pkgs.eigen_5}/include/eigen3";
+
+      # What the devShell sets as variables, which a derivation does not see.
       zigFlags = triple: pkgs.lib.concatStringsSep " " [
         "-Ddeps=${fetched.${triple}}"
         "-Ddeps-host=${fetched.host-tools}"
-        "-Deigen=${pkgs.eigen_5}/include/eigen3"
+        "-Deigen=${eigenInclude}"
         "-Dcommit=${self.shortRev or self.dirtyShortRev or "unknown"}"
       ];
 
@@ -448,9 +451,7 @@
           packages = [
             pkgs.zig
             pkgs.mise
-            pkgs.git            # build.zig stamps the commit into binaries
-            pkgs.curl.bin       # .bin: the full package puts its dev closure on PKG_CONFIG_PATH
-            pkgs.pkg-config     # build.zig's eigen probe
+            pkgs.git            # the release tasks read the tag with git describe
             pkgs.uv             # owns the interpreters: a nixpkgs python leaks PYTHONPATH
             pkgs.gdb
             pkgs.doxygen
@@ -462,8 +463,7 @@
           ];
           # mise.toml requires it: every task runs on these tools, never the host's.
           LXDYN_DEVSHELL = "1";
-          # buildInputs, so pkg-config's hook finds it. eigen_5 clears a -Werror=uninitialized.
-          buildInputs = [ pkgs.eigen_5 ];
+          XDYN_EIGEN = eigenInclude;
           # Headers only, like Eigen: a path, so none of the package's Python lands in the shell.
           XDYN_PYBIND11 = "${pkgs.python3Packages.pybind11}/include";
           shellHook = ''
@@ -502,7 +502,8 @@
         # gRPC turns BoringSSL's assembly off under Ninja when it finds no nasm, on every target,
         # though only Windows' is NASM syntax.
         deps = (withRunners toolsShell).overrideAttrs (old: {
-          nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake pkgs.ninja pkgs.nasm ];
+          # curl: fetch-sources.sh downloads Boost. .bin, so none of curl's headers or libraries reach the shell.
+          nativeBuildInputs = old.nativeBuildInputs ++ [ pkgs.cmake pkgs.ninja pkgs.nasm pkgs.curl.bin ];
           shellHook = old.shellHook + ''
             echo "  closure toolchain: $(cmake --version | head -1), ninja $(ninja --version)"
           '';
