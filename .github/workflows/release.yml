@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 env:
@@ -66,3 +66,14 @@ jobs:
         env:
           VERSION: ${{ inputs.version }}
         run: nix develop --command mise run deploy:publish
+
+      - name: Attach xdyn-for-cs to the release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p build/scratch/release-bin
+          docker create --name lxdyn-extract localhost/lxdyn
+          docker cp lxdyn-extract:/usr/bin/xdyn-for-cs build/scratch/release-bin/
+          docker rm lxdyn-extract
+          gh release upload "$GITHUB_REF_NAME" build/scratch/release-bin/xdyn-for-cs --clobber
